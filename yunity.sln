@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.6.33815.320
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "yunity", "yunity.vcxproj", "{0AD86B96-C0F4-4D55-BB3E-5D7AC5860A0D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ソリューション項目", "ソリューション項目", "{EA81B362-D20F-4151-BA0E-5AA24782D038}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0AD86B96-C0F4-4D55-BB3E-5D7AC5860A0D}.Debug|x64.ActiveCfg = Debug|x64
+		{0AD86B96-C0F4-4D55-BB3E-5D7AC5860A0D}.Debug|x64.Build.0 = Debug|x64
+		{0AD86B96-C0F4-4D55-BB3E-5D7AC5860A0D}.Debug|x86.ActiveCfg = Debug|x64
+		{0AD86B96-C0F4-4D55-BB3E-5D7AC5860A0D}.Release|x64.ActiveCfg = Release|x64
+		{0AD86B96-C0F4-4D55-BB3E-5D7AC5860A0D}.Release|x64.Build.0 = Release|x64
+		{0AD86B96-C0F4-4D55-BB3E-5D7AC5860A0D}.Release|x86.ActiveCfg = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A1294649-48BE-4E45-B678-A835C7DA7CFC}
+	EndGlobalSection
+EndGlobal
