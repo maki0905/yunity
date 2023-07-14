@@ -1,18 +1,36 @@
-#include <Windows.h>
+ï»¿#include <Windows.h>
 #include "WinApp.h"
+#include "DirectXCommon.h"
+
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
+	WinApp* win = nullptr;
+	DirectXCommon* dxCommon = nullptr;
+
+	// ã‚²ãƒ¼ãƒ ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã®ä½œæˆ
+	win = WinApp::GetInstance();
+	win->CreateGameWindow();
+
+	// DirectXåˆæœŸåŒ–å‡¦ç†
+	dxCommon = DirectXCommon::GetInstance();
+	dxCommon->Initialize(win);
+
 	MSG msg{};
-	// ƒEƒBƒ“ƒhƒE‚Ìxƒ{ƒ^ƒ“‚ª‰Ÿ‚³‚ê‚é‚Ü‚Åƒ‹[ƒv
+	// ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã®xãƒœã‚¿ãƒ³ãŒæŠ¼ã•ã‚Œã‚‹ã¾ã§ãƒ«ãƒ¼ãƒ—
 	while (msg.message != WM_QUIT) {
-		// Window‚ÉƒƒbƒZ[ƒW‚ª—ˆ‚Ä‚½‚çÅ—Dæ‚Åˆ—‚³‚¹‚é
+		// Windowã«ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ãŒæ¥ã¦ãŸã‚‰æœ€å„ªå…ˆã§å‡¦ç†ã•ã›ã‚‹
 		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
 		}
 		else {
-			// ƒQ[ƒ€ˆ—
+			// ã‚²ãƒ¼ãƒ å‡¦ç†
+			dxCommon->PreDraw();
+			dxCommon->PostDraw();
+
 		}
 	}
-	OutputDebugStringA("Hello,DirectX!\n");
+
+	// ã‚²ãƒ¼ãƒ ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã®ç ´æ£„
+	win->TerminateGameWindow();
 	return 0;
 }
