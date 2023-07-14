@@ -62,8 +62,6 @@ void DirectXCommon::PreDraw() {
 		D3D12_RESOURCE_STATE_RENDER_TARGET);*/
 	commandList_->ResourceBarrier(1, &barrier);
 
-	
-
 	// レンダーターゲットビュー用ディスクリプタヒープのハンドルを取得
 	/*D3D12_CPU_DESCRIPTOR_HANDLE rtvH = D3D12_CPU_DESCRIPTOR_HANDLE(
 		D3D12_DESCRIPTOR_HEAP_TYPE_RTV
