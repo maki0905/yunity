@@ -123,23 +123,24 @@ uint32_t TextureManager::LoadInternal(const std::string& fileName) {
 	metadata.format = MakeSRGB(metadata.format);
 
 	// リソース設定
-	/*D3D12_RESOURCE_DESC texresDesc = D3D12_RESOURCE_DESC::Tex2D(
-		metadata.format, metadata.width, (UINT)metadata.height, (UINT16)metadata.arraySize,
-		(UINT16)metadata.mipLevels);*/
 	D3D12_RESOURCE_DESC texresDesc{};
-	//texresDesc.Format = metadata.format;
+	texresDesc.Format = metadata.format;
 	texresDesc.Dimension = D3D12_RESOURCE_DIMENSION(metadata.dimension);
 	texresDesc.Width = UINT(metadata.width);
 	texresDesc.Height = UINT(metadata.height);
 	texresDesc.DepthOrArraySize = UINT16(metadata.arraySize);
 	texresDesc.MipLevels = UINT16(metadata.mipLevels);
 	texresDesc.SampleDesc.Count = 1;
-	texresDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
+	texresDesc.Flags = D3D12_RESOURCE_FLAG_NONE;
+	texresDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
+
 	// ヒーププロパティ
-	/*D3D12_HEAP_PROPERTIES heapProps =;
-		D3D12_HEAP_PROPERTIES(D3D12_CPU_PAGE_PROPERTY_WRITE_BACK, D3D12_MEMORY_POOL_L0);*/
 	D3D12_HEAP_PROPERTIES heapProps{};
-	heapProps.Type = D3D12_HEAP_TYPE_DEFAULT;
+	heapProps.Type = D3D12_HEAP_TYPE_CUSTOM;
+	heapProps.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_WRITE_BACK;
+	heapProps.MemoryPoolPreference = D3D12_MEMORY_POOL_L0;
+	heapProps.CreationNodeMask = 1;
+	heapProps.VisibleNodeMask = 1;
 
 	// テクスチャ用バッファの生成
 	result = device_->CreateCommittedResource(

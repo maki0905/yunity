@@ -131,6 +131,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="T.h" />
     <ClInclude Include="TextureManager.h" />
     <ClInclude Include="Triangle.h" />
+    <ClInclude Include="Vecter2.h" />
     <ClInclude Include="Vector3.h" />
     <ClInclude Include="Vector4.h" />
     <ClInclude Include="ViewProjection.h" />

@@ -47,11 +47,11 @@ struct ViewProjection {
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Initialize(ID3D12Device* device);
+	void Initialize();
 	/// <summary>
 	/// 定数バッファ生成
 	/// </summary>
-	void CreateConstBuffer(ID3D12Device* device);
+	void CreateConstBuffer();
 	/// <summary>
 	/// マッピングする
 	/// </summary>

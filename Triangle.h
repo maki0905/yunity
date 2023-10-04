@@ -12,6 +12,7 @@
 
 #include "Vector4.h"
 #include "Vector3.h"
+#include "Vecter2.h"
 #include "Matrix4x4.h"
 
 class Triangle
@@ -21,6 +22,12 @@ public:
 		kWorldTransform, // ワールド変換行列
 		kViewProjection, // ビュープロジェクション変換行列
 		kTexture,        // テクスチャ
+	};
+
+public:
+	struct VertexData {
+		Vector4 position;
+		Vector2 texcoord;
 	};
 
 public:
@@ -43,7 +50,7 @@ public:
 
 	void Update();
 
-	void Draw(const WorldTransform& worldTransform);
+	void Draw(const WorldTransform& worldTransform, const ViewProjection& viewProjection, uint32_t textureHandle = 0);
 
 	void CreateMesh();
 	
@@ -58,7 +65,7 @@ private:
 
 private:
 	Microsoft::WRL::ComPtr<ID3D12Resource> vertexResource_;
-	std::vector<Vector4> vertexData_;
+	std::vector<VertexData> vertexData_;
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferView_;
 	Microsoft::WRL::ComPtr<ID3D12Resource> materialResource_;
 	Vector4* materialData_;

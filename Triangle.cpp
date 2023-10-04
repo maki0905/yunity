@@ -22,7 +22,14 @@ void Triangle::InitializeRootSignature()
 	D3D12_ROOT_SIGNATURE_DESC descriptionRootSignature{};
 	descriptionRootSignature.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 
-	D3D12_ROOT_PARAMETER rootParameters[2] = {};
+	// デスクリプタレンジ
+	D3D12_DESCRIPTOR_RANGE descriptorRange[1] = {};
+	descriptorRange[0].BaseShaderRegister = 0;
+	descriptorRange[0].NumDescriptors = 1;
+	descriptorRange[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+	descriptorRange[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+
+	D3D12_ROOT_PARAMETER rootParameters[4] = {};
 	rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
 	rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
 	rootParameters[0].Descriptor.ShaderRegister = 0;
@@ -31,10 +38,29 @@ void Triangle::InitializeRootSignature()
 	rootParameters[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;
 	rootParameters[1].Descriptor.ShaderRegister = 0;
 
+	rootParameters[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_SRV;
+	rootParameters[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;
+	rootParameters[2].Descriptor.ShaderRegister = 1;
 
+	rootParameters[3].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+	rootParameters[3].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+	rootParameters[3].DescriptorTable.pDescriptorRanges = descriptorRange;
+	rootParameters[3].DescriptorTable.NumDescriptorRanges = _countof(descriptorRange);
 
 	descriptionRootSignature.pParameters = rootParameters;
 	descriptionRootSignature.NumParameters = _countof(rootParameters);
+
+	D3D12_STATIC_SAMPLER_DESC staticSamplers[1] = {};
+	staticSamplers[0].Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;
+	staticSamplers[0].AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP; //0~1の範囲外をリピート
+	staticSamplers[0].AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+	staticSamplers[0].AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+	staticSamplers[0].ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER; //比較しない
+	staticSamplers[0].MaxLOD = D3D12_FLOAT32_MAX;
+	staticSamplers[0].ShaderRegister = 0; //レジスタ番号0を使う
+	staticSamplers[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL; //PixelShaderを使う
+	descriptionRootSignature.pStaticSamplers = staticSamplers;
+	descriptionRootSignature.NumStaticSamplers = _countof(staticSamplers);
 
 	// シリアライズしてバイナリにする
 	Microsoft::WRL::ComPtr<ID3DBlob> signatureBlob = nullptr;
@@ -47,6 +73,7 @@ void Triangle::InitializeRootSignature()
 		assert(false);
 	}
 
+	// ルートシグネチャー作成
 	rootSignature_ = nullptr;
 	result_ = device_->CreateRootSignature(
 		0, signatureBlob->GetBufferPointer(),
@@ -164,11 +191,15 @@ void Triangle::InitializeGraphicsPipeline()
 	InitializeRootSignature();
 
 	//InputLayout
-	D3D12_INPUT_ELEMENT_DESC inputElementDescs[1] = {};
+	D3D12_INPUT_ELEMENT_DESC inputElementDescs[2] = {};
 	inputElementDescs[0].SemanticName = "POSITION";
 	inputElementDescs[0].SemanticIndex = 0;
 	inputElementDescs[0].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
 	inputElementDescs[0].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
+	inputElementDescs[1].SemanticName = "TEXCOORD";
+	inputElementDescs[1].SemanticIndex = 0;
+	inputElementDescs[1].Format = DXGI_FORMAT_R32G32_FLOAT;
+	inputElementDescs[1].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
 	D3D12_INPUT_LAYOUT_DESC inputLayoutDesc{};
 	inputLayoutDesc.pInputElementDescs = inputElementDescs;
 	inputLayoutDesc.NumElements = _countof(inputElementDescs);
@@ -307,17 +338,27 @@ void Triangle::Update()
 
 }
 
-void Triangle::Draw(const WorldTransform& worldTransform)
+void Triangle::Draw(const WorldTransform& worldTransform, const ViewProjection& viewProjection, uint32_t textureHandle)
 {
 	assert(device_);
 	assert(commandList_);
 	assert(worldTransform.constBuff_.Get());
 	
 	commandList_->SetGraphicsRootConstantBufferView(0, materialResource_->GetGPUVirtualAddress());
+	
 	// 頂点バッファの設定
 	commandList_->IASetVertexBuffers(0, 1, &vertexBufferView_);
 
+	// CBVをセット(ワールド行列)
 	commandList_->SetGraphicsRootConstantBufferView(1, worldTransform.constBuff_->GetGPUVirtualAddress());
+
+	// CBVをセット(ビュープロジェクション行列)
+	commandList_->SetGraphicsRootShaderResourceView(2, viewProjection.constBuff_->GetGPUVirtualAddress());
+
+	
+
+	// SRVをセット
+	TextureManager::GetInstance()->SetGraphicsRootDescriptorTable(commandList_, 3, textureHandle);
 
 	commandList_->DrawInstanced(3, 1, 0, 0);
 
@@ -326,42 +367,20 @@ void Triangle::Draw(const WorldTransform& worldTransform)
 void Triangle::CreateMesh()
 {
 	HRESULT result = S_FALSE;
-	vertexResource_ = CreateBufferResource(sizeof(Vector4) * 3);
-	
-
-	//// 頂点リソース用のヒープの設定
-	//D3D12_HEAP_PROPERTIES uploadHeapProperties{};
-	//uploadHeapProperties.Type = D3D12_HEAP_TYPE_UPLOAD;
-	//// 頂点リソースの設定
-	//D3D12_RESOURCE_DESC vertexResourceDesc{};
-	//// バッファリソース
-	//vertexResourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
-	//vertexResourceDesc.Width = sizeof(Vector4) * 3;
-	//vertexResourceDesc.Height = 1;
-	//vertexResourceDesc.DepthOrArraySize = 1;
-	//vertexResourceDesc.MipLevels = 1;
-	//vertexResourceDesc.SampleDesc.Count = 1;
-	//vertexResourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
-	//// 実際にリソースを作る
-	//result = device_->CreateCommittedResource(
-	//	&uploadHeapProperties, D3D12_HEAP_FLAG_NONE, &vertexResourceDesc,
-	//	D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(&vertexResource_));
-	//assert(SUCCEEDED(result));
-
-
+	vertexResource_ = CreateBufferResource(sizeof(VertexData) * 3);
 
 	// 頂点バッファビュー
 	vertexBufferView_.BufferLocation = vertexResource_->GetGPUVirtualAddress();
-	vertexBufferView_.SizeInBytes = sizeof(Vector4) * 3;
-	vertexBufferView_.StrideInBytes = sizeof(Vector4);
+	vertexBufferView_.SizeInBytes = sizeof(VertexData) * 3;
+	vertexBufferView_.StrideInBytes = sizeof(VertexData);
 
 	vertexData_ = {
-		{-0.5f, -0.5f, 0.0f, 1.0f },
-		{ 0.0f, 0.5f, 0.0f, 1.0f },
-		{ 0.5f, -0.5f, 0.0f, 1.0f }
+		{{-0.5f, -0.5f, 0.0f, 1.0f }, {0.0f, 1.0f}},
+		{{0.0f, 0.5f, 0.0f, 1.0f},{0.5f, 0.0f}},
+		{{0.5f, -0.5f, 0.0f, 1.0f},{1.0f, 1.0f}}
 	};
-
-	Vector4* vertexData = nullptr;
+	
+	VertexData* vertexData = nullptr;
 	result = vertexResource_->Map(0, nullptr, (void**)&vertexData);
 	if (SUCCEEDED(result)) {
 		std::copy(vertexData_.begin(), vertexData_.end(), vertexData);
@@ -374,7 +393,7 @@ void Triangle::CreateMesh()
 	//Vector4* materialData = nullptr;
 	// アドレスを取得
 	materialResource_->Map(0, nullptr, (void**)&materialData_);
-	*materialData_ = Vector4(1.0f, 0.0f, 0.0f, 1.0f);
+	*materialData_ = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
 
 }
 
@@ -383,10 +402,6 @@ void Triangle::Log(const std::string& message)
 	OutputDebugStringA(message.c_str());
 }
 
-//void Triangle::Log(const std::string& message)
-//{
-//	OutputDebugStringA(message.c_str());
-//}
 
 
 

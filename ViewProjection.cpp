@@ -1,17 +1,20 @@
 ﻿#include "ViewProjection.h"
 #include "WinApp.h"
 #include <cassert>
+
+#include "DirectXCommon.h"
 //#include <d3dx12.h>
 
 using namespace DirectX;
 
-void ViewProjection::Initialize(ID3D12Device* device) {
-    CreateConstBuffer(device);
+void ViewProjection::Initialize() {
+
+    CreateConstBuffer();
     Map();
     UpdateMatrix();
 }
 
-void ViewProjection::CreateConstBuffer(ID3D12Device* device) {
+void ViewProjection::CreateConstBuffer() {
     HRESULT result;
 
     // ヒーププロパティ
@@ -30,7 +33,7 @@ void ViewProjection::CreateConstBuffer(ID3D12Device* device) {
     //CD3DX12_RESOURCE_DESC::Buffer((sizeof(ConstBufferDataViewProjection) + 0xff) & ~0xff);
     
     // 定数バッファの生成
-    result = device->CreateCommittedResource(
+    result = DirectXCommon::GetInstance()->GetDevice()->CreateCommittedResource(
         &heapProps, // アップロード可能
         D3D12_HEAP_FLAG_NONE, &resourceDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr,
         IID_PPV_ARGS(&constBuff_));

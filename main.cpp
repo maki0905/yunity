@@ -12,13 +12,12 @@
 #include <dxcapi.h>
 
 #include "T.h"
+#include "ViewProjection.h"
 
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	WinApp* win = nullptr;
 	DirectXCommon* dxCommon = nullptr;
 	GameScene* gameScene = nullptr;
-	//Triangle* triangle = nullptr;
-	//triangle = new Triangle();
 
 	// ゲームウィンドウの作成
 	win = WinApp::GetInstance();
@@ -33,13 +32,19 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	ImGuiManager* imguiManager = ImGuiManager::GetInstance();
 	imguiManager->Initialize(win, dxCommon);
 
+	// テクスチャマネージャーの初期化
+	TextureManager::GetInstance()->Initialize(dxCommon->GetDevice());
+	TextureManager::Load("white1x1.png");
+
 	Triangle::StaticInitialize(dxCommon->GetDevice());
-	//triangle->StaticInitialize(dxCommon->GetDevice());
-	//triangle->Initialize();
+
 	gameScene = new GameScene();
 	gameScene->Initialize(dxCommon);
+	ViewProjection viewProjection_;
+	viewProjection_.Initialize();
 	T* t = new T();
 	t->Initialize();
+	t->GetTexture(TextureManager::Load("uvChecker.png"));
 	MSG msg{};
 	// ウィンドウのxボタンが押されるまでループ
 	while (msg.message != WM_QUIT) {
@@ -57,6 +62,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			//triangle->Update();
 			t->Update();
+			viewProjection_.UpdateMatrix();
 
 			// ImGui受付終了
 			imguiManager->End();
@@ -66,7 +72,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			Triangle::PreDraw(dxCommon->GetCommandList());
 
-			t->Draw();
+			t->Draw(viewProjection_);
 
 			Triangle::PostDraw();
 

@@ -1,4 +1,4 @@
-#include "T.h"
+﻿#include "T.h"
 
 void T::Initialize()
 {
@@ -14,8 +14,8 @@ void T::Update()
 
 }
 
-void T::Draw()
+void T::Draw(const ViewProjection& viewProjection)
 {
-	triangle_->Draw(worldTransform_);
+	triangle_->Draw(worldTransform_, viewProjection, textureHandle_);
 
 }
