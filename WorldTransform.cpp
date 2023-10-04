@@ -1,16 +1,17 @@
 ﻿#include "WorldTransform.h"
 #include <cassert>
-//#include <d3dx12.h>
+
+#include "DirectXCommon.h"
 
 using namespace DirectX;
 
-void WorldTransform::Initialize(ID3D12Device* device) {
-    CreateConstBuffer(device);
+void WorldTransform::Initialize() {
+    CreateConstBuffer();
     Map();
     UpdateMatrix();
 }
 
-void WorldTransform::CreateConstBuffer(ID3D12Device* device) {
+void WorldTransform::CreateConstBuffer() {
     HRESULT result;
 
     // ヒーププロパティ
@@ -28,7 +29,7 @@ void WorldTransform::CreateConstBuffer(ID3D12Device* device) {
     //CD3DX12_RESOURCE_DESC::Buffer((sizeof(ConstBufferDataWorldTransform) + 0xff) & ~0xff);
 
     // 定数バッファの生成
-    result = device->CreateCommittedResource(
+    result = DirectXCommon::GetInstance()->GetDevice()->CreateCommittedResource(
         &heapProps, // アップロード可能
         D3D12_HEAP_FLAG_NONE, &resourceDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr,
         IID_PPV_ARGS(&constBuff_));

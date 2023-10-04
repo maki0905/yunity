@@ -6,6 +6,8 @@
 #include <dxcapi.h>
 #pragma comment(lib, "d3dcompiler.lib")
 
+#include "externals/imgui/imgui.h"
+
 ID3D12Device* Triangle::device_ = nullptr;
 ID3D12GraphicsCommandList* Triangle::commandList_ = nullptr;
 Microsoft::WRL::ComPtr<ID3D12RootSignature> Triangle::rootSignature_;
@@ -19,6 +21,21 @@ void Triangle::InitializeRootSignature()
 	//RootSignature作成
 	D3D12_ROOT_SIGNATURE_DESC descriptionRootSignature{};
 	descriptionRootSignature.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
+
+	D3D12_ROOT_PARAMETER rootParameters[2] = {};
+	rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+	rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+	rootParameters[0].Descriptor.ShaderRegister = 0;
+
+	rootParameters[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+	rootParameters[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;
+	rootParameters[1].Descriptor.ShaderRegister = 0;
+
+
+
+	descriptionRootSignature.pParameters = rootParameters;
+	descriptionRootSignature.NumParameters = _countof(rootParameters);
+
 	// シリアライズしてバイナリにする
 	Microsoft::WRL::ComPtr<ID3DBlob> signatureBlob = nullptr;
 	Microsoft::WRL::ComPtr<ID3DBlob> errorBlob = nullptr;
@@ -203,54 +220,30 @@ void Triangle::InitializeGraphicsPipeline()
 	graphicsPipelineState_ = nullptr;
 	result_ = device_->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(&graphicsPipelineState_));
 	assert(SUCCEEDED(result_));
-
-	// 頂点リソース用のヒープの設定
-	D3D12_HEAP_PROPERTIES uploadHeapProperties{};
-	uploadHeapProperties.Type = D3D12_HEAP_TYPE_UPLOAD;
-	// 頂点リソースの設定
-	D3D12_RESOURCE_DESC vertexResourceDesc{};
-	// バッファリソース
-	vertexResourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
-	vertexResourceDesc.Width = sizeof(Vector4) * 3;
-	vertexResourceDesc.Height = 1;
-	vertexResourceDesc.DepthOrArraySize = 1;
-	vertexResourceDesc.MipLevels = 1;
-	vertexResourceDesc.SampleDesc.Count = 1;
-	vertexResourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
-	// 実際にリソースを作る
-	result_ = device_->CreateCommittedResource(
-		&uploadHeapProperties, D3D12_HEAP_FLAG_NONE, &vertexResourceDesc,
-		D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(&vertexResource_));
-	assert(SUCCEEDED(result_));
-
-
-
-	// 頂点バッファビュー
-	vertexBufferView_.BufferLocation = vertexResource_->GetGPUVirtualAddress();
-	vertexBufferView_.SizeInBytes = sizeof(Vector4) * 3;
-	vertexBufferView_.StrideInBytes = sizeof(Vector4);
-
-	vertexData_ = {
-		{-0.5f, -0.5f, 0.0f, 1.0f },
-		{ 0.0f, 0.5f, 0.0f, 1.0f },
-		{ 0.5f, -0.5f, 0.0f, 1.0f }
-	};
-	
-	Vector4* vertexData = nullptr;
-	result_ = vertexResource_->Map(0, nullptr, (void**)&vertexData);
-	if (SUCCEEDED(result_)) {
-		std::copy(vertexData_.begin(), vertexData_.end(), vertexData);
-		vertexResource_->Unmap(0, nullptr);
-	}
-	
-	
 }
 
-void Triangle::CreateVertexResource()
+ID3D12Resource* Triangle::CreateBufferResource(size_t sizeInBytes)
 {
-	//HRESULT result_ = S_FALSE;
-	
-
+	HRESULT result = S_FALSE;
+	// リソース用のヒープの設定
+	D3D12_HEAP_PROPERTIES uploadHeapProperties{};
+	uploadHeapProperties.Type = D3D12_HEAP_TYPE_UPLOAD; // uploadHeapを使う
+	// リソースの設定
+	D3D12_RESOURCE_DESC ResourceDesc{};
+	// バッファリソース
+	ResourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
+	ResourceDesc.Width = sizeInBytes; // リソースのサイズ
+	ResourceDesc.Height = 1;
+	ResourceDesc.DepthOrArraySize = 1;
+	ResourceDesc.MipLevels = 1;
+	ResourceDesc.SampleDesc.Count = 1;
+	ResourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
+	// リソースを作る
+	ID3D12Resource* resource = nullptr;
+	result = device_->CreateCommittedResource(&uploadHeapProperties, D3D12_HEAP_FLAG_NONE, 
+		&ResourceDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(&resource));
+	assert(SUCCEEDED(&result));
+	return resource;
 }
 
 void Triangle::PreDraw(ID3D12GraphicsCommandList* commandList)
@@ -282,13 +275,106 @@ void Triangle::StaticInitialize(ID3D12Device* device)
 
 }
 
-void Triangle::Draw()
+Triangle* Triangle::Create()
+{
+	Triangle* triangle = new Triangle();
+	assert(triangle);
+
+	triangle->Initialize();
+
+	return triangle;
+}
+
+void Triangle::Initialize()
+{
+	// nullptrチェック
+	assert(device_);
+
+	// メッシュ生成
+	CreateMesh();
+}
+
+void Triangle::Update()
+{
+#ifdef _DEBUG
+	ImGui::Begin("Color");
+	
+	ImGui::End();
+
+#endif // _DEBUG
+
+
+
+}
+
+void Triangle::Draw(const WorldTransform& worldTransform)
 {
 	assert(device_);
 	assert(commandList_);
+	assert(worldTransform.constBuff_.Get());
 	
+	commandList_->SetGraphicsRootConstantBufferView(0, materialResource_->GetGPUVirtualAddress());
+	// 頂点バッファの設定
 	commandList_->IASetVertexBuffers(0, 1, &vertexBufferView_);
+
+	commandList_->SetGraphicsRootConstantBufferView(1, worldTransform.constBuff_->GetGPUVirtualAddress());
+
 	commandList_->DrawInstanced(3, 1, 0, 0);
+
+}
+
+void Triangle::CreateMesh()
+{
+	HRESULT result = S_FALSE;
+	vertexResource_ = CreateBufferResource(sizeof(Vector4) * 3);
+	
+
+	//// 頂点リソース用のヒープの設定
+	//D3D12_HEAP_PROPERTIES uploadHeapProperties{};
+	//uploadHeapProperties.Type = D3D12_HEAP_TYPE_UPLOAD;
+	//// 頂点リソースの設定
+	//D3D12_RESOURCE_DESC vertexResourceDesc{};
+	//// バッファリソース
+	//vertexResourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
+	//vertexResourceDesc.Width = sizeof(Vector4) * 3;
+	//vertexResourceDesc.Height = 1;
+	//vertexResourceDesc.DepthOrArraySize = 1;
+	//vertexResourceDesc.MipLevels = 1;
+	//vertexResourceDesc.SampleDesc.Count = 1;
+	//vertexResourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
+	//// 実際にリソースを作る
+	//result = device_->CreateCommittedResource(
+	//	&uploadHeapProperties, D3D12_HEAP_FLAG_NONE, &vertexResourceDesc,
+	//	D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(&vertexResource_));
+	//assert(SUCCEEDED(result));
+
+
+
+	// 頂点バッファビュー
+	vertexBufferView_.BufferLocation = vertexResource_->GetGPUVirtualAddress();
+	vertexBufferView_.SizeInBytes = sizeof(Vector4) * 3;
+	vertexBufferView_.StrideInBytes = sizeof(Vector4);
+
+	vertexData_ = {
+		{-0.5f, -0.5f, 0.0f, 1.0f },
+		{ 0.0f, 0.5f, 0.0f, 1.0f },
+		{ 0.5f, -0.5f, 0.0f, 1.0f }
+	};
+
+	Vector4* vertexData = nullptr;
+	result = vertexResource_->Map(0, nullptr, (void**)&vertexData);
+	if (SUCCEEDED(result)) {
+		std::copy(vertexData_.begin(), vertexData_.end(), vertexData);
+		vertexResource_->Unmap(0, nullptr);
+	}
+
+	// マテリアル用のリソース
+	materialResource_ = CreateBufferResource(sizeof(Vector4));
+	// マテリアルにデータを書き込む
+	//Vector4* materialData = nullptr;
+	// アドレスを取得
+	materialResource_->Map(0, nullptr, (void**)&materialData_);
+	*materialData_ = Vector4(1.0f, 0.0f, 0.0f, 1.0f);
 
 }
 
@@ -296,6 +382,11 @@ void Triangle::Log(const std::string& message)
 {
 	OutputDebugStringA(message.c_str());
 }
+
+//void Triangle::Log(const std::string& message)
+//{
+//	OutputDebugStringA(message.c_str());
+//}
 
 
 

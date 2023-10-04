@@ -8,33 +8,48 @@
 #include <d3d12.h>
 #include <vector>
 #include <wrl.h>
+#include "MathFunction.h"
 
 #include "Vector4.h"
+#include "Vector3.h"
+#include "Matrix4x4.h"
 
 class Triangle
 {
 public:
+	enum class RoomParameter {
+		kWorldTransform, // ワールド変換行列
+		kViewProjection, // ビュープロジェクション変換行列
+		kTexture,        // テクスチャ
+	};
 
 public:
 
-	void InitializeRootSignature();
+	static void InitializeRootSignature();
 
-	void InitializeGraphicsPipeline();
+	static void InitializeGraphicsPipeline();
 
-	void CreateVertexResource();
+	ID3D12Resource* CreateBufferResource(size_t sizeInBytes);
 
 	static void PreDraw(ID3D12GraphicsCommandList* commandList);
 
 	static void PostDraw();
 
-	void StaticInitialize(ID3D12Device* device);
+	static void StaticInitialize(ID3D12Device* device);
 
-	void Draw();
+	static Triangle* Create();
 
+	void Initialize();
+
+	void Update();
+
+	void Draw(const WorldTransform& worldTransform);
+
+	void CreateMesh();
 	
 	
 private:
-	void Log(const std::string& message);
+	static void Log(const std::string& message);
 
 	static ID3D12Device* device_;
 	static ID3D12GraphicsCommandList* commandList_;
@@ -45,5 +60,8 @@ private:
 	Microsoft::WRL::ComPtr<ID3D12Resource> vertexResource_;
 	std::vector<Vector4> vertexData_;
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferView_;
+	Microsoft::WRL::ComPtr<ID3D12Resource> materialResource_;
+	Vector4* materialData_;
+	
 };
 

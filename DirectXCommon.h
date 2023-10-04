@@ -73,6 +73,9 @@ public: // メンバ関数
 	/// <returns>バックバッファの高さ</returns>
 	int32_t GetBackBufferHeight() const;
 
+	// バックバッファの数を取得
+	size_t GetBackBufferCount() const { return backBuffers_.size(); }
+
 private: // メンバ変数
 	// ウィンドウズアプリケーション管理
 	WinApp* winApp_;
