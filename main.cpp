@@ -86,8 +86,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			//t->Draw(viewProjection_);
 			//sphere->Draw(worldTransform, viewProjection_, textureHandle);
-			//model->Draw(worldTransform, viewProjection_, textureHandle);
-			model->Draw(worldTransform, viewProjection_);
+			model->Draw(worldTransform, viewProjection_, textureHandle);
+			//model->Draw(worldTransform, viewProjection_);
 			
 			Model::PostDraw();
 			Sphere::PostDraw();
