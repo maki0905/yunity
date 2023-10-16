@@ -1,7 +1,9 @@
 ﻿#pragma once
 
 #include <cmath>
+#include "Vecter2.h"
 #include "Vector3.h"
+#include "Vector4.h"
 #include "Matrix4x4.h"
 
 // ベクトルの加法
@@ -62,10 +64,15 @@ Matrix4x4 MakeOrthographicMatrix(
 Matrix4x4 MakeViewportMatrix(
     float left, float top, float width, float height, float minDepth, float maxDepth);
 
+// ビュー行列
+Matrix4x4 MakeViewMatrix(const Vector3& rotate, const Vector3& translate);
+
 // 正射影ベクトル
 Vector3 Project(const Vector3& v1, const Vector3& v2);
 // 最近接点
 // Vector3 ClosestPoint(const Vector3& point, const Segment& segment);
+
+float ConvertToRadians(float degree);
 
 // 最短角度補間
 float LerpShortAngle(float a, float b, float t);

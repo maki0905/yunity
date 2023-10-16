@@ -453,11 +453,25 @@ Matrix4x4 MakeViewportMatrix(
 	return result;
 }
 
+Matrix4x4 MakeViewMatrix(const Vector3& rotate, const Vector3& translate)
+{
+	Matrix4x4 result;
+	result = MakeAffineMatrix({ 1.0f, 1.0f, 1.0f }, rotate, translate);
+	result = Inverse(result);
+	return result;
+}
+
 // 正射影ベクトル
 Vector3 Project(const Vector3& v1, const Vector3& v2) {
 	Vector3 result;
 	float t = Dot(v1, v2) / (Length(v2) * Length(v2));
 	result = Multiply(t, v2);
+	return result;
+}
+
+float ConvertToRadians(float degree)
+{
+	float result = degree * M_PI / 180.0f;
 	return result;
 }
 

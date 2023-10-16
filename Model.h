@@ -5,15 +5,14 @@
 #include <DirectXMath.h>
 #include <Windows.h>
 #include <d3d12.h>
-//#include <d3dx12.h>
 #include <vector>
 #include <wrl.h>
+#include "MathFunction.h"
 
 /// <summary>
 /// 3Dモデル
 /// </summary>
 class Model {
-public: // 列挙子
 	/// <summary>
 	/// ルートパラメータ番号
 	/// </summary>
@@ -23,22 +22,39 @@ public: // 列挙子
 		kTexture,        // テクスチャ
 	};
 
-public: // サブクラス
+public:
 	// 頂点データ構造体
-	struct VertexPosNormalUv {
-		DirectX::XMFLOAT3 pos;    // xyz座標
-		DirectX::XMFLOAT3 normal; // 法線ベクトル
-		DirectX::XMFLOAT2 uv;     // uv座標
+	struct VertexData {
+		Vector4 position;
+		Vector3 normal;
+		Vector2 texcoord;
 	};
 
-public: // 静的メンバ関数
+	struct MaterialData {
+		std::string textureFilePath;
+	};
+
+	struct ModelData {
+		std::vector<VertexData> vertices;
+		MaterialData material;
+	};
+
+public:
 	/// <summary>
 	/// 静的初期化
 	/// </summary>
 	/// <param name="device">デバイス</param>
-	/// <param name="window_width">画面幅</param>
-	/// <param name="window_height">画面高さ</param>
-	static void StaticInitialize(ID3D12Device* device, int window_width, int window_height);
+	static void StaticInitialize(ID3D12Device* device);
+
+	/// <summary>
+	/// ルートシグネチャー生成
+	/// </summary>
+	static void InitializeRootSignature();
+
+	/// <summary>
+	/// グラフィックスパイプライン生成
+	/// </summary>
+	static void InitializeGraphicsPipeline();
 
 	/// <summary>
 	/// 描画前処理
@@ -55,54 +71,64 @@ public: // 静的メンバ関数
 	/// 3Dモデル生成
 	/// </summary>
 	/// <returns></returns>
-	static Model* Create();
+	static Model* Create(const std::string& modelname);
 
-private: // 静的メンバ変数
-	// デバイス
-	static ID3D12Device* sDevice;
-	// デスクリプタサイズ
-	static UINT sDescriptorHandleIncrementSize;
-	// コマンドリスト
-	static ID3D12GraphicsCommandList* sCommandList;
-	// ルートシグネチャ
-	static Microsoft::WRL::ComPtr<ID3D12RootSignature> sRootSignature;
-	// パイプラインステートオブジェクト
-	static Microsoft::WRL::ComPtr<ID3D12PipelineState> sPipelineState;
-
-private: // 静的メンバ関数
-	/// <summary>
-	/// グラフィックパイプライン生成
-	/// </summary>
-	static void InitializeGraphicsPipeline();
-
-public: // メンバ関数
+public:
 	/// <summary>
 	/// 初期化
 	/// </summary>
 	void Initialize();
+
 	/// <summary>
 	/// 描画
 	/// </summary>
-	void Draw(
-		const WorldTransform& worldTransform, const ViewProjection& viewProjection,
-		uint32_t textureHadle = 0);
+	/// <param name="worldTransform">ワールドトランスフォーム</param>
+	/// <param name="viewProjection">ビュープロジェクション</param>
+	/// <param name="textureHandle">テクスチャハンドル</param>
+	void Draw(const WorldTransform& worldTransform, const ViewProjection& viewProjection, uint32_t textureHandle);
+	void Draw(const WorldTransform& worldTransform, const ViewProjection& viewProjection);
 
-	/// <summary>
-	/// メッシュデータ生成
-	/// </summary>
+	void LoadObjFile(const std::string& filename);
+	
 	void CreateMesh();
 
-private: // メンバ変数
-	// 頂点バッファビュー
-	D3D12_VERTEX_BUFFER_VIEW vbView_;
-	// インデックスバッファビュー
-	D3D12_INDEX_BUFFER_VIEW ibView_;
-	// 頂点データ配列
-	std::vector<VertexPosNormalUv> vertices_;
-	// 頂点インデックス配列
-	std::vector<uint16_t> indices_;
+	MaterialData LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& filename);
+
+private:
+	/// <summary>
+	/// ログ
+	/// </summary>
+	/// <param name="message"></param>
+	static void Log(const std::string& message);
+
+	/// <summary>
+	/// 定数バッファ生成
+	/// </summary>
+	/// <param name="sizeInBytes"></param>
+	/// <returns>サイズ</returns>
+	ID3D12Resource* CreateBufferResource(size_t sizeInBytes);
+	// デバイス
+	static ID3D12Device* device_;
+	// コマンドリスト
+	static ID3D12GraphicsCommandList* commandList_;
+	// ルートシグネチャー
+	static Microsoft::WRL::ComPtr<ID3D12RootSignature> rootSignature_;
+	// パイプラインステートオブジェクト
+	static Microsoft::WRL::ComPtr<ID3D12PipelineState> graphicsPipelineState_;
+
+private:
+	ModelData modelData;
 	// 頂点バッファ
-	Microsoft::WRL::ComPtr<ID3D12Resource> vertBuff_;
+	Microsoft::WRL::ComPtr<ID3D12Resource> vertexResource_;
+	// 頂点データ
+	VertexData* vertexData_;
+	// 頂点バッファビュー
+	D3D12_VERTEX_BUFFER_VIEW vertexBufferView_;
 	// インデックスバッファ
-	Microsoft::WRL::ComPtr<ID3D12Resource> indexBuff_;
+	Microsoft::WRL::ComPtr<ID3D12Resource> indexResource_;
+	// インデックスデータ
+	std::vector<uint16_t> indexData_;
+	// インデックスバッファビュー
+	D3D12_INDEX_BUFFER_VIEW indexBufferView_;
+
 };

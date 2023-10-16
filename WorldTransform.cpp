@@ -43,25 +43,21 @@ void WorldTransform::Map() {
 }
 
 void WorldTransform::UpdateMatrix() {
-    XMMATRIX matScale, matRot, matTrans;
 
-    // スケール、回転、平行移動行列の計算
-    matScale = XMMatrixScaling(scale_.x, scale_.y, scale_.z);
-    matRot = XMMatrixIdentity();
-    matRot *= XMMatrixRotationZ(rotation_.z);
-    matRot *= XMMatrixRotationX(rotation_.x);
-    matRot *= XMMatrixRotationY(rotation_.y);
-    matTrans = XMMatrixTranslation(translation_.x, translation_.y, translation_.z);
-
-    // ワールド行列の合成
-    matWorld_ = XMMatrixIdentity(); // 変形をリセット
-    matWorld_ *= matScale;          // ワールド行列にスケーリングを反映
-    matWorld_ *= matRot;            // ワールド行列に回転を反映
-    matWorld_ *= matTrans;          // ワールド行列に平行移動を反映
+    // スケール、回転、平行移動を合成して行列を計算する
+    matWorld_ = MakeAffineMatrix(scale_, rotation_, translation_);
+    // 親があれば親のワールド行列を掛ける
+    if (parent_) {
+        Matrix4x4 matWorld =
+            MakeAffineMatrix(parent_->scale_, parent_->rotation_, parent_->translation_);
+        matWorld_ = Multiply(matWorld_, matWorld);
+    }
 
     // 親行列の指定がある場合は、掛け算する
     if (parent_) {
-        matWorld_ *= parent_->matWorld_;
+        Matrix4x4 matWorld =
+            MakeAffineMatrix(parent_->scale_, parent_->rotation_, parent_->translation_);
+        matWorld_ = Multiply(matWorld_, matWorld);
     }
 
     // 定数バッファに書き込み

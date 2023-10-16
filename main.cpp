@@ -12,6 +12,7 @@
 #include <dxcapi.h>
 
 #include "T.h"
+#include "Sphere.h"
 #include "ViewProjection.h"
 
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
@@ -36,15 +37,22 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	TextureManager::GetInstance()->Initialize(dxCommon->GetDevice());
 	TextureManager::Load("white1x1.png");
 
-	Triangle::StaticInitialize(dxCommon->GetDevice());
+	//Triangle::StaticInitialize(dxCommon->GetDevice());
+	Sphere::StaticInitialize(dxCommon->GetDevice());
+	Model::StaticInitialize(dxCommon->GetDevice());
 
 	gameScene = new GameScene();
 	gameScene->Initialize(dxCommon);
 	ViewProjection viewProjection_;
 	viewProjection_.Initialize();
-	T* t = new T();
-	t->Initialize();
-	t->GetTexture(TextureManager::Load("uvChecker.png"));
+	
+	Model* model = nullptr;
+	model = Model::Create("plane");
+	Sphere* sphere = new Sphere();
+	sphere->Initialize();
+	uint32_t textureHandle = TextureManager::Load("uvChecker.png");
+	WorldTransform worldTransform;
+	worldTransform.Initialize();
 	MSG msg{};
 	// ウィンドウのxボタンが押されるまでループ
 	while (msg.message != WM_QUIT) {
@@ -61,7 +69,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			imguiManager->Begin();
 
 			//triangle->Update();
-			t->Update();
+			//t->Update();
+			worldTransform.rotation_.y += 0.01f;
+			worldTransform.UpdateMatrix();
 			viewProjection_.UpdateMatrix();
 
 			// ImGui受付終了
@@ -70,11 +80,18 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			// 描画開始
 			dxCommon->PreDraw();
 
-			Triangle::PreDraw(dxCommon->GetCommandList());
+			//Triangle::PreDraw(dxCommon->GetCommandList());
+			Sphere::PreDraw(dxCommon->GetCommandList());
+			Model::PreDraw(dxCommon->GetCommandList());
 
-			t->Draw(viewProjection_);
-
-			Triangle::PostDraw();
+			//t->Draw(viewProjection_);
+			//sphere->Draw(worldTransform, viewProjection_, textureHandle);
+			//model->Draw(worldTransform, viewProjection_, textureHandle);
+			model->Draw(worldTransform, viewProjection_);
+			
+			Model::PostDraw();
+			Sphere::PostDraw();
+			//Triangle::PostDraw();
 
 			/*triangle->PreDraw(dxCommon->GetCommandList());
 			triangle->Draw();

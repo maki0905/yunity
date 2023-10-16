@@ -4,22 +4,31 @@
 //	return pos;
 //}
 
-struct TransformationMatrix
+struct WorldTransform
 {
-    float32_t4x4 WVP;
+    float32_t4x4 world;
 };
-ConstantBuffer<TransformationMatrix> gTransformationMatrix : register(b0);
+ConstantBuffer<WorldTransform> gWorldTransform : register(b0);
 
-struct VertexShaderInput {
-	float32_t4 position : POSITION0;
+struct ViewProjection
+{
+    float32_t4x4 view;
+    float32_t4x4 projection;
+};
+ConstantBuffer<ViewProjection> gViewProjection : register(b1);
+
+struct VertexShaderInput
+{
+    float32_t4 position : POSITION0;
+    float32_t3 normal : NORMAL0;
     float32_t2 texcoord : TEXCOORD0;
 };
 
 VertexShaderOutput main(VertexShaderInput input) {
 	VertexShaderOutput output;
-    output.position = mul(input.position, gTransformationMatrix.WVP);
+    output.position = mul(mul(input.position, gWorldTransform.world), mul(gViewProjection.view, gViewProjection.projection));
+    output.normal = normalize(mul(input.normal, (float32_t3x3)gWorldTransform.world));
     output.texcoord = input.texcoord;
-    //output.position = input.position;
 	return output;
 }
 

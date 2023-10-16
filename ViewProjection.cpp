@@ -1,16 +1,15 @@
 ﻿#include "ViewProjection.h"
+
 #include "WinApp.h"
 #include <cassert>
-
 #include "DirectXCommon.h"
-//#include <d3dx12.h>
-
-using namespace DirectX;
 
 void ViewProjection::Initialize() {
-
+    // 定数バッファの生成
     CreateConstBuffer();
+    // マッピング
     Map();
+    // 行列の生成
     UpdateMatrix();
 }
 
@@ -48,7 +47,7 @@ void ViewProjection::Map() {
 
 void ViewProjection::UpdateMatrix() {
     // ビュー行列の生成
-    matView = XMMatrixLookAtLH(XMLoadFloat3(&eye), XMLoadFloat3(&target), XMLoadFloat3(&up));
+    matView = MakeViewMatrix(target, eye);
 
     // 平行投影による射影行列の生成
     // constMap->mat = XMMatrixOrthographicOffCenterLH(
@@ -56,7 +55,7 @@ void ViewProjection::UpdateMatrix() {
     //	window_height, 0,
     //	0, 1);
     // 透視投影による射影行列の生成
-    matProjection = XMMatrixPerspectiveFovLH(fovAngleY, aspectRatio, nearZ, farZ);
+    matProjection = MakePerspectiveFovMatrix(fovAngleY, aspectRatio, nearZ, farZ);
 
     // 定数バッファに書き込み
     constMap->view = matView;

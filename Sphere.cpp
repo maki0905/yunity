@@ -1,4 +1,4 @@
-﻿#include "Triangle.h"
+﻿#include "Sphere.h"
 
 #include "externals/DirectXTex/DirectXTex.h"
 #include <d3dcompiler.h>
@@ -8,19 +8,50 @@
 
 #include "externals/imgui/imgui.h"
 
-ID3D12Device* Triangle::device_ = nullptr;
-ID3D12GraphicsCommandList* Triangle::commandList_ = nullptr;
-Microsoft::WRL::ComPtr<ID3D12RootSignature> Triangle::rootSignature_;
-Microsoft::WRL::ComPtr<ID3D12PipelineState> Triangle::graphicsPipelineState_;
+#define _USE_MATH_DEFINES
+#include<math.h>
 
 
-void Triangle::InitializeRootSignature()
+
+ID3D12Device* Sphere::device_ = nullptr;
+ID3D12GraphicsCommandList* Sphere::commandList_ = nullptr;
+Microsoft::WRL::ComPtr<ID3D12RootSignature> Sphere::rootSignature_;
+Microsoft::WRL::ComPtr<ID3D12PipelineState> Sphere::graphicsPipelineState_;
+
+
+void Sphere::InitializeRootSignature()
 {
 	HRESULT result_ = S_FALSE;
 
 	//RootSignature作成
 	D3D12_ROOT_SIGNATURE_DESC descriptionRootSignature{};
 	descriptionRootSignature.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
+
+	//// デスクリプタレンジ
+	//D3D12_DESCRIPTOR_RANGE descriptorRange[1] = {};
+	//descriptorRange[0].BaseShaderRegister = 0;
+	//descriptorRange[0].NumDescriptors = 1;
+	//descriptorRange[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+	//descriptorRange[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+
+	//D3D12_ROOT_PARAMETER rootParameters[4] = {};
+
+	//rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+	//rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+	//rootParameters[0].Descriptor.ShaderRegister = 0;
+
+	//rootParameters[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+	//rootParameters[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+	//rootParameters[1].Descriptor.ShaderRegister = 1;
+
+	//rootParameters[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+	//rootParameters[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+	//rootParameters[2].Descriptor.ShaderRegister = 2;
+
+	//rootParameters[3].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+	//rootParameters[3].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+	//rootParameters[3].DescriptorTable.pDescriptorRanges = descriptorRange;
+	//rootParameters[3].DescriptorTable.NumDescriptorRanges = _countof(descriptorRange);
 
 	// デスクリプタレンジ
 	D3D12_DESCRIPTOR_RANGE descriptorRange[1] = {};
@@ -29,23 +60,19 @@ void Triangle::InitializeRootSignature()
 	descriptorRange[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
 	descriptorRange[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 
-	D3D12_ROOT_PARAMETER rootParameters[4] = {};
+	D3D12_ROOT_PARAMETER rootParameters[3] = {};
 	rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
-	rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+	rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;
 	rootParameters[0].Descriptor.ShaderRegister = 0;
 
 	rootParameters[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
 	rootParameters[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;
-	rootParameters[1].Descriptor.ShaderRegister = 0;
+	rootParameters[1].Descriptor.ShaderRegister = 1;
 
-	rootParameters[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_SRV;
-	rootParameters[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;
-	rootParameters[2].Descriptor.ShaderRegister = 1;
-
-	rootParameters[3].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-	rootParameters[3].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
-	rootParameters[3].DescriptorTable.pDescriptorRanges = descriptorRange;
-	rootParameters[3].DescriptorTable.NumDescriptorRanges = _countof(descriptorRange);
+	rootParameters[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+	rootParameters[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+	rootParameters[2].DescriptorTable.pDescriptorRanges = descriptorRange;
+	rootParameters[2].DescriptorTable.NumDescriptorRanges = _countof(descriptorRange);
 
 	descriptionRootSignature.pParameters = rootParameters;
 	descriptionRootSignature.NumParameters = _countof(rootParameters);
@@ -66,7 +93,7 @@ void Triangle::InitializeRootSignature()
 	Microsoft::WRL::ComPtr<ID3DBlob> signatureBlob = nullptr;
 	Microsoft::WRL::ComPtr<ID3DBlob> errorBlob = nullptr;
 	result_ = D3D12SerializeRootSignature(
-		&descriptionRootSignature, 
+		&descriptionRootSignature,
 		D3D_ROOT_SIGNATURE_VERSION_1,
 		&signatureBlob, &errorBlob);
 	if (FAILED(result_)) {
@@ -81,12 +108,12 @@ void Triangle::InitializeRootSignature()
 
 }
 
-void Triangle::InitializeGraphicsPipeline()
+void Sphere::InitializeGraphicsPipeline()
 {
 	HRESULT result_ = S_FALSE;
 	Microsoft::WRL::ComPtr<ID3DBlob> vsBlob;
 	Microsoft::WRL::ComPtr<ID3DBlob> psBlob;
-	
+
 	Microsoft::WRL::ComPtr<ID3DBlob> errorBlob;
 
 	//dxcCompilerを初期化
@@ -191,7 +218,7 @@ void Triangle::InitializeGraphicsPipeline()
 	InitializeRootSignature();
 
 	//InputLayout
-	D3D12_INPUT_ELEMENT_DESC inputElementDescs[2] = {};
+	D3D12_INPUT_ELEMENT_DESC inputElementDescs[3] = {};
 	inputElementDescs[0].SemanticName = "POSITION";
 	inputElementDescs[0].SemanticIndex = 0;
 	inputElementDescs[0].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
@@ -200,6 +227,10 @@ void Triangle::InitializeGraphicsPipeline()
 	inputElementDescs[1].SemanticIndex = 0;
 	inputElementDescs[1].Format = DXGI_FORMAT_R32G32_FLOAT;
 	inputElementDescs[1].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
+	inputElementDescs[2].SemanticName = "NORMAL";
+	inputElementDescs[2].SemanticIndex = 0;
+	inputElementDescs[2].Format = DXGI_FORMAT_R32G32B32_FLOAT;
+	inputElementDescs[2].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
 	D3D12_INPUT_LAYOUT_DESC inputLayoutDesc{};
 	inputLayoutDesc.pInputElementDescs = inputElementDescs;
 	inputLayoutDesc.NumElements = _countof(inputElementDescs);
@@ -253,7 +284,7 @@ void Triangle::InitializeGraphicsPipeline()
 	assert(SUCCEEDED(result_));
 }
 
-ID3D12Resource* Triangle::CreateBufferResource(size_t sizeInBytes)
+ID3D12Resource* Sphere::CreateBufferResource(size_t sizeInBytes)
 {
 	HRESULT result = S_FALSE;
 	// リソース用のヒープの設定
@@ -271,15 +302,15 @@ ID3D12Resource* Triangle::CreateBufferResource(size_t sizeInBytes)
 	ResourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
 	// リソースを作る
 	ID3D12Resource* resource = nullptr;
-	result = device_->CreateCommittedResource(&uploadHeapProperties, D3D12_HEAP_FLAG_NONE, 
+	result = device_->CreateCommittedResource(&uploadHeapProperties, D3D12_HEAP_FLAG_NONE,
 		&ResourceDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(&resource));
 	assert(SUCCEEDED(result));
 	return resource;
 }
 
-void Triangle::PreDraw(ID3D12GraphicsCommandList* commandList)
+void Sphere::PreDraw(ID3D12GraphicsCommandList* commandList)
 {
-	assert(Triangle::commandList_ == nullptr);
+	assert(Sphere::commandList_ == nullptr);
 
 	commandList_ = commandList;
 
@@ -290,12 +321,12 @@ void Triangle::PreDraw(ID3D12GraphicsCommandList* commandList)
 
 }
 
-void Triangle::PostDraw()
+void Sphere::PostDraw()
 {
 	commandList_ = nullptr;
 }
 
-void Triangle::StaticInitialize(ID3D12Device* device)
+void Sphere::StaticInitialize(ID3D12Device* device)
 {
 	assert(device);
 
@@ -306,17 +337,17 @@ void Triangle::StaticInitialize(ID3D12Device* device)
 
 }
 
-Triangle* Triangle::Create()
+Sphere* Sphere::Create()
 {
-	Triangle* triangle = new Triangle();
-	assert(triangle);
+	Sphere* sphere = new Sphere();
+	assert(sphere);
 
-	triangle->Initialize();
+	sphere->Initialize();
 
-	return triangle;
+	return sphere;
 }
 
-void Triangle::Initialize()
+void Sphere::Initialize()
 {
 	// nullptrチェック
 	assert(device_);
@@ -325,11 +356,11 @@ void Triangle::Initialize()
 	CreateMesh();
 }
 
-void Triangle::Update()
+void Sphere::Update()
 {
 #ifdef _DEBUG
 	ImGui::Begin("Color");
-	
+
 	ImGui::End();
 
 #endif // _DEBUG
@@ -338,53 +369,120 @@ void Triangle::Update()
 
 }
 
-void Triangle::Draw(const WorldTransform& worldTransform, const ViewProjection& viewProjection, uint32_t textureHandle)
+void Sphere::Draw(const WorldTransform& worldTransform, const ViewProjection& viewProjection, uint32_t textureHandle)
 {
 	assert(device_);
 	assert(commandList_);
 	assert(worldTransform.constBuff_.Get());
-	
-	commandList_->SetGraphicsRootConstantBufferView(0, materialResource_->GetGPUVirtualAddress());
-	
+
 	// 頂点バッファの設定
 	commandList_->IASetVertexBuffers(0, 1, &vertexBufferView_);
 
+	// インデックスバッファの設定
+	commandList_->IASetIndexBuffer(&indexBufferView_);
+
+	// CBVをセット(マテリアル)
+	//commandList_->SetGraphicsRootConstantBufferView(/*static_cast<UINT>(RoomParameter::kMaterial)*/0, materialResource_->GetGPUVirtualAddress());
+
 	// CBVをセット(ワールド行列)
-	commandList_->SetGraphicsRootConstantBufferView(1, worldTransform.constBuff_->GetGPUVirtualAddress());
+	commandList_->SetGraphicsRootConstantBufferView(/*static_cast<UINT>(RoomParameter::kWorldTransform)*/0, worldTransform.constBuff_->GetGPUVirtualAddress());
 
 	// CBVをセット(ビュープロジェクション行列)
-	commandList_->SetGraphicsRootShaderResourceView(2, viewProjection.constBuff_->GetGPUVirtualAddress());
-
-	
+	commandList_->SetGraphicsRootConstantBufferView(/*static_cast<UINT>(RoomParameter::kViewProjection)*/1, viewProjection.constBuff_->GetGPUVirtualAddress());
 
 	// SRVをセット
-	TextureManager::GetInstance()->SetGraphicsRootDescriptorTable(commandList_, 3, textureHandle);
+	TextureManager::GetInstance()->SetGraphicsRootDescriptorTable(commandList_, /*static_cast<UINT>(RoomParameter::kTexture)*/2, textureHandle);
 
-	commandList_->DrawInstanced(3, 1, 0, 0);
+	commandList_->DrawIndexedInstanced(16 * 16 * 6, 1, 0, 0, 0);
 
 }
 
-void Triangle::CreateMesh()
+void Sphere::CreateMesh()
 {
 	HRESULT result = S_FALSE;
-	vertexResource_ = CreateBufferResource(sizeof(VertexData) * 3);
+	vertexResource_ = CreateBufferResource(sizeof(VertexData) * 16 * 16 * 4);
+	indexResource_ = CreateBufferResource(sizeof(uint32_t) * 16 * 16 * 6);
 
 	// 頂点バッファビュー
 	vertexBufferView_.BufferLocation = vertexResource_->GetGPUVirtualAddress();
-	vertexBufferView_.SizeInBytes = sizeof(VertexData) * 3;
+	vertexBufferView_.SizeInBytes = sizeof(VertexData) * 16 * 16 * 4;
 	vertexBufferView_.StrideInBytes = sizeof(VertexData);
 
-	vertexData_ = {
-		{{-0.5f, -0.5f, 0.0f, 1.0f }, {0.0f, 1.0f}},
-		{{0.0f, 0.5f, 0.0f, 1.0f},{0.5f, 0.0f}},
-		{{0.5f, -0.5f, 0.0f, 1.0f},{1.0f, 1.0f}}
-	};
+	indexBufferView_.BufferLocation = indexResource_->GetGPUVirtualAddress();
+	indexBufferView_.SizeInBytes = sizeof(uint32_t) * 16 * 16 * 6;
+	indexBufferView_.Format = DXGI_FORMAT_R32_UINT;
 	
-	VertexData* vertexData = nullptr;
-	result = vertexResource_->Map(0, nullptr, (void**)&vertexData);
-	if (SUCCEEDED(result)) {
-		std::copy(vertexData_.begin(), vertexData_.end(), vertexData);
-		vertexResource_->Unmap(0, nullptr);
+	result = vertexResource_->Map(0, nullptr, (void**)&vertexData_);
+	
+	// 経度分割1つ分の角度φ
+	const float kLonEvery = float(M_PI) * 2.0f / 16.0f;
+	// 緯度分割1つ分の角度θ
+	const float kLatEvery = float(M_PI) / 16.0f;
+	// 緯度の方向に分割
+	for (uint32_t latIndex = 0; latIndex < 16; ++latIndex) {
+		float lat = -float(M_PI) / 2.0f + kLatEvery * latIndex;
+		float v = 1.0f - float(latIndex) / 16.0f;
+		// 経度の方向に分割しながら線を描く
+		for (uint32_t lonIndex = 0; lonIndex < 16; ++lonIndex) {
+			uint32_t start = (latIndex * 16 + lonIndex) * 4;
+			float lon = lonIndex * kLonEvery;
+			float u = float(lonIndex) / 16.0f;
+
+			// 基準点a
+			vertexData_[start].position.x = cos(lat) * cos(lon);
+			vertexData_[start].position.y = sin(lat);
+			vertexData_[start].position.z = cos(lat) * sin(lon);
+			vertexData_[start].position.w = 1.0f;
+			vertexData_[start].texcoord = { u, v + 1.0f / 16.0f };
+			vertexData_[start].normal.x = vertexData_[start].position.x;
+			vertexData_[start].normal.y = vertexData_[start].position.y;
+			vertexData_[start].normal.z = vertexData_[start].position.z;
+			// b
+			vertexData_[start + 1].position.x = cos(lat + kLatEvery) * cos(lon);
+			vertexData_[start + 1].position.y = sin(lat + kLatEvery);
+			vertexData_[start + 1].position.z = cos(lat + kLatEvery) * sin(lon);
+			vertexData_[start + 1].position.w = 1.0f;
+			vertexData_[start + 1].texcoord = { u, v };
+			vertexData_[start + 1].normal.x = vertexData_[start + 1].position.x;
+			vertexData_[start + 1].normal.y = vertexData_[start + 1].position.y;
+			vertexData_[start + 1].normal.z = vertexData_[start + 1].position.z;
+			
+			// c
+			vertexData_[start + 2].position.x = cos(lat) * cos(lon + kLonEvery);
+			vertexData_[start + 2].position.y = sin(lat);
+			vertexData_[start + 2].position.z = cos(lat) * sin(lon + kLonEvery);
+			vertexData_[start + 2].position.w = 1.0f;
+			vertexData_[start + 2].texcoord = { u + 1.0f / 16.0f, v + 1.0f / 16.0f };
+			vertexData_[start + 2].normal.x = vertexData_[start + 2].position.x;
+			vertexData_[start + 2].normal.y = vertexData_[start + 2].position.y;
+			vertexData_[start + 2].normal.z = vertexData_[start + 2].position.z;
+			
+			// d
+			vertexData_[start + 3].position.x = cos(lat + kLatEvery) * cos(lon + kLonEvery);
+			vertexData_[start + 3].position.y = sin(lat + kLatEvery);
+			vertexData_[start + 3].position.z = cos(lat + kLatEvery) * sin(lon + kLonEvery);
+			vertexData_[start + 3].position.w = 1.0f;
+			vertexData_[start + 3].texcoord = { u + 1.0f / 16.0f, v };
+			vertexData_[start + 3].normal.x = vertexData_[start + 3].position.x;
+			vertexData_[start + 3].normal.y = vertexData_[start + 3].position.y;
+			vertexData_[start + 3].normal.z = vertexData_[start + 3].position.z;
+			
+		}
+	}
+
+	indexResource_->Map(0, nullptr, reinterpret_cast<void**>(&indexData_));
+
+	for (uint32_t latIndex = 0; latIndex < 16; ++latIndex) {
+		for (uint32_t lonIndex = 0; lonIndex < 16; ++lonIndex) {
+			uint32_t start = (latIndex * 16 + lonIndex) * 6;
+			uint32_t i = (latIndex * 16 + lonIndex) * 4;
+			indexData_[start] = i;
+			indexData_[start + 1] = i + 1;
+			indexData_[start + 2] = i + 2;
+			indexData_[start + 3] = i + 1;
+			indexData_[start + 4] = i + 3;
+			indexData_[start + 5] = i + 2;
+		}
 	}
 
 	// マテリアル用のリソース
@@ -397,7 +495,7 @@ void Triangle::CreateMesh()
 
 }
 
-void Triangle::Log(const std::string& message)
+void Sphere::Log(const std::string& message)
 {
 	OutputDebugStringA(message.c_str());
 }
