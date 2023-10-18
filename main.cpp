@@ -10,6 +10,7 @@
 #include "GameScene.h"
 #include "Triangle.h"
 #include <dxcapi.h>
+#include "Input.h"
 
 #include "T.h"
 #include "Sphere.h"
@@ -18,6 +19,9 @@
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	WinApp* win = nullptr;
 	DirectXCommon* dxCommon = nullptr;
+	// 汎用機能
+	Input* input = nullptr;
+
 	GameScene* gameScene = nullptr;
 
 	// ゲームウィンドウの作成
@@ -29,6 +33,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	dxCommon->Initialize(win);
 
 #pragma region 汎用機能初期化
+	// 入力の初期化
+	input = Input::GetInstance();
+	input->Initialize();
+
 	// ImGuiの初期化
 	ImGuiManager* imguiManager = ImGuiManager::GetInstance();
 	imguiManager->Initialize(win, dxCommon);
@@ -54,6 +62,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	WorldTransform worldTransform;
 	worldTransform.Initialize();
 	MSG msg{};
+
 	// ウィンドウのxボタンが押されるまでループ
 	while (msg.message != WM_QUIT) {
 		// Windowにメッセージが来てたら最優先で処理させる
@@ -63,14 +72,27 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		}
 		else {
 			
-			// ゲーム処理
-			
 			// ImGui受付開始
 			imguiManager->Begin();
 
+			// 入力関連の毎フレーム処理
+			input->Update();
+
 			//triangle->Update();
 			//t->Update();
-			worldTransform.rotation_.y += 0.01f;
+			
+			if (input->PushKey(DIK_D)) {
+				worldTransform.translation_.x += 0.1f;
+			}
+			if (input->PushKey(DIK_A)) {
+				worldTransform.translation_.x -= 0.1f;
+			}
+			if (input->PushKey(DIK_W)) {
+				worldTransform.translation_.y += 0.1f;
+			}
+			if (input->PushKey(DIK_S)) {
+				worldTransform.translation_.y -= 0.1f;
+			}
 			worldTransform.UpdateMatrix();
 			viewProjection_.UpdateMatrix();
 
