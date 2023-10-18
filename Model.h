@@ -47,16 +47,6 @@ public:
 	static void StaticInitialize(ID3D12Device* device);
 
 	/// <summary>
-	/// ルートシグネチャー生成
-	/// </summary>
-	static void InitializeRootSignature();
-
-	/// <summary>
-	/// グラフィックスパイプライン生成
-	/// </summary>
-	static void InitializeGraphicsPipeline();
-
-	/// <summary>
 	/// 描画前処理
 	/// </summary>
 	/// <param name="commandList">描画コマンドリスト</param>
@@ -100,6 +90,16 @@ private:
 	/// </summary>
 	/// <param name="message"></param>
 	static void Log(const std::string& message);
+
+	/// <summary>
+	/// ルートシグネチャー生成
+	/// </summary>
+	static void InitializeRootSignature();
+
+	/// <summary>
+	/// グラフィックスパイプライン生成
+	/// </summary>
+	static void InitializeGraphicsPipeline();
 
 	/// <summary>
 	/// 定数バッファ生成

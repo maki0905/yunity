@@ -21,7 +21,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	DirectXCommon* dxCommon = nullptr;
 	// 汎用機能
 	Input* input = nullptr;
-
 	GameScene* gameScene = nullptr;
 
 	// ゲームウィンドウの作成
@@ -45,24 +44,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	TextureManager::GetInstance()->Initialize(dxCommon->GetDevice());
 	TextureManager::Load("white1x1.png");
 
-	//Triangle::StaticInitialize(dxCommon->GetDevice());
-	Sphere::StaticInitialize(dxCommon->GetDevice());
 	Model::StaticInitialize(dxCommon->GetDevice());
-
-	gameScene = new GameScene();
-	gameScene->Initialize(dxCommon);
-	ViewProjection viewProjection_;
-	viewProjection_.Initialize();
 	
-	Model* model = nullptr;
-	model = Model::Create("plane");
-	Sphere* sphere = new Sphere();
-	sphere->Initialize();
-	uint32_t textureHandle = TextureManager::Load("uvChecker.png");
-	WorldTransform worldTransform;
-	worldTransform.Initialize();
 	MSG msg{};
 
+	gameScene = new GameScene();
+	gameScene->Initialize();
 	// ウィンドウのxボタンが押されるまでループ
 	while (msg.message != WM_QUIT) {
 		// Windowにメッセージが来てたら最優先で処理させる
@@ -78,23 +65,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			// 入力関連の毎フレーム処理
 			input->Update();
 
-			//triangle->Update();
-			//t->Update();
-			
-			if (input->PushKey(DIK_D)) {
-				worldTransform.translation_.x += 0.1f;
-			}
-			if (input->PushKey(DIK_A)) {
-				worldTransform.translation_.x -= 0.1f;
-			}
-			if (input->PushKey(DIK_W)) {
-				worldTransform.translation_.y += 0.1f;
-			}
-			if (input->PushKey(DIK_S)) {
-				worldTransform.translation_.y -= 0.1f;
-			}
-			worldTransform.UpdateMatrix();
-			viewProjection_.UpdateMatrix();
+			// ゲームシーンの毎フレーム処理
+			gameScene->Update();
 
 			// ImGui受付終了
 			imguiManager->End();
@@ -102,22 +74,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			// 描画開始
 			dxCommon->PreDraw();
 
-			//Triangle::PreDraw(dxCommon->GetCommandList());
-			Sphere::PreDraw(dxCommon->GetCommandList());
-			Model::PreDraw(dxCommon->GetCommandList());
-
-			//t->Draw(viewProjection_);
-			//sphere->Draw(worldTransform, viewProjection_, textureHandle);
-			model->Draw(worldTransform, viewProjection_, textureHandle);
-			//model->Draw(worldTransform, viewProjection_);
-			
-			Model::PostDraw();
-			Sphere::PostDraw();
-			//Triangle::PostDraw();
-
-			/*triangle->PreDraw(dxCommon->GetCommandList());
-			triangle->Draw();
-			triangle->PostDraw();*/
+			// ゲームシーンの描画
+			gameScene->Draw();
 
 			// ImGui描画
 			imguiManager->Draw();
@@ -128,7 +86,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		}
 	}
 
-	//SafeDelete(gameScene);
+	SafeDelete(gameScene);
+	//SafeDelete(input);
 	//SafeDelete(dxCommon);
 	
 	// ImGui解放
