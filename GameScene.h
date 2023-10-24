@@ -8,6 +8,12 @@
 #include "ViewProjection.h"
 #include "WorldTransform.h"
 
+#pragma region 新規作成
+#include "Skydome.h"
+#include "Player.h"
+
+#pragma endregion
+
 
 /// <summary>
 /// ゲームシーン
@@ -43,10 +49,16 @@ public:
 private:
 	DirectXCommon* dxCommon_ = nullptr;
 	ViewProjection viewProjection_;
-	WorldTransform worldTransform_;
-	Input* input_ = nullptr;
 
-	std::unique_ptr <Model> model_ = nullptr;
+	// モデル
+	std::unique_ptr<Model> skydomeModel_;
+	std::unique_ptr<Model> playerModel_Body_;
+	std::unique_ptr<Model> playerModel_Head_;
+	std::unique_ptr<Model> playerModel_Larm_;
+	std::unique_ptr<Model> playerModel_Rarm_;
 
+	// オブジェクト
+	std::unique_ptr<Skydome> skydome_;
+	std::unique_ptr<Player> player_;
 };
 

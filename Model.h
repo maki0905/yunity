@@ -78,12 +78,6 @@ public:
 	void Draw(const WorldTransform& worldTransform, const ViewProjection& viewProjection, uint32_t textureHandle);
 	void Draw(const WorldTransform& worldTransform, const ViewProjection& viewProjection);
 
-	void LoadObjFile(const std::string& filename);
-	
-	void CreateMesh();
-
-	MaterialData LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& filename);
-
 private:
 	/// <summary>
 	/// ログ
@@ -100,6 +94,14 @@ private:
 	/// グラフィックスパイプライン生成
 	/// </summary>
 	static void InitializeGraphicsPipeline();
+
+	// メッシュ生成
+	void CreateMesh();
+
+	// オブジェファイル読み込み
+	void LoadObjFile(const std::string& filename);
+
+	MaterialData LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& filename);
 
 	/// <summary>
 	/// 定数バッファ生成
@@ -130,5 +132,7 @@ private:
 	std::vector<uint16_t> indexData_;
 	// インデックスバッファビュー
 	D3D12_INDEX_BUFFER_VIEW indexBufferView_;
+	// テクスチャハンドル
+	uint32_t textureHandle = 0;
 
 };

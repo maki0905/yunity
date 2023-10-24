@@ -10,20 +10,33 @@ GameScene::~GameScene(){}
 void GameScene::Initialize()
 {
 	dxCommon_ = DirectXCommon::GetInstance();
-	input_ = Input::GetInstance();
-
-	model_.reset(Model::Create("plane"));
-
 	viewProjection_.Initialize();
-	worldTransform_.Initialize();
 
+	// モデル
+	skydomeModel_.reset(Model::Create("skydome"));
+	TextureManager::Load("Models/float_Body/tex.png");
+
+	playerModel_Body_.reset(Model::Create("float_Body"));
+	playerModel_Head_.reset(Model::Create("float_Head"));
+	playerModel_Larm_.reset(Model::Create("float_L_arm"));
+	playerModel_Rarm_.reset(Model::Create("float_R_arm"));
+	std::vector<Model*> playerModles = {
+		playerModel_Body_.get(), playerModel_Head_.get(), playerModel_Larm_.get(), playerModel_Rarm_.get()
+	};
+
+	// オブジェクト
+	skydome_ = std::make_unique<Skydome>();
+	skydome_->Initialize(skydomeModel_.get());
+
+	player_ = std::make_unique<Player>();
+	player_->Initialize(playerModles);
 }
 
 void GameScene::Update()
 {
 
+	//player_->Update();
 	viewProjection_.UpdateMatrix();
-	worldTransform_.UpdateMatrix();
 
 }
 
@@ -52,7 +65,8 @@ void GameScene::Draw()
 
 	/// <summary>
 	/// ここに3Dオブジェクトの描画処理を追加できる
-	model_->Draw(worldTransform_, viewProjection_);
+	skydome_->Draw(viewProjection_);
+	player_->Draw(viewProjection_);
 	/// </summary>
 
 	// 3Dオブジェクト描画後処理

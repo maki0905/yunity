@@ -43,6 +43,12 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>$(ProjectDir)..\External\nlohmann;$(ProjectDir)..\External\imgui;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <IncludePath>$(ProjectDir)..\External\nlohmann;$(ProjectDir)..\External\imgui;$(IncludePath)</IncludePath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>Level4</WarningLevel>
@@ -98,11 +104,14 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="externals\imgui\imgui_tables.cpp" />
     <ClCompile Include="externals\imgui\imgui_widgets.cpp" />
     <ClCompile Include="GameScene.cpp" />
+    <ClCompile Include="GlobalVariables.cpp" />
     <ClCompile Include="ImGuiManager.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MathFunction.cpp" />
     <ClCompile Include="Model.cpp" />
+    <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Skydome.cpp" />
     <ClCompile Include="Sphere.cpp" />
     <ClCompile Include="T.cpp" />
     <ClCompile Include="TextureManager.cpp" />
@@ -125,12 +134,15 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="externals\imgui\imstb_textedit.h" />
     <ClInclude Include="externals\imgui\imstb_truetype.h" />
     <ClInclude Include="GameScene.h" />
+    <ClInclude Include="GlobalVariables.h" />
     <ClInclude Include="ImGuiManager.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="MathFunction.h" />
     <ClInclude Include="Matrix4x4.h" />
     <ClInclude Include="Model.h" />
+    <ClInclude Include="Player.h" />
     <ClInclude Include="SafeDelete.h" />
+    <ClInclude Include="Skydome.h" />
     <ClInclude Include="Sphere.h" />
     <ClInclude Include="T.h" />
     <ClInclude Include="TextureManager.h" />

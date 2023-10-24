@@ -43,7 +43,7 @@ void Model::InitializeRootSignature()
 
 	rootParameters[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
 	rootParameters[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
-	rootParameters[2].DescriptorTable.pDescriptorRanges = descriptorRange;
+	rootParameters[2].DescriptorTable.pDescriptorRanges = &descriptorRange[0];
 	rootParameters[2].DescriptorTable.NumDescriptorRanges = _countof(descriptorRange);
 
 	descriptionRootSignature.pParameters = rootParameters;
@@ -364,7 +364,9 @@ void Model::Draw(const WorldTransform& worldTransform, const ViewProjection& vie
 	commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(RoomParameter::kViewProjection), viewProjection.constBuff_->GetGPUVirtualAddress());
 
 	// SRVをセット
-	uint32_t textureHandle = TextureManager::Load(modelData.material.textureFilePath);
+	if (textureHandle == 0) {
+		textureHandle = TextureManager::Load(modelData.material.textureFilePath);
+	}
 	TextureManager::GetInstance()->SetGraphicsRootDescriptorTable(commandList_, static_cast<UINT>(RoomParameter::kTexture), textureHandle);
 
 	commandList_->DrawInstanced(UINT(modelData.vertices.size()), 1, 0, 0);
@@ -379,7 +381,7 @@ void Model::LoadObjFile(const std::string& filename)
 	std::vector<Vector2> texcoords;
 	std::string line;
 
-	std::ifstream file("Resources/Models/" + filename + ".obj"); 
+	std::ifstream file("Resources/Models/" + filename + "/" + filename + ".obj");
 	assert(file.is_open());
 
 	while (std::getline(file, line)) {
@@ -406,7 +408,7 @@ void Model::LoadObjFile(const std::string& filename)
 		else if (identifier == "mtllib") {
 			std::string materialFilename;
 			s >> materialFilename;
-			modelData.material = LoadMaterialTemplateFile("Models", materialFilename);
+			modelData.material = LoadMaterialTemplateFile(filename, materialFilename);
 		}
 		else if (identifier == "f") {
 			VertexData triangle[3];
@@ -427,8 +429,6 @@ void Model::LoadObjFile(const std::string& filename)
 				texcoord.y = 1.0f - texcoord.y;
 				Vector3 normal = normals[elementIndices[2] - 1];
 				normal.z *= -1.0f;
-				/*VertexData vertex = { position, normal, texcoord };
-				modelData.vertices.push_back(vertex);*/
 				triangle[faceVertex] = { position, texcoord, normal };
 			}
 			modelData.vertices.push_back(triangle[2]);
@@ -461,7 +461,7 @@ Model::MaterialData Model::LoadMaterialTemplateFile(const std::string& directory
 	MaterialData materialData;
 	std::string line;
 	// 2. ファイルを開く
-	std::ifstream file("Resources/" + directoryPath + "/" + filename);
+	std::ifstream file("Resources/Models/"+ directoryPath + "/" + filename);
 	assert(file.is_open());
 	// 3. 実際にファイルを読み、MaterialDataを構築していく
 	while (std::getline(file, line)) {
@@ -474,7 +474,7 @@ Model::MaterialData Model::LoadMaterialTemplateFile(const std::string& directory
 			std::string textureFilename;
 			s >> textureFilename;
 			// 連結してファイルパスにする
-			materialData.textureFilePath = directoryPath + "/" + textureFilename;
+			materialData.textureFilePath =  "Models/" + directoryPath + "/" + textureFilename;
 		}
 	}
 	return materialData;
