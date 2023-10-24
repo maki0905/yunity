@@ -14,7 +14,6 @@ void GameScene::Initialize()
 
 	// モデル
 	skydomeModel_.reset(Model::Create("skydome"));
-	TextureManager::Load("Models/float_Body/tex.png");
 
 	playerModel_Body_.reset(Model::Create("float_Body"));
 	playerModel_Head_.reset(Model::Create("float_Head"));
@@ -65,8 +64,9 @@ void GameScene::Draw()
 
 	/// <summary>
 	/// ここに3Dオブジェクトの描画処理を追加できる
-	skydome_->Draw(viewProjection_);
 	player_->Draw(viewProjection_);
+	skydome_->Draw(viewProjection_);
+	
 	/// </summary>
 
 	// 3Dオブジェクト描画後処理
