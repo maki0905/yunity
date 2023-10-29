@@ -25,6 +25,10 @@ Vector3 TransformNormal(const Vector3& v, const Matrix4x4& m);
 // クロス積
 Vector3 Cross(const Vector3& v1, const Vector3& v2);
 
+Vector3 GetXAxis(const Matrix4x4& m);
+Vector3 GetYAxis(const Matrix4x4& m);
+Vector3 GetZAxis(const Matrix4x4& m);
+
 // 行列の加法
 Matrix4x4 Add(const Matrix4x4& m1, const Matrix4x4& m2);
 // 行列の減法
@@ -51,6 +55,9 @@ Matrix4x4 MakeRotateXMatrix(float radian);
 Matrix4x4 MakeRotateYMatrix(float radian);
 // Z軸回転行列
 Matrix4x4 MakeRotateZMatrix(float radian);
+
+// XYZ回転行列
+Matrix4x4 MakeRotateXYZMatrix(const Vector3& rotation);
 
 // アフィン変換行列
 Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rot, const Vector3& translate);
@@ -79,3 +86,4 @@ float LerpShortAngle(float a, float b, float t);
 
 Vector3 Lerp(const Vector3& v1, const Vector3& v2, float t);
 Vector3 Slerp(const Vector3& v1, const Vector3& v2, float t);
+

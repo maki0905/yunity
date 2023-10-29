@@ -47,7 +47,7 @@ void ViewProjection::Map() {
 
 void ViewProjection::UpdateMatrix() {
     // ビュー行列の生成
-    matView = MakeViewMatrix(target, eye);
+    matView = MakeViewMatrix(rotation_, translation_);
 
     // 平行投影による射影行列の生成
     // constMap->mat = XMMatrixOrthographicOffCenterLH(

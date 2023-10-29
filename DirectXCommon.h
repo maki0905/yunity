@@ -130,6 +130,10 @@ private: // メンバ関数
 	/// </summary>
 	void CreateDepthBuffer();
 
+	Microsoft::WRL::ComPtr<ID3D12Resource> CreateDepthStencilTextureResource();
+
+	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> CreateDescriptorHeap(bool shaderVisible);
+
 	/// <summary>
 	/// フェンス生成
 	/// </summary>

@@ -79,6 +79,21 @@ Vector3 Cross(const Vector3& v1, const Vector3& v2) {
 	return result;
 }
 
+Vector3 GetXAxis(const Matrix4x4& m)
+{
+	return Vector3(m.m[0][0], m.m[0][1], m.m[0][2]);
+}
+
+Vector3 GetYAxis(const Matrix4x4& m)
+{
+	return Vector3(m.m[1][0], m.m[1][1], m.m[1][2]);
+}
+
+Vector3 GetZAxis(const Matrix4x4& m)
+{
+	return Vector3(m.m[2][0], m.m[2][1], m.m[2][2]);
+}
+
 Matrix4x4 Add(const Matrix4x4& m1, const Matrix4x4& m2) {
 	Matrix4x4 result;
 
@@ -354,6 +369,15 @@ Matrix4x4 MakeRotateZMatrix(float radian) {
 	return result;
 }
 
+Matrix4x4 MakeRotateXYZMatrix(const Vector3& rotation)
+{
+	Matrix4x4 result = MakeIdentity4x4();
+	result = Multiply(result, MakeRotateXMatrix(rotation.x));
+	result = Multiply(result, MakeRotateYMatrix(rotation.y));
+	result = Multiply(result, MakeRotateZMatrix(rotation.z));
+	return result;
+}
+
 // アフィン変換行列
 Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rot, const Vector3& translate) {
 	Matrix4x4 result;
@@ -471,7 +495,7 @@ Vector3 Project(const Vector3& v1, const Vector3& v2) {
 
 float ConvertToRadians(float degree)
 {
-	float result = degree * M_PI / 180.0f;
+	float result = degree * float(M_PI) / 180.0f;
 	return result;
 }
 

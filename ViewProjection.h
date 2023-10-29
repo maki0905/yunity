@@ -20,12 +20,11 @@ struct ViewProjection {
 	ConstBufferDataViewProjection* constMap = nullptr;
 
 #pragma region ビュー行列の設定
-	// 視点座標
-	Vector3 eye = { 0, 0, -50.0f };
-	// 注視点座標
-	Vector3 target = { 0, 0, 0 };
-	// 上方向ベクトル
-	Vector3 up = { 0, 1, 0 };
+	// ローカル座標
+	Vector3 translation_ = { 0, 10.0f, -50.0f }; // 座標
+	// 回転
+	Vector3 rotation_ = { 0, 0, 0 }; // 回転
+	
 #pragma endregion
 
 #pragma region 射影行列の設定

@@ -364,10 +364,11 @@ void Model::Draw(const WorldTransform& worldTransform, const ViewProjection& vie
 	commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(RoomParameter::kViewProjection), viewProjection.constBuff_->GetGPUVirtualAddress());
 
 	// SRVをセット
-	if (textureHandle == 0) {
+	/*if (textureHandle == 0) {
 		textureHandle = TextureManager::Load(modelData.material.textureFilePath);
-	}
-	TextureManager::GetInstance()->SetGraphicsRootDescriptorTable(commandList_, static_cast<UINT>(RoomParameter::kTexture), textureHandle);
+	}*/
+	textureHandle = TextureManager::Load(modelData.material.textureFilePath);
+	TextureManager::GetInstance()->SetGraphicsRootDescriptorTable(commandList_, static_cast<UINT>(RoomParameter::kTexture),textureHandle);
 
 	commandList_->DrawInstanced(UINT(modelData.vertices.size()), 1, 0, 0);
 

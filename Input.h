@@ -19,7 +19,7 @@ class Input
 {
 public:
 	enum class PadType {
-		DIrectInput,
+		DirectInput,
 		XInput
 	};
 

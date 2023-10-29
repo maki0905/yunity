@@ -74,14 +74,19 @@ uint32_t TextureManager::LoadInternal(const std::string& fileName) {
 
 	assert(indexNextDescriptorHeap_ < kNumDescriptors);
 	uint32_t handle = indexNextDescriptorHeap_;
-
+	std::string None = "";
 	// 読み込み済みテクスチャを検索
 	auto it = std::find_if(textures_.begin(), textures_.end(), [&](const auto& texture) {
 		return texture.name == fileName;
 		});
 	if (it != textures_.end()) {
 		// 読み込み済みテクスチャの要素番号を取得
-		handle = static_cast<uint32_t>(std::distance(textures_.begin(), it));
+		if (None == fileName) {
+			handle = 0;
+		}
+		else {
+			handle = static_cast<uint32_t>(std::distance(textures_.begin(), it));
+		}
 		return handle;
 	}
 
@@ -166,8 +171,12 @@ uint32_t TextureManager::LoadInternal(const std::string& fileName) {
 	}
 
 	// シェーダリソースビュー作成
-	texture.cpuDescHandleSRV = descriptorHeap_->GetCPUDescriptorHandleForHeapStart();
+	////
+	auto size = device_->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+	texture.cpuDescHandleSRV =  descriptorHeap_->GetCPUDescriptorHandleForHeapStart();
+	texture.cpuDescHandleSRV.ptr += size * indexNextDescriptorHeap_;
 	texture.gpuDescHandleSRV = descriptorHeap_->GetGPUDescriptorHandleForHeapStart();
+	texture.gpuDescHandleSRV.ptr += size * indexNextDescriptorHeap_;
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{}; // 設定構造体
 	D3D12_RESOURCE_DESC resDesc = texture.resource->GetDesc();
 

@@ -54,11 +54,11 @@ void WorldTransform::UpdateMatrix() {
     }
 
     // 親行列の指定がある場合は、掛け算する
-    if (parent_) {
+    /*if (parent_) {
         Matrix4x4 matWorld =
             MakeAffineMatrix(parent_->scale_, parent_->rotation_, parent_->translation_);
         matWorld_ = Multiply(matWorld_, matWorld);
-    }
+    }*/
 
     // 定数バッファに書き込み
     constMap->matWorld = matWorld_;
