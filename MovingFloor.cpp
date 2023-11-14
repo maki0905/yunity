@@ -1,12 +1,12 @@
-#include "MovingFloor.h"
+ï»¿#include "MovingFloor.h"
 
 void MovingFloor::Initialize(const std::vector<Model*>& models)
 {
 	BaseObject::Initialize(models);
 	worldTransform_.UpdateMatrix();
-	// Õ“Ë‘®«‚ğİ’è
+	// è¡çªå±æ€§ã‚’è¨­å®š
 	SetCollisionAttribute(kCollisionAttributeMovingFloor);
-	// Õ“Ë‘ÎÛ‚ğ©•ª‚Ì‘®«ˆÈŠO‚Éİ’è
+	// è¡çªå¯¾è±¡ã‚’è‡ªåˆ†ã®å±æ€§ä»¥å¤–ã«è¨­å®š
 	SetCollisionMask(~kCollisionAttributeMovingFloor);
 
 	size_ = { 15.0f, 0.5f, 15.0f };

@@ -61,6 +61,7 @@ Matrix4x4 MakeRotateXYZMatrix(const Vector3& rotation);
 
 // アフィン変換行列
 Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rot, const Vector3& translate);
+Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Matrix4x4& rotateMatrix, const Vector3& translate);
 
 // 透視投射行列
 Matrix4x4 MakePerspectiveFovMatrix(float fovY, float aspectRatio, float nearClip, float farClip);
@@ -74,6 +75,8 @@ Matrix4x4 MakeViewportMatrix(
 // ビュー行列
 Matrix4x4 MakeViewMatrix(const Vector3& rotate, const Vector3& translate);
 
+Matrix4x4 DirectionToDirection(const Vector3& from, const Vector3& to);
+
 // 正射影ベクトル
 Vector3 Project(const Vector3& v1, const Vector3& v2);
 // 最近接点
@@ -86,4 +89,6 @@ float LerpShortAngle(float a, float b, float t);
 
 Vector3 Lerp(const Vector3& v1, const Vector3& v2, float t);
 Vector3 Slerp(const Vector3& v1, const Vector3& v2, float t);
+
+
 

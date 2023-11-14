@@ -135,4 +135,6 @@ private:
 	// テクスチャハンドル
 	uint32_t textureHandle = 0;
 
+	D3D12_DEPTH_STENCIL_DESC depthStencilDesc_{};
+
 };

@@ -12,7 +12,7 @@ void Enemy::Initialize(const std::vector<Model*>& models)
 	worldTransform_Body_.Initialize();
 	worldTransform_Larm_.Initialize();
 	worldTransform_Rarm_.Initialize();
-
+	worldTransform_Body_.translation_.z = 100.0f;
 	worldTransform_Larm_.parent_ = &worldTransform_Body_;
 	worldTransform_Rarm_.parent_ = &worldTransform_Body_;
 
@@ -20,12 +20,13 @@ void Enemy::Initialize(const std::vector<Model*>& models)
 	angularVelocity_ = 1.0f;
 	sphere_ = {
 		.center{worldTransform_Body_.translation_},
-		.radius{2.0f}
+		.radius{5.0f}
 	};
 	// 衝突属性を設定
 	SetCollisionAttribute(kCollisionAttributeEnemy);
 	// 衝突対象を自分の属性以外に設定
 	SetCollisionMask(~kCollisionAttributeEnemy);
+	isActive_ = true;
 }
 
 void Enemy::Update()
@@ -51,10 +52,17 @@ void Enemy::Update()
 
 void Enemy::Draw(const ViewProjection& viewProjection)
 {
-	models_[1]->Draw(worldTransform_Larm_, viewProjection);
-	models_[2]->Draw(worldTransform_Rarm_, viewProjection);
-	models_[0]->Draw(worldTransform_Body_, viewProjection);
+	if (isActive_) {
+		models_[1]->Draw(worldTransform_Larm_, viewProjection);
+		models_[2]->Draw(worldTransform_Rarm_, viewProjection);
+		models_[0]->Draw(worldTransform_Body_, viewProjection);
+	}
 
+}
+
+void Enemy::OnCollision(uint32_t collisionMask)
+{
+	isActive_ = false;
 }
 
 void Enemy::Move()
@@ -74,4 +82,9 @@ void Enemy::Move()
 	worldTransform_Body_.translation_.x = std::cos(angle_) * radius;
 	worldTransform_Body_.translation_.z = radius + std::sin(angle_) * radius;
 
+}
+
+void Enemy::Reset()
+{
+	isActive_ = true;
 }

@@ -6,6 +6,8 @@
 #include "Sphere.h"
 #include "Plane.h"
 #include "AABB.h"
+#include "Capsule.h"
+#include "OBB.h"
 #include "CollisionConfig.h"
 
 class BaseObject {
@@ -57,6 +59,9 @@ public:
 	Sphere* GetSphere() { return &sphere_; }
 	Plane* GetPlane() { return &plane_; }
 	AABB* GetAABB() { return &aabb_; }
+	Capsule* GetCapsule() { return &capsule_; }
+	OBB* GetOBB() { return &obb_; }
+
 protected:
 	// モデルデータ配列
 	std::vector<Model*> models_;
@@ -66,6 +71,8 @@ protected:
 	Sphere sphere_;
 	Plane plane_;
 	AABB aabb_;
+	Capsule capsule_;
+	OBB obb_;
 	Vector3 size_;
 
 private:

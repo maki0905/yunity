@@ -29,6 +29,10 @@ struct WorldTransform {
 	Matrix4x4 matWorld_;
 	// 親となるワールド変換へのポインタ
 	WorldTransform* parent_ = nullptr;
+	Matrix4x4 arbitraryAxisRotation_ = MakeIdentity4x4();
+
+	bool arbitrary_ = false;
+
 
 	/// <summary>
 	/// 初期化

@@ -19,6 +19,7 @@
 #include "Enemy.h"
 #include "StartBox.h"
 #include "EndBox.h"
+#include "PlayerWeapon.h"
 #pragma endregion
 
 
@@ -82,6 +83,7 @@ private:
 	std::unique_ptr<Model> playerModel_Head_;
 	std::unique_ptr<Model> playerModel_Larm_;
 	std::unique_ptr<Model> playerModel_Rarm_;
+	std::unique_ptr<Model> playerModel_Hammer_;
 	std::unique_ptr<Model> enemyModel_Body_;
 	std::unique_ptr<Model> enemyModel_Larm_;
 	std::unique_ptr<Model> enemyModel_Rarm_;
@@ -93,6 +95,7 @@ private:
 	std::vector<Floor*> floors_;
 	std::vector<MovingFloor*> movingFloors_;
 	std::unique_ptr<Player> player_;
+	//std::unique_ptr<PlayerWeapon> weapon_;
 	std::unique_ptr<Enemy> enemy_;
 };
 

@@ -34,9 +34,11 @@ void CollisionManager::CheckCollisionPair(BaseObject* colliderA, BaseObject* col
 		return;
 	}
 	Sphere sphereA = *colliderA->GetSphere();
+	Capsule capsuleA = *colliderA->GetCapsule();
 	Sphere sphereB{};
 	Plane planeB{};
 	AABB aabbB{};
+	OBB obbA = *colliderA->GetOBB();
 
 	uint32_t checker = 0;
 	if (colliderB->GetCollisionAttribute() == kCollisionAttributeEnemy) {
@@ -54,9 +56,16 @@ void CollisionManager::CheckCollisionPair(BaseObject* colliderA, BaseObject* col
 	if (sphereB.radius != 0.0f) {
 		if (IsCollision(sphereA, sphereB)) {
 			colliderA->OnCollision(colliderB->GetCollisionAttribute());
-			colliderB->OnCollision(colliderA->GetCollisionAttribute());
+			//colliderB->OnCollision(colliderA->GetCollisionAttribute());
 		}
 
+		if (IsCollision(capsuleA, sphereB)) {
+			colliderA->OnCollision(colliderB->GetCollisionAttribute());
+		}
+
+		if (IsCollision(obbA, sphereB)) {
+			colliderB->OnCollision(colliderA->GetCollisionAttribute());
+		}
 	}
 	else if (checker == 1) {
 		if (IsCollision(aabbB, sphereA)) {

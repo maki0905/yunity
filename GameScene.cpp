@@ -32,8 +32,12 @@ void GameScene::Initialize()
 	playerModel_Head_.reset(Model::Create("float_Head"));
 	playerModel_Larm_.reset(Model::Create("float_L_arm"));
 	playerModel_Rarm_.reset(Model::Create("float_R_arm"));
+	playerModel_Hammer_.reset(Model::Create("hammer"));
 	std::vector<Model*> playerModles = {
-		playerModel_Body_.get(), playerModel_Head_.get(), playerModel_Larm_.get(), playerModel_Rarm_.get()
+		playerModel_Body_.get(), playerModel_Head_.get(), playerModel_Larm_.get(), playerModel_Rarm_.get(), playerModel_Hammer_.get()
+	};
+	std::vector<Model*>weaponModels = {
+		playerModel_Hammer_.get()
 	};
 
 	enemyModel_Body_.reset(Model::Create("needle_Body"));
@@ -78,6 +82,8 @@ void GameScene::Initialize()
 	// プレイヤー
 	player_ = std::make_unique<Player>();
 	player_->Initialize(playerModles);
+	//weapon_ = std::make_unique<PlayerWeapon>();
+	//weapon_->Initialize(weaponModels);
 	// 敵
 	enemy_ = std::make_unique<Enemy>();
 	enemy_->Initialize(enemyModles);
@@ -104,7 +110,12 @@ void GameScene::Update()
 		collisionManager_->ClearCollider();
 		// コライダーを衝突マネージャーのリストに登録
 		collisionManager_->SetCollider(player_.get());
-		collisionManager_->SetCollider(enemy_.get());
+		/*if (weapon_->GetIsActive()) {
+			collisionManager_->SetCollider(weapon_.get());
+		}*/
+		if (enemy_->GetIsActive()) {
+			collisionManager_->SetCollider(enemy_.get());
+		}
 		for (auto& floor_ : floors_) {
 			collisionManager_->SetCollider(floor_);
 		}
@@ -119,13 +130,16 @@ void GameScene::Update()
 			movingFloor->Update();
 		}
 		player_->Update();
+		//weapon_->Update();
 		enemy_->Update();
 
 		followCamera_->Update();
 
+#ifdef _DEBUG
 		if (Input::GetInstance()->TriggerKey(DIK_LSHIFT)) {
 			isDebugCameraFlag_ ^= true;
 		}
+#endif
 
 		if (isDebugCameraFlag_) {
 			debugCamera_->Update(&viewProjection_);
@@ -175,11 +189,11 @@ void GameScene::Draw()
 	for (auto& floor : floors_) {
 		floor->Draw(viewProjection_);
 	}
-	startBox_->Draw(viewProjection_);
 	endBox_->Draw(viewProjection_);
+	startBox_->Draw(viewProjection_);
 	enemy_->Draw(viewProjection_);
 	player_->Draw(viewProjection_);
-
+	//weapon_->Draw(viewProjection_);
 	/// </summary>
 
 	// 3Dオブジェクト描画後処理
@@ -207,4 +221,5 @@ void GameScene::Draw()
 void GameScene::Reset()
 {
 	player_->Reset();
+	enemy_->Reset();
 }

@@ -44,21 +44,29 @@ void WorldTransform::Map() {
 
 void WorldTransform::UpdateMatrix() {
 
-    // スケール、回転、平行移動を合成して行列を計算する
-    matWorld_ = MakeAffineMatrix(scale_, rotation_, translation_);
-    // 親があれば親のワールド行列を掛ける
-    if (parent_) {
-        Matrix4x4 matWorld =
-            MakeAffineMatrix(parent_->scale_, parent_->rotation_, parent_->translation_);
-        matWorld_ = Multiply(matWorld_, matWorld);
+    if (arbitrary_) {
+        matWorld_ = MakeAffineMatrix(scale_, arbitraryAxisRotation_, translation_);
+        if (parent_) {
+            Matrix4x4 matWorld;
+            if (parent_->arbitrary_) {
+                matWorld = MakeAffineMatrix(parent_->scale_, parent_->arbitraryAxisRotation_, parent_->translation_);
+            }
+            else {
+                matWorld = MakeAffineMatrix(parent_->scale_, parent_->rotation_, parent_->translation_);
+            }
+            matWorld_ = Multiply(matWorld_, matWorld);
+        }
     }
-
-    // 親行列の指定がある場合は、掛け算する
-    /*if (parent_) {
-        Matrix4x4 matWorld =
-            MakeAffineMatrix(parent_->scale_, parent_->rotation_, parent_->translation_);
-        matWorld_ = Multiply(matWorld_, matWorld);
-    }*/
+    else {
+        // スケール、回転、平行移動を合成して行列を計算する
+        matWorld_ = MakeAffineMatrix(scale_, rotation_, translation_);
+        // 親があれば親のワールド行列を掛ける
+        if (parent_) {
+            Matrix4x4 matWorld =
+                MakeAffineMatrix(parent_->scale_, parent_->rotation_, parent_->translation_);
+            matWorld_ = Multiply(matWorld_, matWorld);
+        }
+    }
 
     // 定数バッファに書き込み
     constMap->matWorld = matWorld_;

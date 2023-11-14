@@ -57,7 +57,7 @@ void GlobalVariables::Updata() {
 			// float型の値を保持していれば
 			else if (std::holds_alternative<float>(item)) {
 				float* ptr = std::get_if<float>(&item);
-				ImGui::SliderFloat(itemName.c_str(), ptr, 0, 100);
+				ImGui::SliderFloat(itemName.c_str(), ptr, 0.0f, 1.0f);
 			}
 
 			// Vec型の値を保持していれば

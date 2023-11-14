@@ -1,10 +1,21 @@
 ﻿#include "FollowCamera.h"
+#include "GlobalVariables.h"
+#include "Externals/nlohmann/json.hpp"
 
 void FollowCamera::Initialize(const ViewProjection& viewProjection)
 {
 	viewProjection_ = viewProjection;
 	// シングルトンインスタンスを取得
 	input_ = Input::GetInstance();
+
+	delayAmount_ = 0.5f;
+
+	GlobalVariables* globalVariables = GlobalVariables::GetInstance();
+	const char* groupName = "FollowCamera";
+	// グループを追加
+	GlobalVariables::GetInstance()->CreateGroup(groupName);
+	globalVariables->AddItem(groupName, "DelayAmount", delayAmount_);
+
 }
 
 void FollowCamera::Update()
@@ -26,7 +37,7 @@ void FollowCamera::Update()
 
 			// 最短角度補間
 			viewProjection_.rotation_.y =
-				LerpShortAngle(viewProjection_.rotation_.y, destinationAngleY_, 0.5f);
+				LerpShortAngle(viewProjection_.rotation_.y, destinationAngleY_, delayAmount_);
 		}
 	}
 
@@ -34,10 +45,10 @@ void FollowCamera::Update()
 		// 追従座標の補間
 		//interTarget_ = Lerp(interTarget_, target_->translation_, 0.5f);
 		Vector3 translation = { target_->matWorld_.m[3][0], target_->matWorld_.m[3][1], target_->matWorld_.m[3][2] };
-		interTarget_ = Lerp(interTarget_, translation, 0.5f);
+		interTarget_ = Lerp(interTarget_, translation, delayAmount_);
 	}
 
-	// 追従対象からのおふセット
+	// 追従対象からのオフセット
 	Vector3 offset = Offset();
 
 	// カメラ座標
@@ -45,6 +56,8 @@ void FollowCamera::Update()
 
 	// ビュー行列の更新
 	viewProjection_.UpdateMatrix();
+
+	ApplyGlobalVariables();
 }
 
 void FollowCamera::SetTarget(const WorldTransform* target)
@@ -62,7 +75,7 @@ Vector3 FollowCamera::Offset() const
 
 	// オフセットをカメラの回転に合わせて回転させる
 	offset = TransformNormal(offset, rotate);
-
+	//offset = TransformNormal(offset, rotateXY);
 	return offset;
 }
 
@@ -79,4 +92,13 @@ void FollowCamera::Reset()
 	// 追従対象からのオフセット
 	Vector3 offset = Offset();
 	viewProjection_.translation_ = Add(interTarget_, offset);
+}
+
+void FollowCamera::ApplyGlobalVariables()
+{
+	GlobalVariables* globalVariables = GlobalVariables::GetInstance();
+	const char* groupName = "FollowCamera";
+	delayAmount_ = globalVariables->GetFloatValue(groupName, "DelayAmount");
+	nlohmann::json json;
+	json.clear();
 }

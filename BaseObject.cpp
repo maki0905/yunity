@@ -4,7 +4,6 @@ void BaseObject::Initialize(const std::vector<Model*>& models)
 {
 	models_ = models;
 	worldTransform_.Initialize();
-	
 }
 
 void BaseObject::Update()
@@ -32,3 +31,4 @@ Vector3 BaseObject::GetWorldPosition()
 {
 	return Vector3();
 }
+

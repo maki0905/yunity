@@ -121,10 +121,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="MovingFloor.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="PlayerWeapon.cpp" />
     <ClCompile Include="Skydome.cpp" />
     <ClCompile Include="Sphere.cpp" />
     <ClCompile Include="StartBox.cpp" />
-    <ClCompile Include="T.cpp" />
     <ClCompile Include="TextureManager.cpp" />
     <ClCompile Include="Triangle.cpp" />
     <ClCompile Include="ViewProjection.cpp" />
@@ -134,6 +134,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
   <ItemGroup>
     <ClInclude Include="AABB.h" />
     <ClInclude Include="BaseObject.h" />
+    <ClInclude Include="Capsule.h" />
     <ClInclude Include="Collider.h" />
     <ClInclude Include="Collision.h" />
     <ClInclude Include="CollisionConfig.h" />
@@ -168,11 +169,11 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Physics.h" />
     <ClInclude Include="Plane.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="PlayerWeapon.h" />
     <ClInclude Include="SafeDelete.h" />
     <ClInclude Include="Skydome.h" />
     <ClInclude Include="Sphere.h" />
     <ClInclude Include="StartBox.h" />
-    <ClInclude Include="T.h" />
     <ClInclude Include="TextureManager.h" />
     <ClInclude Include="Triangle.h" />
     <ClInclude Include="Vecter2.h" />

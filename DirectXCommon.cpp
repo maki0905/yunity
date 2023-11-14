@@ -59,15 +59,11 @@ void DirectXCommon::PreDraw() {
 	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
 	commandList_->ResourceBarrier(1, &barrier);
 
-	// レンダーターゲットビュー用ディスクリプタヒープのハンドルを取得
-	D3D12_CPU_DESCRIPTOR_HANDLE rtvH[2];
-	rtvH[0] = rtvHeap_->GetCPUDescriptorHandleForHeapStart();
-	rtvH[1].ptr = rtvH[0].ptr + device_->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 	// 深度ステンシルビュー用デスクリプタヒープのハンドルを取得
 	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle =
 		D3D12_CPU_DESCRIPTOR_HANDLE(dsvHeap_->GetCPUDescriptorHandleForHeapStart());
 	// レンダーターゲットをセット
-	commandList_->OMSetRenderTargets(1, &rtvH[bbIndex], false, &dsvHandle);
+	commandList_->OMSetRenderTargets(1, &rtvHandles_[bbIndex], false, &dsvHandle);
 
 	// 全画面クリア
 	ClearRenderTarget();
@@ -93,9 +89,6 @@ void DirectXCommon::PostDraw() {
 	hr_ = swapChain_->GetBuffer(bbIndex, IID_PPV_ARGS(&barrier.Transition.pResource));
 	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
 	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
-	/*D3D12_RESOURCE_BARRIER barrier = D3D12_RESOURCE_BARRIER::Transition(
-		backBuffers_[bbIndex].Get(), D3D12_RESOURCE_STATE_RENDER_TARGET,
-		D3D12_RESOURCE_STATE_PRESENT);*/
 	commandList_->ResourceBarrier(1, &barrier);
 
 	// 命令のクローズ
@@ -138,14 +131,9 @@ void DirectXCommon::PostDraw() {
 void DirectXCommon::ClearRenderTarget() {
 	UINT bbIndex = swapChain_->GetCurrentBackBufferIndex();
 
-	// レンダーターゲットビュー用ディスクリプタヒープのハンドルを取得
-	D3D12_CPU_DESCRIPTOR_HANDLE rtvH[2];
-	rtvH[0] = rtvHeap_->GetCPUDescriptorHandleForHeapStart();
-	rtvH[1].ptr = rtvH[0].ptr + device_->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
-
 	// 全画面クリア        Red   Green Blue  Alpha
 	float clearColor[] = { 0.1f, 0.25f, 0.5f, 0.0f }; // 青っぽい色
-	commandList_->ClearRenderTargetView(rtvH[bbIndex], clearColor, 0, nullptr);
+	commandList_->ClearRenderTargetView(rtvHandles_[bbIndex], clearColor, 0, nullptr);
 }
 
 void DirectXCommon::ClearDepthBuffer() {
@@ -328,6 +316,7 @@ void DirectXCommon::CreateFinalRenderTargets() {
 	const uint32_t desriptorSizeRTV = device_->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 	//const uint32_t desriptorSizeDSV = device_->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_DSV);
 
+
 	// 裏表の２つ分について
 	backBuffers_.resize(swcDesc.BufferCount);
 	for (int i = 0; i < backBuffers_.size(); i++) {
@@ -346,6 +335,11 @@ void DirectXCommon::CreateFinalRenderTargets() {
 		// レンダーターゲットビューの生成
 		device_->CreateRenderTargetView(backBuffers_[i].Get(), &renderTargetViewDesc, handle);
 	}
+
+	// レンダーターゲットビュー用ディスクリプタヒープのハンドルを取得
+	rtvHandles_[0] = rtvHeap_->GetCPUDescriptorHandleForHeapStart();
+	rtvHandles_[1].ptr = rtvHandles_[0].ptr + device_->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
+
 }
 
 void DirectXCommon::CreateDepthBuffer() {
@@ -353,7 +347,7 @@ void DirectXCommon::CreateDepthBuffer() {
 	depthBuffer_ = CreateDepthStencilTextureResource();
 
 	// 深度ビュー用デスクリプタヒープ作成。DSV用のヒープでディスクリプタの数は1。
-	dsvHeap_ = CreateDescriptorHeap(false);
+	dsvHeap_ = CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_DSV, 1, false);
 
 	// 深度ビュー作成
 	D3D12_DEPTH_STENCIL_VIEW_DESC dsvDesc{};
@@ -400,13 +394,13 @@ Microsoft::WRL::ComPtr<ID3D12Resource> DirectXCommon::CreateDepthStencilTextureR
 
 }
 
-Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> DirectXCommon::CreateDescriptorHeap(bool shaderVisible)
+Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> DirectXCommon::CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE heapType, UINT numDescriptors, bool shaderVisible)
 {
 	HRESULT hr = S_FALSE;
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> result = nullptr;
 	D3D12_DESCRIPTOR_HEAP_DESC dsvDescriptorHeap{};
-	dsvDescriptorHeap.NumDescriptors = 1;                    // 深度ビューは1つ
-	dsvDescriptorHeap.Type = D3D12_DESCRIPTOR_HEAP_TYPE_DSV; // デプスステンシルビュー
+	dsvDescriptorHeap.NumDescriptors = numDescriptors;                    // 深度ビューは1つ
+	dsvDescriptorHeap.Type = heapType; // デプスステンシルビュー
 	dsvDescriptorHeap.Flags = shaderVisible ? D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE : D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
 	hr = device_->CreateDescriptorHeap(&dsvDescriptorHeap, IID_PPV_ARGS(&result));
 	assert(SUCCEEDED(hr));

@@ -21,10 +21,17 @@ public:
 	/// </summary>
 	void Draw(const ViewProjection& viewProjection) override;
 
+	void OnCollision(uint32_t collisionMask) override;
+
 	// 移動
 	void Move();
 
 	Vector3 GetWorldPosition() { return Vector3(worldTransform_Body_.matWorld_.m[3][0], worldTransform_Body_.matWorld_.m[3][1], worldTransform_Body_.matWorld_.m[3][2]); };
+
+	void Reset();
+
+	bool GetIsActive() { return isActive_; }
+
 
 private:
 
@@ -41,6 +48,8 @@ private:
 	float angle_;
 	float angularVelocity_;
 	float flightingParameter_;
+
+	bool isActive_;
 
 };
 

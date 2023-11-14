@@ -255,3 +255,25 @@ bool IsCollision(const OBB& obb, const Segment& segment)
 
 	return IsCollision(localAABB, localSegment);
 }
+
+bool IsCollision(const Capsule& capsule, const Sphere& sphere)
+{
+	Vector3 d = Subtract(sphere.center, capsule.segment.origin);
+	Vector3 ba = Add(capsule.segment.origin, capsule.segment.diff);
+
+	Vector3 e = Normalize(ba);
+
+	float t = Dot(d, e) / Length(ba);
+
+	t = std::clamp(t, 0.0f, 1.0f);
+
+	Vector3 f = Lerp(capsule.segment.origin, Add(capsule.segment.origin, capsule.segment.diff), t);
+
+	float distance = Length(Subtract(sphere.center, f));
+
+	if (distance < capsule.radius + sphere.radius) {
+		return true;
+	}
+
+	return false;
+}

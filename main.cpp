@@ -12,9 +12,9 @@
 #include <dxcapi.h>
 #include "Input.h"
 
-#include "T.h"
 #include "Sphere.h"
 #include "ViewProjection.h"
+#include "GlobalVariables.h"
 
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	WinApp* win = nullptr;
@@ -45,6 +45,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	TextureManager::Load("white1x1.png");
 
 	Model::StaticInitialize(dxCommon->GetDevice());
+
+#pragma endregion
+
+	GlobalVariables::GetInstance()->LoadFiles();
 	
 	MSG msg{};
 
@@ -64,6 +68,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			// 入力関連の毎フレーム処理
 			input->Update();
+
+#ifdef _DEBUG
+			GlobalVariables::GetInstance()->Updata();
+#endif // _DEBUG
 
 			// ゲームシーンの毎フレーム処理
 			gameScene->Update();

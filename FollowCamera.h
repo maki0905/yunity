@@ -39,6 +39,9 @@ public:
 
 	void Reset();
 
+	// 調整項目の適応
+	void ApplyGlobalVariables();
+
 private:
 	// ビュープロジェクション
 	ViewProjection viewProjection_;
@@ -53,4 +56,6 @@ private:
 
 	// 目標角度
 	float destinationAngleY_ = 0.0f;
+
+	float delayAmount_;
 };

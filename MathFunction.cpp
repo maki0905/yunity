@@ -405,6 +405,24 @@ Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rot, const Vecto
 	return result;
 }
 
+Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Matrix4x4& rotateMatrix, const Vector3& translate)
+{
+	Matrix4x4 result;
+	for (int line = 0; line < 4; line++) {
+		for (int column = 0; column < 4; column++) {
+			result.m[line][column] = 0;
+		}
+	}
+	// スケーリング行列の作成
+	Matrix4x4 scaleMatrix = MakeScaleMatrix(scale);
+
+	// 平行移動行列の作成
+	Matrix4x4 translateMatrix = MakeTranslateMatrix(translate);
+
+	result = Multiply(Multiply(scaleMatrix, rotateMatrix), translateMatrix);
+	return result;
+}
+
 // 単位行列の作成
 Matrix4x4 MakeIdentity4x4() {
 	Matrix4x4 result;
@@ -482,6 +500,24 @@ Matrix4x4 MakeViewMatrix(const Vector3& rotate, const Vector3& translate)
 	Matrix4x4 result;
 	result = MakeAffineMatrix({ 1.0f, 1.0f, 1.0f }, rotate, translate);
 	result = Inverse(result);
+	return result;
+}
+
+Matrix4x4 DirectionToDirection(const Vector3& from, const Vector3& to)
+{
+	Matrix4x4 result = MakeIdentity4x4();
+	Vector3 n = Normalize(Cross(from, to));
+	float cos = Dot(from, to);
+	float sin = Length(Cross(from, to));
+	result.m[0][0] = (n.x * n.x) * (1 - cos) + cos;
+	result.m[0][1] = (n.x * n.y) * (1.0f - cos) + n.z * sin;
+	result.m[0][2] = (n.x * n.z) * (1.0f - cos) - n.y * sin;
+	result.m[1][0] = (n.x * n.y) * (1.0f - cos) - n.z * sin;
+	result.m[1][1] = (n.y * n.y) * (1.0f - cos) + cos;
+	result.m[1][2] = (n.y * n.z) * (1.0f - cos) + n.x * sin;
+	result.m[2][0] = (n.x * n.z) * (1.0f - cos) + n.y * sin;
+	result.m[2][1] = (n.y * n.z) * (1.0f - cos) - n.x * sin;
+	result.m[2][2] = (n.z * n.z) * (1.0f - cos) + cos;
 	return result;
 }
 

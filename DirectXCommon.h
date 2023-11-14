@@ -90,6 +90,7 @@ private: // メンバ変数
 	std::vector<Microsoft::WRL::ComPtr<ID3D12Resource>> backBuffers_;
 	Microsoft::WRL::ComPtr<ID3D12Resource> depthBuffer_;
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> rtvHeap_;
+	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandles_[2];
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> dsvHeap_;
 	Microsoft::WRL::ComPtr<ID3D12Fence> fence_;
 	UINT64 fenceVal_ = 0;
@@ -132,7 +133,7 @@ private: // メンバ関数
 
 	Microsoft::WRL::ComPtr<ID3D12Resource> CreateDepthStencilTextureResource();
 
-	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> CreateDescriptorHeap(bool shaderVisible);
+	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE heapType, UINT numDescriptors, bool shaderVisible);
 
 	/// <summary>
 	/// フェンス生成
