@@ -17,13 +17,14 @@ struct ViewProjection {
 	// 定数バッファ
 	Microsoft::WRL::ComPtr<ID3D12Resource> constBuff_;
 	// マッピング済みアドレス
-	ConstBufferDataViewProjection* constMap = nullptr;
+	ConstBufferDataViewProjection* constMap_ = nullptr;
 
 #pragma region ビュー行列の設定
 	// ローカル座標
 	Vector3 translation_ = { 0, 10.0f, -50.0f }; // 座標
 	// 回転
 	Vector3 rotation_ = { 0, 0, 0 }; // 回転
+	Quaternion quaternion_ = {0.0f, 0.0f, 0.0f, 1.0f}; // クォータニオン
 	
 #pragma endregion
 
@@ -33,7 +34,7 @@ struct ViewProjection {
 	// ビューポートのアスペクト比
 	float aspectRatio = (float)16 / 9;
 	// 深度限界（手前側）
-	float nearZ = 0.1f;
+	float nearZ = 10.0f;
 	// 深度限界（奥側）
 	float farZ = 1000.0f;
 #pragma endregion

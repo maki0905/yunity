@@ -5,6 +5,8 @@
 #include <vector>
 #include <optional>
 
+class LockOn;
+
 
 class Player : public BaseObject
 {
@@ -14,14 +16,39 @@ public:
 		kAttack, // 攻撃中
 		kDash,   // ダッシュ中
 	};
+	// コンボ数
+	static const int ComboNum = 3;
+	struct ConstAttack {
+		// 振りかぶりの時間
+		uint32_t anticipationTime;
+		// 溜めの時間 
+		uint32_t chargeTime;
+		// 攻撃振りの時間
+		uint32_t swingTime;
+		// 硬直時間
+		uint32_t recoveryTime;
+		// 振りかぶりの移動速さ
+		float anticipationSpeed;
+		// 溜めの移動速さ
+		float chargeSpeed;
+		// 攻撃振りの移動速さ
+		float swingSpedd;
+	};
 
 	struct WorkAttack {
 		float parameter;
-		float addValue;
-		Vector3 start_Arm;
-		Vector3 end_Arm;
-		Vector3 start_Weapon;
-		Vector3 end_Weapon;
+		int32_t comboIndex = 0;
+		int32_t inComboPhase = 0;
+		bool comboNext = false;
+		uint32_t totalTime;
+		uint32_t anticipationTimer;
+		uint32_t chargeTimer;
+		uint32_t swingTimer;
+		uint32_t recoveryTimer;
+		Vector3 start_Arm[ComboNum];
+		Vector3 end_Arm[ComboNum];
+		Vector3 start_Weapon[ComboNum];
+		Vector3 end_Weapon[ComboNum];
 	};
 
 	struct WorkDash {
@@ -63,6 +90,8 @@ public:
 
 	void SetParent(WorldTransform* worldTrasnform) { worldTransform_Body_.parent_ = worldTrasnform; }
 
+	void SetLockOn(const LockOn* lockOn) { lockOn_ = lockOn; }
+
 private:
 	// 通常行動初期化
 	void BehaviorRootInitialize();
@@ -80,6 +109,8 @@ private:
 
 private:
 	Input* input_;
+	XINPUT_STATE joyStatePre_{};
+	XINPUT_STATE joyState_{};
 
 	// カメラのビュープロジェクション
 	const ViewProjection* viewProjection_ = nullptr;
@@ -93,8 +124,8 @@ private:
 
 	Model* model_ = nullptr;
 
-	const float gravity_ = -0.1f;
-	const float jumpValue_ = 1.0f;
+	const float gravity_ = -0.325f;
+	const float jumpValue_ = 3.0f;
 	Vector3 velocity_;
 	Vector3 acceleration_;
 	bool isLanding_ = false;
@@ -110,9 +141,19 @@ private:
 	WorkAttack workAttack_;
 	WorkDash workDash_;
 
+	// コンボ定数表
+	static const std::array<ConstAttack, ComboNum> kConstAttacks_;
+
+
 	// 振る舞い
 	Behavior behavior_ = Behavior::kRoot;
 	// 次の振る舞いリクエスト
 	std::optional<Behavior> behaviorRequest_ = std::nullopt;
+
+	// ロックオン
+	const LockOn* lockOn_;
+
+	Vector4 color_ = { 1.0f, 1.0f, 1.0f, 1.0f };
+
 };
 

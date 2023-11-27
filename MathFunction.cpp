@@ -4,6 +4,7 @@
 
 #define _USE_MATH_DEFINES
 #include <math.h>
+#include <ranges>
 
 // ベクトルの加法
 Vector3 Add(const Vector3& v1, const Vector3& v2) {
@@ -423,6 +424,22 @@ Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Matrix4x4& rotateMatrix, 
 	return result;
 }
 
+Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Quaternion& quaternion, const Vector3& translate)
+{
+	Matrix4x4 result = MakeIdentity4x4();
+	// スケーリング行列の作成
+	Matrix4x4 scaleMatrix = MakeScaleMatrix(scale);
+
+	// 回転行列の作成
+	Matrix4x4 rotateMatrix = MakeRotateMatrix(quaternion);
+
+	// 平行移動行列の作成
+	Matrix4x4 translateMatrix = MakeTranslateMatrix(translate);
+
+	result = Multiply(Multiply(scaleMatrix, rotateMatrix), translateMatrix);
+	return result;
+}
+
 // 単位行列の作成
 Matrix4x4 MakeIdentity4x4() {
 	Matrix4x4 result;
@@ -503,6 +520,30 @@ Matrix4x4 MakeViewMatrix(const Vector3& rotate, const Vector3& translate)
 	return result;
 }
 
+Matrix4x4 MakeViewMatrix(const Quaternion& quaternion, const Vector3& translate)
+{
+	Matrix4x4 result;
+	result = MakeAffineMatrix({ 1.0f, 1.0f, 1.0f }, quaternion, translate);
+	result = Inverse(result);
+	return result;
+}
+
+Vector3 MapWorldToScreen(const Vector3& worldPosition, const Matrix4x4& matView, const Matrix4x4& matProjection, float width, float height)
+{
+	Vector3 result{};
+	// ビューポート行列
+	Matrix4x4 matViewport = MakeViewportMatrix(0, 0, width, height, 0, 1);
+
+	// ビュー行列とプロジェクション行列、ビューポート行列を合成する
+	Matrix4x4 matViewProjectionViewport = Multiply(Multiply(matView, matProjection), matViewport);
+
+	// ワールド->スクリーン座標変換
+	result = Transform(worldPosition, matViewProjectionViewport);
+	return result;
+}
+
+
+
 Matrix4x4 DirectionToDirection(const Vector3& from, const Vector3& to)
 {
 	Matrix4x4 result = MakeIdentity4x4();
@@ -577,3 +618,149 @@ Vector3 Slerp(const Vector3& v1, const Vector3& v2, float t) {
 //	Vector3 result;
 //	result = Add(segment.origin, Project(Subtract(point, segment.origin), segment.diff));
 //	ret
+
+Quaternion IndentityQuaternion()
+{
+	Quaternion result = { 0.0f, 0.0f, 0.0f, 1.0f };
+
+	return result;
+}
+
+Quaternion Conjugate(const Quaternion& q)
+{
+	Quaternion result = { -q.x, -q.y, -q.z, q.w };
+
+	return result;
+}
+
+Quaternion Inverse(const Quaternion& q)
+{
+	Quaternion result;
+	Quaternion conj = Conjugate(q);
+	float norm = Norm(q);
+	norm = std::powf(norm, 2);
+	result = { conj.x / norm, conj.y / norm, conj.z / norm, conj.w / norm };
+
+	return result;
+}
+
+Quaternion Normalize(const Quaternion& q)
+{
+	Quaternion result = IndentityQuaternion();
+	float norm = Norm(q);
+	if (norm != 0.0f) {
+		result = { q.x / norm, q.y / norm, q.z / norm, q.w / norm };
+	}
+
+	return result;
+}
+
+Quaternion Multiply(const Quaternion& q, const Quaternion& r)
+{
+	Quaternion result;
+	Vector3 qxr = Cross({ q.x, q.y, q.z }, { r.x, r.y, r.z });
+	Vector3 rq = Multiply(r.w, { q.x, q.y, q.z });
+	Vector3 qr = Multiply(q.w, { r.x, r.y, r.z });
+	result.w = (q.w * r.w) - Dot(Vector3{ q.x, q.y, q.z }, Vector3{ r.x, r.y, r.z });
+	result.x = qxr.x + rq.x + qr.x;
+	result.y = qxr.y + rq.y + qr.y;
+	result.z = qxr.z + rq.z + qr.z;
+
+	return result;
+}
+
+float Norm(const Quaternion& q)
+{
+	float result;
+	float w2 = std::powf(q.w, 2);
+	float x2 = std::powf(q.x, 2);
+	float y2 = std::powf(q.y, 2);
+	float z2 = std::powf(q.z, 2);
+	result = sqrtf(w2 + x2 + y2 + z2);
+	return result;
+}
+
+Quaternion MakeRotateAxisAngleQuaternion(const Vector3& axis, float angle)
+{
+	Quaternion result;
+	float sin = std::sinf(angle / 2.0f);
+	result.w = std::cosf(angle / 2.0f);
+	result.x = axis.x * sin;
+	result.y = axis.y * sin;
+	result.z = axis.z * sin;
+	return result;
+}
+
+Vector3 RotateVector(const Vector3& vector, const Quaternion& q)
+{
+
+	Vector3 result;
+	Quaternion r = { vector.x, vector.y, vector.z, 0.0f };
+	Quaternion conj = Conjugate(q);
+	r = Multiply(Multiply(q, r), conj);
+	result.x = r.x;
+	result.y = r.y;
+	result.z = r.z;
+	return result;
+}
+
+Matrix4x4 MakeRotateMatrix(const Quaternion& q)
+{
+	Matrix4x4 result = MakeIdentity4x4();
+
+	result.m[0][0] = std::powf(q.w, 2) + std::powf(q.x, 2) - std::powf(q.y, 2) - std::powf(q.z, 2);
+	result.m[0][1] = 2.0f * ((q.x * q.y) + (q.w * q.z));
+	result.m[0][2] = 2.0f * ((q.x * q.z) - (q.w * q.y));
+
+	result.m[1][0] = 2.0f * ((q.x * q.y) - (q.w * q.z));
+	result.m[1][1] = std::powf(q.w, 2) - std::powf(q.x, 2) + std::powf(q.y, 2) - std::powf(q.z, 2);
+	result.m[1][2] = 2.0f * ((q.y * q.z) + (q.w * q.x));
+
+	result.m[2][0] = 2.0f * ((q.x * q.z) + (q.w * q.y));
+	result.m[2][1] = 2.0f * ((q.y * q.z) - (q.w * q.x));
+	result.m[2][2] = std::powf(q.w, 2) - std::powf(q.x, 2) - std::powf(q.y, 2) + std::powf(q.z, 2);
+
+	return result;
+}
+
+Quaternion Slerp(const Quaternion& q0, const Quaternion& q1, float t)
+{
+	Quaternion result;
+	float dot = Dot(q0, q1);
+	float theta = 0.0f;
+	float sin0 = 0.0f;
+	float sin1 = 0.0f;
+	if (dot < 0.0f) {
+		dot = -dot;
+		theta = std::acosf(dot);
+		sin0 = std::sinf((1.0f - t) * theta) / std::sinf(theta);
+		sin1 = std::sinf(t * theta) / std::sinf(theta);
+		result.w = sin0 * -q0.w + sin1 * q1.w;
+		result.x = sin0 * -q0.x + sin1 * q1.x;
+		result.y = sin0 * -q0.y + sin1 * q1.y;
+		result.z = sin0 * -q0.z + sin1 * q1.z;
+	}
+	else if (dot >= 1.0f - std::numeric_limits<float>::epsilon()) {
+		result.w = (1.0f - t) * q0.w + t * q1.w;
+		result.x = (1.0f - t) * q0.x + t * q1.x;
+		result.y = (1.0f - t) * q0.y + t * q1.y;
+		result.z = (1.0f - t) * q0.z + t * q1.z;
+		return result;
+	}
+	else {
+		theta = std::acosf(dot);
+		sin0 = std::sinf((1.0f - t) * theta) / std::sinf(theta);
+		sin1 = std::sinf(t * theta) / std::sinf(theta);
+		result.w = sin0 * q0.w + sin1 * q1.w;
+		result.x = sin0 * q0.x + sin1 * q1.x;
+		result.y = sin0 * q0.y + sin1 * q1.y;
+		result.z = sin0 * q0.z + sin1 * q1.z;
+	}
+	return result;
+}
+
+float Dot(const Quaternion& q1, const Quaternion& q2)
+{
+	float result = (q1.x * q2.x) + (q1.y * q2.y) + (q1.z * q2.z) + (q1.w * q2.w);
+	return result;
+}

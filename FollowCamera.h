@@ -8,6 +8,8 @@
 // GameSceneの前方宣言
 class GameScene;
 
+class LockOn;
+
 /// <summary>
 /// 追従カメラ
 /// </summary>
@@ -42,6 +44,10 @@ public:
 	// 調整項目の適応
 	void ApplyGlobalVariables();
 
+	void SetLockOn(const LockOn* lockOn) { 
+		lockOn_ = lockOn; 
+	}
+
 private:
 	// ビュープロジェクション
 	ViewProjection viewProjection_;
@@ -58,4 +64,9 @@ private:
 	float destinationAngleY_ = 0.0f;
 
 	float delayAmount_;
+
+	// ロックオン
+	const LockOn* lockOn_ = nullptr;
+
+
 };

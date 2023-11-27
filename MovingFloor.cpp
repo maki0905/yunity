@@ -3,7 +3,7 @@
 void MovingFloor::Initialize(const std::vector<Model*>& models)
 {
 	BaseObject::Initialize(models);
-	worldTransform_.UpdateMatrix();
+	worldTransform_.UpdateMatrix(RotationType::Euler);
 	// 衝突属性を設定
 	SetCollisionAttribute(kCollisionAttributeMovingFloor);
 	// 衝突対象を自分の属性以外に設定
@@ -18,7 +18,7 @@ void MovingFloor::Update()
 		velocity_ = Multiply(-1.0f, velocity_);
 	}
 	worldTransform_.translation_ = Add(worldTransform_.translation_, velocity_);
-	worldTransform_.UpdateMatrix();
+	worldTransform_.UpdateMatrix(RotationType::Euler);
 	aabb_.min = Subtract(worldTransform_.translation_, size_);
 	aabb_.max = Add(worldTransform_.translation_, size_);
 }
@@ -34,5 +34,5 @@ void MovingFloor::SetPosition(const Vector3& position)
 	startPosition_ = position;
 	aabb_.min = Subtract(worldTransform_.translation_, size_);
 	aabb_.max = Add(worldTransform_.translation_, size_);
-	worldTransform_.UpdateMatrix();
+	worldTransform_.UpdateMatrix(RotationType::Euler);
 }

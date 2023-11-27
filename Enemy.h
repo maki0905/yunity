@@ -6,6 +6,12 @@
 class Enemy : public BaseObject
 {
 public:
+	struct WorkDestroy {
+		uint32_t parameter;
+		float angle;
+	};
+	const uint32_t effectTime = 60;
+public:
 	/// <summary>
 	/// 初期化
 	/// </summary>
@@ -30,7 +36,13 @@ public:
 
 	void Reset();
 
-	bool GetIsActive() { return isActive_; }
+	void SetTranslation(const Vector3& translation);
+
+	bool GetIsActive() const{ return isActive_; }
+
+	bool GetIsDestroy() const { return isDestroy_; }
+
+	Vector3 GetModelCenter() const ;
 
 
 private:
@@ -49,7 +61,21 @@ private:
 	float angularVelocity_;
 	float flightingParameter_;
 
+	WorkDestroy workDestroy_;
+
+	Vector3 movePre_;
+
+	Vector3 startPos_;
+
+	bool isDestroy_;
 	bool isActive_;
+	bool isHit_;
+
+	uint32_t HP_ = 3;
+
+	uint32_t coolTime_ = 20;
+
+	Vector4 color = { 1.0f, 1.0f, 1.0f, 1.0f };
 
 };
 

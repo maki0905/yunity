@@ -12,7 +12,6 @@
 #include <dxcapi.h>
 #include "Input.h"
 
-#include "Sphere.h"
 #include "ViewProjection.h"
 #include "GlobalVariables.h"
 
@@ -43,6 +42,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	// テクスチャマネージャーの初期化
 	TextureManager::GetInstance()->Initialize(dxCommon->GetDevice());
 	TextureManager::Load("white1x1.png");
+
+	Sprite::StaticInitialize(dxCommon->GetDevice());
 
 	Model::StaticInitialize(dxCommon->GetDevice());
 

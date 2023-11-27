@@ -22,6 +22,8 @@ public:
 
 	void SetPosition(const Vector3& position);
 
+	void SetScale(const Vector3& scale);
+
 private:
 	WorldTransform worldTransform_;
 

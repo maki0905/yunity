@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include <memory>
+#include <list>
 
 #include "DirectXCommon.h"
 #include "Input.h"
@@ -10,6 +11,7 @@
 #include "DebugCamera.h"
 #include "CollisionManager.h"
 #include "FollowCamera.h"
+#include "Sprite.h"
 
 #pragma region 新規作成
 #include "Skydome.h"
@@ -20,6 +22,7 @@
 #include "StartBox.h"
 #include "EndBox.h"
 #include "PlayerWeapon.h"
+#include "LockOn.h"
 #pragma endregion
 
 
@@ -95,7 +98,12 @@ private:
 	std::vector<Floor*> floors_;
 	std::vector<MovingFloor*> movingFloors_;
 	std::unique_ptr<Player> player_;
-	//std::unique_ptr<PlayerWeapon> weapon_;
-	std::unique_ptr<Enemy> enemy_;
+	//std::unique_ptr<Enemy> enemy_;
+	std::list<std::unique_ptr<Enemy>> enemies_;
+	std::unique_ptr<LockOn> lockOn_;
+
+
+	Vector3 enemyPos_[5];
+	
 };
 

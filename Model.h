@@ -6,6 +6,7 @@
 #include <Windows.h>
 #include <d3d12.h>
 #include <vector>
+#include <memory>
 #include <wrl.h>
 #include "MathFunction.h"
 
@@ -20,6 +21,8 @@ class Model {
 		kWorldTransform, // ワールド変換行列
 		kViewProjection, // ビュープロジェクション変換行列
 		kTexture,        // テクスチャ
+		kMaterial,       // マテリアル
+		kLight,          // ライティング
 	};
 
 public:
@@ -31,12 +34,19 @@ public:
 	};
 
 	struct MaterialData {
+		Vector4 color;
 		std::string textureFilePath;
 	};
 
 	struct ModelData {
 		std::vector<VertexData> vertices;
 		MaterialData material;
+	};
+
+	struct DirectionalLight {
+		Vector4 color; // ライトの色
+		Vector3 direction; // ライトの向き
+		float intensity; // 輝度
 	};
 
 public:
@@ -78,6 +88,8 @@ public:
 	void Draw(const WorldTransform& worldTransform, const ViewProjection& viewProjection, uint32_t textureHandle);
 	void Draw(const WorldTransform& worldTransform, const ViewProjection& viewProjection);
 
+	void SetMaterial(const Vector4& color);
+
 private:
 	/// <summary>
 	/// ログ
@@ -102,6 +114,10 @@ private:
 	void LoadObjFile(const std::string& filename);
 
 	MaterialData LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& filename);
+
+	void InitializeDirectionalLight();
+
+	void InitializeMaterial();
 
 	/// <summary>
 	/// 定数バッファ生成
@@ -134,7 +150,18 @@ private:
 	D3D12_INDEX_BUFFER_VIEW indexBufferView_;
 	// テクスチャハンドル
 	uint32_t textureHandle = 0;
-
 	D3D12_DEPTH_STENCIL_DESC depthStencilDesc_{};
+
+	// ライティング
+	Microsoft::WRL::ComPtr<ID3D12Resource> directionalLightResource_;
+	DirectionalLight* directionalLightData_;
+
+
+	// マテリアル
+	Microsoft::WRL::ComPtr<ID3D12Resource> materialResource_;
+	MaterialData* materialData_;
+
+	// テクスチャハンドル
+	uint32_t textureHandle_;
 
 };

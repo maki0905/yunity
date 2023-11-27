@@ -75,6 +75,8 @@ protected:
 	OBB obb_;
 	Vector3 size_;
 
+	Quaternion moveQuaternion_;
+
 private:
 	float radius_ = 2.0f;
 	// 衝突属性(自分)

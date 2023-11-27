@@ -5,7 +5,7 @@ void StartBox::Initialize(Model* model)
 	models_ = {model};
 	worldTransform_.Initialize();
 	worldTransform_.translation_.y = 0.75f;
-	worldTransform_.UpdateMatrix();
+	worldTransform_.UpdateMatrix(RotationType::Euler);
 }
 
 void StartBox::Update()

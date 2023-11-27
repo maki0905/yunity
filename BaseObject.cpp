@@ -8,7 +8,7 @@ void BaseObject::Initialize(const std::vector<Model*>& models)
 
 void BaseObject::Update()
 {
-	worldTransform_.UpdateMatrix();
+	worldTransform_.UpdateMatrix(RotationType::Euler);
 }
 
 void BaseObject::Draw(const ViewProjection& viewProjection)

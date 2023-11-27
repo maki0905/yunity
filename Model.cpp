@@ -32,7 +32,7 @@ void Model::InitializeRootSignature()
 	descriptorRange[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
 	descriptorRange[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 
-	D3D12_ROOT_PARAMETER rootParameters[3] = {};
+	D3D12_ROOT_PARAMETER rootParameters[5] = {};
 	rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
 	rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;
 	rootParameters[0].Descriptor.ShaderRegister = 0;
@@ -45,6 +45,14 @@ void Model::InitializeRootSignature()
 	rootParameters[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
 	rootParameters[2].DescriptorTable.pDescriptorRanges = &descriptorRange[0];
 	rootParameters[2].DescriptorTable.NumDescriptorRanges = _countof(descriptorRange);
+
+	rootParameters[3].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV; //CBVを使う
+	rootParameters[3].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL; //PixeShaderで使う
+	rootParameters[3].Descriptor.ShaderRegister = 0; //レジスタ番号0とバインド
+
+	rootParameters[4].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV; // CBVを使う
+	rootParameters[4].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL; // PixelShdaderを使う
+	rootParameters[4].Descriptor.ShaderRegister = 1;
 
 	descriptionRootSignature.pParameters = rootParameters;
 	descriptionRootSignature.NumParameters = _countof(rootParameters);
@@ -211,6 +219,13 @@ void Model::InitializeGraphicsPipeline()
 	D3D12_BLEND_DESC blendDesc{};
 	//すべての色要素を書き込む
 	blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
+	blendDesc.RenderTarget[0].BlendEnable = TRUE;
+	blendDesc.RenderTarget[0].SrcBlend = D3D12_BLEND_SRC_ALPHA;
+	blendDesc.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;
+	blendDesc.RenderTarget[0].DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
+	blendDesc.RenderTarget[0].SrcBlendAlpha = D3D12_BLEND_ONE;
+	blendDesc.RenderTarget[0].BlendOpAlpha = D3D12_BLEND_OP_ADD;
+	blendDesc.RenderTarget[0].DestBlendAlpha = D3D12_BLEND_ZERO;
 
 	//RasiterzerStateの設定
 	D3D12_RASTERIZER_DESC rasterizerDesc{};
@@ -322,6 +337,8 @@ void Model::Initialize()
 	// nullptrチェック
 	assert(device_);
 	CreateMesh();
+	InitializeDirectionalLight();
+	InitializeMaterial();
 }
 
 
@@ -363,16 +380,23 @@ void Model::Draw(const WorldTransform& worldTransform, const ViewProjection& vie
 	// CBVをセット(ビュープロジェクション行列)
 	commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(RoomParameter::kViewProjection), viewProjection.constBuff_->GetGPUVirtualAddress());
 
+	commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(RoomParameter::kMaterial), materialResource_->GetGPUVirtualAddress());
+
+	// CBVをセット(ビュープロジェクション行列)
+	commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(RoomParameter::kLight), directionalLightResource_->GetGPUVirtualAddress());
+
+
 	// SRVをセット
-	/*if (textureHandle == 0) {
-		textureHandle = TextureManager::Load(modelData.material.textureFilePath);
-	}*/
-	textureHandle = TextureManager::Load(modelData.material.textureFilePath);
-	TextureManager::GetInstance()->SetGraphicsRootDescriptorTable(commandList_, static_cast<UINT>(RoomParameter::kTexture),textureHandle);
+	if (textureHandle_ != TextureManager::Load(modelData.material.textureFilePath)) {
+		textureHandle_ = TextureManager::Load(modelData.material.textureFilePath);
+	}
+	TextureManager::GetInstance()->SetGraphicsRootDescriptorTable(commandList_, static_cast<UINT>(RoomParameter::kTexture),textureHandle_);
 
 	commandList_->DrawInstanced(UINT(modelData.vertices.size()), 1, 0, 0);
 
 }
+
+
 
 void Model::LoadObjFile(const std::string& filename)
 {
@@ -479,6 +503,31 @@ Model::MaterialData Model::LoadMaterialTemplateFile(const std::string& directory
 		}
 	}
 	return materialData;
+}
+
+void Model::InitializeDirectionalLight()
+{
+	directionalLightResource_ = CreateBufferResource(sizeof(DirectionalLight));
+	directionalLightData_ = nullptr;
+	directionalLightResource_->Map(0, nullptr, reinterpret_cast<void**>(&directionalLightData_));
+	// デフォルト値
+	directionalLightData_->color = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+	directionalLightData_->direction = Vector3(0.0f, -1.0f, 0.0f);
+	directionalLightData_->intensity = 1.0f;
+
+}
+
+void Model::InitializeMaterial()
+{
+	materialResource_ = CreateBufferResource(sizeof(MaterialData));
+	materialData_ = nullptr;
+	materialResource_->Map(0, nullptr, reinterpret_cast<void**>(&materialData_));
+	materialData_->color = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+}
+
+void Model::SetMaterial(const Vector4& color)
+{
+	materialData_->color = color;
 }
 
 void Model::Log(const std::string& message)

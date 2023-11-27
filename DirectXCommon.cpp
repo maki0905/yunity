@@ -72,7 +72,7 @@ void DirectXCommon::PreDraw() {
 
 	// ビューポートの設定
 	D3D12_VIEWPORT viewport =
-		D3D12_VIEWPORT(0.0f, 0.0f, float(backBufferWidth_), float(backBufferHeight_));
+		D3D12_VIEWPORT(0.0f, 0.0f, float(backBufferWidth_), float(backBufferHeight_), D3D12_MIN_DEPTH, D3D12_MAX_DEPTH);
 	commandList_->RSSetViewports(1, &viewport);
 	// シザリング矩形の設定
 	D3D12_RECT rect = D3D12_RECT(0, 0, backBufferWidth_, backBufferHeight_);

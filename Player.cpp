@@ -4,6 +4,18 @@
 
 #include "Externals/nlohmann/json.hpp"
 
+#include "ImGuiManager.h"
+#include "LockOn.h"
+
+const std::array<Player::ConstAttack, Player::ComboNum>Player::kConstAttacks_ = {
+	{
+	{0, 0, 20, 30, 0.0f, 0.0f, 0.15f},
+	{15, 10, 15, 30, 0.2f, 0.0f, 0.0f},
+	{15, 10, 15, 30, 0.2f, 0.0f, 0.0f},
+	}
+};
+
+
 void Player::Initialize(const std::vector<Model*>& models)
 {
 	input_ = Input::GetInstance();
@@ -15,7 +27,7 @@ void Player::Initialize(const std::vector<Model*>& models)
 	worldTransform_Rarm_.Initialize();
 	worldTransform_Weapon_.Initialize();
 
-	
+
 	worldTransform_Head_.parent_ = &worldTransform_Body_;
 	worldTransform_Head_.translation_.y = 4.4f;
 	worldTransform_Head_.rotation_.y = 3.2f;
@@ -54,18 +66,38 @@ void Player::Initialize(const std::vector<Model*>& models)
 	SetCollisionMask(~kCollisionAttributePlayer);
 	isAlive_ = true;
 
-	workDash_.speed = 10.0f;
-
+	//workDash_.speed = 10.0f;
 	GlobalVariables* globalVariables = GlobalVariables::GetInstance();
 	const char* groupName = "Player";
-	// グループを追加
-	GlobalVariables::GetInstance()->CreateGroup(groupName);
-	globalVariables->AddItem(groupName, "DashSpeed", workDash_.speed);
+	workAttack_.start_Arm[0] = globalVariables->GetVector3Value(groupName, "StartArm_0");
+	workAttack_.start_Arm[1] = globalVariables->GetVector3Value(groupName, "StartArm_1");
+	workAttack_.start_Arm[2] = globalVariables->GetVector3Value(groupName, "StartArm_2");
+	workAttack_.end_Arm[0] = globalVariables->GetVector3Value(groupName, "EndArm_0");
+	workAttack_.end_Arm[1] = globalVariables->GetVector3Value(groupName, "EndArm_1");
+	workAttack_.end_Arm[2] = globalVariables->GetVector3Value(groupName, "EndArm_2");
+	workAttack_.start_Weapon[0] = globalVariables->GetVector3Value(groupName, "StartWeapon_0");
+	workAttack_.start_Weapon[1] = globalVariables->GetVector3Value(groupName, "StartWeapon_1");
+	workAttack_.start_Weapon[2] = globalVariables->GetVector3Value(groupName, "StartWeapon_2");
+	workAttack_.end_Weapon[0] = globalVariables->GetVector3Value(groupName, "EndWeapon_0");
+	workAttack_.end_Weapon[1] = globalVariables->GetVector3Value(groupName, "EndWeapon_1");
+	workAttack_.end_Weapon[2] = globalVariables->GetVector3Value(groupName, "EndWeapon_2");
+	nlohmann::json json;
+	json.clear();
+	
 
 }
 
 void Player::Update()
 {
+	Input::GetInstance()->GetJoystickState(0, joyState_);
+
+	ImGui::Begin("color");
+	ImGui::DragFloat4("color", &color_.x, 0.1f, 0.0f, 1.0f);
+	ImGui::End();
+	for (auto& model : models_) {
+		model->SetMaterial(color_);
+	}
+
 	capsule_.segment.origin = worldTransform_Body_.translation_;
 	if (behaviorRequest_) {
 		// 振る舞いを変更する
@@ -104,13 +136,27 @@ void Player::Update()
 	}
 	capsule_.segment.diff = Subtract(worldTransform_Body_.translation_, capsule_.segment.origin);
 
-	worldTransform_Body_.UpdateMatrix();
-	worldTransform_Head_.UpdateMatrix();
-	worldTransform_Larm_.UpdateMatrix();
-	worldTransform_Rarm_.UpdateMatrix();
-	worldTransform_Weapon_.UpdateMatrix();
+	worldTransform_Body_.quaternion_ = Slerp(worldTransform_Body_.quaternion_, moveQuaternion_, 0.3f);
+	worldTransform_Body_.quaternion_ = Normalize(worldTransform_Body_.quaternion_);
+
+	if (behavior_ != Behavior::kAttack) {
+		worldTransform_Body_.UpdateMatrix(RotationType::Quaternion);
+		worldTransform_Head_.UpdateMatrix(RotationType::Quaternion);
+		worldTransform_Larm_.UpdateMatrix(RotationType::Quaternion);
+		worldTransform_Rarm_.UpdateMatrix(RotationType::Quaternion);
+		worldTransform_Weapon_.UpdateMatrix(RotationType::Quaternion);
+	}
+	else {
+		worldTransform_Body_.UpdateMatrix(RotationType::Quaternion);
+		worldTransform_Head_.UpdateMatrix(RotationType::Euler);
+		worldTransform_Larm_.UpdateMatrix(RotationType::Euler);
+		worldTransform_Rarm_.UpdateMatrix(RotationType::Euler);
+		worldTransform_Weapon_.UpdateMatrix(RotationType::Euler);
+	}
+
 
 	ApplyGlobalVariables();
+	joyStatePre_ = joyState_;
 
 }
 
@@ -140,14 +186,14 @@ void Player::Reset()
 	worldTransform_Rarm_.parent_ = &worldTransform_Body_;
 	worldTransform_Rarm_.translation_ = Vector3(-0.2f, 3.4f, 0.0f);
 
-	worldTransform_Body_.UpdateMatrix();
-	worldTransform_Head_.UpdateMatrix();
-	worldTransform_Larm_.UpdateMatrix();
-	worldTransform_Rarm_.UpdateMatrix();
-	worldTransform_Weapon_.UpdateMatrix();
+	worldTransform_Body_.UpdateMatrix(RotationType::Quaternion);
+	worldTransform_Head_.UpdateMatrix(RotationType::Quaternion);
+	worldTransform_Larm_.UpdateMatrix(RotationType::Quaternion);
+	worldTransform_Rarm_.UpdateMatrix(RotationType::Quaternion);
+	worldTransform_Weapon_.UpdateMatrix(RotationType::Quaternion);
 
 	sphere_ = {
-		.center{worldTransform_.translation_},
+		.center{worldTransform_Body_.translation_},
 		.radius{0.5f}
 	};
 
@@ -203,10 +249,11 @@ void Player::ApplyGlobalVariables()
 
 void Player::BehaviorRootInitialize()
 {
-	
-	worldTransform_Larm_.rotation_.x = 0.0f;
-	worldTransform_Rarm_.rotation_.x = 0.0f;
-	worldTransform_Weapon_.rotation_.x = 0.0f;
+
+	worldTransform_Larm_.rotation_ = { 0.0f, 0.0f, 0.0f };
+	worldTransform_Rarm_.rotation_ = { 0.0f, 0.0f, 0.0f };
+	worldTransform_Weapon_.rotation_ = { 0.0f, 0.0f, 0.0 };
+
 }
 
 void Player::BehaviorRootUpdate()
@@ -223,7 +270,7 @@ void Player::BehaviorRootUpdate()
 			if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_Y) {
 				behaviorRequest_ = Behavior::kAttack;
 			}
-			if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_A) {
+			if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_B) {
 				behaviorRequest_ = Behavior::kDash;
 			}
 
@@ -249,31 +296,35 @@ void Player::BehaviorRootUpdate()
 
 				move = Transform(move, rotate);
 
-				// Y軸周り角度(θy)
-				worldTransform_Body_.rotation_.y = std::atan2(move.x, move.z);
-
-				// 横軸方向の長さを求める
-				float lenghtXZ = Length(Vector3(move.x, 0.0f, move.z));
-				// X軸周りの角度(θx)
-				//worldTransform_Body_.rotation_.x = std::atan2(-move.y, lenghtXZ);
-
 				// 移動成分
 				acceleration_ = Add(acceleration_, move);
-				// 目標角度の算出
-				destinationAngleY_ = std::atan2(move.x, move.z);
+
+				move = Normalize(move);
+				Vector3 cross = Normalize(Cross({ 0.0f, 0.0f, 1.0f }, move));
+				float dot = Dot({ 0.0f, 0.0f, 1.0f }, move);
+				moveQuaternion_ = MakeRotateAxisAngleQuaternion(cross, std::acos(dot));
+			}
+			else if (lockOn_ && lockOn_->ExistTarget()) {
+				// ロックオン座標
+				Vector3 lockOnPos = lockOn_->GetTargetPosition();
+
+				Vector3 sub = Subtract(lockOnPos, Vector3{ worldTransform_Body_.matWorld_.m[3][0], worldTransform_Body_.matWorld_.m[3][1], worldTransform_Body_.matWorld_.m[3][2] });
+
+
+				sub.y = 0.0f;
+				sub = Normalize(sub);
+				Vector3 cross = Normalize(Cross({ 0.0f, 0.0f, 1.0f }, sub));
+				float dot = Dot({ 0.0f, 0.0f, 1.0f }, sub);
+				moveQuaternion_ = MakeRotateAxisAngleQuaternion(cross, std::acos(dot));
 			}
 		}
 	}
-
-	// 最短角度補間
-	worldTransform_Body_.rotation_.y =
-		LerpShortAngle(worldTransform_Body_.rotation_.y, destinationAngleY_, 0.5f);
 
 	if (isLanding_) {
 		acceleration_.y = 0.0f;
 		if (Input::GetInstance()->IsControllerConnected()) {
 			if (Input::GetInstance()->GetJoystickState(0, joyState)) {
-				if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_B) {
+				if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_A) {
 					velocity_.y = jumpValue_;
 				}
 			}
@@ -304,15 +355,15 @@ void Player::BehaviorRootUpdate()
 		isAlive_ = false;
 	}
 
-	worldTransform_Body_.UpdateMatrix();
+	worldTransform_Body_.UpdateMatrix(RotationType::Quaternion);
 	if (worldTransform_Body_.parent_) {
 		Matrix4x4 invers = Inverse(worldTransform_Body_.parent_->matWorld_);
 		Matrix4x4 lMat = Multiply(worldTransform_Body_.matWorld_, invers);
 		Vector3 t = { lMat.m[3][0], lMat.m[3][1], lMat.m[3][2] };
 		Vector3 t2 = { worldTransform_Body_.parent_->matWorld_.m[3][0], worldTransform_Body_.parent_->matWorld_.m[3][1], worldTransform_Body_.parent_->matWorld_.m[3][2] };
 		worldTransform_.translation_ = Add(t, t2);
-		worldTransform_.rotation_ = worldTransform_Body_.rotation_;
-		worldTransform_.UpdateMatrix();
+		worldTransform_.quaternion_ = worldTransform_Body_.quaternion_;
+		worldTransform_.UpdateMatrix(RotationType::Quaternion);
 		worldTransform_Head_.parent_ = &worldTransform_;
 		worldTransform_Larm_.parent_ = &worldTransform_;
 		worldTransform_Rarm_.parent_ = &worldTransform_;
@@ -324,13 +375,8 @@ void Player::BehaviorRootUpdate()
 		worldTransform_Rarm_.parent_ = &worldTransform_Body_;
 		worldTransform_Weapon_.parent_ = &worldTransform_Body_;
 	}
-	worldTransform_Head_.UpdateMatrix();
-	worldTransform_Larm_.UpdateMatrix();
-	worldTransform_Rarm_.UpdateMatrix();
-	worldTransform_Weapon_.UpdateMatrix();
 
 	sphere_.center = { worldTransform_Body_.matWorld_.m[3][0], worldTransform_Body_.matWorld_.m[3][1], worldTransform_Body_.matWorld_.m[3][2] };
-	//obb_.center = { worldTransform_Weapon_.matWorld_.m[3][0], worldTransform_Weapon_.matWorld_.m[3][1], worldTransform_Weapon_.matWorld_.m[3][2] };
 	isLanding_ = false;
 	isMove_ = false;
 
@@ -339,20 +385,34 @@ void Player::BehaviorRootUpdate()
 void Player::BehaviorAttackInitialize()
 {
 	workAttack_.parameter = 0.0f;
+	workAttack_.recoveryTimer = 0;
+	workAttack_.comboIndex = 0;
 
 }
 
 void Player::BehaviorAttackUpdate()
 {
-	const float arm_start = 2.5f;
-	const float arm_end = 5.4f;
-	const float weapon_start = -0.2f;
-	const float weapon_end = 1.574f;
-	worldTransform_Larm_.rotation_.x = arm_start + (arm_end - arm_start) * workAttack_.parameter;
-	worldTransform_Rarm_.rotation_.x = worldTransform_Larm_.rotation_.x;
-	worldTransform_Weapon_.rotation_.x = weapon_start + (weapon_end - weapon_start) * workAttack_.parameter;
+
+	worldTransform_Larm_.rotation_ = Lerp(workAttack_.start_Arm[workAttack_.comboIndex], workAttack_.end_Arm[workAttack_.comboIndex], workAttack_.parameter);
+	worldTransform_Rarm_.rotation_ = worldTransform_Larm_.rotation_;
+	worldTransform_Weapon_.rotation_ = Lerp(workAttack_.start_Weapon[workAttack_.comboIndex], workAttack_.end_Weapon[workAttack_.comboIndex], workAttack_.parameter);
+
 	if (workAttack_.parameter < 1.0f) {
+		if (workAttack_.parameter != 0.0f) {
+			if (workAttack_.comboIndex < ComboNum) {
+				if ((joyState_.Gamepad.wButtons & XINPUT_GAMEPAD_Y) && !(joyStatePre_.Gamepad.wButtons & XINPUT_GAMEPAD_Y)) {
+					if (workAttack_.comboIndex == 0) {
+						workAttack_.comboNext = true;
+					}
+					else if (workAttack_.comboIndex == 1) {
+						workAttack_.comboNext = true;
+					}
+				}
+			}
+		}
 		workAttack_.parameter += 0.04f;
+
+
 		Vector3 rotation = worldTransform_Weapon_.rotation_;
 		rotation.y = worldTransform_Body_.rotation_.y;
 		Matrix4x4 rotate = MakeRotateXYZMatrix(rotation);
@@ -365,6 +425,98 @@ void Player::BehaviorAttackUpdate()
 		obb_.orientations[2].x = rotate.m[2][0];
 		obb_.orientations[2].y = rotate.m[2][1];
 		obb_.orientations[2].z = rotate.m[2][2];
+	}
+	else if (workAttack_.comboNext) {
+		workAttack_.comboNext = false;
+		workAttack_.comboIndex++;
+
+		workAttack_.parameter = 0.0f;
+
+		workAttack_.anticipationTimer = 0;
+		workAttack_.chargeTimer = 0;
+		workAttack_.recoveryTimer = 0;
+		workAttack_.swingTimer = 0;
+
+		const float threshold = 0.7f;
+		bool isMoving = false;
+
+		// 速さ
+		float speed = 0.3f;
+
+		// 移動量
+		Vector3 move = { (float)joyState_.Gamepad.sThumbLX, 0, (float)joyState_.Gamepad.sThumbLY };
+
+		if (Length(move) > threshold) {
+			isMoving = true;
+		}
+
+		if (lockOn_ && lockOn_->ExistTarget()) {
+			// ロックオン座標
+			Vector3 lockOnPos = lockOn_->GetTargetPosition();
+
+			Vector3 sub = Subtract(lockOnPos, Vector3{ worldTransform_Body_.matWorld_.m[3][0], worldTransform_Body_.matWorld_.m[3][1], worldTransform_Body_.matWorld_.m[3][2] });
+
+			// 距離
+			float distance = Length(sub);
+			// 距離しきい値
+			const float threshold = 0.2f;
+
+			// しきい値より離れているときのみ
+			if (distance > threshold) {
+				// Y軸回り角度
+				sub.y = 0.0f;
+				sub = Normalize(sub);
+				Vector3 cross = Normalize(Cross({ 0.0f, 0.0f, 1.0f }, sub));
+				float dot = Dot({ 0.0f, 0.0f, 1.0f }, sub);
+				moveQuaternion_ = MakeRotateAxisAngleQuaternion(cross, std::acos(dot));
+
+				//worldTransform_Body_.rotation_.y = std::atan2(sub.x, sub.z);
+
+				// しきい値を超える速さはら補正する
+				if (speed > distance - threshold) {
+					// ロックオン対象へのめり込み防止
+					speed = distance - threshold;
+				}
+
+
+			}
+
+		}
+
+
+		if (isMoving) {
+
+			// 移動量に速さを反映
+			move = Multiply(speed, Normalize(move));
+
+			Matrix4x4 rotate = MakeRotateYMatrix(viewProjection_->rotation_.y);
+
+			move = Transform(move, rotate);
+
+			// 移動成分
+			acceleration_ = Add(acceleration_, move);
+
+			move = Normalize(move);
+			Vector3 cross = Normalize(Cross({ 0.0f, 0.0f, 1.0f }, move));
+			float dot = Dot({ 0.0f, 0.0f, 1.0f }, move);
+			moveQuaternion_ = MakeRotateAxisAngleQuaternion(cross, std::acos(dot));
+			
+
+			
+		}
+
+		sphere_.center = { worldTransform_Body_.matWorld_.m[3][0], worldTransform_Body_.matWorld_.m[3][1], worldTransform_Body_.matWorld_.m[3][2] };
+
+	}
+	else if (++workAttack_.recoveryTimer < kConstAttacks_[workAttack_.comboIndex].recoveryTime) {
+		if ((joyState_.Gamepad.wButtons & XINPUT_GAMEPAD_Y) && !(joyStatePre_.Gamepad.wButtons & XINPUT_GAMEPAD_Y)) {
+			if (workAttack_.comboIndex == 0) {
+				workAttack_.comboNext = true;
+			}
+			else if (workAttack_.comboIndex == 1) {
+				workAttack_.comboNext = true;
+			}
+		}
 	}
 	else {
 		behaviorRequest_ = Behavior::kRoot;
@@ -396,25 +548,13 @@ void Player::BehaviorDashUpdate()
 {
 
 	// 移動量に速さを反映
-	Vector3 move(0.0f, 0.0f, workDash_.speed);
+	Vector3 move(0.0f, 2.0f, workDash_.speed);
 
 	move = TransformNormal(move, worldTransform_Body_.matWorld_);
 
-	//Matrix4x4 rotate = MakeRotateYMatrix(viewProjection_->rotation_.y);
-
-	//move = Transform(move, rotate);
-
-	//// Y軸周り角度(θy)
-	//worldTransform_.rotation_.y = std::atan2(move.x, move.z);
-
-	//// 横軸方向の長さを求める
-	//float lenghtXZ = Length(Vector3(move.x, 0.0f, move.z));
-	//// X軸周りの角度(θx)
-	//worldTransform_.rotation_.x = std::atan2(-move.y, lenghtXZ);
-
 	// 移動
 	worldTransform_Body_.translation_ = Add(worldTransform_Body_.translation_, move);
-	
+
 	isLanding_ = false;
 	isMove_ = false;
 

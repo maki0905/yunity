@@ -41,13 +41,14 @@ void ViewProjection::CreateConstBuffer() {
 
 void ViewProjection::Map() {
     // 定数バッファとのデータリンク
-    HRESULT result = constBuff_->Map(0, nullptr, (void**)&constMap);
+    HRESULT result = constBuff_->Map(0, nullptr, (void**)&constMap_);
     assert(SUCCEEDED(result));
 }
 
 void ViewProjection::UpdateMatrix() {
     // ビュー行列の生成
     matView = MakeViewMatrix(rotation_, translation_);
+    //matView = MakeViewMatrix(quaternion_, translation_);
 
     // 平行投影による射影行列の生成
     // constMap->mat = XMMatrixOrthographicOffCenterLH(
@@ -58,6 +59,6 @@ void ViewProjection::UpdateMatrix() {
     matProjection = MakePerspectiveFovMatrix(fovAngleY, aspectRatio, nearZ, farZ);
 
     // 定数バッファに書き込み
-    constMap->view = matView;
-    constMap->projection = matProjection;
+    constMap_->view = matView;
+    constMap_->projection = matProjection;
 }

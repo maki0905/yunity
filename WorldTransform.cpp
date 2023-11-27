@@ -8,7 +8,8 @@ using namespace DirectX;
 void WorldTransform::Initialize() {
     CreateConstBuffer();
     Map();
-    UpdateMatrix();
+    TransferMatrix();
+    quaternion_ = IndentityQuaternion();
 }
 
 void WorldTransform::CreateConstBuffer() {
@@ -42,32 +43,30 @@ void WorldTransform::Map() {
     assert(SUCCEEDED(result));
 }
 
-void WorldTransform::UpdateMatrix() {
+void WorldTransform::UpdateMatrix(RotationType type) {
 
-    if (arbitrary_) {
-        matWorld_ = MakeAffineMatrix(scale_, arbitraryAxisRotation_, translation_);
-        if (parent_) {
-            Matrix4x4 matWorld;
-            if (parent_->arbitrary_) {
-                matWorld = MakeAffineMatrix(parent_->scale_, parent_->arbitraryAxisRotation_, parent_->translation_);
-            }
-            else {
-                matWorld = MakeAffineMatrix(parent_->scale_, parent_->rotation_, parent_->translation_);
-            }
-            matWorld_ = Multiply(matWorld_, matWorld);
-        }
-    }
-    else {
+    switch (type)
+    {
+    case RotationType::Euler:
         // スケール、回転、平行移動を合成して行列を計算する
         matWorld_ = MakeAffineMatrix(scale_, rotation_, translation_);
-        // 親があれば親のワールド行列を掛ける
-        if (parent_) {
-            Matrix4x4 matWorld =
-                MakeAffineMatrix(parent_->scale_, parent_->rotation_, parent_->translation_);
-            matWorld_ = Multiply(matWorld_, matWorld);
-        }
+        break;
+    case RotationType::Quaternion:
+        // スケール、回転、平行移動を合成して行列を計算する
+        matWorld_ = MakeAffineMatrix(scale_,quaternion_, translation_);
+        break;
     }
 
+    // 親があれば親のワールド行列を掛ける
+    if (parent_) {
+        matWorld_ = Multiply(matWorld_, parent_->matWorld_);
+    }
+
+    TransferMatrix();
+}
+
+void WorldTransform::TransferMatrix()
+{
     // 定数バッファに書き込み
     constMap->matWorld = matWorld_;
 }

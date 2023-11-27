@@ -8,7 +8,7 @@ void Skydome::Initialize(Model* model)
 
 	worldTransform_.Initialize();
 	worldTransform_.scale_ = { 400.0f, 400.0f, 400.0f };
-	worldTransform_.UpdateMatrix();
+	worldTransform_.UpdateMatrix(RotationType::Euler);
 }
 
 void Skydome::Update()

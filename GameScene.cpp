@@ -5,10 +5,12 @@
 
 GameScene::GameScene(){}
 
-GameScene::~GameScene(){}
+GameScene::~GameScene(){
+}
 
 void GameScene::Initialize()
 {
+
 	dxCommon_ = DirectXCommon::GetInstance();
 	viewProjection_.Initialize();
 
@@ -16,6 +18,9 @@ void GameScene::Initialize()
 	debugCamera_ = std::make_unique<DebugCamera>();
 
 	collisionManager_ = std::make_unique<CollisionManager>();
+
+	lockOn_ = std::make_unique<LockOn>();
+	lockOn_->Initalize();
 
 	// モデル
 	skydomeModel_.reset(Model::Create("skydome"));
@@ -64,7 +69,8 @@ void GameScene::Initialize()
 		floors_.emplace_back(floor_);
 	}
 	floors_[0]->SetPosition({ 0.0f, 0.0f, 0.0f });
-	floors_[1]->SetPosition({ 0.0f, 0.0f, 100.0f });
+	floors_[1]->SetScale(Vector3{ 2.0f, 0.5f, 2.0f });
+	floors_[1]->SetPosition({ -15.0f, 0.0f, 115.0f });
 	floors_[2]->SetPosition({ 100.0f, 0.0f, 100.0f });
 
 
@@ -85,8 +91,24 @@ void GameScene::Initialize()
 	//weapon_ = std::make_unique<PlayerWeapon>();
 	//weapon_->Initialize(weaponModels);
 	// 敵
-	enemy_ = std::make_unique<Enemy>();
-	enemy_->Initialize(enemyModles);
+
+	enemies_.clear();
+	enemyPos_[0] = Vector3{ 0.0f, 2.0f, 100.0f };
+	enemyPos_[1] = Vector3{ 0.0f, 2.0f, 130.0f };
+	enemyPos_[2] = Vector3{ -30.0f, 2.0f, 100.0f };
+	enemyPos_[3] = Vector3{ -30.0f, 2.0f, 130.0f };
+	enemyPos_[4] = Vector3{ -15.0f, 2.0f, 115.0f };
+
+	for (int i = 0; i < 5; i++) {
+		Enemy* enemy = new Enemy();
+		enemy->Initialize(enemyModles);
+		enemy->SetTranslation(enemyPos_[i]);
+		enemies_.emplace_back(enemy);
+	}
+
+
+	/*enemy_ = std::make_unique<Enemy>();
+	enemy_->Initialize(enemyModles);*/
 
 	startBox_ = std::make_unique<StartBox>();
 	startBox_->Initialize(startBoxModel_.get());
@@ -113,8 +135,13 @@ void GameScene::Update()
 		/*if (weapon_->GetIsActive()) {
 			collisionManager_->SetCollider(weapon_.get());
 		}*/
-		if (enemy_->GetIsActive()) {
+		/*if (enemy_->GetIsActive()) {
 			collisionManager_->SetCollider(enemy_.get());
+		}*/
+		for (auto& enemy : enemies_) {
+			if (!enemy->GetIsDestroy()) {
+				collisionManager_->SetCollider(enemy.get());
+			}
 		}
 		for (auto& floor_ : floors_) {
 			collisionManager_->SetCollider(floor_);
@@ -131,9 +158,19 @@ void GameScene::Update()
 		}
 		player_->Update();
 		//weapon_->Update();
-		enemy_->Update();
+		//enemy_->Update();
 
+		for (auto& enemy : enemies_) {
+			enemy->Update();
+		}
+
+		if (lockOn_->ExistTarget()) {
+			followCamera_->SetLockOn(lockOn_.get());
+			player_->SetLockOn(lockOn_.get());
+		}
 		followCamera_->Update();
+
+		lockOn_->Update(enemies_, viewProjection_);
 
 #ifdef _DEBUG
 		if (Input::GetInstance()->TriggerKey(DIK_LSHIFT)) {
@@ -163,17 +200,17 @@ void GameScene::Draw()
 	ID3D12GraphicsCommandList* commandList = dxCommon_->GetCommandList();
 
 #pragma region 背景スプライト描画
-	//// 背景スプライト描画前処理
-	//Sprite::PreDraw(commandList);
+	// 背景スプライト描画前処理
+	Sprite::PreDraw(commandList);
 
-	///// <summary>
-	///// ここに背景スプライトの描画処理を追加できる
-	///// </summary>
+	/// <summary>
+	/// ここに背景スプライトの描画処理を追加できる
+	/// </summary>
 
-	//// スプライト描画後処理
-	//Sprite::PostDraw();
-	//// 深度バッファクリア
-	//dxCommon_->ClearDepthBuffer();
+	// スプライト描画後処理
+	Sprite::PostDraw();
+	// 深度バッファクリア
+	dxCommon_->ClearDepthBuffer();
 #pragma endregion
 
 #pragma region 3Dオブジェクト描画
@@ -191,7 +228,11 @@ void GameScene::Draw()
 	}
 	endBox_->Draw(viewProjection_);
 	startBox_->Draw(viewProjection_);
-	enemy_->Draw(viewProjection_);
+	//enemy_->Draw(viewProjection_);
+
+	for (auto& enemy : enemies_) {
+		enemy->Draw(viewProjection_);
+	}
 	player_->Draw(viewProjection_);
 	//weapon_->Draw(viewProjection_);
 	/// </summary>
@@ -201,18 +242,19 @@ void GameScene::Draw()
 #pragma endregion
 
 #pragma region 前景スプライト描画
-	//// 前景スプライト描画前処理
-	//Sprite::PreDraw(commandList);
+	// 前景スプライト描画前処理
+	Sprite::PreDraw(commandList);
 
-	///// <summary>
-	///// ここに前景スプライトの描画処理を追加できる
-	///// </summary>
+	/// <summary>
+	/// ここに前景スプライトの描画処理を追加できる
+	lockOn_->Draw();
+	/// </summary>
 
-	//// デバッグテキストの描画
+	// デバッグテキストの描画
 	//debugText_->DrawAll(commandList);
-	////
-	//// スプライト描画後処理
-	//Sprite::PostDraw();
+	//
+	// スプライト描画後処理
+	Sprite::PostDraw();
 
 #pragma endregion
 
@@ -221,5 +263,8 @@ void GameScene::Draw()
 void GameScene::Reset()
 {
 	player_->Reset();
-	enemy_->Reset();
+	for (auto& enemy : enemies_) {
+		enemy->Reset();
+	}
+	//enemy_->Reset();
 }

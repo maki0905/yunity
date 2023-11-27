@@ -5,7 +5,7 @@ void EndBox::Initialize(Model* model)
 	models_ = {model};
 	worldTransform_.Initialize();
 	worldTransform_.translation_ = { 100.0f, 0.75f, 100.0f };
-	worldTransform_.UpdateMatrix();
+	worldTransform_.UpdateMatrix(RotationType::Euler);
 
 	size_ = { 1.5f, 0.75f, 1.5f };
 

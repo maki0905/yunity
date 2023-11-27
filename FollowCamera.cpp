@@ -1,6 +1,7 @@
 ﻿#include "FollowCamera.h"
 #include "GlobalVariables.h"
 #include "Externals/nlohmann/json.hpp"
+#include "LockOn.h"
 
 void FollowCamera::Initialize(const ViewProjection& viewProjection)
 {
@@ -22,8 +23,26 @@ void FollowCamera::Update()
 {
 	// ゲームパッドの状態を得る変数(XINPUT)
 	XINPUT_STATE joyState;
-	// ジョイスティック状態取得
-	if (Input::GetInstance()->IsControllerConnected()) {
+	
+	if (lockOn_) {
+		// ロックオン座標
+		Vector3 lockOnPos = lockOn_->GetTargetPosition();
+
+		// 追従対象からロックオン対象へのベクトル
+		Vector3 sub = Subtract(lockOnPos, target_->translation_);
+
+		/*sub.y = 0.0f;
+		sub = Normalize(sub);
+		float dot = Dot({ 0.0f, 0.0f, 1.0f }, sub);
+		viewProjection_.rotation_.y = std::acosf(dot);*/
+
+		// Y軸回り角度
+		viewProjection_.rotation_.y = std::atan2(sub.x, sub.z);
+
+		lockOn_ = nullptr;
+
+	}
+	else if (Input::GetInstance()->IsControllerConnected()) {
 		if (Input::GetInstance()->GetJoystickState(0, joyState)) {
 			// 速さ
 			const float speed = 0.000001f;
@@ -38,6 +57,7 @@ void FollowCamera::Update()
 			// 最短角度補間
 			viewProjection_.rotation_.y =
 				LerpShortAngle(viewProjection_.rotation_.y, destinationAngleY_, delayAmount_);
+			
 		}
 	}
 
