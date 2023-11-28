@@ -91,9 +91,7 @@ void Player::Update()
 {
 	Input::GetInstance()->GetJoystickState(0, joyState_);
 
-	ImGui::Begin("color");
-	ImGui::DragFloat4("color", &color_.x, 0.1f, 0.0f, 1.0f);
-	ImGui::End();
+	
 	for (auto& model : models_) {
 		model->SetMaterial(color_);
 	}

@@ -42,6 +42,8 @@ public:
 
 	bool GetIsDestroy() const { return isDestroy_; }
 
+	bool GetSwich(){ return particleSwich_; }
+
 	Vector3 GetModelCenter() const ;
 
 
@@ -70,6 +72,8 @@ private:
 	bool isDestroy_;
 	bool isActive_;
 	bool isHit_;
+
+	bool particleSwich_;
 
 	uint32_t HP_ = 3;
 

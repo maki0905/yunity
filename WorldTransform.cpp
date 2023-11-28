@@ -8,6 +8,7 @@ using namespace DirectX;
 void WorldTransform::Initialize() {
     CreateConstBuffer();
     Map();
+    matWorld_ = MakeIdentity4x4();
     TransferMatrix();
     quaternion_ = IndentityQuaternion();
 }

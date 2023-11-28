@@ -32,6 +32,7 @@ void Enemy::Initialize(const std::vector<Model*>& models)
 	isActive_ = true;
 	isDestroy_ = false;
 	isHit_ = false;
+	particleSwich_ = false;
 }
 
 void Enemy::Update()
@@ -54,8 +55,8 @@ void Enemy::Update()
 		else {
 			movePre_ = Multiply(1.0f, Normalize(movePre_));
 			workDestroy_.angle += 1.0f;
-			//worldTransform_Body_.translation_ = Add(worldTransform_Body_.translation_, movePre_);
-			//moveQuaternion_ = MakeRotateAxisAngleQuaternion({ 0.0f, 1.0f, 0.0f }, workDestroy_.angle);
+			worldTransform_Body_.translation_ = Add(worldTransform_Body_.translation_, movePre_);
+			moveQuaternion_ = MakeRotateAxisAngleQuaternion({ 0.0f, 1.0f, 0.0f }, workDestroy_.angle);
 			color.w = (effectTime - workDestroy_.parameter) / effectTime;
 		}
 	}
@@ -72,6 +73,12 @@ void Enemy::Update()
 	sphere_.center = worldTransform_Body_.translation_;
 
 	if (isHit_) {
+		if (coolTime_ == 20) {
+			particleSwich_ = true;
+		}
+		else {
+			particleSwich_ = false;
+		}
 		coolTime_--;
 		if (coolTime_ == 0) {
 			isHit_ = false;
@@ -83,11 +90,7 @@ void Enemy::Update()
 		model->SetMaterial(color);
 	}
 
-	ImGui::Begin("Enemy");
-	ImGui::Text("HP : %o", HP_);
-	ImGui::Text("coolTime : %d", coolTime_);
-	ImGui::DragFloat4("color", &color.x, 0.01f);
-	ImGui::End();
+	
 
 }
 
@@ -108,6 +111,7 @@ void Enemy::OnCollision(uint32_t collisionMask)
 	if (!isHit_) {
 		HP_--;
 		isHit_ = true;
+		particleSwich_ = true;
 	}
 	if (HP_ <= 0) {
 		isDestroy_ = true;
@@ -143,6 +147,7 @@ void Enemy::Reset()
 	HP_ = 3;
 	coolTime_ = 20;
 	color = { 1.0f, 1.0f, 1.0f, 1.0f };
+	particleSwich_ = false;
 }
 
 void Enemy::SetTranslation(const Vector3& translation)

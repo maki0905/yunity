@@ -1,10 +1,12 @@
 ﻿#pragma once
 #include <memory>
 #include <list>
+#include <iostream>
 
 #include "DirectXCommon.h"
 #include "Input.h"
 #include "Model.h"
+#include "Pirticle.h"
 #include "SafeDelete.h"
 #include "ViewProjection.h"
 #include "WorldTransform.h"
@@ -23,6 +25,7 @@
 #include "EndBox.h"
 #include "PlayerWeapon.h"
 #include "LockOn.h"
+#include "Explosion.h"
 #pragma endregion
 
 
@@ -91,6 +94,8 @@ private:
 	std::unique_ptr<Model> enemyModel_Larm_;
 	std::unique_ptr<Model> enemyModel_Rarm_;
 
+	std::unique_ptr<Model> particle_;
+
 	// オブジェクト
 	std::unique_ptr<Skydome> skydome_;
 	std::unique_ptr<StartBox> startBox_;
@@ -104,6 +109,8 @@ private:
 
 
 	Vector3 enemyPos_[5];
+	std::unique_ptr<Pirticle> pirticle_;
+	std::list<Explosion*> explosion_;
 	
 };
 

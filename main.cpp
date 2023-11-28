@@ -4,6 +4,7 @@
 #include "TextureManager.h"
 #include "ImGuiManager.h"
 #include "Model.h"
+#include "Pirticle.h"
 #include "Vector4.h"
 #include "CreateBufferResource.h"
 #include "WorldTransform.h"
@@ -46,6 +47,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Sprite::StaticInitialize(dxCommon->GetDevice());
 
 	Model::StaticInitialize(dxCommon->GetDevice());
+	//Pirticle::StaticInitialize(dxCommon->GetDevice());
 
 #pragma endregion
 

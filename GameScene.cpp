@@ -123,6 +123,16 @@ void GameScene::Initialize()
 
 	player_->SetViewProjection(followCamera_->GetViewProjection());
 
+	particle_.reset(Model::Create("particle"));
+	explosion_.clear();
+
+
+	/*pirticle_ = std::make_unique<Pirticle>();
+	pirticle_.reset(Pirticle::Create("Resurces/uvChacker.png"));*/
+
+	//explosion_ = std::make_unique<Explosion>();
+	//explosion_->Initialize(/*pirticle_.get()*/);
+	
 }
 
 void GameScene::Update()
@@ -162,6 +172,17 @@ void GameScene::Update()
 
 		for (auto& enemy : enemies_) {
 			enemy->Update();
+			if (enemy->GetSwich()) {
+				for (int i = 0; i < 6; i++) {
+
+					Explosion* explosion = new Explosion();
+					float angle = 60.0f * float(i);
+					Vector3 velocity = { std::cosf(angle), 0.5f, std::sinf(angle) };
+
+					explosion->Initialize(particle_.get(), enemy->GetWorldPosition(), velocity);
+					explosion_.push_back(explosion);
+				}
+			}
 		}
 
 		if (lockOn_->ExistTarget()) {
@@ -171,6 +192,25 @@ void GameScene::Update()
 		followCamera_->Update();
 
 		lockOn_->Update(enemies_, viewProjection_);
+
+		for (auto& explosion : explosion_) {
+			explosion->Update();
+
+
+			
+		}
+
+		
+
+		explosion_.remove_if([](Explosion* explosion) {
+			if (explosion->GetIsDead()) {
+				delete explosion;
+				return true;
+			}
+			return false;
+		});
+
+		
 
 #ifdef _DEBUG
 		if (Input::GetInstance()->TriggerKey(DIK_LSHIFT)) {
@@ -190,7 +230,7 @@ void GameScene::Update()
 	else {
 		Reset();
 	}
-	
+	//viewProjection_.UpdateMatrix();
 
 }
 
@@ -211,6 +251,13 @@ void GameScene::Draw()
 	Sprite::PostDraw();
 	// 深度バッファクリア
 	dxCommon_->ClearDepthBuffer();
+#pragma endregion
+
+#pragma region パーティクル
+	/*Pirticle::PreDraw(commandList);
+	explosion_->Draw(viewProjection_);
+	Pirticle::PostDraw();
+	dxCommon_->ClearDepthBuffer();*/
 #pragma endregion
 
 #pragma region 3Dオブジェクト描画
@@ -234,11 +281,15 @@ void GameScene::Draw()
 		enemy->Draw(viewProjection_);
 	}
 	player_->Draw(viewProjection_);
+
+	for (auto& explosion : explosion_) {
+		explosion->Draw(viewProjection_);
+	}
 	//weapon_->Draw(viewProjection_);
 	/// </summary>
-
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
+
 #pragma endregion
 
 #pragma region 前景スプライト描画
