@@ -6,7 +6,7 @@
 #include <dxgi1_6.h>
 #include <wrl.h>
 #include <vector>
-
+#include <chrono>
 #include "WinApp.h"
 
 
@@ -134,6 +134,11 @@ private: // メンバ関数
 	Microsoft::WRL::ComPtr<ID3D12Resource> CreateDepthStencilTextureResource();
 
 	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE heapType, UINT numDescriptors, bool shaderVisible);
+
+	void InitializeFixFPS();
+	void UpdateFixFPS();
+
+	std::chrono::steady_clock::time_point reference_;
 
 	/// <summary>
 	/// フェンス生成
