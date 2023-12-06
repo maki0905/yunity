@@ -7,7 +7,9 @@
 #include "Matrix4x4.h"
 #include "Quaternion.h"
 
-const float M_PI = 3.14159265359f;
+struct ConstParameter {
+    static const float PI;
+};
 
 // ベクトルの加法
 Vector3 Add(const Vector3& v1, const Vector3& v2);

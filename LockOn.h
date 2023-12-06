@@ -5,6 +5,8 @@
 #include "Sprite.h"
 #include "ViewProjection.h"
 #include "Input.h"
+#include "MathFunction.h"
+
 
 class Enemy;
 
@@ -59,7 +61,7 @@ private:
 
 	LockOnMode mode_ = LockOnMode::kAuto;
 
-	float kDegrreToRadian = M_PI / 180.0f;
+	float kDegrreToRadian = ConstParameter::PI / 180.0f;
 
 	// 最小距離
 	float minDistace_ = 10.0f;

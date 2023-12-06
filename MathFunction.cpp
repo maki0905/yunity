@@ -6,6 +6,11 @@
 #include <math.h>
 #include <ranges>
 
+
+const float ConstParameter::PI = 3.14159265359f;
+
+//const float PI = 3.14159265359f;
+
 // ベクトルの加法
 Vector3 Add(const Vector3& v1, const Vector3& v2) {
 	Vector3 result;
@@ -572,7 +577,7 @@ Vector3 Project(const Vector3& v1, const Vector3& v2) {
 
 float ConvertToRadians(float degree)
 {
-	float result = degree * float(M_PI) / 180.0f;
+	float result = degree * float(ConstParameter::PI) / 180.0f;
 	return result;
 }
 
@@ -580,13 +585,13 @@ float LerpShortAngle(float a, float b, float t) {
 	// 角度差分を求める
 	float diff = b - a;
 
-	diff = std::fmodf(diff, float(M_PI));
+	diff = std::fmodf(diff, float(ConstParameter::PI));
 
-	if (diff > M_PI) {
-		diff = diff - float(M_PI);
+	if (diff > ConstParameter::PI) {
+		diff = diff - float(ConstParameter::PI);
 	}
-	else if (diff < -M_PI) {
-		diff = diff + float(M_PI);
+	else if (diff < -ConstParameter::PI) {
+		diff = diff + float(ConstParameter::PI);
 
 	}
 

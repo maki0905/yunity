@@ -1,7 +1,7 @@
 ﻿#define _USE_MATH_DEFINES
 #include <math.h>
 #include "Sphere.h"
-#include "Novice.h"
+//#include "Novice.h"
 #include "MathFunction.h"
 
 void DrawSphere(const Sphere& sphere, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color)
@@ -30,8 +30,8 @@ void DrawSphere(const Sphere& sphere, const Matrix4x4& viewProjectionMatrix, con
 			ndcVertex = Transform(Add(c, center), viewProjectionMatrix);
 			c = Transform(ndcVertex, viewportMatrix);
 			// ab, acで線を引く
-			Novice::DrawLine(int(a.x), int(a.y), int(b.x), int(b.y), color);
-			Novice::DrawLine(int(a.x), int(a.y), int(c.x), int(c.y), color);
+			/*Novice::DrawLine(int(a.x), int(a.y), int(b.x), int(b.y), color);
+			Novice::DrawLine(int(a.x), int(a.y), int(c.x), int(c.y), color);*/
 		}
 
 	}

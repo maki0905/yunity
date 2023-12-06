@@ -4,6 +4,7 @@
 #include <cassert>
 #include <vector>
 #include <wrl.h>
+#include <thread>
 
 #pragma comment(lib, "d3d12.lib")
 #pragma comment(lib, "dxgi.lib")
