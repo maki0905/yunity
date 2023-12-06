@@ -1,11 +1,11 @@
-﻿#pragma once
+#pragma once
 #include <Windows.h>
 #include <cstdint>
 
 /// <summary>
 /// ウィンドウズアプリケーション
 /// </summary>
-class WinApp {
+class WindowsAPI {
 public: // 静的メンバ変数
 	// ウィンドウサイズ
 	static const int kWindowWidth = 1280; // 横幅
@@ -24,7 +24,7 @@ public: // 静的メンバ関数
 	/// シングルトンインスタンスの取得
 	/// </summary>
 	/// <returns>シングルトンインスタンス</returns>
-	static WinApp* GetInstance();
+	static WindowsAPI* GetInstance();
 
 	/// <summary>
 	/// ウィンドウプロシージャ
@@ -92,10 +92,10 @@ public: // メンバ関数
 	SizeChangeMode GetSizeChangeMode() const;
 
 private: // メンバ関数
-	WinApp() = default;
-	~WinApp() = default;
-	WinApp(const WinApp&) = delete;
-	const WinApp& operator=(const WinApp&) = delete;
+	WindowsAPI() = default;
+	~WindowsAPI() = default;
+	WindowsAPI(const WindowsAPI&) = delete;
+	const WindowsAPI& operator=(const WindowsAPI&) = delete;
 private: // メンバ変数
 	// Window関連
 	HWND hwnd_ = nullptr;   // ウィンドウハンドル
@@ -106,3 +106,4 @@ private: // メンバ変数
 	SizeChangeMode sizeChangeMode_ = SizeChangeMode::kNormal;
 	float aspectRatio_;
 };
+
