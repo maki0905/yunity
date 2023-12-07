@@ -4,6 +4,7 @@
 #include "externals/DirectXTex/DirectXTex.h"
 #include <d3dcompiler.h>
 #include <dxcapi.h>
+
 #pragma comment(lib, "d3dcompiler.lib")
 
 Shader* Shader::GetInstance()
@@ -29,20 +30,22 @@ void Shader::DXCInitialize()
 
 }
 
-IDxcBlob* Shader::Get(ShaderName name)
+ID3DBlob* Shader::Get(Name name)
 {
-
+	ID3DBlob* result = nullptr;
 	switch (name)
 	{
-	case Shader::ShaderName::BasicVS:
-		return basicVS_.Get();
+	case Shader::Name::BasicVS:
+		result =  basicVS_;
 		break;
-	case Shader::ShaderName::BasicPS:
-		return basicPS_.Get();
+	case Shader::Name::BasicPS:
+		result =  basicPS_;
 		break;
 	default:
 		break;
 	}
+
+	return result;
 
 }
 
@@ -54,7 +57,7 @@ void Shader::ShaderCompile()
 	assert(basicPS_ != nullptr);
 }
 
-IDxcBlob* Shader::CompileShader(const std::wstring& filePath, const wchar_t* profile)
+ID3DBlob* Shader::CompileShader(const std::wstring& filePath, const wchar_t* profile)
 {
 	//hlslファイルを読む
 	IDxcBlobEncoding* shaderSource = nullptr;
@@ -91,13 +94,13 @@ IDxcBlob* Shader::CompileShader(const std::wstring& filePath, const wchar_t* pro
 	IDxcBlobUtf8* shaderError = nullptr;
 	shaderResult->GetOutput(DXC_OUT_ERRORS, IID_PPV_ARGS(&shaderError), nullptr);
 	if (shaderError != nullptr && shaderError->GetStringLength() != 0) {
-		//Log(shaderError->GetStringPointer());
+		Log(shaderError->GetStringPointer());
 		//警告・エラーダメゼッタイ
 		assert(false);
 	}
 
 	//コンパイル結果から実行用のバイナリ部分を取得
-	IDxcBlob* shaderBlob = nullptr;
+	ID3DBlob* shaderBlob = nullptr;
 	hr = shaderResult->GetOutput(DXC_OUT_OBJECT, IID_PPV_ARGS(&shaderBlob), nullptr);
 	assert(SUCCEEDED(hr));
 	//成功したログを出す
@@ -107,4 +110,9 @@ IDxcBlob* Shader::CompileShader(const std::wstring& filePath, const wchar_t* pro
 	shaderResult->Release();
 	//実行用のバイナリを返却
 	return shaderBlob;
+}
+
+void Shader::Log(const std::string& message)
+{
+	OutputDebugStringA(message.c_str());
 }

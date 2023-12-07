@@ -62,7 +62,10 @@ public:
 
 	void Create();
 
-	/// <summary>
+	void PreDraw(ID3D12GraphicsCommandList* commandList);
+	void PostDraw();
+
+	/*/// <summary>
 	/// 描画
 	/// </summary>
 	/// <param name="worldTransform">ワールドトランスフォーム</param>
@@ -71,21 +74,21 @@ public:
 	void Draw(const WorldTransform& worldTransform, const ViewProjection& viewProjection, uint32_t textureHandle);
 	void Draw(const WorldTransform& worldTransform, const ViewProjection& viewProjection);
 
-	void SetMaterial(const Vector4& color);
+	void SetMaterial(const Vector4& color);*/
 
 private:
 
 	// メッシュ生成
 	void CreateMesh();
 
-	// オブジェファイル読み込み
-	void LoadObjFile(const std::string& filename);
+	//// オブジェファイル読み込み
+	//void LoadObjFile(const std::string& filename);
 
-	MaterialData LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& filename);
+	//MaterialData LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& filename);
 
-	void InitializeDirectionalLight();
+	//void InitializeDirectionalLight();
 
-	void InitializeMaterial();
+	//void InitializeMaterial();
 
 	/// <summary>
 	/// 定数バッファ生成
@@ -107,7 +110,7 @@ private:
 	// 頂点バッファ
 	Microsoft::WRL::ComPtr<ID3D12Resource> vertexResource_;
 	// 頂点データ
-	VertexData* vertexData_;
+	std::vector<Vector4> vertexData_;
 	// 頂点バッファビュー
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferView_;
 	// インデックスバッファ
@@ -117,7 +120,6 @@ private:
 	// インデックスバッファビュー
 	D3D12_INDEX_BUFFER_VIEW indexBufferView_;
 	// テクスチャハンドル
-	uint32_t textureHandle = 0;
 	D3D12_DEPTH_STENCIL_DESC depthStencilDesc_{};
 
 	// ライティング

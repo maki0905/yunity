@@ -11,7 +11,7 @@ class Shader
 {
 public:
 
-	enum class ShaderName
+	enum class Name
 	{
 		BasicVS,
 		BasicPS,
@@ -22,12 +22,18 @@ public:
 	static Shader* GetInstance();
 	void DXCInitialize();
 
-	IDxcBlob* Get(ShaderName name);
+	ID3DBlob* Get(Name name);
 	
 
 private:
 	void ShaderCompile();
-	IDxcBlob* CompileShader(const std::wstring& filePath, const wchar_t* profile);
+	ID3DBlob* CompileShader(const std::wstring& filePath, const wchar_t* profile);
+
+	/// <summary>
+	/// ÉçÉO
+	/// </summary>
+	/// <param name="message"></param>
+	static void Log(const std::string& message);
 
 private:
 	Shader() = default;
@@ -40,8 +46,8 @@ private:
 
 
 
-	Microsoft::WRL::ComPtr<IDxcBlob> basicVS_ = nullptr;
-	Microsoft::WRL::ComPtr<IDxcBlob> basicPS_ = nullptr;
+	ID3DBlob* basicVS_ = nullptr;
+	ID3DBlob* basicPS_ = nullptr;
 
 
 };
