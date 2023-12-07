@@ -7,7 +7,7 @@
 #include <wrl.h>
 #include <vector>
 #include <chrono>
-#include "WinApp.h"
+#include "WindowsAPI.h"
 
 
 /// <summary>
@@ -26,8 +26,8 @@ public: // メンバ関数
 	/// 初期化
 	/// </summary>
 	void Initialize(
-		WinApp* win, int32_t backBufferWidth = WinApp::kWindowWidth,
-		int32_t backBufferHeight = WinApp::kWindowHeight);
+		WindowsAPI* win, int32_t backBufferWidth = WindowsAPI::kWindowWidth,
+		int32_t backBufferHeight = WindowsAPI::kWindowHeight);
 
 	/// <summary>
 	/// 描画前処理
@@ -78,7 +78,7 @@ public: // メンバ関数
 
 private: // メンバ変数
 	// ウィンドウズアプリケーション管理
-	WinApp* winApp_;
+	WindowsAPI* winApp_;
 
 	// Direct3D関連
 	Microsoft::WRL::ComPtr<IDXGIFactory7> dxgiFactory_;

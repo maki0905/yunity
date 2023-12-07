@@ -2,7 +2,11 @@
 
 #include <cassert>
 
+#include "BackBuffer.h"
+#include "DepthBuffer.h"
+
 #pragma comment(lib, "d3d12")
+#pragma comment(lib, "dxgi.lib")
 
 CommandList::CommandList(ID3D12Device* device)
 {
@@ -13,6 +17,22 @@ void CommandList::Create()
 {
 	CreateAllocator();
 	CreateList();
+}
+
+void CommandList::BarrierChange(IDXGISwapChain4* swapChain, D3D12_RESOURCE_STATES before, D3D12_RESOURCE_STATES after)
+{
+	HRESULT result = S_FALSE;
+
+	// バックバッファの番号を取得（2つなので0番か1番）
+	UINT bbIndex = swapChain->GetCurrentBackBufferIndex();
+
+	// リソースバリアを変更（表示状態→描画対象）
+	D3D12_RESOURCE_BARRIER barrier{};
+	barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+	result = swapChain->GetBuffer(bbIndex, IID_PPV_ARGS(&barrier.Transition.pResource));
+	barrier.Transition.StateBefore = before;
+	barrier.Transition.StateAfter = after;
+	commandList_->ResourceBarrier(1, &barrier);
 
 }
 
@@ -23,10 +43,11 @@ void CommandList::CommandClear()
 
 }
 
+
 void CommandList::SetViewport(float width, float height)
 {
 	D3D12_VIEWPORT viewport =
-		D3D12_VIEWPORT(0.0f, 0.0f, width, height);
+		D3D12_VIEWPORT(0.0f, 0.0f, width, height, D3D12_MIN_DEPTH, D3D12_MAX_DEPTH);
 	commandList_->RSSetViewports(1, &viewport);
 
 }

@@ -1,6 +1,6 @@
 ﻿#include "ViewProjection.h"
 
-#include "WinApp.h"
+#include "WindowsAPI.h"
 #include <cassert>
 #include "DirectXCommon.h"
 

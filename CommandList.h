@@ -1,7 +1,12 @@
 #pragma once
 
 #include <d3d12.h>
+#include <dxgi1_6.h>
 #include <wrl.h>
+
+class BackBuffer;
+class DepthBuffer;
+class SwapChain;
 
 class CommandList
 {
@@ -9,6 +14,8 @@ public:
 	CommandList(ID3D12Device* device);
 
 	void Create();
+
+	void BarrierChange(IDXGISwapChain4* swapChain, D3D12_RESOURCE_STATES before, D3D12_RESOURCE_STATES after);
 
 	void CommandClear();
 

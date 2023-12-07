@@ -2,7 +2,7 @@
 
 #ifdef _DEBUG
 #include "DirectXCommon.h"
-#include "WinApp.h"
+#include "WindowsAPI.h"
 #include "Externals/imgui/imgui_impl_dx12.h"
 #include "Externals/imgui/imgui_impl_win32.h"
 #endif // _DEBUG
@@ -14,7 +14,7 @@ ImGuiManager* ImGuiManager::GetInstance()
 	return &instance;
 }
 
-void ImGuiManager::Initialize([[maybe_unused]]WinApp* winApp, [[maybe_unused]]DirectXCommon* dxCommon)
+void ImGuiManager::Initialize([[maybe_unused]] WindowsAPI* winApp, [[maybe_unused]]DirectXCommon* dxCommon)
 {
 #ifdef _DEBUG
 	HRESULT result;

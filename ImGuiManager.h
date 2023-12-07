@@ -6,7 +6,7 @@
 #include <wrl.h>
 #endif // _DEBUG
 
-class WinApp;
+class WindowsAPI;
 class DirectXCommon;
 
 class ImGuiManager
@@ -17,7 +17,7 @@ public:
     /// <summary>
     /// 初期化
     /// </summary>
-	void Initialize(WinApp* winApp, DirectXCommon* dxCommon);
+	void Initialize(WindowsAPI* winApp, DirectXCommon* dxCommon);
 
 	/// <summary>
 	/// 終了

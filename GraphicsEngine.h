@@ -8,6 +8,7 @@ class SwapChain;
 class CommandList;
 class CommandQueue;
 class DepthBuffer;
+class BackBuffer;
 
 class GraphicsEngine
 {
@@ -22,8 +23,13 @@ private:
 	Device* device_ = nullptr;
 	CommandList* commandList_ = nullptr;
 	CommandQueue* commandQueue_ = nullptr;
-	DepthBuffer* depthBuffer_ = nullptr;
 
+	UINT windowWidth_;
+	UINT windowHeight_;
+
+	SwapChain* swapChain_;
+	BackBuffer* backBuffer_;
+	DepthBuffer* depthBuffer_;
 
 };
 

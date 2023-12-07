@@ -17,7 +17,7 @@ DirectXCommon* DirectXCommon::GetInstance() {
 	return &instance;
 }
 
-void DirectXCommon::Initialize(WinApp* winApp, int32_t backBufferWidth, int32_t backBufferHeight) {
+void DirectXCommon::Initialize(WindowsAPI* winApp, int32_t backBufferWidth, int32_t backBufferHeight) {
 	// nullptrチェック
 	assert(winApp);
 	assert(4 <= backBufferWidth && backBufferWidth <= 4096);

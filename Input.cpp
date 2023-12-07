@@ -1,7 +1,7 @@
 ﻿#include "Input.h"
 #include <cassert>
 
-#include "WinApp.h"
+#include "WindowsAPI.h"
 
 #pragma comment(lib, "dinput8.lib")
 #pragma comment(lib, "dxguid.lib")
@@ -24,7 +24,7 @@ void Input::Initialize()
 
 	// DirectInputオブジェクトの生成
 	result = DirectInput8Create(
-		WinApp::GetInstance()->GetHInstance(), DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&dInput_, nullptr);
+		WindowsAPI::GetInstance()->GetHInstance(), DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&dInput_, nullptr);
 	assert(SUCCEEDED(result));
 
 	// キーボードデバイスの生成
@@ -37,7 +37,7 @@ void Input::Initialize()
 
 	// 排他制御レベルのセット
 	result =
-		devKeyboard_->SetCooperativeLevel(WinApp::GetInstance()->GetHwnd(), DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
+		devKeyboard_->SetCooperativeLevel(WindowsAPI::GetInstance()->GetHwnd(), DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
 	assert(SUCCEEDED(result));
 
 
@@ -51,7 +51,7 @@ void Input::Initialize()
 
 	// 排他制御レベルのセット
 	result =
-		devMouse_->SetCooperativeLevel(WinApp::GetInstance()->GetHwnd(), DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
+		devMouse_->SetCooperativeLevel(WindowsAPI::GetInstance()->GetHwnd(), DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
 	assert(SUCCEEDED(result));
 
 	// XInput 初期化

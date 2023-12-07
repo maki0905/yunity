@@ -1,9 +1,12 @@
 #include "App.h"
 #include "WindowsAPI.h"
+#include "GraphicsEngine.h"
 
 App::App() {
 	windowsAPI_ = WindowsAPI::GetInstance();
 	windowsAPI_->CreateGameWindow();
+	graphicsEngine_ = new GraphicsEngine();
+
 }
 
 App::~App() {
@@ -17,6 +20,10 @@ void App::Run()
 		if (windowsAPI_->ProcessMessage()) {
 			break;
 		}
+
+		graphicsEngine_->PreDraw();
+
+		graphicsEngine_->PostDraw();
 
 	}
 }

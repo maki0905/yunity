@@ -2,7 +2,7 @@
 #include "TextureManager.h"
 #include <cassert>
 #include<d3dcompiler.h>
-#include "WinApp.h"
+#include "WindowsAPI.h"
 
 #pragma comment(lib, "d3dcompiler.lib")
 
@@ -210,7 +210,7 @@ void Sprite::StaticInitialize(ID3D12Device* device)
 
 	// 射影行列計算
 	matProjection_ = MakeOrthographicMatrix(
-		0.0f, 0.0f, (float)WinApp::kWindowWidth, (float)WinApp::kWindowHeight , 0.0f, 1.0f);
+		0.0f, 0.0f, (float)WindowsAPI::kWindowWidth, (float)WindowsAPI::kWindowHeight , 0.0f, 1.0f);
 
 }
 
