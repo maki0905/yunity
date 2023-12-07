@@ -1,5 +1,6 @@
 ﻿#include <Windows.h>
 #include "App.h"
+#include "Shader.h"
 
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 

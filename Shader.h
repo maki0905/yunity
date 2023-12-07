@@ -2,6 +2,7 @@
 
 #include <d3d12.h>
 #include <dxcapi.h>
+#include <d3dcompiler.h>
 #include <Windows.h>
 #include <wrl.h>
 #include <vector>
@@ -20,7 +21,9 @@ public:
 
 public:
 	static Shader* GetInstance();
-	void DXCInitialize();
+
+	void Initialize();
+	//void DXCInitialize();
 
 	ID3DBlob* Get(Name name);
 	
@@ -37,6 +40,7 @@ private:
 
 private:
 	Shader() = default;
+	~Shader() = default;
 	Shader(const Shader&) = delete;
 	const Shader& operator=(const Shader&) = delete;
 

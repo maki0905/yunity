@@ -1,5 +1,7 @@
 #include "T.h"
 
+#include <cassert>
+
 #include "RootSignature.h"
 #include "PipelineState.h"
 #include "Shader.h"

@@ -2,10 +2,10 @@
 
 #include <cassert>
 #include "externals/DirectXTex/DirectXTex.h"
-#include <d3dcompiler.h>
-#include <dxcapi.h>
 
 #pragma comment(lib, "d3dcompiler.lib")
+#pragma comment(lib,"dxcompiler.lib")
+
 
 Shader* Shader::GetInstance()
 {
@@ -14,10 +14,9 @@ Shader* Shader::GetInstance()
 	return &instance;
 }
 
-void Shader::DXCInitialize()
+void Shader::Initialize()
 {
 	HRESULT result = S_FALSE;
-
 	result = DxcCreateInstance(CLSID_DxcUtils, IID_PPV_ARGS(&dxcUtils_));
 	assert(SUCCEEDED(result));
 	result = DxcCreateInstance(CLSID_DxcCompiler, IID_PPV_ARGS(&dxcCompiler_));
@@ -27,8 +26,22 @@ void Shader::DXCInitialize()
 	assert(SUCCEEDED(result));
 
 	ShaderCompile();
-
 }
+
+//void Shader::DXCInitialize()
+//{
+//	HRESULT result = S_FALSE;
+//	result = DxcCreateInstance(CLSID_DxcUtils, IID_PPV_ARGS(&dxcUtils_));
+//	assert(SUCCEEDED(result));
+//	result = DxcCreateInstance(CLSID_DxcCompiler, IID_PPV_ARGS(&dxcCompiler_));
+//	assert(SUCCEEDED(result));
+//
+//	result = dxcUtils_->CreateDefaultIncludeHandler(&includeHandler_);
+//	assert(SUCCEEDED(result));
+//
+//	ShaderCompile();
+//
+//}
 
 ID3DBlob* Shader::Get(Name name)
 {

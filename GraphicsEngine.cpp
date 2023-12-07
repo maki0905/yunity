@@ -1,4 +1,4 @@
-#include "App.h"
+#include "GraphicsEngine.h"
 
 #include <cassert>
 
@@ -9,19 +9,10 @@
 #include "BackBuffer.h"
 #include "DepthBuffer.h"
 #include "WindowsAPI.h"
-#include "Shader.h"
-#include "T.h"
-#include "Shader.h"
 
-#pragma comment(lib, "d3d12.lib")
-#pragma comment(lib, "dxgi.lib")
-#pragma comment(lib, "dxguid.lib")
-
-App::App() {
-	windowsAPI_ = WindowsAPI::GetInstance();
-	windowsAPI_->CreateGameWindow();
+GraphicsEngine::GraphicsEngine()
+{
 	device_ = new Device();
-	
 	commandList_ = new CommandList(device_->GetDevice());
 	commandList_->Create();
 	commandQueue_ = new CommandQueue(device_->GetDevice());
@@ -36,36 +27,13 @@ App::App() {
 	windowWidth_ = WindowsAPI::GetInstance()->kWindowWidth;
 	windowHeight_ = WindowsAPI::GetInstance()->kWindowHeight;
 
-	shader_ = nullptr;
-	shader_ = Shader::GetInstance();
-	shader_->Initialize();
-	t_ = new T();
-	t_->Initialize(device_->GetDevice());
-	t_->Create();
-
 }
 
-App::~App() {
-	// ゲームウィンドウの破棄
-	windowsAPI_->TerminateGameWindow();
-}
-
-void App::Run()
+GraphicsEngine::~GraphicsEngine()
 {
-	while (true) {
-		if (windowsAPI_->ProcessMessage()) {
-			break;
-		}
-
-		PreDraw();
-		t_->PreDraw(commandList_->GetCommandList());
-		t_->PostDraw();
-		PostDraw();
-
-	}
 }
 
-void App::PreDraw()
+void GraphicsEngine::PreDraw()
 {
 	commandList_->BarrierChange(swapChain_->GetSwapChain(), D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
 	backBuffer_->SetRenderTarget(swapChain_->GetSwapChain(), depthBuffer_->GetDescriptorHeap());
@@ -74,11 +42,11 @@ void App::PreDraw()
 
 	commandList_->SetViewport(float(windowWidth_), float(windowHeight_));
 	commandList_->SetRect(windowWidth_, windowHeight_);
+
 }
 
-void App::PostDraw()
+void GraphicsEngine::PostDraw()
 {
-
 	HRESULT result = S_FALSE;
 
 	commandList_->BarrierChange(swapChain_->GetSwapChain(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
@@ -107,4 +75,5 @@ void App::PostDraw()
 
 	commandQueue_->WaitForCommandsToFinish();
 	commandList_->CommandClear();
+
 }
