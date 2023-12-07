@@ -16,21 +16,72 @@
     <Filter Include="imgui">
       <UniqueIdentifier>{7087bd48-7edc-4561-be49-19478300adf1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="math">
-      <UniqueIdentifier>{55dcefdd-a94a-479b-9ae9-29db4b95a019}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="math\ヘッダー">
-      <UniqueIdentifier>{f5e969c5-6c72-4e18-8c52-8ca7be4b6265}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Shaders">
       <UniqueIdentifier>{4c6822d5-d1c3-4061-ab7e-ee33108a38f9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Base">
+      <UniqueIdentifier>{f1bba3fc-73a3-4947-8e20-48cdfaaa3dca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Base\Buffer">
+      <UniqueIdentifier>{6b505418-2434-4c90-b67f-ee58590574e7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Base\Command">
+      <UniqueIdentifier>{37298998-38d4-4fa6-9164-7be1263c97e1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Base\Input">
+      <UniqueIdentifier>{6fb25ccb-954b-40be-8d1c-61b120223f34}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Base\Shader">
+      <UniqueIdentifier>{8bff4563-cbe9-4dbe-bd84-e345247db75e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Base\RootSignature">
+      <UniqueIdentifier>{18400839-3c3b-4bd0-8ef6-d2dfb26cf932}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Base\PipelineState">
+      <UniqueIdentifier>{86e8e6b8-5331-47d2-80a8-20c5fc89313e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Base\Device">
+      <UniqueIdentifier>{69ff564a-678e-4e2b-8db5-ba86d0b9b021}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Base\SwapChain">
+      <UniqueIdentifier>{bc8bf980-5f29-4145-b306-7025f49bb950}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Base\Sprite">
+      <UniqueIdentifier>{91c4b860-bf26-4cdb-bbe0-e688dd1f333c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Base\Camera">
+      <UniqueIdentifier>{23768cb8-570d-4d46-881d-ecb2899fd8a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Base\math">
+      <UniqueIdentifier>{55dcefdd-a94a-479b-9ae9-29db4b95a019}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Base\math\ヘッダー">
+      <UniqueIdentifier>{f5e969c5-6c72-4e18-8c52-8ca7be4b6265}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Base\WindowsAPI">
+      <UniqueIdentifier>{7387fdb4-06d5-4e76-aa9c-c1afb0590d15}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Base\Utility">
+      <UniqueIdentifier>{02a43233-efe7-4ae5-b711-21008ef76a79}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Base\Utility\ImGuiManager">
+      <UniqueIdentifier>{89cfb359-69c8-44d5-9425-b29d14d09c13}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Base\Utility\GlobalVariables">
+      <UniqueIdentifier>{5a8a1e61-5604-4b97-9d47-c8d586815d65}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Base\Utility\Log">
+      <UniqueIdentifier>{a2e0d110-ee50-438a-93fb-b5e1b089b773}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Base\Utility\CSV">
+      <UniqueIdentifier>{01c4c8c0-0430-4e5a-88df-bef2f8032388}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Base\TextureManager">
+      <UniqueIdentifier>{b5566fad-d5fb-43b1-bf56-b5f694b6d9d1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="DirectXCommon.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="externals\imgui\imgui.cpp">
@@ -54,92 +105,83 @@
     <ClCompile Include="externals\imgui\imgui_widgets.cpp">
       <Filter>imgui</Filter>
     </ClCompile>
-    <ClCompile Include="TextureManager.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="WorldTransform.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Model.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="ViewProjection.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="CompileShader.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Triangle.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="ImGuiManager.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Input.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="GlobalVariables.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="DebugCamera.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="FollowCamera.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Sprite.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="MathFunction.cpp">
-      <Filter>math</Filter>
-    </ClCompile>
-    <ClCompile Include="WindowsAPI.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="App.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Device.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="DepthBuffer.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandQueue.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="CommandList.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="BackBuffer.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="SwapChain.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Shader.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="RootParameter.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="RootSignature.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="PipelineState.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>Base\math</Filter>
     </ClCompile>
     <ClCompile Include="T.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="CommandList.cpp">
+      <Filter>Base\Command</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandQueue.cpp">
+      <Filter>Base\Command</Filter>
+    </ClCompile>
+    <ClCompile Include="BackBuffer.cpp">
+      <Filter>Base\Buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="DepthBuffer.cpp">
+      <Filter>Base\Buffer</Filter>
+    </ClCompile>
+    <ClCompile Include="Input.cpp">
+      <Filter>Base\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Shader.cpp">
+      <Filter>Base\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="RootSignature.cpp">
+      <Filter>Base\RootSignature</Filter>
+    </ClCompile>
+    <ClCompile Include="RootParameter.cpp">
+      <Filter>Base\RootSignature</Filter>
+    </ClCompile>
+    <ClCompile Include="PipelineState.cpp">
+      <Filter>Base\PipelineState</Filter>
+    </ClCompile>
+    <ClCompile Include="App.cpp">
+      <Filter>Base</Filter>
+    </ClCompile>
+    <ClCompile Include="Device.cpp">
+      <Filter>Base\Device</Filter>
+    </ClCompile>
+    <ClCompile Include="SwapChain.cpp">
+      <Filter>Base\SwapChain</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureManager.cpp">
+      <Filter>Base\TextureManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Sprite.cpp">
+      <Filter>Base\Sprite</Filter>
+    </ClCompile>
+    <ClCompile Include="ViewProjection.cpp">
+      <Filter>Base\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="WorldTransform.cpp">
+      <Filter>Base</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGuiManager.cpp">
+      <Filter>Base\Utility\ImGuiManager</Filter>
+    </ClCompile>
+    <ClCompile Include="DebugCamera.cpp">
+      <Filter>Base\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="FollowCamera.cpp">
+      <Filter>Base\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="WindowsAPI.cpp">
+      <Filter>Base\WindowsAPI</Filter>
+    </ClCompile>
+    <ClCompile Include="GlobalVariables.cpp">
+      <Filter>Base\Utility\GlobalVariables</Filter>
+    </ClCompile>
+    <ClCompile Include="Log.cpp">
+      <Filter>Base\Utility\Log</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="DirectXCommon.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="SafeDelete.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="externals\imgui\imconfig.h">
       <Filter>imgui</Filter>
     </ClInclude>
@@ -164,122 +206,122 @@
     <ClInclude Include="externals\imgui\imstb_truetype.h">
       <Filter>imgui</Filter>
     </ClInclude>
-    <ClInclude Include="TextureManager.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="WorldTransform.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="Model.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="ViewProjection.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="CompileShader.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="CreateBufferResource.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="ImGuiManager.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Input.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="GlobalVariables.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="DebugCamera.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="FollowCamera.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Sprite.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="Capsule.h">
-      <Filter>math\ヘッダー</Filter>
+      <Filter>Base\math\ヘッダー</Filter>
     </ClInclude>
     <ClInclude Include="Vector4.h">
-      <Filter>math\ヘッダー</Filter>
+      <Filter>Base\math\ヘッダー</Filter>
     </ClInclude>
     <ClInclude Include="Vector3.h">
-      <Filter>math\ヘッダー</Filter>
+      <Filter>Base\math\ヘッダー</Filter>
     </ClInclude>
     <ClInclude Include="Vecter2.h">
-      <Filter>math\ヘッダー</Filter>
+      <Filter>Base\math\ヘッダー</Filter>
     </ClInclude>
     <ClInclude Include="Triangle.h">
-      <Filter>math\ヘッダー</Filter>
+      <Filter>Base\math\ヘッダー</Filter>
     </ClInclude>
     <ClInclude Include="Sphere.h">
-      <Filter>math\ヘッダー</Filter>
+      <Filter>Base\math\ヘッダー</Filter>
     </ClInclude>
     <ClInclude Include="Quaternion.h">
-      <Filter>math\ヘッダー</Filter>
+      <Filter>Base\math\ヘッダー</Filter>
     </ClInclude>
     <ClInclude Include="Plane.h">
-      <Filter>math\ヘッダー</Filter>
+      <Filter>Base\math\ヘッダー</Filter>
     </ClInclude>
     <ClInclude Include="Physics.h">
-      <Filter>math\ヘッダー</Filter>
+      <Filter>Base\math\ヘッダー</Filter>
     </ClInclude>
     <ClInclude Include="OBB.h">
-      <Filter>math\ヘッダー</Filter>
+      <Filter>Base\math\ヘッダー</Filter>
     </ClInclude>
     <ClInclude Include="Matrix4x4.h">
-      <Filter>math\ヘッダー</Filter>
-    </ClInclude>
-    <ClInclude Include="MathFunction.h">
-      <Filter>math\ヘッダー</Filter>
+      <Filter>Base\math\ヘッダー</Filter>
     </ClInclude>
     <ClInclude Include="Line.h">
-      <Filter>math\ヘッダー</Filter>
+      <Filter>Base\math\ヘッダー</Filter>
     </ClInclude>
     <ClInclude Include="AABB.h">
-      <Filter>math\ヘッダー</Filter>
-    </ClInclude>
-    <ClInclude Include="WindowsAPI.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="App.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Device.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="DepthBuffer.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="CommandQueue.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="CommandList.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="BackBuffer.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="SwapChain.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Shader.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="RootParameter.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="RootSignature.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="PipelineState.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>Base\math\ヘッダー</Filter>
     </ClInclude>
     <ClInclude Include="T.h">
       <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="CommandQueue.h">
+      <Filter>Base\Command</Filter>
+    </ClInclude>
+    <ClInclude Include="CommandList.h">
+      <Filter>Base\Command</Filter>
+    </ClInclude>
+    <ClInclude Include="BackBuffer.h">
+      <Filter>Base\Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="DepthBuffer.h">
+      <Filter>Base\Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="Input.h">
+      <Filter>Base\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Shader.h">
+      <Filter>Base\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="RootSignature.h">
+      <Filter>Base\RootSignature</Filter>
+    </ClInclude>
+    <ClInclude Include="RootParameter.h">
+      <Filter>Base\RootSignature</Filter>
+    </ClInclude>
+    <ClInclude Include="PipelineState.h">
+      <Filter>Base\PipelineState</Filter>
+    </ClInclude>
+    <ClInclude Include="App.h">
+      <Filter>Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Device.h">
+      <Filter>Base\Device</Filter>
+    </ClInclude>
+    <ClInclude Include="SwapChain.h">
+      <Filter>Base\SwapChain</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureManager.h">
+      <Filter>Base\TextureManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Sprite.h">
+      <Filter>Base\Sprite</Filter>
+    </ClInclude>
+    <ClInclude Include="ViewProjection.h">
+      <Filter>Base\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="WorldTransform.h">
+      <Filter>Base</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGuiManager.h">
+      <Filter>Base\Utility\ImGuiManager</Filter>
+    </ClInclude>
+    <ClInclude Include="FollowCamera.h">
+      <Filter>Base\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="DebugCamera.h">
+      <Filter>Base\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="SafeDelete.h">
+      <Filter>Base</Filter>
+    </ClInclude>
+    <ClInclude Include="WindowsAPI.h">
+      <Filter>Base\WindowsAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="GlobalVariables.h">
+      <Filter>Base\Utility\GlobalVariables</Filter>
+    </ClInclude>
+    <ClInclude Include="Log.h">
+      <Filter>Base\Utility\Log</Filter>
+    </ClInclude>
+    <ClInclude Include="MathFunction.h">
+      <Filter>Base\math</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -288,22 +330,40 @@
     </Text>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Object3d.VS.hlsl" />
-    <FxCompile Include="Object3d.PS.hlsl" />
-    <FxCompile Include="SpriteVS.hlsl" />
-    <FxCompile Include="SpritePS.hlsl" />
-    <FxCompile Include="ParticleVS.hlsl" />
-    <FxCompile Include="ParticlePS.hlsl" />
     <FxCompile Include="Resources\Shaders\BasicPS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="Resources\Shaders\BasicVS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
+    <FxCompile Include="SpriteVS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="SpritePS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="ParticleVS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="ParticlePS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Object3d.VS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Object3d.PS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Object3d.hlsli" />
-    <None Include="Sprite.hlsli" />
-    <None Include="Particle.hlsli" />
+    <None Include="Sprite.hlsli">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Particle.hlsli">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Object3d.hlsli">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

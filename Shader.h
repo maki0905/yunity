@@ -30,7 +30,7 @@ private:
 	ID3DBlob* CompileShader(const std::wstring& filePath, const wchar_t* profile);
 
 	/// <summary>
-	/// ÉçÉO
+	/// „É≠„Ç∞
 	/// </summary>
 	/// <param name="message"></param>
 	static void Log(const std::string& message);

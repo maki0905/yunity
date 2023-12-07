@@ -96,11 +96,9 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="BackBuffer.cpp" />
     <ClCompile Include="CommandList.cpp" />
     <ClCompile Include="CommandQueue.cpp" />
-    <ClCompile Include="CompileShader.cpp" />
     <ClCompile Include="DebugCamera.cpp" />
     <ClCompile Include="DepthBuffer.cpp" />
     <ClCompile Include="Device.cpp" />
-    <ClCompile Include="DirectXCommon.cpp" />
     <ClCompile Include="externals\imgui\imgui.cpp" />
     <ClCompile Include="externals\imgui\imgui_demo.cpp" />
     <ClCompile Include="externals\imgui\imgui_draw.cpp" />
@@ -112,6 +110,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="GlobalVariables.cpp" />
     <ClCompile Include="ImGuiManager.cpp" />
     <ClCompile Include="Input.cpp" />
+    <ClCompile Include="Log.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MathFunction.cpp" />
     <ClCompile Include="Model.cpp" />
@@ -123,7 +122,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="SwapChain.cpp" />
     <ClCompile Include="T.cpp" />
     <ClCompile Include="TextureManager.cpp" />
-    <ClCompile Include="Triangle.cpp" />
     <ClCompile Include="ViewProjection.cpp" />
     <ClCompile Include="WindowsAPI.cpp" />
     <ClCompile Include="WorldTransform.cpp" />
@@ -135,12 +133,9 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Capsule.h" />
     <ClInclude Include="CommandList.h" />
     <ClInclude Include="CommandQueue.h" />
-    <ClInclude Include="CompileShader.h" />
-    <ClInclude Include="CreateBufferResource.h" />
     <ClInclude Include="DebugCamera.h" />
     <ClInclude Include="DepthBuffer.h" />
     <ClInclude Include="Device.h" />
-    <ClInclude Include="DirectXCommon.h" />
     <ClInclude Include="externals\imgui\imconfig.h" />
     <ClInclude Include="externals\imgui\imgui.h" />
     <ClInclude Include="externals\imgui\imgui_impl_dx12.h" />
@@ -154,6 +149,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="ImGuiManager.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="Line.h" />
+    <ClInclude Include="Log.h" />
     <ClInclude Include="MathFunction.h" />
     <ClInclude Include="Matrix4x4.h" />
     <ClInclude Include="Model.h" />
