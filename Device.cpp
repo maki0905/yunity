@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <cassert>
 #include <vector>
+#include "App.h"
 
 #pragma comment(lib, "d3d12.lib")
 #pragma comment(lib, "dxgi.lib")
@@ -18,16 +19,14 @@ D3D_FEATURE_LEVEL levels[] = {
 };
 
 
-Device::Device()
+Device* Device::GetInstance()
 {
-	InitializeDXGIDevice();
+	static Device instance;
+
+	return &instance;
 }
 
-Device::~Device()
-{
-}
-
-void Device::InitializeDXGIDevice()
+void Device::Initialize()
 {
 	HRESULT result = S_FALSE;
 

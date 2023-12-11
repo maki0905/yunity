@@ -3,24 +3,25 @@
 #include <d3d12.h>
 #include <dxgi1_6.h>
 #include <wrl.h>
+#include "App.h"
+
 
 class Device
 {
 public:
+	static Device* GetInstance();
 	
-	Device();
+	void Initialize();
 
-
-	~Device();
-
-
-	ID3D12Device* GetDevice() { return device_.Get(); }
+	ID3D12Device* GetDevice() { return device_.Get(); } 
 
 	IDXGIFactory7* GetDxgiFactory() { return dxgiFactory_.Get(); }
 
 private:
-	void InitializeDXGIDevice();
-
+	Device() = default;
+	~Device() = default;
+	Device(const Device&) = delete;
+	Device& operator=(const Device&) = delete;
 private:
 	Microsoft::WRL::ComPtr<IDXGIFactory7> dxgiFactory_;
 	Microsoft::WRL::ComPtr<ID3D12Device> device_;

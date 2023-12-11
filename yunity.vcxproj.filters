@@ -70,14 +70,23 @@
     <Filter Include="Base\Utility\GlobalVariables">
       <UniqueIdentifier>{5a8a1e61-5604-4b97-9d47-c8d586815d65}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Base\Utility\Log">
-      <UniqueIdentifier>{a2e0d110-ee50-438a-93fb-b5e1b089b773}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Base\Utility\CSV">
       <UniqueIdentifier>{01c4c8c0-0430-4e5a-88df-bef2f8032388}</UniqueIdentifier>
     </Filter>
     <Filter Include="Base\TextureManager">
       <UniqueIdentifier>{b5566fad-d5fb-43b1-bf56-b5f694b6d9d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Base\Scene">
+      <UniqueIdentifier>{a172ff1c-8ac9-494b-8328-5bcc7b3bcea5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Base\Utility\Logger">
+      <UniqueIdentifier>{a2e0d110-ee50-438a-93fb-b5e1b089b773}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Base\Utility\StringUtility">
+      <UniqueIdentifier>{3b90dc90-c921-4984-b3ee-c61296406c71}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Base\Descriptor">
+      <UniqueIdentifier>{d2f065f5-37ac-4d30-af2e-b6104d1be4c8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -177,8 +186,35 @@
     <ClCompile Include="GlobalVariables.cpp">
       <Filter>Base\Utility\GlobalVariables</Filter>
     </ClCompile>
-    <ClCompile Include="Log.cpp">
-      <Filter>Base\Utility\Log</Filter>
+    <ClCompile Include="IScene.cpp">
+      <Filter>Base\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="TitleScene.cpp">
+      <Filter>Base\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="StageScene.cpp">
+      <Filter>Base\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="GameManager.cpp">
+      <Filter>Base\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="ClearScene.cpp">
+      <Filter>Base\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectXCore.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Logger.cpp">
+      <Filter>Base\Utility\Logger</Filter>
+    </ClCompile>
+    <ClCompile Include="StringUtility.cpp">
+      <Filter>Base\Utility\StringUtility</Filter>
+    </ClCompile>
+    <ClCompile Include="DescriptorHandle.cpp">
+      <Filter>Base\Descriptor</Filter>
+    </ClCompile>
+    <ClCompile Include="DescriptorHeap.cpp">
+      <Filter>Base\Descriptor</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -317,11 +353,38 @@
     <ClInclude Include="GlobalVariables.h">
       <Filter>Base\Utility\GlobalVariables</Filter>
     </ClInclude>
-    <ClInclude Include="Log.h">
-      <Filter>Base\Utility\Log</Filter>
-    </ClInclude>
     <ClInclude Include="MathFunction.h">
       <Filter>Base\math</Filter>
+    </ClInclude>
+    <ClInclude Include="IScene.h">
+      <Filter>Base\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="TitleScene.h">
+      <Filter>Base\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="StageScene.h">
+      <Filter>Base\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="GameManager.h">
+      <Filter>Base\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="ClearScene.h">
+      <Filter>Base\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="DirectXCore.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Logger.h">
+      <Filter>Base\Utility\Logger</Filter>
+    </ClInclude>
+    <ClInclude Include="StringUtility.h">
+      <Filter>Base\Utility\StringUtility</Filter>
+    </ClInclude>
+    <ClInclude Include="DescriptorHandle.h">
+      <Filter>Base\Descriptor</Filter>
+    </ClInclude>
+    <ClInclude Include="DescriptorHeap.h">
+      <Filter>Base\Descriptor</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
