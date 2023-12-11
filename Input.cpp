@@ -7,9 +7,9 @@
 #pragma comment(lib, "dxguid.lib")
 #pragma comment(lib, "XInput.lib")
 
-BOOL CALLBACK DeviceFindCallBack(LPCDIDEVICEINSTANCE ipddi, LPVOID pvRef) {
-	return DIENUM_CONTINUE;
-}
+//BOOL CALLBACK DeviceFindCallBack(LPCDIDEVICEINSTANCE ipddi, LPVOID pvRef) {
+//	return DIENUM_CONTINUE;
+//}
 
 Input* Input::GetInstance()
 {
