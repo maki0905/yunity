@@ -3,6 +3,8 @@
 #include <cassert>
 
 #include "WindowsAPI.h"
+#include "DirectXCore.h"
+#include "DescriptorHeap.h"
 
 #pragma comment(lib, "d3d12.lib")
 
@@ -18,21 +20,23 @@ void DepthBuffer::Create()
 	depthBuffer_ = CreateDepthStencilTextureResource();
 
 	// 深度ビュー用デスクリプタヒープ作成。DSV用のヒープでディスクリプタの数は1。
-	dsvHeap_ = CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_DSV, 1, false);
+	//dsvHeap_ = CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_DSV, 1, false);
+	dsvHeap_ = DirectXCore::GetInstance()->GetDescriptorHeap(DirectXCore::HeapType::kDSV);
+	//dsvHeap_->Alloc();
 
 	// 深度ビュー作成
 	D3D12_DEPTH_STENCIL_VIEW_DESC dsvDesc{};
 	dsvDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT; // Format。基本的にはResourceに合わせる
 	dsvDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D; // 2dTexture
 	// DSVHeapの先頭にDSVをつくる
-	device_->CreateDepthStencilView(depthBuffer_.Get(), &dsvDesc, dsvHeap_->GetCPUDescriptorHandleForHeapStart());
+	device_->CreateDepthStencilView(depthBuffer_.Get(), &dsvDesc, /*dsvHeap_->GetHeapPointer()->GetCPUDescriptorHandleForHeapStart()*/dsvHeap_->Alloc().GetCPUHandle());
 }
 
 void DepthBuffer::ClearDepthView()
 {
 	// 深度ステンシルビュー用デスクリプタヒープのハンドルを取得
 	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle =
-		D3D12_CPU_DESCRIPTOR_HANDLE(dsvHeap_->GetCPUDescriptorHandleForHeapStart());
+		D3D12_CPU_DESCRIPTOR_HANDLE(dsvHeap_->GetHeapPointer()->GetCPUDescriptorHandleForHeapStart());
 	// 深度バッファのクリア
 	commandList_->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 }
@@ -74,15 +78,3 @@ Microsoft::WRL::ComPtr<ID3D12Resource> DepthBuffer::CreateDepthStencilTextureRes
 	return result;
 }
 
-Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> DepthBuffer::CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE heapType, UINT numDescriptors, bool shaderVisible)
-{
-	HRESULT hr = S_FALSE;
-	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> result = nullptr;
-	D3D12_DESCRIPTOR_HEAP_DESC dsvDescriptorHeap{};
-	dsvDescriptorHeap.NumDescriptors = numDescriptors; // 深度ビューは1つ
-	dsvDescriptorHeap.Type = heapType; // デプスステンシルビュー
-	dsvDescriptorHeap.Flags = shaderVisible ? D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE : D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
-	hr = device_->CreateDescriptorHeap(&dsvDescriptorHeap, IID_PPV_ARGS(&result));
-	assert(SUCCEEDED(hr));
-	return result;
-}

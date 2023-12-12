@@ -6,6 +6,8 @@
 
 #include "Input.h"
 #include "Device.h"
+#include "Shader.h"
+#include "CommandList.h"
 
 
 class SwapChain;
@@ -14,8 +16,7 @@ class CommandQueue;
 class DepthBuffer;
 class BackBuffer;
 class DescriptorHeap;
-class DescriptorHandle;
-
+class T;
 
 class DirectXCore
 {
@@ -36,7 +37,8 @@ public:
 	void PostDraw();
 
 	DescriptorHeap* GetDescriptorHeap(HeapType heapType) { return descriptorHeaps_[static_cast<int>(heapType)].get(); }
-	DescriptorHandle* GetDescriptorHandle(HeapType heapType) { return descriptorHandles_[static_cast<int>(heapType)].get(); }
+	ID3D12GraphicsCommandList* GetCommandList() { return commandList_->GetCommandList(); }
+	
 
 private:
 	DirectXCore() = default;
@@ -49,11 +51,17 @@ private:
 	
 	CommandList* commandList_ = nullptr;
 	CommandQueue* commandQueue_ = nullptr;
-	SwapChain* swapChin_ = nullptr;
+	SwapChain* swapChain_ = nullptr;
 	BackBuffer* backBuffer_ = nullptr;
 	DepthBuffer* depthBuffer_ = nullptr;
-	
+	Shader* shader_ = nullptr;
+
+	UINT windowWidth_;
+	UINT windowHeight_;
+
 	std::unique_ptr<DescriptorHeap> descriptorHeaps_[static_cast<int>(HeapType::kCount)];
-	std::unique_ptr<DescriptorHandle> descriptorHandles_[static_cast<int>(HeapType::kCount)];
+
+	T* t_ = nullptr;
+	
 };
 

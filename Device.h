@@ -11,6 +11,9 @@ class Device
 public:
 	static Device* GetInstance();
 	
+	/// <summary>
+	/// 初期化
+	/// </summary>
 	void Initialize();
 
 	ID3D12Device* GetDevice() { return device_.Get(); } 

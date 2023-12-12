@@ -6,10 +6,20 @@
 class CommandQueue
 {
 public:
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name="device">デバイス</param>
 	CommandQueue(ID3D12Device* device);
 
+	/// <summary>
+	/// 生成
+	/// </summary>
 	void Create();
 
+	/// <summary>
+	/// 待機
+	/// </summary>
 	void WaitForCommandsToFinish();
 
 	ID3D12CommandQueue* GetCommandQueue() {

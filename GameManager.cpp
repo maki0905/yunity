@@ -1,4 +1,5 @@
 #include "GameManager.h"
+#include "Device.h"
 
 GameManager::GameManager()
 {
@@ -12,7 +13,11 @@ GameManager::GameManager()
 	currentSceneNo_ = GAME_STAGE;
 	windowsAPI_ = WindowsAPI::GetInstance();
 	windowsAPI_->CreateGameWindow();
-	//directXCore_ = DirectXCore::GetInstance();
+	directXCore_ = DirectXCore::GetInstance();
+	directXCore_->Initialize();
+	t_ = new T();
+	t_->Initialize(Device::GetInstance()->GetDevice());
+	t_->Create();
 }
 
 GameManager::~GameManager()
@@ -40,12 +45,15 @@ void GameManager::Run()
 		// 更新
 		sceneArr_[currentSceneNo_]->Update();
 
-		//directXCore_->PreDraw();
+		directXCore_->PreDraw();
+
+		t_->PreDraw(directXCore_->GetCommandList());
+		t_->PostDraw();
 
 		// 描画
 		sceneArr_[currentSceneNo_]->Draw();
 
-		//directXCore_->PostDraw();
+		directXCore_->PostDraw();
 
 	}
 }

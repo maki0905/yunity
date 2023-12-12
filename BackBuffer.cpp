@@ -2,6 +2,9 @@
 
 #include <cassert>
 
+#include "DirectXCore.h"
+#include "DescriptorHeap.h"
+
 #pragma comment(lib, "d3d12.lib")
 #pragma comment(lib, "dxgi.lib")
 
@@ -20,23 +23,25 @@ void BackBuffer::Create()
 	result = swapChain_->GetDesc(&swapChainDesc);
 	assert(SUCCEEDED(result));
 
-	D3D12_DESCRIPTOR_HEAP_DESC heapDesc{};
-	heapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV; // レンダーターゲットビュー
-	heapDesc.NumDescriptors = swapChainDesc.BufferCount;
-	result = device_->CreateDescriptorHeap(&heapDesc, IID_PPV_ARGS(&rtvDescriptorHeap_));
-	assert(SUCCEEDED(result));
 
-	const uint32_t desriptorSizeRTV = device_->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
+	//D3D12_DESCRIPTOR_HEAP_DESC heapDesc{};
+	//heapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV; // レンダーターゲットビュー
+	//heapDesc.NumDescriptors = swapChainDesc.BufferCount;
+	//result = device_->CreateDescriptorHeap(&heapDesc, IID_PPV_ARGS(&rtvDescriptorHeap_));
+	//assert(SUCCEEDED(result));
+	rtvDescriptorHeap_ = DirectXCore::GetInstance()->GetDescriptorHeap(DirectXCore::HeapType::kRTV);
 
+	//const uint32_t desriptorSizeRTV = device_->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
+	const uint32_t desriptorSizeRTV = rtvDescriptorHeap_->GetDescriptorSize();
 	// 裏表の２つ分について
 	backBuffers_.resize(swapChainDesc.BufferCount);
+	// ディスクリプタヒープのハンドルを取得
+	D3D12_CPU_DESCRIPTOR_HANDLE handle = rtvDescriptorHeap_->Alloc(2).GetCPUHandle();
 	for (int i = 0; i < backBuffers_.size(); i++) {
 		// スワップチェーンからバッファを取得
 		result = swapChain_->GetBuffer(i, IID_PPV_ARGS(&backBuffers_[i]));
 		assert(SUCCEEDED(result));
-
-		// ディスクリプタヒープのハンドルを取得
-		D3D12_CPU_DESCRIPTOR_HANDLE handle = rtvDescriptorHeap_->GetCPUDescriptorHandleForHeapStart();
+		/*rtvDescriptorHeap_->GetCPUDescriptorHandleForHeapStart()*/;
 		handle.ptr += (desriptorSizeRTV * i);
 		// レンダーターゲットビューの設定
 		D3D12_RENDER_TARGET_VIEW_DESC renderTargetViewDesc{};
@@ -47,7 +52,7 @@ void BackBuffer::Create()
 		device_->CreateRenderTargetView(backBuffers_[i].Get(), &renderTargetViewDesc, handle);
 	}
 
-	rtvHandles_[0] = rtvDescriptorHeap_->GetCPUDescriptorHandleForHeapStart();
+	rtvHandles_[0] = rtvDescriptorHeap_->GetHeapPointer()->GetCPUDescriptorHandleForHeapStart()/*rtvDescriptorHeap_->GetCPUDescriptorHandleForHeapStart()*/;
 	rtvHandles_[1].ptr = rtvHandles_[0].ptr + device_->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 
 }

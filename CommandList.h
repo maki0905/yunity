@@ -11,16 +11,42 @@ class SwapChain;
 class CommandList
 {
 public:
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	/// <param name="device">デバイス</param>
 	CommandList(ID3D12Device* device);
 
+	/// <summary>
+	/// 生成
+	/// </summary>
 	void Create();
 
+	/// <summary>
+	/// バリア変更
+	/// </summary>
+	/// <param name="swapChain">スワップチェーン</param>
+	/// <param name="before">前</param>
+	/// <param name="after">後</param>
 	void BarrierChange(IDXGISwapChain4* swapChain, D3D12_RESOURCE_STATES before, D3D12_RESOURCE_STATES after);
 
+	/// <summary>
+	/// コマンドクリア
+	/// </summary>
 	void CommandClear();
 
+	/// <summary>
+	/// ビューポート設定
+	/// </summary>
+	/// <param name="width">幅</param>
+	/// <param name="height">高さ</param>
 	void SetViewport(float width, float height);
 
+	/// <summary>
+	/// シザリング矩形
+	/// </summary>
+	/// <param name="width">幅</param>
+	/// <param name="height">高さ</param>
 	void SetRect(UINT width, UINT height);
 
 	ID3D12GraphicsCommandList* GetCommandList() {
@@ -32,8 +58,14 @@ public:
 	}
 
 private:
+	/// <summary>
+	/// コマンドアロケータ生成
+	/// </summary>
 	void CreateAllocator();
 
+	/// <summary>
+	/// コマンドリスト生成
+	/// </summary>
 	void CreateList();
 
 private:

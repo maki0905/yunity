@@ -11,8 +11,9 @@
 #include "ClearScene.h"
 #pragma endregion 
 
-//#include "DirectXCore.h"
+#include "DirectXCore.h"
 #include "WindowsAPI.h"
+#include "T.h"
 
 
 class GameManager
@@ -38,8 +39,9 @@ private:
 	int currentSceneNo_; // 現在のシーン
 	int prevSceneNo_; // 前のシーン
 
-	//DirectXCore* directXCore_ = nullptr;
+	DirectXCore* directXCore_ = nullptr;
 	WindowsAPI* windowsAPI_ = nullptr;
+	T* t_ = nullptr;
 
 };
 
