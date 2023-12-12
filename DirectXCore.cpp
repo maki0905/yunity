@@ -1,6 +1,9 @@
 #include "DirectXCore.h"
 #include <cassert>
 
+#include "DescriptorHeap.h"
+#include "DescriptorHandle.h"
+
 #pragma comment(lib, "d3d12.lib")
 
 DirectXCore* DirectXCore::GetInstance()

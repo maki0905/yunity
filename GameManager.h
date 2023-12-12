@@ -12,6 +12,7 @@
 #pragma endregion 
 
 //#include "DirectXCore.h"
+#include "WindowsAPI.h"
 
 
 class GameManager
@@ -38,6 +39,7 @@ private:
 	int prevSceneNo_; // 前のシーン
 
 	//DirectXCore* directXCore_ = nullptr;
+	WindowsAPI* windowsAPI_ = nullptr;
 
 };
 

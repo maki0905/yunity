@@ -88,6 +88,9 @@
     <Filter Include="Base\Descriptor">
       <UniqueIdentifier>{d2f065f5-37ac-4d30-af2e-b6104d1be4c8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Base\Scene\Manager">
+      <UniqueIdentifier>{695ae5ad-350b-47b4-be9c-430748116390}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -195,9 +198,6 @@
     <ClCompile Include="StageScene.cpp">
       <Filter>Base\Scene</Filter>
     </ClCompile>
-    <ClCompile Include="GameManager.cpp">
-      <Filter>Base\Scene</Filter>
-    </ClCompile>
     <ClCompile Include="ClearScene.cpp">
       <Filter>Base\Scene</Filter>
     </ClCompile>
@@ -215,6 +215,9 @@
     </ClCompile>
     <ClCompile Include="DescriptorHeap.cpp">
       <Filter>Base\Descriptor</Filter>
+    </ClCompile>
+    <ClCompile Include="GameManager.cpp">
+      <Filter>Base\Scene\Manager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -365,9 +368,6 @@
     <ClInclude Include="StageScene.h">
       <Filter>Base\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="GameManager.h">
-      <Filter>Base\Scene</Filter>
-    </ClInclude>
     <ClInclude Include="ClearScene.h">
       <Filter>Base\Scene</Filter>
     </ClInclude>
@@ -385,6 +385,9 @@
     </ClInclude>
     <ClInclude Include="DescriptorHeap.h">
       <Filter>Base\Descriptor</Filter>
+    </ClInclude>
+    <ClInclude Include="GameManager.h">
+      <Filter>Base\Scene\Manager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

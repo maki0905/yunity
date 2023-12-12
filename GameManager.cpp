@@ -10,18 +10,24 @@ GameManager::GameManager()
 
 	// 初期シーンの設定
 	currentSceneNo_ = GAME_STAGE;
-
+	windowsAPI_ = WindowsAPI::GetInstance();
+	windowsAPI_->CreateGameWindow();
 	//directXCore_ = DirectXCore::GetInstance();
 }
 
 GameManager::~GameManager()
 {
+	windowsAPI_->TerminateGameWindow();
 }
 
 void GameManager::Run()
 {
 	// ウィンドウの×ボタンが押されるまでループ
 	while (true) {
+		if (windowsAPI_->ProcessMessage()) {
+			break;
+		}
+
 		// シーンのチェック
 		prevSceneNo_ = currentSceneNo_;
 		currentSceneNo_ = sceneArr_[currentSceneNo_]->GetSceneNo();
