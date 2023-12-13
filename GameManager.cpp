@@ -11,10 +11,25 @@ GameManager::GameManager()
 
 	// 初期シーンの設定
 	currentSceneNo_ = GAME_STAGE;
+
+	// 
 	windowsAPI_ = WindowsAPI::GetInstance();
 	windowsAPI_->CreateGameWindow();
+
+	// 
 	directXCore_ = DirectXCore::GetInstance();
 	directXCore_->Initialize();
+
+#pragma region 汎用機能初期化
+
+	// ImGui
+	imguiManager_ = ImGuiManager::GetInstance();
+	imguiManager_->Initialize();
+
+
+
+#pragma endregion
+
 	t_ = new T();
 	t_->Initialize(Device::GetInstance()->GetDevice());
 	t_->Create();
@@ -33,6 +48,9 @@ void GameManager::Run()
 			break;
 		}
 
+		// ImGui受付開始
+		imguiManager_->Begin();
+
 		// シーンのチェック
 		prevSceneNo_ = currentSceneNo_;
 		currentSceneNo_ = sceneArr_[currentSceneNo_]->GetSceneNo();
@@ -45,6 +63,9 @@ void GameManager::Run()
 		// 更新
 		sceneArr_[currentSceneNo_]->Update();
 
+		// ImGui受付終了
+		imguiManager_->End();
+
 		directXCore_->PreDraw();
 
 		t_->PreDraw(directXCore_->GetCommandList());
@@ -53,7 +74,11 @@ void GameManager::Run()
 		// 描画
 		sceneArr_[currentSceneNo_]->Draw();
 
+		// ImGui描画
+		imguiManager_->Draw();
+
 		directXCore_->PostDraw();
 
 	}
+	imguiManager_->Finalize();
 }

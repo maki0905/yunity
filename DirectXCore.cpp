@@ -1,5 +1,7 @@
 #include "DirectXCore.h"
+
 #include <cassert>
+#include <thread>
 
 #include "WindowsAPI.h"
 #include "Device.h"
@@ -10,6 +12,7 @@
 #include "DepthBuffer.h"
 #include "BackBuffer.h"
 #include "T.h"
+
 
 #pragma comment(lib, "d3d12.lib")
 
@@ -22,6 +25,9 @@ DirectXCore* DirectXCore::GetInstance()
 
 void DirectXCore::Initialize()
 {
+	// FPS固定初期化
+	InitializeFixFPS();
+
 	windowWidth_ = WindowsAPI::GetInstance()->kWindowWidth;
 	windowHeight_ = WindowsAPI::GetInstance()->kWindowHeight;
 
@@ -58,8 +64,6 @@ void DirectXCore::Initialize()
 	// Shader
 	shader_ = Shader::GetInstance();
 	shader_->Initialize();
-
-	// ImGui
 
 	
 
@@ -104,6 +108,30 @@ void DirectXCore::PostDraw()
 #endif
 
 	commandQueue_->WaitForCommandsToFinish();
+	// FPS固定
+	UpdateFixFPS();
 	commandList_->CommandClear();
 
+}
+
+void DirectXCore::InitializeFixFPS()
+{
+	reference_ = std::chrono::steady_clock::now();
+}
+
+void DirectXCore::UpdateFixFPS()
+{
+	const std::chrono::microseconds kMinTime(uint64_t(1000000.0f / 60.0f));
+	const std::chrono::microseconds kMinCheckTime(uint64_t(1000000.0f / 65.0f));
+
+	std::chrono::steady_clock::time_point now = std::chrono::steady_clock::now();
+	std::chrono::microseconds elapsed = std::chrono::duration_cast<std::chrono::microseconds>(now - reference_);
+
+	if (elapsed < kMinTime) {
+		while (std::chrono::steady_clock::now() - reference_ < kMinTime) {
+			std::this_thread::sleep_for(std::chrono::microseconds(1));
+		}
+	}
+
+	reference_ = std::chrono::steady_clock::now();
 }

@@ -2,6 +2,8 @@
 
 #include <string>
 
+#pragma comment(lib, "winmm.lib")
+
 #ifdef _DEBUG
 #include "externals/imgui/imgui_impl_win32.h"
 extern IMGUI_IMPL_API LRESULT
@@ -138,6 +140,10 @@ void WindowsAPI::CreateGameWindow(const char* title, UINT windowStyle, int32_t c
 
 	// ウィンドウ表示
 	ShowWindow(hwnd_, SW_NORMAL);
+
+	// システムタイマーの分解能を上げる
+	timeBeginPeriod(1);
+
 }
 
 void WindowsAPI::TerminateGameWindow()

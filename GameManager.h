@@ -13,6 +13,7 @@
 
 #include "DirectXCore.h"
 #include "WindowsAPI.h"
+#include "ImGuiManager.h"
 #include "T.h"
 
 
@@ -41,6 +42,7 @@ private:
 
 	DirectXCore* directXCore_ = nullptr;
 	WindowsAPI* windowsAPI_ = nullptr;
+	ImGuiManager* imguiManager_ = nullptr;
 	T* t_ = nullptr;
 
 };

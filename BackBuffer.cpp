@@ -23,6 +23,8 @@ void BackBuffer::Create()
 	result = swapChain_->GetDesc(&swapChainDesc);
 	assert(SUCCEEDED(result));
 
+	backBufferCount_ = swapChainDesc.BufferCount;
+
 
 	//D3D12_DESCRIPTOR_HEAP_DESC heapDesc{};
 	//heapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV; // レンダーターゲットビュー

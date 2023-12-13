@@ -36,6 +36,8 @@ public:
 	/// <param name="swapChain"></param>
 	void ClearRenderTarget(IDXGISwapChain4* swapChain);
 
+	UINT GetBackBufferCount() { return backBufferCount_; }
+
 private:
 	Microsoft::WRL::ComPtr<ID3D12Device> device_;
 	Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> commandList_;
@@ -43,5 +45,7 @@ private:
 	Microsoft::WRL::ComPtr<IDXGISwapChain4> swapChain_;
 	DescriptorHeap* rtvDescriptorHeap_ = nullptr;
 	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandles_[2];
+	UINT backBufferCount_ = 0;
+
 };
 

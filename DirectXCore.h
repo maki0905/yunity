@@ -3,11 +3,14 @@
 #include <d3d12.h>
 #include <memory>
 #include <vector>
+#include <chrono>
 
 #include "Input.h"
 #include "Device.h"
 #include "Shader.h"
 #include "CommandList.h"
+#include "ImGuiManager.h"
+#include "BackBuffer.h"
 
 
 class SwapChain;
@@ -38,7 +41,13 @@ public:
 
 	DescriptorHeap* GetDescriptorHeap(HeapType heapType) { return descriptorHeaps_[static_cast<int>(heapType)].get(); }
 	ID3D12GraphicsCommandList* GetCommandList() { return commandList_->GetCommandList(); }
+
+	UINT GetBackBufferCount() { return backBuffer_->GetBackBufferCount(); }
 	
+
+private:
+	void InitializeFixFPS();
+	void UpdateFixFPS();
 
 private:
 	DirectXCore() = default;
@@ -61,7 +70,9 @@ private:
 
 	std::unique_ptr<DescriptorHeap> descriptorHeaps_[static_cast<int>(HeapType::kCount)];
 
-	T* t_ = nullptr;
+	std::chrono::steady_clock::time_point reference_;
+
+	ImGuiManager* imguiManager_ = nullptr;
 	
 };
 
