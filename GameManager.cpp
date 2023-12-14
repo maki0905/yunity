@@ -29,8 +29,8 @@ GameManager::GameManager()
 	input->Initialize();
 
 	// 3Dオブジェクト
-	t_ = new T();
-	t_->StaticInitialize();
+	model_ = new Model();
+	model_->StaticInitialize();
 
 
 #ifdef _DEBUG
@@ -76,12 +76,12 @@ void GameManager::Run()
 
 		directXCore_->PreDraw();
 
-		t_->PreDraw(directXCore_->GetCommandList());
+		model_->PreDraw(directXCore_->GetCommandList());
 
 		// 描画
 		sceneArr_[currentSceneNo_]->Draw();
 
-		t_->PostDraw();
+		model_->PostDraw();
 
 		// ImGui描画
 		imguiManager_->Draw();

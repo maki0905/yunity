@@ -14,7 +14,7 @@
 #include "DirectXCore.h"
 #include "WindowsAPI.h"
 #include "ImGuiManager.h"
-#include "T.h"
+#include "Model.h"
 
 
 class GameManager
@@ -43,7 +43,7 @@ private:
 	DirectXCore* directXCore_ = nullptr;
 	WindowsAPI* windowsAPI_ = nullptr;
 	ImGuiManager* imguiManager_ = nullptr;
-	T* t_ = nullptr;
+	Model* model_ = nullptr;
 
 };
 
