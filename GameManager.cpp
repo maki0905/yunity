@@ -1,5 +1,7 @@
 #include "GameManager.h"
+
 #include "Device.h"
+#include "Input.h"
 
 GameManager::GameManager()
 {
@@ -12,27 +14,33 @@ GameManager::GameManager()
 	// 初期シーンの設定
 	currentSceneNo_ = GAME_STAGE;
 
-	// 
+	// WindowsAPI
 	windowsAPI_ = WindowsAPI::GetInstance();
 	windowsAPI_->CreateGameWindow();
 
-	// 
+	// DirectX基盤
 	directXCore_ = DirectXCore::GetInstance();
 	directXCore_->Initialize();
 
 #pragma region 汎用機能初期化
 
+	// Input
+	Input* input = Input::GetInstance();
+	input->Initialize();
+
+	// 3Dオブジェクト
+	t_ = new T();
+	t_->StaticInitialize();
+
+
+#ifdef _DEBUG
 	// ImGui
 	imguiManager_ = ImGuiManager::GetInstance();
 	imguiManager_->Initialize();
-
-
+#endif // _DEBUG
 
 #pragma endregion
 
-	t_ = new T();
-	t_->Initialize(Device::GetInstance()->GetDevice());
-	t_->Create();
 }
 
 GameManager::~GameManager()
@@ -69,10 +77,11 @@ void GameManager::Run()
 		directXCore_->PreDraw();
 
 		t_->PreDraw(directXCore_->GetCommandList());
-		t_->PostDraw();
 
 		// 描画
 		sceneArr_[currentSceneNo_]->Draw();
+
+		t_->PostDraw();
 
 		// ImGui描画
 		imguiManager_->Draw();

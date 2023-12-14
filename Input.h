@@ -170,10 +170,10 @@ public:
 
 
 private:
-	/*Input() = default;
-	~Input();
+	Input() = default;
+	~Input() = default;
 	Input(const Input&) = delete;
-	const Input& operator=(const Input&) = delete;*/
+	const Input& operator=(const Input&) = delete;
 private:
 	Microsoft::WRL::ComPtr<IDirectInput8> dInput_;
 	Microsoft::WRL::ComPtr<IDirectInputDevice8> devKeyboard_;

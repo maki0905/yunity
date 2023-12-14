@@ -19,7 +19,6 @@ class CommandQueue;
 class DepthBuffer;
 class BackBuffer;
 class DescriptorHeap;
-class T;
 
 class DirectXCore
 {

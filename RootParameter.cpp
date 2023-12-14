@@ -1,8 +1,11 @@
 #include "RootParameter.h"
+#include "RootSignature.h"
 
 #include <cassert>
 
 #pragma comment(lib, "d3d12.lib")
+
+
 
 RootParameter::RootParameter()
 {
@@ -59,10 +62,10 @@ void RootParameter::InitializeAsBufferUAV(UINT shaderRegister, D3D12_SHADER_VISI
 
 }
 
-void RootParameter::InitializeAsDescriptorRange(D3D12_DESCRIPTOR_RANGE_TYPE type, UINT shaderRegister, UINT count, D3D12_SHADER_VISIBILITY shaderVisibility, UINT registerSpace)
+void RootParameter::InitializeAsDescriptorRange(D3D12_DESCRIPTOR_RANGE_TYPE rangeType, UINT shaderRegister, UINT numDescriptors, D3D12_SHADER_VISIBILITY shaderVisibility, UINT registerSpace)
 {
 	InitializeAsDescriptorTable(1, shaderVisibility);
-	SetTableRange(0, type, shaderRegister, count, registerSpace);
+	SetTableRange(0, rangeType, shaderRegister, numDescriptors, registerSpace);
 }
 
 void RootParameter::InitializeAsDescriptorTable(UINT rangeCount, D3D12_SHADER_VISIBILITY shaderVisibility)
@@ -74,11 +77,11 @@ void RootParameter::InitializeAsDescriptorTable(UINT rangeCount, D3D12_SHADER_VI
 
 }
 
-void RootParameter::SetTableRange(UINT rangeIndex, D3D12_DESCRIPTOR_RANGE_TYPE type, UINT shaderRegister, UINT count, UINT registerSpace)
+void RootParameter::SetTableRange(UINT rangeIndex, D3D12_DESCRIPTOR_RANGE_TYPE rangeType, UINT shaderRegister, UINT numDescriptors, UINT registerSpace)
 {
 	D3D12_DESCRIPTOR_RANGE* range = const_cast<D3D12_DESCRIPTOR_RANGE*>(rootParameter_.DescriptorTable.pDescriptorRanges + rangeIndex);
-	range->RangeType = type;
-	range->NumDescriptors = count;
+	range->RangeType = rangeType;
+	range->NumDescriptors = numDescriptors;
 	range->BaseShaderRegister = shaderRegister;
 	range->RegisterSpace = registerSpace;
 	range->OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;

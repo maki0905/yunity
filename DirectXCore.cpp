@@ -11,7 +11,6 @@
 #include "DescriptorHeap.h"
 #include "DepthBuffer.h"
 #include "BackBuffer.h"
-#include "T.h"
 
 
 #pragma comment(lib, "d3d12.lib")

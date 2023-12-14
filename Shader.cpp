@@ -64,9 +64,9 @@ ID3DBlob* Shader::Get(Name name)
 
 void Shader::ShaderCompile()
 {
-	basicVS_ = CompileShader(L"Resources/Shaders/BasicVS.hlsl", L"vs_6_0");
+	basicVS_ = CompileShader(L"Resources/Shaders/Object3d.VS.hlsl", L"vs_6_0");
 	assert(basicVS_ != nullptr);
-	basicPS_ = CompileShader(L"Resources/Shaders/BasicPS.hlsl", L"ps_6_0");
+	basicPS_ = CompileShader(L"Resources/Shaders/Object3d.PS.hlsl", L"ps_6_0");
 	assert(basicPS_ != nullptr);
 }
 

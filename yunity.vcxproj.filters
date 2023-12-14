@@ -117,13 +117,10 @@
     <ClCompile Include="externals\imgui\imgui_widgets.cpp">
       <Filter>imgui</Filter>
     </ClCompile>
-    <ClCompile Include="Model.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="MathFunction.cpp">
       <Filter>Base\math</Filter>
     </ClCompile>
-    <ClCompile Include="T.cpp">
+    <ClCompile Include="Model.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="CommandList.cpp">
@@ -168,7 +165,7 @@
     <ClCompile Include="Sprite.cpp">
       <Filter>Base\Sprite</Filter>
     </ClCompile>
-    <ClCompile Include="ViewProjection.cpp">
+    <ClCompile Include="Camera.cpp">
       <Filter>Base\Camera</Filter>
     </ClCompile>
     <ClCompile Include="WorldTransform.cpp">
@@ -245,9 +242,6 @@
     <ClInclude Include="externals\imgui\imstb_truetype.h">
       <Filter>imgui</Filter>
     </ClInclude>
-    <ClInclude Include="Model.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="Capsule.h">
       <Filter>Base\math\ヘッダー</Filter>
     </ClInclude>
@@ -287,7 +281,7 @@
     <ClInclude Include="AABB.h">
       <Filter>Base\math\ヘッダー</Filter>
     </ClInclude>
-    <ClInclude Include="T.h">
+    <ClInclude Include="Model.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="CommandQueue.h">
@@ -332,7 +326,7 @@
     <ClInclude Include="Sprite.h">
       <Filter>Base\Sprite</Filter>
     </ClInclude>
-    <ClInclude Include="ViewProjection.h">
+    <ClInclude Include="Camera.h">
       <Filter>Base\Camera</Filter>
     </ClInclude>
     <ClInclude Include="WorldTransform.h">
@@ -414,10 +408,10 @@
     <FxCompile Include="ParticlePS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="Object3d.VS.hlsl">
+    <FxCompile Include="Resources\Shaders\Object3d.PS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="Object3d.PS.hlsl">
+    <FxCompile Include="Resources\Shaders\Object3d.VS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
   </ItemGroup>
@@ -428,7 +422,7 @@
     <None Include="Particle.hlsli">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Object3d.hlsli">
+    <None Include="Resources\Shaders\Object3d.hlsli">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>

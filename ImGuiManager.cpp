@@ -19,7 +19,6 @@ ImGuiManager* ImGuiManager::GetInstance()
 void ImGuiManager::Initialize()
 {
 #ifdef _DEBUG
-	HRESULT result;
 	directXCore_ = DirectXCore::GetInstance();
 	Device* device = Device::GetInstance();
 	srvHeap_ = directXCore_->GetDescriptorHeap(DirectXCore::HeapType::kSRV);
