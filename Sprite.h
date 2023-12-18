@@ -70,12 +70,16 @@ private:
 	static UINT descriptorHandleIncrementSize_;
 	// コマンドリスト
 	static ID3D12GraphicsCommandList* commandList_;
-	// ルートシグネチャー
-	static RootSignature* rootSignature_;
-	// パイプラインステートオブジェクト
-	static PipelineState* pipelineState_;
+	//// ルートシグネチャー
+	//static RootSignature* rootSignature_;
+	//// パイプラインステートオブジェクト
+	//static PipelineState* pipelineState_;
 	// 射影行列
 	static Matrix4x4 matProjection_;
+	// ルートシグネチャー
+	static Microsoft::WRL::ComPtr<ID3D12RootSignature> rootSignature_;
+	// パイプラインステートオブジェクト
+	static Microsoft::WRL::ComPtr<ID3D12PipelineState> pipelineState_;
 
 
 public:

@@ -414,6 +414,8 @@
     <FxCompile Include="Resources\Shaders\SpriteVS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
+    <FxCompile Include="spriteVS.hlsl" />
+    <FxCompile Include="spritePS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\Object3d.hlsli">

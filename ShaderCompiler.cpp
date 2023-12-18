@@ -73,9 +73,9 @@ void ShaderCompiler::ShaderCompile()
 	assert(vsblob_[static_cast<size_t>(FileName::kBasic)]);
 	psblob_[static_cast<size_t>(FileName::kBasic)] = CompileShader(L"Resources/Shaders/Object3d.PS.hlsl", L"ps_6_0");
 	assert(psblob_[static_cast<size_t>(FileName::kBasic)]);
-	vsblob_[static_cast<size_t>(FileName::kSprite)] = CompileShader(L"Resources/Shaders/SpriteVS.hlsl", L"vs_6_0");
+	vsblob_[static_cast<size_t>(FileName::kSprite)] = CompileShader(L"spriteVS.hlsl", L"vs_6_0");
 	assert(vsblob_[static_cast<size_t>(FileName::kSprite)]);
-	psblob_[static_cast<size_t>(FileName::kSprite)] = CompileShader(L"Resources/Shaders/SpritePS.hlsl", L"ps_6_0");
+	psblob_[static_cast<size_t>(FileName::kSprite)] = CompileShader(L"spritePS.hlsl", L"ps_6_0");
 	assert(psblob_[static_cast<size_t>(FileName::kSprite)]);
 
 }

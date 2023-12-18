@@ -5,7 +5,7 @@
 
 void StageScene::Initialize()
 {
-	textureHandle_ = TextureManager::Load("white1x1.png");
+	textureHandle_ = TextureManager::Load("uvChecker.png");
 	sprite_ = std::make_unique<Sprite>();
 	sprite_.reset(Sprite::Create(textureHandle_, { 0.0f, 0.0f }));
 	position_ = { 0.0f, 0.0f };
