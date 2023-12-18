@@ -7,7 +7,7 @@
 
 #include "Input.h"
 #include "Device.h"
-#include "Shader.h"
+#include "ShaderCompiler.h"
 #include "CommandList.h"
 #include "ImGuiManager.h"
 #include "BackBuffer.h"
@@ -62,7 +62,7 @@ private:
 	SwapChain* swapChain_ = nullptr;
 	BackBuffer* backBuffer_ = nullptr;
 	DepthBuffer* depthBuffer_ = nullptr;
-	Shader* shader_ = nullptr;
+	ShaderCompiler* shaderCompiler_ = nullptr;
 
 	UINT windowWidth_;
 	UINT windowHeight_;

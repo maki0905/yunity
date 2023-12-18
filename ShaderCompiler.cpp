@@ -1,4 +1,4 @@
-#include "Shader.h"
+#include "ShaderCompiler.h"
 
 #include <cassert>
 #include "externals/DirectXTex/DirectXTex.h"
@@ -7,14 +7,14 @@
 #pragma comment(lib,"dxcompiler.lib")
 
 
-Shader* Shader::GetInstance()
+ShaderCompiler* ShaderCompiler::GetInstance()
 {
-	static Shader instance;
+	static ShaderCompiler instance;
 
 	return &instance;
 }
 
-void Shader::Initialize()
+void ShaderCompiler::Initialize()
 {
 	HRESULT result = S_FALSE;
 	result = DxcCreateInstance(CLSID_DxcUtils, IID_PPV_ARGS(&dxcUtils_));
@@ -43,16 +43,16 @@ void Shader::Initialize()
 //
 //}
 
-ID3DBlob* Shader::Get(Name name)
+ID3DBlob* ShaderCompiler::Get(FileName name, ShaderType shaderType)
 {
 	ID3DBlob* result = nullptr;
-	switch (name)
+	switch (shaderType)
 	{
-	case Shader::Name::BasicVS:
-		result =  basicVS_;
+	case ShaderCompiler::ShaderType::kVS:
+		result = vsblob_[static_cast<size_t>(name)];
 		break;
-	case Shader::Name::BasicPS:
-		result =  basicPS_;
+	case ShaderCompiler::ShaderType::kPS:
+		result = psblob_[static_cast<size_t>(name)];
 		break;
 	default:
 		break;
@@ -62,15 +62,25 @@ ID3DBlob* Shader::Get(Name name)
 
 }
 
-void Shader::ShaderCompile()
+void ShaderCompiler::ShaderCompile()
 {
-	basicVS_ = CompileShader(L"Resources/Shaders/Object3d.VS.hlsl", L"vs_6_0");
+	/*basicVS_ = CompileShader(L"Resources/Shaders/Object3d.VS.hlsl", L"vs_6_0");
 	assert(basicVS_ != nullptr);
 	basicPS_ = CompileShader(L"Resources/Shaders/Object3d.PS.hlsl", L"ps_6_0");
-	assert(basicPS_ != nullptr);
+	assert(basicPS_ != nullptr);*/
+
+	vsblob_[static_cast<size_t>(FileName::kBasic)] = CompileShader(L"Resources/Shaders/Object3d.VS.hlsl", L"vs_6_0");
+	assert(vsblob_[static_cast<size_t>(FileName::kBasic)]);
+	psblob_[static_cast<size_t>(FileName::kBasic)] = CompileShader(L"Resources/Shaders/Object3d.PS.hlsl", L"ps_6_0");
+	assert(psblob_[static_cast<size_t>(FileName::kBasic)]);
+	vsblob_[static_cast<size_t>(FileName::kSprite)] = CompileShader(L"Resources/Shaders/SpriteVS.hlsl", L"vs_6_0");
+	assert(vsblob_[static_cast<size_t>(FileName::kSprite)]);
+	psblob_[static_cast<size_t>(FileName::kSprite)] = CompileShader(L"Resources/Shaders/SpritePS.hlsl", L"ps_6_0");
+	assert(psblob_[static_cast<size_t>(FileName::kSprite)]);
+
 }
 
-ID3DBlob* Shader::CompileShader(const std::wstring& filePath, const wchar_t* profile)
+ID3DBlob* ShaderCompiler::CompileShader(const std::wstring& filePath, const wchar_t* profile)
 {
 	//hlslファイルを読む
 	IDxcBlobEncoding* shaderSource = nullptr;
@@ -125,7 +135,7 @@ ID3DBlob* Shader::CompileShader(const std::wstring& filePath, const wchar_t* pro
 	return shaderBlob;
 }
 
-void Shader::Log(const std::string& message)
+void ShaderCompiler::Log(const std::string& message)
 {
 	OutputDebugStringA(message.c_str());
 }

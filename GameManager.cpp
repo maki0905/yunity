@@ -6,14 +6,6 @@
 GameManager::GameManager()
 {
 
-	// 各シーンの配列
-	sceneArr_[TITLE] = std::make_unique<TitleScene>();
-	sceneArr_[GAME_STAGE] = std::make_unique<StageScene>();
-	sceneArr_[CLEAR] = std::make_unique<ClearScene>();
-
-	// 初期シーンの設定
-	currentSceneNo_ = GAME_STAGE;
-
 	// WindowsAPI
 	windowsAPI_ = WindowsAPI::GetInstance();
 	windowsAPI_->CreateGameWindow();
@@ -25,12 +17,20 @@ GameManager::GameManager()
 #pragma region 汎用機能初期化
 
 	// Input
-	Input* input = Input::GetInstance();
-	input->Initialize();
+	input_ = Input::GetInstance();
+	input_->Initialize();
+
+	// テクスチャマネージャー
+	textureManager_ = TextureManager::GetInstance();
+	textureManager_->Initialize(Device::GetInstance()->GetDevice());
+	TextureManager::Load("white1x1.png");
 
 	// 3Dオブジェクト
 	model_ = new Model();
 	model_->StaticInitialize();
+
+	sprite_ = new Sprite();
+	sprite_->StaticInitialize();
 
 
 #ifdef _DEBUG
@@ -40,6 +40,15 @@ GameManager::GameManager()
 #endif // _DEBUG
 
 #pragma endregion
+
+	// 各シーンの配列
+	sceneArr_[TITLE] = std::make_unique<TitleScene>();
+	sceneArr_[GAME_STAGE] = std::make_unique<StageScene>();
+	sceneArr_[CLEAR] = std::make_unique<ClearScene>();
+
+	// 初期シーンの設定
+	currentSceneNo_ = GAME_STAGE;
+	sceneArr_[currentSceneNo_]->Initialize();
 
 }
 
@@ -59,6 +68,8 @@ void GameManager::Run()
 		// ImGui受付開始
 		imguiManager_->Begin();
 
+		input_->Update();
+
 		// シーンのチェック
 		prevSceneNo_ = currentSceneNo_;
 		currentSceneNo_ = sceneArr_[currentSceneNo_]->GetSceneNo();
@@ -75,13 +86,26 @@ void GameManager::Run()
 		imguiManager_->End();
 
 		directXCore_->PreDraw();
+#pragma region 背景描画
+		sprite_->PreDraw(directXCore_->GetCommandList());
+		sceneArr_[currentSceneNo_]->DrawBack();
+		sprite_->PostDraw();
+#pragma endregion 
 
+#pragma region 3D描画
 		model_->PreDraw(directXCore_->GetCommandList());
-
 		// 描画
-		sceneArr_[currentSceneNo_]->Draw();
-
+		sceneArr_[currentSceneNo_]->Draw3D();
 		model_->PostDraw();
+#pragma endregion
+
+#pragma region 前景描画
+
+		sprite_->PreDraw(directXCore_->GetCommandList());
+		sceneArr_[currentSceneNo_]->DrawFront();
+		sprite_->PostDraw();
+
+#pragma endregion
 
 		// ImGui描画
 		imguiManager_->Draw();

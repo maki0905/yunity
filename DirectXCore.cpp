@@ -61,8 +61,8 @@ void DirectXCore::Initialize()
 	backBuffer_->Create();
 
 	// Shader
-	shader_ = Shader::GetInstance();
-	shader_->Initialize();
+	shaderCompiler_ = ShaderCompiler::GetInstance();
+	shaderCompiler_->Initialize();
 
 	
 

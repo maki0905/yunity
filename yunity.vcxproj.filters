@@ -31,9 +31,6 @@
     <Filter Include="Base\Input">
       <UniqueIdentifier>{6fb25ccb-954b-40be-8d1c-61b120223f34}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Base\Shader">
-      <UniqueIdentifier>{8bff4563-cbe9-4dbe-bd84-e345247db75e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Base\RootSignature">
       <UniqueIdentifier>{18400839-3c3b-4bd0-8ef6-d2dfb26cf932}</UniqueIdentifier>
     </Filter>
@@ -91,6 +88,9 @@
     <Filter Include="Base\Scene\Manager">
       <UniqueIdentifier>{695ae5ad-350b-47b4-be9c-430748116390}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Base\ShaderCompiler">
+      <UniqueIdentifier>{8bff4563-cbe9-4dbe-bd84-e345247db75e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -138,8 +138,8 @@
     <ClCompile Include="Input.cpp">
       <Filter>Base\Input</Filter>
     </ClCompile>
-    <ClCompile Include="Shader.cpp">
-      <Filter>Base\Shader</Filter>
+    <ClCompile Include="ShaderCompiler.cpp">
+      <Filter>Base\ShaderCompiler</Filter>
     </ClCompile>
     <ClCompile Include="RootSignature.cpp">
       <Filter>Base\RootSignature</Filter>
@@ -299,8 +299,8 @@
     <ClInclude Include="Input.h">
       <Filter>Base\Input</Filter>
     </ClInclude>
-    <ClInclude Include="Shader.h">
-      <Filter>Base\Shader</Filter>
+    <ClInclude Include="ShaderCompiler.h">
+      <Filter>Base\ShaderCompiler</Filter>
     </ClInclude>
     <ClInclude Include="RootSignature.h">
       <Filter>Base\RootSignature</Filter>
@@ -420,9 +420,6 @@
       <Filter>Shaders</Filter>
     </None>
     <None Include="Resources\Shaders\Particle.hlsli">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="Resources\Shaders\Sprite.hlsli">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>

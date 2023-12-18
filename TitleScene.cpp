@@ -8,6 +8,15 @@ void TitleScene::Update()
 {
 }
 
-void TitleScene::Draw()
+void TitleScene::DrawBack()
 {
 }
+
+void TitleScene::Draw3D()
+{
+}
+
+void TitleScene::DrawFront()
+{
+}
+

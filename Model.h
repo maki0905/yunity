@@ -90,8 +90,6 @@ public:
 	/// </summary>
 	void Initialize();
 
-	void Create();
-
 	/// <summary>
 	/// 描画
 	/// </summary>
@@ -128,7 +126,7 @@ private:
 	static ID3D12Device* device_;
 	static ID3D12GraphicsCommandList* commandList_;
 	static RootSignature* rootSignature_;
-	static PipelineState* PSO_;
+	static PipelineState* pipelineState_;
 
 private:
 
@@ -137,7 +135,7 @@ private:
 	// 頂点バッファ
 	Microsoft::WRL::ComPtr<ID3D12Resource> vertexResource_;
 	// 頂点データ
-	std::vector<Vector4> vertexData_;
+	VertexData* vertexData_;
 	// 頂点バッファビュー
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferView_;
 	// インデックスバッファ

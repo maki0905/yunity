@@ -1,8 +1,12 @@
 #include "Sprite.h"
-#include "TextureManager.h"
+
 #include <cassert>
-#include<d3dcompiler.h>
+#include <d3dcompiler.h>
+
+#include "Device.h"
 #include "WindowsAPI.h"
+#include "TextureManager.h"
+#include "ShaderCompiler.h"
 
 #pragma comment(lib, "d3dcompiler.lib")
 
@@ -13,84 +17,60 @@
 ID3D12Device* Sprite::device_ = nullptr;
 UINT Sprite::descriptorHandleIncrementSize_;
 ID3D12GraphicsCommandList* Sprite::commandList_ = nullptr;
-Microsoft::WRL::ComPtr<ID3D12RootSignature> Sprite::rootSignature_;
-Microsoft::WRL::ComPtr<ID3D12PipelineState> Sprite::pipelineState_;
+RootSignature* Sprite::rootSignature_;
+PipelineState* Sprite::pipelineState_;
 Matrix4x4 Sprite::matProjection_;
 
 
-void Sprite::StaticInitialize(ID3D12Device* device)
+void Sprite::StaticInitialize()
 {
-	// nullptrチェック
-	assert(device);
 
-	device_ = device;
+	device_ = Device::GetInstance()->GetDevice();
+
+	rootSignature_ = new RootSignature(device_, 2, 1);
 
 	// デスクリプタサイズを取得
 	descriptorHandleIncrementSize_ = device_->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 
-	HRESULT result = S_FALSE;
-	Microsoft::WRL::ComPtr<ID3DBlob> vsBlob;    // 頂点シェーダーオブジェクト
-	Microsoft::WRL::ComPtr<ID3DBlob> psBlob;    // ピクセルシェーダーオブジェクト
-	Microsoft::WRL::ComPtr<ID3DBlob> errorBlob; // エラーオブジェクト
+	// スタティックサンプラー
+	D3D12_STATIC_SAMPLER_DESC staticSamplers = {};
+	staticSamplers.Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;
+	staticSamplers.AddressU = D3D12_TEXTURE_ADDRESS_MODE_CLAMP; //0~1の範囲外をリピート
+	staticSamplers.AddressV = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
+	staticSamplers.AddressW = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
+	staticSamplers.ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER; //比較しない
+	staticSamplers.MaxLOD = D3D12_FLOAT32_MAX;
+	staticSamplers.ShaderRegister = 0; //レジスタ番号0を使う
+	staticSamplers.ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL; //PixelShaderを使う
+	rootSignature_->InitializeStaticSampler(0, staticSamplers, D3D12_SHADER_VISIBILITY_PIXEL);
 
-	// 頂点シェーダの読み込みとコンパイル
-	std::wstring vsFile = L"SpriteVS.hlsl";
-	result = D3DCompileFromFile(
-		vsFile.c_str(), // シェーダファイル名
-		nullptr, 
-		D3D_COMPILE_STANDARD_FILE_INCLUDE, // インクルード可能にする
-		"main", "vs_5_0", // エントリーポイント名、シェーダーモデル指定
-		D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION,  // デバッグ用設定
-		0, &vsBlob, &errorBlob);
+	rootSignature_->GetParameter(0).InitializeAsConstantBuffer(0);
+	rootSignature_->GetParameter(1).InitializeAsDescriptorRange(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 0, 1);
 
-	if (FAILED(result)) {
-		// errorBlobからエラー内容をstring型にコピー
-		std::string errstr;
-		errstr.resize(errorBlob->GetBufferSize());
+	rootSignature_->Finalize(D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
 
-		std::copy_n((char*)errorBlob->GetBufferPointer(), errorBlob->GetBufferSize(), errstr.begin());
-		errstr += "\n";
-		// エラー内容を出力ウィンドウに表示
-		OutputDebugStringA(errstr.c_str());
-		exit(1);
-	}
+	pipelineState_ = new PipelineState(device_, rootSignature_);
 
-	// ピクセルシェーダの読み込みとコンパイル
-	std::wstring psFile = L"SpritePS.hlsl";
-	result = D3DCompileFromFile(
-		psFile.c_str(), // シェーダファイル名
-		nullptr,
-		D3D_COMPILE_STANDARD_FILE_INCLUDE, // インクルード可能にする
-		"main", "ps_5_0", // エントリーポイント名、シェーダーモデル指定
-		D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION, // デバッグ用設定
-		0, &psBlob, &errorBlob);
-	if (FAILED(result)) {
-		// errorBlobからエラー内容をstring型にコピー
-		std::string errstr;
-		errstr.resize(errorBlob->GetBufferSize());
-
-		std::copy_n((char*)errorBlob->GetBufferPointer(), errorBlob->GetBufferSize(), errstr.begin());
-		errstr += "\n";
-		// エラー内容を出力ウィンドウに表示
-		OutputDebugStringA(errstr.c_str());
-		exit(1);
-	}
-
-	// 頂点レイアウト
-	D3D12_INPUT_ELEMENT_DESC inputLayout[] = {
+	D3D12_INPUT_ELEMENT_DESC inputElementDescs[] = {
 		// xy座標
-		{"POSITIONT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D12_APPEND_ALIGNED_ELEMENT, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0},
+		{"POSITIONT", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D12_APPEND_ALIGNED_ELEMENT, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0},
 		// uv座標
 		{"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0 , D3D12_APPEND_ALIGNED_ELEMENT, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0},
 	};
+	D3D12_INPUT_LAYOUT_DESC inputLayoutDesc{};
+	inputLayoutDesc.pInputElementDescs = inputElementDescs;
+	inputLayoutDesc.NumElements = _countof(inputElementDescs);
 
-	// グラフィックスパイプラインの流れを設定
-	D3D12_GRAPHICS_PIPELINE_STATE_DESC gpipeline{};
-	gpipeline.VS = { vsBlob->GetBufferPointer(),vsBlob->GetBufferSize() };
-	gpipeline.PS = { psBlob->GetBufferPointer(), psBlob->GetBufferSize() };
-
-	// サンプルマスク
-	gpipeline.SampleMask = D3D12_DEFAULT_SAMPLE_MASK; // 標準設定
+	// レンダーターゲットのブレンド設定
+	D3D12_RENDER_TARGET_BLEND_DESC blendDesc{};
+	blendDesc.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
+	blendDesc.BlendEnable = true;
+	blendDesc.BlendOp = D3D12_BLEND_OP_ADD;
+	blendDesc.SrcBlend = D3D12_BLEND_SRC_ALPHA;
+	blendDesc.DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
+	blendDesc.BlendOpAlpha = D3D12_BLEND_OP_ADD;
+	blendDesc.SrcBlendAlpha = D3D12_BLEND_ONE;
+	blendDesc.DestBlendAlpha = D3D12_BLEND_ZERO;
 
 	D3D12_RASTERIZER_DESC rasterizerDesc{};
 	rasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
@@ -104,109 +84,31 @@ void Sprite::StaticInitialize(ID3D12Device* device)
 	rasterizerDesc.AntialiasedLineEnable = FALSE;
 	rasterizerDesc.ForcedSampleCount = 0;
 	rasterizerDesc.ConservativeRaster = D3D12_CONSERVATIVE_RASTERIZATION_MODE_OFF;
-	// ラスタライザステート
-	gpipeline.RasterizerState = rasterizerDesc;
-	gpipeline.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
 
 	D3D12_DEPTH_STENCIL_DESC depthStencilDesc{};
 	depthStencilDesc.DepthEnable = TRUE;
 	depthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
-	depthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
+	depthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_ALWAYS;
 	depthStencilDesc.StencilEnable = FALSE;
 	depthStencilDesc.StencilReadMask = D3D12_DEFAULT_STENCIL_READ_MASK;
 	depthStencilDesc.StencilWriteMask = D3D12_DEFAULT_STENCIL_WRITE_MASK;
 	const D3D12_DEPTH_STENCILOP_DESC defaultStencilOp = { D3D12_STENCIL_OP_KEEP, D3D12_STENCIL_OP_KEEP, D3D12_STENCIL_OP_KEEP, D3D12_COMPARISON_FUNC_ALWAYS };
 	depthStencilDesc.FrontFace = defaultStencilOp;
 	depthStencilDesc.BackFace = defaultStencilOp;
-	// デプスステンシルステート
-	gpipeline.DepthStencilState = depthStencilDesc;
-	gpipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_ALWAYS;
 
-	// レンダーターゲットのブレンド設定
-	D3D12_RENDER_TARGET_BLEND_DESC blenddesc{};
-	blenddesc.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
-	blenddesc.BlendEnable = true;
-	blenddesc.BlendOp = D3D12_BLEND_OP_ADD;
-	blenddesc.SrcBlend = D3D12_BLEND_SRC_ALPHA;
-	blenddesc.DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
+	pipelineState_->SetInputLayout(inputLayoutDesc);
+	pipelineState_->SetShader(PipelineState::ShaderType::kVS, ShaderCompiler::GetInstance()->Get(ShaderCompiler::FileName::kSprite, ShaderCompiler::ShaderType::kVS));
+	pipelineState_->SetShader(PipelineState::ShaderType::kPS, ShaderCompiler::GetInstance()->Get(ShaderCompiler::FileName::kSprite, ShaderCompiler::ShaderType::kPS));
+	pipelineState_->SetBlendState(blendDesc);
+	pipelineState_->SetRasterizerState(rasterizerDesc);
+	pipelineState_->SetCullMode(D3D12_CULL_MODE_NONE);
+	pipelineState_->SetDepthStencilState(depthStencilDesc);
+	pipelineState_->SetDepthFunc(D3D12_COMPARISON_FUNC_ALWAYS);
+	pipelineState_->SetRenderTargetFormat(DXGI_FORMAT_R8G8B8A8_UNORM_SRGB,DXGI_FORMAT_D24_UNORM_S8_UINT);
+	pipelineState_->SetPrimitiveTopologyType(D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE);
+	pipelineState_->SetSampleMask(D3D12_DEFAULT_SAMPLE_MASK);
 
-	blenddesc.BlendOpAlpha = D3D12_BLEND_OP_ADD;
-	blenddesc.SrcBlendAlpha = D3D12_BLEND_ONE;
-	blenddesc.DestBlendAlpha = D3D12_BLEND_ZERO;
-
-	// ブレンドステートの設定
-	gpipeline.BlendState.RenderTarget[0] = blenddesc;
-
-	// 深度バッファのフォーマット
-	gpipeline.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
-
-	// 頂点レイアウトの設定
-	gpipeline.InputLayout.pInputElementDescs = inputLayout;
-	gpipeline.InputLayout.NumElements = _countof(inputLayout);
-
-	// 図形の形状設定（三角形）
-	gpipeline.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
-
-	gpipeline.NumRenderTargets = 1;
-	gpipeline.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
-	gpipeline.SampleDesc.Count = 1;
-
-	// デスクリプタレンジ
-	D3D12_DESCRIPTOR_RANGE descriptorRange{};
-	descriptorRange.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
-	descriptorRange.NumDescriptors = 1;
-	descriptorRange.BaseShaderRegister = 0;
-	descriptorRange.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
-
-	// ルートパラメータ
-	D3D12_ROOT_PARAMETER rootParameters[2] = {};
-	rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
-	rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
-	rootParameters[0].Descriptor.ShaderRegister = 0;
-
-	rootParameters[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-	rootParameters[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
-	rootParameters[1].DescriptorTable.pDescriptorRanges = &descriptorRange;
-	rootParameters[1].DescriptorTable.NumDescriptorRanges = 1;
-
-	// スタティックサンプラー
-	D3D12_STATIC_SAMPLER_DESC staticSamplers[1] = {};
-	staticSamplers[0].Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;
-	staticSamplers[0].AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP; //0~1の範囲外をリピート
-	staticSamplers[0].AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
-	staticSamplers[0].AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
-	staticSamplers[0].ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER; //比較しない
-	staticSamplers[0].MaxLOD = D3D12_FLOAT32_MAX;
-	staticSamplers[0].ShaderRegister = 0; //レジスタ番号0を使う
-	staticSamplers[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL; //PixelShaderを使う
-
-	// ルートシグネチャの設定
-	D3D12_ROOT_SIGNATURE_DESC descriptionRootSignature{};
-	descriptionRootSignature.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
-	descriptionRootSignature.pParameters = rootParameters;
-	descriptionRootSignature.NumParameters = _countof(rootParameters);
-	descriptionRootSignature.pStaticSamplers = staticSamplers;
-	descriptionRootSignature.NumStaticSamplers = 1;
-
-	Microsoft::WRL::ComPtr<ID3DBlob> rootSigBlob = nullptr;
-
-	errorBlob = nullptr;
-	result = D3D12SerializeRootSignature(
-		&descriptionRootSignature,
-		D3D_ROOT_SIGNATURE_VERSION_1,
-		&rootSigBlob, &errorBlob);
-	if (FAILED(result)) {
-		assert(false);
-	}
-
-	result = device_->CreateRootSignature(0, rootSigBlob->GetBufferPointer(), rootSigBlob->GetBufferSize(), IID_PPV_ARGS(&rootSignature_));
-	assert(SUCCEEDED(result));
-
-	gpipeline.pRootSignature = rootSignature_.Get();
-
-	// グラフィックスパイプラインの生成
-	result = device_->CreateGraphicsPipelineState(&gpipeline, IID_PPV_ARGS(&pipelineState_));
-	assert(SUCCEEDED(result));
+	pipelineState_->Finalize();
 
 	// 射影行列計算
 	matProjection_ = MakeOrthographicMatrix(
@@ -223,9 +125,9 @@ void Sprite::PreDraw(ID3D12GraphicsCommandList* commandList)
 	commandList_ = commandList;
 
 	// パイプラインステートの設定
-	commandList_->SetPipelineState(pipelineState_.Get());
+	commandList_->SetPipelineState(pipelineState_->GetPipelineStateObject());
 	// ルートシグネチャの設定
-	commandList_->SetGraphicsRootSignature(rootSignature_.Get());
+	commandList_->SetGraphicsRootSignature(rootSignature_->GetSignature());
 	// プリミティブ形状を設定
 	commandList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 

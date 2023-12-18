@@ -7,12 +7,12 @@
 #include "Device.h"
 #include "RootSignature.h"
 #include "PipelineState.h"
-#include "Shader.h"
+#include "ShaderCompiler.h"
 
 ID3D12Device* Model::device_ = nullptr;
 ID3D12GraphicsCommandList* Model::commandList_ = nullptr;
 RootSignature* Model::rootSignature_ = nullptr;
-PipelineState* Model::PSO_ = nullptr;
+PipelineState* Model::pipelineState_ = nullptr;
 
 
 void Model::StaticInitialize()
@@ -27,6 +27,9 @@ void Model::PreDraw(ID3D12GraphicsCommandList* commandList)
 	assert(commandList_ == nullptr);
 
 	commandList_ = commandList;
+	commandList_->SetGraphicsRootSignature(rootSignature_->GetSignature());
+	commandList_->SetPipelineState(pipelineState_->GetPipelineStateObject());
+	commandList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }
 
 void Model::PostDraw()
@@ -63,9 +66,15 @@ void Model::InitializeGraphicsPipeline()
 	rootSignature_->GetParameter(static_cast<size_t>(RootBindings::kMaterial)).InitializeAsConstantBuffer(0, D3D12_SHADER_VISIBILITY_PIXEL);
 	rootSignature_->GetParameter(static_cast<size_t>(RootBindings::kLight)).InitializeAsConstantBuffer(1, D3D12_SHADER_VISIBILITY_PIXEL);
 
+	RootParameter r0 = rootSignature_->GetParameter(static_cast<size_t>(RootBindings::kWorldTransform));
+	RootParameter r1 = rootSignature_->GetParameter(static_cast<size_t>(RootBindings::kViewProjection));
+	RootParameter r2 = rootSignature_->GetParameter(static_cast<size_t>(RootBindings::kTexture));
+	RootParameter r3 = rootSignature_->GetParameter(static_cast<size_t>(RootBindings::kMaterial));
+	RootParameter r4 = rootSignature_->GetParameter(static_cast<size_t>(RootBindings::kLight));
+
 	rootSignature_->Finalize(D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
 
-	PSO_ = new PipelineState(device_, rootSignature_);
+	pipelineState_ = new PipelineState(device_, rootSignature_);
 
 	// InputLayout
 	D3D12_INPUT_ELEMENT_DESC inputElementDescs[] = {
@@ -105,17 +114,17 @@ void Model::InitializeGraphicsPipeline()
 	// 比較関数はLessEqual。つまり、近ければ描画される
 	depthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
 
-
-	PSO_->SetInputLayout(inputLayoutDesc);
-	PSO_->SetShader(PipelineState::ShaderType::kVS, Shader::GetInstance()->Get(Shader::Name::BasicVS));
-	PSO_->SetShader(PipelineState::ShaderType::kPS, Shader::GetInstance()->Get(Shader::Name::BasicPS));
-	PSO_->SetBlendState(blendDesc);
-	PSO_->SetRasterizerState(rasterizerDesc);
-	PSO_->SetDepthStencilState(depthStencilDesc);
-	PSO_->SetRenderTargetFormat(DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, DXGI_FORMAT_D24_UNORM_S8_UINT);
-	PSO_->SetPrimitiveTopologyType(D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE);
-	PSO_->SetSampleMask(D3D12_DEFAULT_SAMPLE_MASK);
-	PSO_->Finalize();
+	
+	pipelineState_->SetInputLayout(inputLayoutDesc);
+	pipelineState_->SetShader(PipelineState::ShaderType::kVS, ShaderCompiler::GetInstance()->Get(ShaderCompiler::FileName::kBasic, ShaderCompiler::ShaderType::kVS));
+	pipelineState_->SetShader(PipelineState::ShaderType::kPS, ShaderCompiler::GetInstance()->Get(ShaderCompiler::FileName::kBasic, ShaderCompiler::ShaderType::kPS));
+	pipelineState_->SetBlendState(blendDesc);
+	pipelineState_->SetRasterizerState(rasterizerDesc);
+	pipelineState_->SetDepthStencilState(depthStencilDesc);
+	pipelineState_->SetRenderTargetFormat(DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, DXGI_FORMAT_D24_UNORM_S8_UINT);
+	pipelineState_->SetPrimitiveTopologyType(D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE);
+	pipelineState_->SetSampleMask(D3D12_DEFAULT_SAMPLE_MASK);
+	pipelineState_->Finalize();
 }
 
 
@@ -162,7 +171,6 @@ void Model::Draw(const WorldTransform& worldTransform, const Camera& camera)
 
 	// CBVをセット(ビュープロジェクション行列)
 	commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(RootBindings::kViewProjection), camera.constBuff_->GetGPUVirtualAddress());
-
 	commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(RootBindings::kMaterial), materialResource_->GetGPUVirtualAddress());
 
 	// CBVをセット(ビュープロジェクション行列)
@@ -185,7 +193,21 @@ void Model::Draw(const WorldTransform& worldTransform, const Camera& camera)
 
 void Model::CreateMesh()
 {	
-	HRESULT result = S_FALSE;
+
+
+	// 頂点リソース
+	vertexResource_ = CreateBufferResource(sizeof(VertexData) * modelData.vertices.size());
+	// 頂点バッファビュー
+	vertexBufferView_.BufferLocation = vertexResource_->GetGPUVirtualAddress(); // リソースの先頭のアドレスから使う
+	vertexBufferView_.SizeInBytes = UINT(sizeof(VertexData) * modelData.vertices.size()); // 使用するリソースのサイズは頂点サイズ
+	vertexBufferView_.StrideInBytes = sizeof(VertexData); // 1頂点当たりのサイズ
+
+	// 頂点リソースにデータを書き込む
+	vertexResource_->Map(0, nullptr, (void**)&vertexData_); // 書き込むためのアドレスを取得
+	std::memcpy(vertexData_, modelData.vertices.data(), sizeof(VertexData) * modelData.vertices.size()); // 頂点データをリソースにコピー
+
+
+	/*HRESULT result = S_FALSE;
 	vertexResource_ = CreateBufferResource(sizeof(Vector4) * 3);
 	vertexBufferView_.BufferLocation = vertexResource_->GetGPUVirtualAddress();
 	vertexBufferView_.SizeInBytes = UINT(sizeof(Vector4) * 3);
@@ -203,7 +225,7 @@ void Model::CreateMesh()
 	if (SUCCEEDED(result)) {
 		std::copy(vertexData_.begin(), vertexData_.end(), vertexData);
 		vertexResource_->Unmap(0, nullptr);
-	}
+	}*/
 
 }
 

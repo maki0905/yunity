@@ -4,8 +4,6 @@
 
 #pragma region シーン
 #include "IScene.h"
-#pragma region シーン
-#include "IScene.h"
 #include "TitleScene.h"
 #include "StageScene.h"
 #include "ClearScene.h"
@@ -13,8 +11,11 @@
 
 #include "DirectXCore.h"
 #include "WindowsAPI.h"
+#include "Input.h"
 #include "ImGuiManager.h"
+#include "TextureManager.h"
 #include "Model.h"
+#include "Sprite.h"
 
 
 class GameManager
@@ -42,8 +43,11 @@ private:
 
 	DirectXCore* directXCore_ = nullptr;
 	WindowsAPI* windowsAPI_ = nullptr;
+	Input* input_ = nullptr;
 	ImGuiManager* imguiManager_ = nullptr;
+	TextureManager* textureManager_ = nullptr;
 	Model* model_ = nullptr;
+	Sprite* sprite_ = nullptr;
 
 };
 

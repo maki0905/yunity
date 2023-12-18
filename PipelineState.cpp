@@ -15,6 +15,11 @@ void PipelineState::SetBlendState(const D3D12_BLEND_DESC& blendDesc)
 	psoDesc_.BlendState = blendDesc;
 }
 
+void PipelineState::SetBlendState(const D3D12_RENDER_TARGET_BLEND_DESC& blendDesc)
+{
+	psoDesc_.BlendState.RenderTarget[0] = blendDesc;
+}
+
 void PipelineState::SetRasterizerState(const D3D12_RASTERIZER_DESC& rasterizerDesc)
 {
 	psoDesc_.RasterizerState = rasterizerDesc;
@@ -85,6 +90,17 @@ void PipelineState::SetShader(ShaderType type, Microsoft::WRL::ComPtr<ID3DBlob> 
 		psoDesc_.PS = { blob->GetBufferPointer(), blob->GetBufferSize() };
 		break;
 	}
+}
+
+void PipelineState::SetDepthFunc(D3D12_COMPARISON_FUNC depthFunc)
+{
+	psoDesc_.DepthStencilState.DepthFunc = depthFunc;
+
+}
+
+void PipelineState::SetCullMode(D3D12_CULL_MODE cullMode)
+{
+	psoDesc_.RasterizerState.CullMode = cullMode;
 }
 
 void PipelineState::Finalize()

@@ -8,6 +8,14 @@ void ClearScene::Update()
 {
 }
 
-void ClearScene::Draw()
+void ClearScene::DrawBack()
+{
+}
+
+void ClearScene::Draw3D()
+{
+}
+
+void ClearScene::DrawFront()
 {
 }

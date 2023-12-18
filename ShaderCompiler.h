@@ -7,25 +7,32 @@
 #include <wrl.h>
 #include <vector>
 #include <string>
+#include <memory>
 
-class Shader
+class ShaderCompiler
 {
 public:
 
-	enum class Name
+	enum class FileName
 	{
-		BasicVS,
-		BasicPS,
+		kBasic,
+		kSprite,
+		kCount
 
 	};
 
+	enum class ShaderType {
+		kVS,
+		kPS
+	};
+
 public:
-	static Shader* GetInstance();
+	static ShaderCompiler* GetInstance();
 
 	void Initialize();
 	//void DXCInitialize();
 
-	ID3DBlob* Get(Name name);
+	ID3DBlob* Get(FileName name, ShaderType shaderType);
 	
 
 private:
@@ -39,19 +46,20 @@ private:
 	static void Log(const std::string& message);
 
 private:
-	Shader() = default;
-	~Shader() = default;
-	Shader(const Shader&) = delete;
-	const Shader& operator=(const Shader&) = delete;
+	ShaderCompiler() = default;
+	~ShaderCompiler() = default;
+	ShaderCompiler(const ShaderCompiler&) = delete;
+	const ShaderCompiler& operator=(const ShaderCompiler&) = delete;
 
 	Microsoft::WRL::ComPtr<IDxcUtils> dxcUtils_ = nullptr;
 	Microsoft::WRL::ComPtr<IDxcCompiler3> dxcCompiler_ = nullptr;
 	Microsoft::WRL::ComPtr<IDxcIncludeHandler> includeHandler_ = nullptr;
 
+	ID3DBlob* vsblob_[static_cast<size_t>(FileName::kCount)];
+	ID3DBlob* psblob_[static_cast<size_t>(FileName::kCount)];
 
-
-	ID3DBlob* basicVS_ = nullptr;
-	ID3DBlob* basicPS_ = nullptr;
+	/*ID3DBlob* basicVS_ = nullptr;
+	ID3DBlob* basicPS_ = nullptr;*/
 
 
 };

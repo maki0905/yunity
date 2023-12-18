@@ -1,10 +1,13 @@
 #pragma once
-#include <DirectXMath.h>
+
 #include <Windows.h>
 #include <d3d12.h>
 #include <string>
 #include <wrl.h>
+
 #include "MathFunction.h"
+#include "PipelineState.h"
+#include "RootSignature.h"
 
 /// <summary>
 /// スプライト
@@ -33,7 +36,7 @@ public:
 	/// 静的初期化
 	/// </summary>
 	/// <param name="device">デバイス</param>
-	static void StaticInitialize(ID3D12Device* device);
+	static void StaticInitialize();
 
 	/// <summary>
 	/// 描画前処理
@@ -68,9 +71,9 @@ private:
 	// コマンドリスト
 	static ID3D12GraphicsCommandList* commandList_;
 	// ルートシグネチャー
-	static Microsoft::WRL::ComPtr<ID3D12RootSignature> rootSignature_;
+	static RootSignature* rootSignature_;
 	// パイプラインステートオブジェクト
-	static Microsoft::WRL::ComPtr<ID3D12PipelineState> pipelineState_;
+	static PipelineState* pipelineState_;
 	// 射影行列
 	static Matrix4x4 matProjection_;
 

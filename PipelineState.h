@@ -17,6 +17,7 @@ public:
     PipelineState(ID3D12Device* device, RootSignature* rootSignature);
 
     void SetBlendState(const D3D12_BLEND_DESC& blendDesc);
+    void SetBlendState(const D3D12_RENDER_TARGET_BLEND_DESC& blendDesc);
     void SetRasterizerState(const D3D12_RASTERIZER_DESC& rasterizerDesc);
     void SetDepthStencilState(const D3D12_DEPTH_STENCIL_DESC& depthStencilDesc);
     void SetSampleMask(UINT sampleMask);
@@ -27,6 +28,8 @@ public:
     void SetInputLayout(const D3D12_INPUT_LAYOUT_DESC& inputLayoutDesc);
     void SetPrimitiveRestart(D3D12_INDEX_BUFFER_STRIP_CUT_VALUE IBProps);
     void SetShader(ShaderType type, Microsoft::WRL::ComPtr<ID3DBlob> blob);
+    void SetDepthFunc(D3D12_COMPARISON_FUNC depthFunc);
+    void SetCullMode(D3D12_CULL_MODE cullMode);
 
     void Finalize();
 
