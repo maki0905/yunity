@@ -57,6 +57,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>$(ProjectDir)Engine\2D;$(ProjectDir)Engine\3D;$(ProjectDir)Engine\base;$(ProjectDir)Engine\Input;$(ProjectDir)Engine\Math;$(ProjectDir)Engine\Scene;$(ProjectDir)Engine\Utility;$(ProjectDir)Externals;$(ProjectDir)Externals\imgui;$(ProjectDir)Externals\nlohmann;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -78,6 +79,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>$(ProjectDir)Engine\2D;$(ProjectDir)Engine\3D;$(ProjectDir)Engine\base;$(ProjectDir)Engine\Input;$(ProjectDir)Engine\Math;$(ProjectDir)Engine\Scene;$(ProjectDir)Engine\Utility;$(ProjectDir)Externals;$(ProjectDir)Externals\imgui;$(ProjectDir)Externals\nlohmann;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -92,20 +94,16 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="App.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="BackBuffer.cpp" />
-    <ClCompile Include="ClearScene.cpp" />
-    <ClCompile Include="CommandList.cpp" />
-    <ClCompile Include="CommandQueue.cpp" />
-    <ClCompile Include="DebugCamera.cpp" />
-    <ClCompile Include="DepthBuffer.cpp" />
-    <ClCompile Include="DescriptorHandle.cpp" />
-    <ClCompile Include="DescriptorHeap.cpp" />
-    <ClCompile Include="Device.cpp" />
-    <ClCompile Include="DirectXCore.cpp" />
+    <ClCompile Include="Engine\base\BackBuffer.cpp" />
+    <ClCompile Include="Engine\Scene\ClearScene.cpp" />
+    <ClCompile Include="Engine\base\CommandList.cpp" />
+    <ClCompile Include="Engine\base\CommandQueue.cpp" />
+    <ClCompile Include="Engine\3D\DebugCamera.cpp" />
+    <ClCompile Include="Engine\base\DepthBuffer.cpp" />
+    <ClCompile Include="Engine\base\DescriptorHandle.cpp" />
+    <ClCompile Include="Engine\base\DescriptorHeap.cpp" />
+    <ClCompile Include="Engine\base\Device.cpp" />
+    <ClCompile Include="Engine\base\DirectXCore.cpp" />
     <ClCompile Include="externals\imgui\imgui.cpp" />
     <ClCompile Include="externals\imgui\imgui_demo.cpp" />
     <ClCompile Include="externals\imgui\imgui_draw.cpp" />
@@ -113,50 +111,46 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="externals\imgui\imgui_impl_win32.cpp" />
     <ClCompile Include="externals\imgui\imgui_tables.cpp" />
     <ClCompile Include="externals\imgui\imgui_widgets.cpp" />
-    <ClCompile Include="FollowCamera.cpp" />
-    <ClCompile Include="GameManager.cpp" />
-    <ClCompile Include="GlobalVariables.cpp" />
-    <ClCompile Include="ImGuiManager.cpp">
+    <ClCompile Include="Engine\3D\FollowCamera.cpp" />
+    <ClCompile Include="Engine\Scene\GameManager.cpp" />
+    <ClCompile Include="Engine\Utility\GlobalVariables.cpp" />
+    <ClCompile Include="Engine\Utility\ImGuiManager.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="Input.cpp" />
-    <ClCompile Include="IScene.cpp" />
-    <ClCompile Include="Logger.cpp" />
+    <ClCompile Include="Engine\Input\Input.cpp" />
+    <ClCompile Include="Engine\Scene\IScene.cpp" />
+    <ClCompile Include="Engine\Utility\Logger.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="MathFunction.cpp" />
-    <ClCompile Include="PipelineState.cpp" />
-    <ClCompile Include="RootParameter.cpp" />
-    <ClCompile Include="RootSignature.cpp" />
-    <ClCompile Include="ShaderCompiler.cpp" />
-    <ClCompile Include="Sprite.cpp" />
-    <ClCompile Include="StageScene.cpp" />
-    <ClCompile Include="StringUtility.cpp" />
-    <ClCompile Include="SwapChain.cpp" />
-    <ClCompile Include="Model.cpp" />
-    <ClCompile Include="TextureManager.cpp" />
-    <ClCompile Include="TitleScene.cpp" />
-    <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="WindowsAPI.cpp" />
-    <ClCompile Include="WorldTransform.cpp" />
+    <ClCompile Include="Engine\Math\MathFunction.cpp" />
+    <ClCompile Include="Engine\base\PipelineState.cpp" />
+    <ClCompile Include="Engine\base\RootParameter.cpp" />
+    <ClCompile Include="Engine\base\RootSignature.cpp" />
+    <ClCompile Include="Engine\base\ShaderCompiler.cpp" />
+    <ClCompile Include="Engine\2D\Sprite.cpp" />
+    <ClCompile Include="Engine\Scene\StageScene.cpp" />
+    <ClCompile Include="Engine\Utility\StringUtility.cpp" />
+    <ClCompile Include="Engine\base\SwapChain.cpp" />
+    <ClCompile Include="Engine\3D\Model.cpp" />
+    <ClCompile Include="Engine\2D\TextureManager.cpp" />
+    <ClCompile Include="Engine\Scene\TitleScene.cpp" />
+    <ClCompile Include="Engine\3D\Camera.cpp" />
+    <ClCompile Include="Engine\base\WindowsAPI.cpp" />
+    <ClCompile Include="Engine\3D\WorldTransform.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AABB.h" />
-    <ClInclude Include="App.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="BackBuffer.h" />
-    <ClInclude Include="Capsule.h" />
-    <ClInclude Include="ClearScene.h" />
-    <ClInclude Include="CommandList.h" />
-    <ClInclude Include="CommandQueue.h" />
-    <ClInclude Include="DebugCamera.h" />
-    <ClInclude Include="DepthBuffer.h" />
-    <ClInclude Include="DescriptorHandle.h" />
-    <ClInclude Include="DescriptorHeap.h" />
-    <ClInclude Include="Device.h" />
-    <ClInclude Include="DirectXCore.h" />
+    <ClInclude Include="Engine\Math\AABB.h" />
+    <ClInclude Include="Engine\base\BackBuffer.h" />
+    <ClInclude Include="Engine\Math\Capsule.h" />
+    <ClInclude Include="Engine\Scene\ClearScene.h" />
+    <ClInclude Include="Engine\base\CommandList.h" />
+    <ClInclude Include="Engine\base\CommandQueue.h" />
+    <ClInclude Include="Engine\3D\DebugCamera.h" />
+    <ClInclude Include="Engine\base\DepthBuffer.h" />
+    <ClInclude Include="Engine\base\DescriptorHandle.h" />
+    <ClInclude Include="Engine\base\DescriptorHeap.h" />
+    <ClInclude Include="Engine\base\Device.h" />
+    <ClInclude Include="Engine\base\DirectXCore.h" />
     <ClInclude Include="externals\imgui\imconfig.h" />
     <ClInclude Include="externals\imgui\imgui.h" />
     <ClInclude Include="externals\imgui\imgui_impl_dx12.h" />
@@ -165,43 +159,43 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="externals\imgui\imstb_rectpack.h" />
     <ClInclude Include="externals\imgui\imstb_textedit.h" />
     <ClInclude Include="externals\imgui\imstb_truetype.h" />
-    <ClInclude Include="FollowCamera.h" />
-    <ClInclude Include="GameManager.h" />
-    <ClInclude Include="GlobalVariables.h" />
-    <ClInclude Include="ImGuiManager.h">
+    <ClInclude Include="Engine\3D\FollowCamera.h" />
+    <ClInclude Include="Engine\Scene\GameManager.h" />
+    <ClInclude Include="Engine\Utility\GlobalVariables.h" />
+    <ClInclude Include="Engine\Utility\ImGuiManager.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClInclude>
-    <ClInclude Include="Input.h" />
-    <ClInclude Include="IScene.h" />
-    <ClInclude Include="Line.h" />
-    <ClInclude Include="Logger.h" />
-    <ClInclude Include="MathFunction.h" />
-    <ClInclude Include="Matrix4x4.h" />
-    <ClInclude Include="OBB.h" />
-    <ClInclude Include="Physics.h" />
-    <ClInclude Include="PipelineState.h" />
-    <ClInclude Include="Plane.h" />
-    <ClInclude Include="Quaternion.h" />
-    <ClInclude Include="RootParameter.h" />
-    <ClInclude Include="RootSignature.h" />
+    <ClInclude Include="Engine\Input\Input.h" />
+    <ClInclude Include="Engine\Scene\IScene.h" />
+    <ClInclude Include="Engine\Math\Line.h" />
+    <ClInclude Include="Engine\Utility\Logger.h" />
+    <ClInclude Include="Engine\Math\MathFunction.h" />
+    <ClInclude Include="Engine\Math\Matrix4x4.h" />
+    <ClInclude Include="Engine\Math\OBB.h" />
+    <ClInclude Include="Engine\Math\Physics.h" />
+    <ClInclude Include="Engine\base\PipelineState.h" />
+    <ClInclude Include="Engine\Math\Plane.h" />
+    <ClInclude Include="Engine\Math\Quaternion.h" />
+    <ClInclude Include="Engine\base\RootParameter.h" />
+    <ClInclude Include="Engine\base\RootSignature.h" />
     <ClInclude Include="SafeDelete.h" />
-    <ClInclude Include="ShaderCompiler.h" />
-    <ClInclude Include="Sphere.h" />
-    <ClInclude Include="Sprite.h" />
-    <ClInclude Include="StageScene.h" />
-    <ClInclude Include="StringUtility.h" />
-    <ClInclude Include="SwapChain.h" />
-    <ClInclude Include="Model.h" />
-    <ClInclude Include="TextureManager.h" />
-    <ClInclude Include="TitleScene.h" />
-    <ClInclude Include="Triangle.h" />
-    <ClInclude Include="Vecter2.h" />
-    <ClInclude Include="Vector3.h" />
-    <ClInclude Include="Vector4.h" />
-    <ClInclude Include="Camera.h" />
-    <ClInclude Include="WindowsAPI.h" />
-    <ClInclude Include="WorldTransform.h" />
+    <ClInclude Include="Engine\base\ShaderCompiler.h" />
+    <ClInclude Include="Engine\Math\Sphere.h" />
+    <ClInclude Include="Engine\2D\Sprite.h" />
+    <ClInclude Include="Engine\Scene\StageScene.h" />
+    <ClInclude Include="Engine\Utility\StringUtility.h" />
+    <ClInclude Include="Engine\base\SwapChain.h" />
+    <ClInclude Include="Engine\3D\Model.h" />
+    <ClInclude Include="Engine\2D\TextureManager.h" />
+    <ClInclude Include="Engine\Scene\TitleScene.h" />
+    <ClInclude Include="Engine\Math\Triangle.h" />
+    <ClInclude Include="Engine\Math\Vecter2.h" />
+    <ClInclude Include="Engine\Math\Vector3.h" />
+    <ClInclude Include="Engine\Math\Vector4.h" />
+    <ClInclude Include="Engine\3D\Camera.h" />
+    <ClInclude Include="Engine\base\WindowsAPI.h" />
+    <ClInclude Include="Engine\3D\WorldTransform.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="externals\imgui\LICENSE.txt" />
@@ -237,24 +231,12 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="Resources\Shaders\SpritePS.hlsl">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">6.0</ShaderModel>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">6.0</ShaderModel>
-    </FxCompile>
-    <FxCompile Include="Resources\Shaders\SpriteVS.hlsl">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">6.0</ShaderModel>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">6.0</ShaderModel>
-    </FxCompile>
-    <FxCompile Include="spritePS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>
-    <FxCompile Include="spriteVS.hlsl">
+    <FxCompile Include="Resources\Shaders\SpriteVS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>

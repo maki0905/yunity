@@ -1,8 +1,10 @@
 ﻿#include "GlobalVariables.h"
 
 #include <cassert>
-#include "Externals/imgui/imgui.h"
-#include "Externals/nlohmann/json.hpp"
+//#include "Externals/imgui/imgui.h"
+#include "imgui.h"
+//#include "Externals/nlohmann/json.hpp"
+#include "json.hpp"
 #include <fstream>
 #include <Windows.h>
 

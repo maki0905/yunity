@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <cassert>
 #include <vector>
-#include "App.h"
+
 
 #pragma comment(lib, "d3d12.lib")
 #pragma comment(lib, "dxgi.lib")

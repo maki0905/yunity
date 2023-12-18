@@ -1,6 +1,15 @@
-﻿#include "WinApp.h"
+#include "WindowsAPI.h"
 
 #include <string>
+
+#pragma comment(lib, "winmm.lib")
+
+#ifdef _DEBUG
+//#include "externals/imgui/imgui_impl_win32.h"
+#include "imgui_impl_win32.h"
+extern IMGUI_IMPL_API LRESULT
+ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+#endif // _DEBUG
 
 namespace {
 	// SJIS -> WideChar
@@ -35,16 +44,21 @@ namespace {
 	}
 } // namespace
 
-const wchar_t WinApp::kWindowClassName[] = L"DirectXGame";
-
-WinApp* WinApp::GetInstance() {
-	static WinApp instance;
+WindowsAPI* WindowsAPI::GetInstance()
+{
+	static WindowsAPI instance;
 	return &instance;
 }
 
-// ウィンドウプロシージャ
-LRESULT WinApp::WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
-	WinApp* app = reinterpret_cast<WinApp*>(GetWindowLongPtr(hwnd, GWLP_USERDATA));
+LRESULT WindowsAPI::WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
+{
+	WindowsAPI* app = reinterpret_cast<WindowsAPI*>(GetWindowLongPtr(hwnd, GWLP_USERDATA));
+
+#ifdef _DEBUG
+	if (ImGui_ImplWin32_WndProcHandler(hwnd, msg, wparam, lparam))
+		return true;
+#endif // _DEBUG
+
 
 	// メッセージで分岐
 	switch (msg) {
@@ -54,7 +68,7 @@ LRESULT WinApp::WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
 
 	case WM_SIZING: {
 		// アスペクト比を変えるサイズ変更を許可しない
-		if (app && app->GetSizeChangeMode() == WinApp::SizeChangeMode::kFixedAspect) {
+		if (app && app->GetSizeChangeMode() == WindowsAPI::SizeChangeMode::kFixedAspect) {
 			float aspectRatio = app->aspectRatio_;
 			float aspectRatioRecp = 1.0f / aspectRatio;
 			RECT* rect = reinterpret_cast<RECT*>(lparam);
@@ -87,17 +101,17 @@ LRESULT WinApp::WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {
 		break;
 	}
 	}
-	return DefWindowProc(hwnd, msg, wparam, lparam); // 標準の処理を行う
+	return DefWindowProc(hwnd, msg, wparam, lparam); // 標準の処理を行う return LRESULT();
 }
 
-void WinApp::CreateGameWindow(
-	const char* title, UINT windowStyle, int32_t clientWidth, int32_t clientHeight) {
+void WindowsAPI::CreateGameWindow(const char* title, UINT windowStyle, int32_t clientWidth, int32_t clientHeight)
+{
 	windowStyle_ = windowStyle;
 	aspectRatio_ = float(clientWidth) / float(clientHeight);
 	// ウィンドウクラスの設定
 	wndClass_.cbSize = sizeof(WNDCLASSEX);
 	wndClass_.lpfnWndProc = (WNDPROC)WindowProc;     // ウィンドウプロシージャ
-	wndClass_.lpszClassName = kWindowClassName;      // ウィンドウクラス名
+	wndClass_.lpszClassName = L"yunity";      // ウィンドウクラス名
 	wndClass_.hInstance = GetModuleHandle(nullptr);  // ウィンドウハンドル
 	wndClass_.hCursor = LoadCursor(NULL, IDC_ARROW); // カーソル指定
 
@@ -127,14 +141,20 @@ void WinApp::CreateGameWindow(
 
 	// ウィンドウ表示
 	ShowWindow(hwnd_, SW_NORMAL);
+
+	// システムタイマーの分解能を上げる
+	timeBeginPeriod(1);
+
 }
 
-void WinApp::TerminateGameWindow() {
+void WindowsAPI::TerminateGameWindow()
+{
 	// ウィンドウクラスを登録解除
 	UnregisterClass(wndClass_.lpszClassName, wndClass_.hInstance);
 }
 
-bool WinApp::ProcessMessage() {
+bool WindowsAPI::ProcessMessage()
+{
 	MSG msg{}; // メッセージ
 
 	if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE)) // メッセージがある？
@@ -151,8 +171,8 @@ bool WinApp::ProcessMessage() {
 	return false;
 }
 
-void WinApp::SetFullscreen(bool fullscreen) {
-
+void WindowsAPI::SetFullscreen(bool fullscreen)
+{
 	if (isFullscreen_ != fullscreen) {
 		if (fullscreen) {
 			// 元の状態を覚えておく
@@ -194,10 +214,13 @@ void WinApp::SetFullscreen(bool fullscreen) {
 	isFullscreen_ = fullscreen;
 }
 
-bool WinApp::IsFullscreen() const { return isFullscreen_; }
+bool WindowsAPI::IsFullscreen() const
+{
+	return isFullscreen_;
+}
 
-void WinApp::SetSizeChangeMode(SizeChangeMode sizeChangeMode) {
-
+void WindowsAPI::SetSizeChangeMode(SizeChangeMode sizeChangeMode)
+{
 	sizeChangeMode_ = sizeChangeMode;
 	if (sizeChangeMode_ == SizeChangeMode::kNone) {
 		windowStyle_ &= ~WS_THICKFRAME;
@@ -218,4 +241,7 @@ void WinApp::SetSizeChangeMode(SizeChangeMode sizeChangeMode) {
 	ShowWindow(hwnd_, SW_NORMAL);
 }
 
-WinApp::SizeChangeMode WinApp::GetSizeChangeMode() const { return sizeChangeMode_; }
+WindowsAPI::SizeChangeMode WindowsAPI::GetSizeChangeMode() const
+{
+	return sizeChangeMode_;
+}

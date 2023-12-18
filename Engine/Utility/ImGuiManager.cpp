@@ -5,8 +5,10 @@
 #include "WindowsAPI.h"
 #include "DescriptorHeap.h"
 #include "Device.h"
-#include "Externals/imgui/imgui_impl_dx12.h"
-#include "Externals/imgui/imgui_impl_win32.h"
+//#include "Externals/imgui/imgui_impl_dx12.h"
+#include "imgui_impl_dx12.h"
+//#include "Externals/imgui/imgui_impl_win32.h"
+#include "imgui_impl_win32.h"
 #endif // _DEBUG
 
 
