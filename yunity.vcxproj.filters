@@ -228,6 +228,18 @@
     <ClCompile Include="Engine\3D\WorldTransform.cpp">
       <Filter>Engine\3D</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\Utility\PrimitiveDrawer.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Collider.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Collision.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\CollisionManager.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="externals\imgui\imconfig.h">
@@ -392,6 +404,21 @@
     <ClInclude Include="Engine\3D\WorldTransform.h">
       <Filter>Engine\3D</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\Utility\PrimitiveDrawer.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Collider.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Collision.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\CollisionConfig.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\CollisionManager.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="externals\imgui\LICENSE.txt">
@@ -423,6 +450,8 @@
     <FxCompile Include="Resources\Shaders\SpritePS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
+    <FxCompile Include="LineVS.hlsl" />
+    <FxCompile Include="LinePS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\Object3d.hlsli">
@@ -431,5 +460,6 @@
     <None Include="Resources\Shaders\Particle.hlsli">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="Line.hlsli" />
   </ItemGroup>
 </Project>

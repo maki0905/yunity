@@ -17,6 +17,7 @@ public:
 	{
 		kBasic,
 		kSprite,
+		kLine,
 		kCount
 
 	};

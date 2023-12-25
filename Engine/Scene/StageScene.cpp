@@ -13,8 +13,13 @@ void StageScene::Initialize()
 	camera_.Initialize();
 	worldTransform_.Initialize();
 	worldTransform_.UpdateMatrix(RotationType::Euler);
+	worldTrasnform1_.Initialize();
+	//worldTrasnform1_.translation_.y = 0.0f;
+	worldTrasnform1_.UpdateMatrix(RotationType::Euler);
 
 	skydome_.reset(Model::Create("skydome"));
+
+	sphere_.reset(PrimitiveDrawer::Create(PrimitiveDrawer::Type::kSphere));
 
 }
 
@@ -22,12 +27,7 @@ void StageScene::Update()
 {
 	worldTransform_.UpdateMatrix(RotationType::Euler);
 	camera_.UpdateMatrix();
-	if (Input::GetInstance()->PushKey(DIK_A)) {
-		position_.x -= 1.0f;
-	}
-	if (Input::GetInstance()->PushKey(DIK_D)) {
-		position_.x += 1.0f;
-	}
+	
 }
 
 void StageScene::DrawBack()
@@ -37,9 +37,10 @@ void StageScene::DrawBack()
 void StageScene::Draw3D()
 {
 	skydome_->Draw(worldTransform_, camera_);
+	sphere_->Draw(worldTrasnform1_, camera_);
 }
 
 void StageScene::DrawFront()
 {
-	sprite_->Draw();
+	//sprite_->Draw();
 }

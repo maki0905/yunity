@@ -16,6 +16,7 @@
 #include "TextureManager.h"
 #include "Model.h"
 #include "Sprite.h"
+#include "PrimitiveDrawer.h"
 
 
 class GameManager
@@ -48,6 +49,7 @@ private:
 	TextureManager* textureManager_ = nullptr;
 	Model* model_ = nullptr;
 	Sprite* sprite_ = nullptr;
+	PrimitiveDrawer* primitive_ = nullptr;
 
 };
 

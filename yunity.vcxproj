@@ -95,6 +95,9 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Engine\base\BackBuffer.cpp" />
+    <ClCompile Include="Engine\Collider.cpp" />
+    <ClCompile Include="Engine\Collision.cpp" />
+    <ClCompile Include="Engine\CollisionManager.cpp" />
     <ClCompile Include="Engine\Scene\ClearScene.cpp" />
     <ClCompile Include="Engine\base\CommandList.cpp" />
     <ClCompile Include="Engine\base\CommandQueue.cpp" />
@@ -137,8 +140,13 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Engine\3D\Camera.cpp" />
     <ClCompile Include="Engine\base\WindowsAPI.cpp" />
     <ClCompile Include="Engine\3D\WorldTransform.cpp" />
+    <ClCompile Include="Engine\Utility\PrimitiveDrawer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Engine\Collider.h" />
+    <ClInclude Include="Engine\Collision.h" />
+    <ClInclude Include="Engine\CollisionConfig.h" />
+    <ClInclude Include="Engine\CollisionManager.h" />
     <ClInclude Include="Engine\Math\AABB.h" />
     <ClInclude Include="Engine\base\BackBuffer.h" />
     <ClInclude Include="Engine\Math\Capsule.h" />
@@ -179,6 +187,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\Math\Quaternion.h" />
     <ClInclude Include="Engine\base\RootParameter.h" />
     <ClInclude Include="Engine\base\RootSignature.h" />
+    <ClInclude Include="Engine\Utility\PrimitiveDrawer.h" />
     <ClInclude Include="SafeDelete.h" />
     <ClInclude Include="Engine\base\ShaderCompiler.h" />
     <ClInclude Include="Engine\Math\Sphere.h" />
@@ -206,6 +215,18 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="LinePS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="LineVS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
     <FxCompile Include="Resources\Shaders\BasicPS.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
@@ -244,6 +265,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Line.hlsli">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </None>
     <None Include="Resources\Shaders\Object3d.hlsli">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>

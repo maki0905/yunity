@@ -78,7 +78,10 @@ void ShaderCompiler::ShaderCompile()
 	assert(vsblob_[static_cast<size_t>(FileName::kSprite)]);
 	psblob_[static_cast<size_t>(FileName::kSprite)] = CompileShader(L"Resources/Shaders/SpritePS.hlsl", L"ps_6_0");
 	assert(psblob_[static_cast<size_t>(FileName::kSprite)]);
-
+	vsblob_[static_cast<size_t>(FileName::kLine)] = CompileShader(L"LineVS.hlsl", L"vs_6_0");
+	assert(vsblob_[static_cast<size_t>(FileName::kSprite)]);
+	psblob_[static_cast<size_t>(FileName::kLine)] = CompileShader(L"LinePS.hlsl", L"ps_6_0");
+	assert(psblob_[static_cast<size_t>(FileName::kSprite)]);
 }
 
 ID3DBlob* ShaderCompiler::CompileShader(const std::wstring& filePath, const wchar_t* profile)

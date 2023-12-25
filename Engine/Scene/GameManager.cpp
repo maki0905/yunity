@@ -32,6 +32,9 @@ GameManager::GameManager()
 	sprite_ = new Sprite();
 	sprite_->StaticInitialize();
 
+	primitive_ = new PrimitiveDrawer();
+	primitive_->StaticInitialize();
+
 
 #ifdef _DEBUG
 	// ImGui
@@ -94,8 +97,10 @@ void GameManager::Run()
 
 #pragma region 3D描画
 		model_->PreDraw(directXCore_->GetCommandList());
+		primitive_->PreDraw(directXCore_->GetCommandList());
 		// 描画
 		sceneArr_[currentSceneNo_]->Draw3D();
+		primitive_->PostDraw();
 		model_->PostDraw();
 #pragma endregion
 

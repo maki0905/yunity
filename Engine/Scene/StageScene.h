@@ -7,6 +7,8 @@
 #include "Camera.h"
 #include "Model.h"
 #include "Sprite.h"
+#include "PrimitiveDrawer.h"
+
 class StageScene : public IScene
 {
 public:
@@ -18,11 +20,13 @@ public:
 private:
 	std::unique_ptr<Sprite> sprite_ = nullptr;
 	std::unique_ptr<Model> skydome_ = nullptr;
+	std::unique_ptr<PrimitiveDrawer> sphere_ = nullptr;
 	uint32_t textureHandle_ = 0;
 	Vector2 position_;
 
 	Camera camera_;
 	WorldTransform worldTransform_;
+	WorldTransform worldTrasnform1_;
 	
 };
 
