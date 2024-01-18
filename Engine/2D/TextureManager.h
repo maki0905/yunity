@@ -6,6 +6,8 @@
 #include <unordered_map>
 #include <wrl.h>
 
+#include "DescriptorHeap.h"
+
 /// <summary>
 /// テクスチャマネージャ
 /// </summary>
@@ -92,4 +94,7 @@ private:
 	/// </summary>
 	/// <param name="fileName">ファイル名</param>
 	uint32_t LoadInternal(const std::string& fileName);
+
+	// SRV用ヒープ
+	DescriptorHeap* srvHeap_;
 };

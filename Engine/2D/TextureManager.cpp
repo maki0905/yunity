@@ -1,10 +1,10 @@
 ﻿#include "TextureManager.h"
-//#include "Externals/DirectXTex/DirectXTex.h"
 #include "DirectXTex/DirectXTex.h"
-//#include "Externals/DirectXTex/d3dx12.h"
 #include "DirectXTex/d3dx12.h"
 #include <cassert>
 #include <vector>
+
+#include "DirectXCore.h"
 
 using namespace DirectX;
 
@@ -34,13 +34,15 @@ void TextureManager::Initialize(ID3D12Device* device, std::string directoryPath)
 void TextureManager::ResetAll() {
 	HRESULT result = S_FALSE;
 
-	// デスクリプタヒープを生成
-	D3D12_DESCRIPTOR_HEAP_DESC descHeapDesc = {};
-	descHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
-	descHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE; // シェーダから見えるように
-	descHeapDesc.NumDescriptors = kNumDescriptors; // シェーダーリソースビュー1つ
-	result = device_->CreateDescriptorHeap(&descHeapDesc, IID_PPV_ARGS(&descriptorHeap_)); // 生成
-	assert(SUCCEEDED(result));
+	//// デスクリプタヒープを生成
+	//D3D12_DESCRIPTOR_HEAP_DESC descHeapDesc = {};
+	//descHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+	//descHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE; // シェーダから見えるように
+	//descHeapDesc.NumDescriptors = kNumDescriptors; // シェーダーリソースビュー1つ
+	//result = device_->CreateDescriptorHeap(&descHeapDesc, IID_PPV_ARGS(&descriptorHeap_)); // 生成
+	//assert(SUCCEEDED(result));
+
+	srvHeap_ = DirectXCore::GetInstance()->GetDescriptorHeap(DirectXCore::HeapType::kSRV);
 
 	indexNextDescriptorHeap_ = 0;
 
@@ -64,7 +66,11 @@ void TextureManager::SetGraphicsRootDescriptorTable(
 	ID3D12GraphicsCommandList* commandList, UINT rootParamIndex,
 	uint32_t textureHandle) { // デスクリプタヒープの配列
 	assert(textureHandle < textures_.size());
-	ID3D12DescriptorHeap* ppHeaps[] = { descriptorHeap_.Get() };
+	/*ID3D12DescriptorHeap* ppHeaps[] = { descriptorHeap_.Get() };
+	commandList->SetDescriptorHeaps(_countof(ppHeaps), ppHeaps);*/
+
+	// デスクリプタヒープの配列をセットするコマンド
+	ID3D12DescriptorHeap* ppHeaps[] = { /*srvHeap_.Get()*/ srvHeap_->GetHeapPointer() };
 	commandList->SetDescriptorHeaps(_countof(ppHeaps), ppHeaps);
 
 	// シェーダリソースビューをセット
@@ -172,13 +178,16 @@ uint32_t TextureManager::LoadInternal(const std::string& fileName) {
 		assert(SUCCEEDED(result));
 	}
 
+	DescriptorHandle srvHandle = srvHeap_->Alloc();
+
 	// シェーダリソースビュー作成
-	////
 	auto size = device_->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-	texture.cpuDescHandleSRV =  descriptorHeap_->GetCPUDescriptorHandleForHeapStart();
+	/*texture.cpuDescHandleSRV =  descriptorHeap_->GetCPUDescriptorHandleForHeapStart();
 	texture.cpuDescHandleSRV.ptr += size * indexNextDescriptorHeap_;
 	texture.gpuDescHandleSRV = descriptorHeap_->GetGPUDescriptorHandleForHeapStart();
-	texture.gpuDescHandleSRV.ptr += size * indexNextDescriptorHeap_;
+	texture.gpuDescHandleSRV.ptr += size * indexNextDescriptorHeap_;*/
+	texture.cpuDescHandleSRV = srvHandle.GetCPUHandle();
+	texture.gpuDescHandleSRV = srvHandle.GetGPUHandle();
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{}; // 設定構造体
 	D3D12_RESOURCE_DESC resDesc = texture.resource->GetDesc();
 

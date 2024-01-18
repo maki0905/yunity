@@ -16,14 +16,15 @@ GameManager::GameManager()
 
 #pragma region 汎用機能初期化
 
+#ifdef _DEBUG
+	// ImGui
+	imguiManager_ = ImGuiManager::GetInstance();
+	imguiManager_->Initialize();
+#endif // _DEBUG
+
 	// Input
 	input_ = Input::GetInstance();
 	input_->Initialize();
-
-	// テクスチャマネージャー
-	textureManager_ = TextureManager::GetInstance();
-	textureManager_->Initialize(Device::GetInstance()->GetDevice());
-	TextureManager::Load("white1x1.png");
 
 	// 3Dオブジェクト
 	model_ = new Model();
@@ -35,12 +36,13 @@ GameManager::GameManager()
 	primitive_ = new PrimitiveDrawer();
 	primitive_->StaticInitialize();
 
+	particle_ = new ParticleDrawer();
+	particle_->StaticInitialize();
 
-#ifdef _DEBUG
-	// ImGui
-	imguiManager_ = ImGuiManager::GetInstance();
-	imguiManager_->Initialize();
-#endif // _DEBUG
+	// テクスチャマネージャー
+	textureManager_ = TextureManager::GetInstance();
+	textureManager_->Initialize(Device::GetInstance()->GetDevice());
+	TextureManager::Load("white1x1.png");
 
 #pragma endregion
 
@@ -97,10 +99,12 @@ void GameManager::Run()
 
 #pragma region 3D描画
 		model_->PreDraw(directXCore_->GetCommandList());
+		particle_->PreDraw(directXCore_->GetCommandList());
 		primitive_->PreDraw(directXCore_->GetCommandList());
 		// 描画
 		sceneArr_[currentSceneNo_]->Draw3D();
 		primitive_->PostDraw();
+		particle_->PostDraw();
 		model_->PostDraw();
 #pragma endregion
 

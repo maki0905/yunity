@@ -8,6 +8,12 @@
 #include "Model.h"
 #include "Sprite.h"
 #include "PrimitiveDrawer.h"
+#include "Player.h"
+#include "Skydome.h"
+#include "ParticleDrawer.h"
+#include "Block.h"
+#include "CollisionManager.h"
+#include "Random.h"
 
 class StageScene : public IScene
 {
@@ -27,6 +33,29 @@ private:
 	Camera camera_;
 	WorldTransform worldTransform_;
 	WorldTransform worldTrasnform1_;
+	WorldTransform worldTransformParticle_[10];
+
+	Player* player_ = nullptr;
+	Block* block_ = nullptr;
+	std::unique_ptr<Skydome> skydome1_;
+
+	std::unique_ptr<CollisionManager> collisionManager_;
+
+	ParticleDrawer* particle_ = nullptr;
+	uint32_t index_particle = 0;
+	
+
+	float mass_ = 1.0f;
+	float gravityScale_ = 0.1f;
+	float miu_ = 0.5f;
+
+
+	Vector3 velocity_[10];
+	Vector3 acceleration_{};
+
+	Random::RandomNumberGenerator rng;
+
+	//std::unique_ptr<Player> player_ = nullptr;
 	
 };
 

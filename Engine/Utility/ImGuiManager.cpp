@@ -24,7 +24,7 @@ void ImGuiManager::Initialize()
 	directXCore_ = DirectXCore::GetInstance();
 	Device* device = Device::GetInstance();
 	srvHeap_ = directXCore_->GetDescriptorHeap(DirectXCore::HeapType::kSRV);
-
+	DescriptorHandle srvHandle = srvHeap_->Alloc();
 
 	// ImGuiのコンテキストを生成
 	ImGui::CreateContext();
@@ -32,13 +32,25 @@ void ImGuiManager::Initialize()
 	ImGui::StyleColorsDark();
 	// プラットフォームとレンダラーのバックエンドを設定する
 	ImGui_ImplWin32_Init(WindowsAPI::GetInstance()->GetHwnd());
+	//ImGui_ImplDX12_Init(
+	//	device->GetDevice(), 
+	//	static_cast<int>(directXCore_->GetBackBufferCount()),
+	//	DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, srvHeap_->GetHeapPointer(),
+	//	srvHeap_->GetHeapPointer()->GetCPUDescriptorHandleForHeapStart(),
+	//	srvHeap_->GetHeapPointer()->GetGPUDescriptorHandleForHeapStart()
+	//	/*srvHeap_->GetCPUDescriptorHandleForHeapStart(),*/
+	//	/*srvHeap_->GetGPUDescriptorHandleForHeapStart()*/);
 	ImGui_ImplDX12_Init(
-		device->GetDevice(), static_cast<int>(directXCore_->GetBackBufferCount()),
-		DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, srvHeap_->GetHeapPointer(),
-		srvHeap_->GetHeapPointer()->GetCPUDescriptorHandleForHeapStart(),
-		srvHeap_->GetHeapPointer()->GetGPUDescriptorHandleForHeapStart()
+		device->GetDevice(),
+		static_cast<int>(directXCore_->GetBackBufferCount()),
+		DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, 
+		srvHeap_->GetHeapPointer(),
+		srvHandle.GetCPUHandle()
+		/*srvHeap_->GetHeapPointer()->GetCPUDescriptorHandleForHeapStart()*/,
+		srvHandle.GetGPUHandle()
+		/*srvHeap_->GetHeapPointer()->GetGPUDescriptorHandleForHeapStart()*/
 		/*srvHeap_->GetCPUDescriptorHandleForHeapStart(),*/
-		/*srvHeap_->GetGPUDescriptorHandleForHeapStart()*/);
+	/*srvHeap_->GetGPUDescriptorHandleForHeapStart()*/);
 
 	ImGuiIO& io = ImGui::GetIO();
 	// 標準フォントを追加する

@@ -45,9 +45,13 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>$(ProjectDir)..\External\nlohmann;$(ProjectDir)..\External\imgui;$(IncludePath)</IncludePath>
+    <IntDir>$(SolutionDir)..\Generated\Obj\$(ProjectName)\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)..\Generated\Outputs\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IncludePath>$(ProjectDir)..\External\nlohmann;$(ProjectDir)..\External\imgui;$(IncludePath)</IncludePath>
+    <IntDir>$(Platform)\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -57,7 +61,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalIncludeDirectories>$(ProjectDir)Engine\2D;$(ProjectDir)Engine\3D;$(ProjectDir)Engine\base;$(ProjectDir)Engine\Input;$(ProjectDir)Engine\Math;$(ProjectDir)Engine\Scene;$(ProjectDir)Engine\Utility;$(ProjectDir)Externals;$(ProjectDir)Externals\imgui;$(ProjectDir)Externals\nlohmann;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Engine;$(ProjectDir)Engine\2D;$(ProjectDir)Engine\3D;$(ProjectDir)Engine\base;$(ProjectDir)Engine\Input;$(ProjectDir)Engine\Math;$(ProjectDir)Engine\Scene;$(ProjectDir)Engine\Utility;$(ProjectDir)Externals;$(ProjectDir)Externals\imgui;$(ProjectDir)Externals\nlohmann;$(ProjectDir)Additional;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -79,7 +83,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalIncludeDirectories>$(ProjectDir)Engine\2D;$(ProjectDir)Engine\3D;$(ProjectDir)Engine\base;$(ProjectDir)Engine\Input;$(ProjectDir)Engine\Math;$(ProjectDir)Engine\Scene;$(ProjectDir)Engine\Utility;$(ProjectDir)Externals;$(ProjectDir)Externals\imgui;$(ProjectDir)Externals\nlohmann;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Engine;$(ProjectDir)Engine\2D;$(ProjectDir)Engine\3D;$(ProjectDir)Engine\base;$(ProjectDir)Engine\Input;$(ProjectDir)Engine\Math;$(ProjectDir)Engine\Scene;$(ProjectDir)Engine\Utility;$(ProjectDir)Externals;$(ProjectDir)Externals\imgui;$(ProjectDir)Externals\nlohmann;$(ProjectDir)Additional;$(ProjectDir)Physics;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -94,9 +98,19 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Additional\Block.cpp" />
+    <ClCompile Include="Physics\Distance.cpp" />
+    <ClCompile Include="Physics\myCollision.cpp" />
+    <ClCompile Include="Physics\BroadPhase.cpp" />
+    <ClCompile Include="Engine\Audio\Audio.cpp" />
+    <ClCompile Include="Engine\Collision.cpp" />
+    <ClCompile Include="Engine\Particle.cpp" />
+    <ClCompile Include="Physics\BlockAllocator.cpp" />
+    <ClCompile Include="Physics\Body.cpp" />
+    <ClCompile Include="Physics\Contact.cpp" />
+    <ClCompile Include="Physics\ContactManager.cpp" />
     <ClCompile Include="Engine\base\BackBuffer.cpp" />
     <ClCompile Include="Engine\Collider.cpp" />
-    <ClCompile Include="Engine\Collision.cpp" />
     <ClCompile Include="Engine\CollisionManager.cpp" />
     <ClCompile Include="Engine\Scene\ClearScene.cpp" />
     <ClCompile Include="Engine\base\CommandList.cpp" />
@@ -124,6 +138,9 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Engine\Input\Input.cpp" />
     <ClCompile Include="Engine\Scene\IScene.cpp" />
     <ClCompile Include="Engine\Utility\Logger.cpp" />
+    <ClCompile Include="Physics\Fixture.cpp" />
+    <ClCompile Include="Physics\Island.cpp" />
+    <ClCompile Include="Physics\Joint.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Engine\Math\MathFunction.cpp" />
     <ClCompile Include="Engine\base\PipelineState.cpp" />
@@ -141,10 +158,28 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Engine\base\WindowsAPI.cpp" />
     <ClCompile Include="Engine\3D\WorldTransform.cpp" />
     <ClCompile Include="Engine\Utility\PrimitiveDrawer.cpp" />
+    <ClCompile Include="Engine\Skydome.cpp" />
+    <ClCompile Include="Additional\Player.cpp" />
+    <ClCompile Include="Engine\3D\ParticleDrawer.cpp" />
+    <ClCompile Include="Engine\ParticleManger.cpp" />
+    <ClCompile Include="Physics\Setting.cpp" />
+    <ClCompile Include="Physics\StackAllocator.cpp" />
+    <ClCompile Include="Physics\World.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Engine\Collider.h" />
+    <ClInclude Include="Additional\Block.h" />
+    <ClInclude Include="Physics\Distance.h" />
+    <ClInclude Include="Physics\Common.h" />
+    <ClInclude Include="Physics\myCollision.h" />
+    <ClInclude Include="Physics\BroadPhase.h" />
+    <ClInclude Include="Engine\Audio\Audio.h" />
+    <ClInclude Include="Physics\BlockAllocator.h" />
     <ClInclude Include="Engine\Collision.h" />
+    <ClInclude Include="Engine\Particle.h" />
+    <ClInclude Include="Physics\Body.h" />
+    <ClInclude Include="Physics\Contact.h" />
+    <ClInclude Include="Physics\ContactManager.h" />
+    <ClInclude Include="Engine\Collider.h" />
     <ClInclude Include="Engine\CollisionConfig.h" />
     <ClInclude Include="Engine\CollisionManager.h" />
     <ClInclude Include="Engine\Math\AABB.h" />
@@ -188,6 +223,14 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\base\RootParameter.h" />
     <ClInclude Include="Engine\base\RootSignature.h" />
     <ClInclude Include="Engine\Utility\PrimitiveDrawer.h" />
+    <ClInclude Include="Additional\Player.h" />
+    <ClInclude Include="Engine\3D\ParticleDrawer.h" />
+    <ClInclude Include="Engine\Math\Random.h" />
+    <ClInclude Include="Physics\Fixture.h" />
+    <ClInclude Include="Physics\Island.h" />
+    <ClInclude Include="Physics\Joint.h" />
+    <ClInclude Include="Engine\ParticleManger.h" />
+    <ClInclude Include="Physics\Setting.h" />
     <ClInclude Include="SafeDelete.h" />
     <ClInclude Include="Engine\base\ShaderCompiler.h" />
     <ClInclude Include="Engine\Math\Sphere.h" />
@@ -205,6 +248,12 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\3D\Camera.h" />
     <ClInclude Include="Engine\base\WindowsAPI.h" />
     <ClInclude Include="Engine\3D\WorldTransform.h" />
+    <ClInclude Include="Engine\Skydome.h" />
+    <ClInclude Include="Engine\Math\Transform.h" />
+    <ClInclude Include="Physics\World.h" />
+    <ClInclude Include="Physics\StackAllocator.h" />
+    <ClInclude Include="Physics\TimeStep.h" />
+    <ClInclude Include="Physics\WorldCallBacks.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="externals\imgui\LICENSE.txt" />
@@ -243,14 +292,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>
-    <FxCompile Include="Resources\Shaders\ParticlePS.hlsl">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </FxCompile>
-    <FxCompile Include="Resources\Shaders\ParticleVS.hlsl">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </FxCompile>
     <FxCompile Include="Resources\Shaders\SpritePS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
@@ -270,10 +311,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </None>
     <None Include="Resources\Shaders\Object3d.hlsli">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </None>
-    <None Include="Resources\Shaders\Particle.hlsli">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </None>

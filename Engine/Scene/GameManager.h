@@ -17,6 +17,7 @@
 #include "Model.h"
 #include "Sprite.h"
 #include "PrimitiveDrawer.h"
+#include "ParticleDrawer.h"
 
 
 class GameManager
@@ -50,6 +51,7 @@ private:
 	Model* model_ = nullptr;
 	Sprite* sprite_ = nullptr;
 	PrimitiveDrawer* primitive_ = nullptr;
+	ParticleDrawer* particle_ = nullptr;
 
 };
 

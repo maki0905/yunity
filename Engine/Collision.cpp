@@ -1,4 +1,5 @@
-﻿#include "Collision.h"
+#include "Collision.h"
+
 #include "MathFunction.h"
 #include <iostream>
 #include <algorithm>
@@ -75,9 +76,9 @@ bool IsCollision(const Segment& segment, const Plane& plane)
 	if (dot == 0.0f) {
 		return false;
 	}
-	
+
 	float t = (plane.distance - Dot(segment.origin, plane.normal)) / dot;
-	
+
 
 	if (t >= 0.0f && t <= 1.0f) {
 		return true;
@@ -113,7 +114,7 @@ bool IsCollision(const Triangle& triangle, const Segment& segment)
 	Vector3 v2p = Subtract(p, triangle.vertices[2]);
 	Vector3 v20 = Subtract(triangle.vertices[0], triangle.vertices[2]);
 	Vector3 v0p = Subtract(p, triangle.vertices[0]);
-	
+
 	// 各辺を結んだベクトルと、頂点と衝突点pを結んだベクトルのクロス積を取る
 	Vector3 cross01 = Cross(v01, v1p);
 	Vector3 cross12 = Cross(v12, v2p);
@@ -145,7 +146,7 @@ bool IsCollision(const AABB& aabb, const Sphere& sphere)
 	// 最近接点を求める
 	Vector3 closestPoint{ std::clamp(sphere.center.x, aabb.min.x, aabb.max.x), std::clamp(sphere.center.y, aabb.min.y, aabb.max.y), std::clamp(sphere.center.z, aabb.min.z, aabb.max.z) };
 	// 最近接点と球の中心との距離を求める
-	float distance = Length(Subtract(closestPoint , sphere.center));
+	float distance = Length(Subtract(closestPoint, sphere.center));
 	// 距離が半径よりも小さければ衝突
 	if (distance <= sphere.radius) {
 		return true;
@@ -155,7 +156,7 @@ bool IsCollision(const AABB& aabb, const Sphere& sphere)
 
 bool IsCollision(const AABB& aabb, const Segment& segment)
 {
-	
+
 	float tNearX = std::min((aabb.min.x - segment.origin.x) / segment.diff.x, (aabb.max.x - segment.origin.x) / segment.diff.x);
 	float tNearY = std::min((aabb.min.y - segment.origin.y) / segment.diff.y, (aabb.max.y - segment.origin.y) / segment.diff.y);
 	float tNearZ = std::min((aabb.min.z - segment.origin.z) / segment.diff.z, (aabb.max.z - segment.origin.z) / segment.diff.z);
@@ -167,11 +168,11 @@ bool IsCollision(const AABB& aabb, const Segment& segment)
 	// AABBとの衝突点(貫通点)のtが大きい方
 	float tmax = std::min(std::min(tFarX, tFarY), tFarZ);
 	//float segmentLength = Length(Subtract(segment.diff, segment.origin));
-	if (tmin < tmax && tmin < 1.0f && tmax > 0.0f  ) {
-		
+	if (tmin < tmax && tmin < 1.0f && tmax > 0.0f) {
+
 
 		return true;
-		
+
 	}
 	if (segment.origin.x > aabb.min.x && segment.origin.x < aabb.max.x) {
 		if (segment.origin.y > aabb.min.y && segment.origin.y < aabb.max.y) {
@@ -217,7 +218,7 @@ bool IsCollision(const OBB& obb, const Sphere& sphere)
 	if (IsCollision(aabbOBBLocal, sphereOBBLocal)) {
 		return true;
 	}
-	
+
 	return false;
 }
 
@@ -251,7 +252,7 @@ bool IsCollision(const OBB& obb, const Segment& segment)
 
 	Segment localSegment;
 	localSegment.origin = localOrigin;
-	localSegment.diff = Subtract( localEnd, localOrigin);
+	localSegment.diff = Subtract(localEnd, localOrigin);
 
 	return IsCollision(localAABB, localSegment);
 }

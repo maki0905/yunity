@@ -41,7 +41,13 @@ DescriptorHandle DescriptorHeap::Alloc(uint32_t count)
 {
 	assert(HasAvailableSpace(count));
 	DescriptorHandle ret = *nextFreeHandle_;
-	nextFreeHandle_ += count * descriptorSize_;
+	D3D12_CPU_DESCRIPTOR_HANDLE cpuHandle = nextFreeHandle_->GetCPUHandle();
+	D3D12_GPU_DESCRIPTOR_HANDLE gpuHandle = nextFreeHandle_->GetGPUHandle();
+	cpuHandle.ptr += (count * descriptorSize_);
+	gpuHandle.ptr += (count * descriptorSize_);
+	nextFreeHandle_->SetCPUHandle(cpuHandle);
+	nextFreeHandle_->SetGPUHandle(gpuHandle);
+	//nextFreeHandle_ += count * descriptorSize_;
 	freeDescriptors_ -= count;
 	return ret;
 }

@@ -6,6 +6,54 @@
 #include <math.h>
 #include <ranges>
 
+Vector2 Add(const Vector2& v1, const Vector2& v2)
+{
+	Vector2 result;
+	result.x = v1.x + v2.x;
+	result.y = v1.y + v2.y;
+	return result;
+}
+
+Vector2 Subtract(const Vector2& v1, const Vector2& v2)
+{
+	Vector2 result;
+	result.x = v1.x - v2.x;
+	result.y = v1.y - v2.y;
+	return result;
+}
+
+Vector2 Multiply(float k, const Vector2& v)
+{
+	Vector2 result;
+	result.x = k * v.x;
+	result.y = k * v.y;
+	return result;
+}
+
+Vector2 Multiply(const myTransform& t, const Vector2& v)
+{
+	float x = (t.q.c * v.x - t.q.s * v.y) + t.p.x;
+	float y = (t.q.s * v.x + t.q.c * v.y) + t.p.y;
+
+	return Vector2(x, y);
+}
+
+inline float Dot(const Vector2& v1, const Vector2& v2)
+{
+	float result;
+	result = v1.x * v2.x + v1.y * v2.y;
+	return result;
+}
+
+inline float DistanceSquared(const Vector2& a, const Vector2& b)
+{
+	float result;
+	Vector2 c = Subtract(a, b);
+	result = Dot(c, c);
+	return result;
+
+}
+
 // ベクトルの加法
 Vector3 Add(const Vector3& v1, const Vector3& v2) {
 	Vector3 result;
@@ -25,11 +73,11 @@ Vector3 Subtract(const Vector3& v1, const Vector3 v2) {
 }
 
 // スカラー倍
-Vector3 Multiply(const float& k, Vector3 v1) {
+Vector3 Multiply(float k, const Vector3& v) {
 	Vector3 result;
-	result.x = k * v1.x;
-	result.y = k * v1.y;
-	result.z = k * v1.z;
+	result.x = k * v.x;
+	result.y = k * v.y;
+	result.z = k * v.z;
 	return result;
 }
 

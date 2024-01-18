@@ -18,6 +18,7 @@ public:
 		kBasic,
 		kSprite,
 		kLine,
+		kParticle,
 		kCount
 
 	};

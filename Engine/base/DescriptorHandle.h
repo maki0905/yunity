@@ -17,26 +17,31 @@ public:
     {}
 
 
-    DescriptorHandle operator+ (INT OffsetScaledByDescriptorSize) const
+    /*DescriptorHandle operator+ (INT OffsetScaledByDescriptorSize) const
     {
         DescriptorHandle ret = *this;
         ret += OffsetScaledByDescriptorSize;
         return ret;
-    }
+    }*/
 
-    void operator += (INT OffsetScaledByDescriptorSize)
+   /* void operator += (INT OffsetScaledByDescriptorSize)
     {
         if (cpuHandle_.ptr != D3D12_GPU_VIRTUAL_ADDRESS_UNKNOWN)
             cpuHandle_.ptr += OffsetScaledByDescriptorSize;
         if (gpuHandle_.ptr != D3D12_GPU_VIRTUAL_ADDRESS_UNKNOWN)
             gpuHandle_.ptr += OffsetScaledByDescriptorSize;
-    }
+    }*/
 
 	D3D12_CPU_DESCRIPTOR_HANDLE GetCPUHandle() { return cpuHandle_; }
 	D3D12_GPU_DESCRIPTOR_HANDLE GetGPUHandle() { return gpuHandle_; }
 
+    void SetCPUHandle(D3D12_CPU_DESCRIPTOR_HANDLE cpuHandle) { cpuHandle_ = cpuHandle; }
+    void SetGPUHandle(D3D12_GPU_DESCRIPTOR_HANDLE gpuHandle) { gpuHandle_ = gpuHandle; }
+
 	size_t GetCpuPtr() const { return cpuHandle_.ptr; }
 	uint64_t GetGpuPtr() const { return gpuHandle_.ptr; }
+
+
 
 
 private:

@@ -66,12 +66,6 @@ void Model::InitializeGraphicsPipeline()
 	rootSignature_->GetParameter(static_cast<size_t>(RootBindings::kMaterial)).InitializeAsConstantBuffer(0, D3D12_SHADER_VISIBILITY_PIXEL);
 	rootSignature_->GetParameter(static_cast<size_t>(RootBindings::kLight)).InitializeAsConstantBuffer(1, D3D12_SHADER_VISIBILITY_PIXEL);
 
-	RootParameter r0 = rootSignature_->GetParameter(static_cast<size_t>(RootBindings::kWorldTransform));
-	RootParameter r1 = rootSignature_->GetParameter(static_cast<size_t>(RootBindings::kViewProjection));
-	RootParameter r2 = rootSignature_->GetParameter(static_cast<size_t>(RootBindings::kTexture));
-	RootParameter r3 = rootSignature_->GetParameter(static_cast<size_t>(RootBindings::kMaterial));
-	RootParameter r4 = rootSignature_->GetParameter(static_cast<size_t>(RootBindings::kLight));
-
 	rootSignature_->Finalize(D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
 
 	pipelineState_ = new PipelineState(device_, rootSignature_);

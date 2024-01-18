@@ -1,20 +1,62 @@
 ﻿#pragma once
 
 #include <cmath>
+#include <numbers>
+
 #include "Vecter2.h"
 #include "Vector3.h"
 #include "Vector4.h"
 #include "Matrix4x4.h"
 #include "Quaternion.h"
+#include "myCollision.h"
 
 const float M_PI = 3.14159265359f;
+
+// 比較
+template <typename T>
+inline T Min(T a, T b) {
+    return a < b ? a : b;
+}
+inline Vector2 Min(const Vector2& a, const Vector2& b) {
+    return Vector2(Min(a.x, b.x), Min(a.y, b.y));
+}
+
+template <typename T>
+inline T Max(T a, T b) {
+    return a > b ? a : b;
+}
+
+template <typename T>
+inline void Swap(T& a, T& b) {
+    T tmp = a;
+    a = b;
+    b = tmp;
+}
+
+
+template <typename T>
+inline T Abs(T a) {
+    return a > T(0) ? a : -a;
+}
+
+inline Vector2 Abs(const Vector2& v) {
+    return Vector2(Abs(v.x), Abs(v.y));
+}
+
+Vector2 Add(const Vector2& v1, const Vector2& v2);
+Vector2 Subtract(const Vector2& v1, const Vector2& v2);
+Vector2 Multiply(float k, const Vector2& v);
+Vector2 Multiply(const myTransform& t, const Vector2& v);
+inline float Dot(const Vector2& v1, const Vector2& v2);
+
+inline float DistanceSquared(const Vector2& v1, const Vector2& v2);
 
 // ベクトルの加法
 Vector3 Add(const Vector3& v1, const Vector3& v2);
 // ベクトルの減法
 Vector3 Subtract(const Vector3& v1, const Vector3 v2);
 // スカラー倍
-Vector3 Multiply(const float& k, Vector3 v1);
+Vector3 Multiply(float k, const Vector3& v);
 // 内積
 float Dot(const Vector3& v1, const Vector3& v2);
 // 長さ(ノルム)
@@ -56,6 +98,7 @@ Vector3 Transform(const Vector3& vector, const Matrix4x4& matrix);
 Matrix4x4 MakeRotateXMatrix(float radian);
 // Y軸回転行列
 Matrix4x4 MakeRotateYMatrix(float radian);
+
 // Z軸回転行列
 Matrix4x4 MakeRotateZMatrix(float radian);
 
