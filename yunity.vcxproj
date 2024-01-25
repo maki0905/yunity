@@ -99,16 +99,9 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Additional\Block.cpp" />
-    <ClCompile Include="Physics\Distance.cpp" />
-    <ClCompile Include="Physics\myCollision.cpp" />
-    <ClCompile Include="Physics\BroadPhase.cpp" />
     <ClCompile Include="Engine\Audio\Audio.cpp" />
     <ClCompile Include="Engine\Collision.cpp" />
     <ClCompile Include="Engine\Particle.cpp" />
-    <ClCompile Include="Physics\BlockAllocator.cpp" />
-    <ClCompile Include="Physics\Body.cpp" />
-    <ClCompile Include="Physics\Contact.cpp" />
-    <ClCompile Include="Physics\ContactManager.cpp" />
     <ClCompile Include="Engine\base\BackBuffer.cpp" />
     <ClCompile Include="Engine\Collider.cpp" />
     <ClCompile Include="Engine\CollisionManager.cpp" />
@@ -138,9 +131,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Engine\Input\Input.cpp" />
     <ClCompile Include="Engine\Scene\IScene.cpp" />
     <ClCompile Include="Engine\Utility\Logger.cpp" />
-    <ClCompile Include="Physics\Fixture.cpp" />
-    <ClCompile Include="Physics\Island.cpp" />
-    <ClCompile Include="Physics\Joint.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Engine\Math\MathFunction.cpp" />
     <ClCompile Include="Engine\base\PipelineState.cpp" />
@@ -162,23 +152,12 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Additional\Player.cpp" />
     <ClCompile Include="Engine\3D\ParticleDrawer.cpp" />
     <ClCompile Include="Engine\ParticleManger.cpp" />
-    <ClCompile Include="Physics\Setting.cpp" />
-    <ClCompile Include="Physics\StackAllocator.cpp" />
-    <ClCompile Include="Physics\World.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Additional\Block.h" />
-    <ClInclude Include="Physics\Distance.h" />
-    <ClInclude Include="Physics\Common.h" />
-    <ClInclude Include="Physics\myCollision.h" />
-    <ClInclude Include="Physics\BroadPhase.h" />
     <ClInclude Include="Engine\Audio\Audio.h" />
-    <ClInclude Include="Physics\BlockAllocator.h" />
     <ClInclude Include="Engine\Collision.h" />
     <ClInclude Include="Engine\Particle.h" />
-    <ClInclude Include="Physics\Body.h" />
-    <ClInclude Include="Physics\Contact.h" />
-    <ClInclude Include="Physics\ContactManager.h" />
     <ClInclude Include="Engine\Collider.h" />
     <ClInclude Include="Engine\CollisionConfig.h" />
     <ClInclude Include="Engine\CollisionManager.h" />
@@ -226,11 +205,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Additional\Player.h" />
     <ClInclude Include="Engine\3D\ParticleDrawer.h" />
     <ClInclude Include="Engine\Math\Random.h" />
-    <ClInclude Include="Physics\Fixture.h" />
-    <ClInclude Include="Physics\Island.h" />
-    <ClInclude Include="Physics\Joint.h" />
     <ClInclude Include="Engine\ParticleManger.h" />
-    <ClInclude Include="Physics\Setting.h" />
     <ClInclude Include="SafeDelete.h" />
     <ClInclude Include="Engine\base\ShaderCompiler.h" />
     <ClInclude Include="Engine\Math\Sphere.h" />
@@ -250,10 +225,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\3D\WorldTransform.h" />
     <ClInclude Include="Engine\Skydome.h" />
     <ClInclude Include="Engine\Math\Transform.h" />
-    <ClInclude Include="Physics\World.h" />
-    <ClInclude Include="Physics\StackAllocator.h" />
-    <ClInclude Include="Physics\TimeStep.h" />
-    <ClInclude Include="Physics\WorldCallBacks.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="externals\imgui\LICENSE.txt" />

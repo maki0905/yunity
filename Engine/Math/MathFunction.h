@@ -8,7 +8,6 @@
 #include "Vector4.h"
 #include "Matrix4x4.h"
 #include "Quaternion.h"
-#include "myCollision.h"
 
 const float M_PI = 3.14159265359f;
 
@@ -46,7 +45,7 @@ inline Vector2 Abs(const Vector2& v) {
 Vector2 Add(const Vector2& v1, const Vector2& v2);
 Vector2 Subtract(const Vector2& v1, const Vector2& v2);
 Vector2 Multiply(float k, const Vector2& v);
-Vector2 Multiply(const myTransform& t, const Vector2& v);
+//Vector2 Multiply(const myTransform& t, const Vector2& v);
 inline float Dot(const Vector2& v1, const Vector2& v2);
 
 inline float DistanceSquared(const Vector2& v1, const Vector2& v2);

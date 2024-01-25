@@ -264,53 +264,14 @@
     <ClCompile Include="Engine\ParticleManger.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Physics\Body.cpp">
-      <Filter>Physics\ソース</Filter>
-    </ClCompile>
-    <ClCompile Include="Physics\Contact.cpp">
-      <Filter>Physics\ソース</Filter>
-    </ClCompile>
-    <ClCompile Include="Physics\ContactManager.cpp">
-      <Filter>Physics\ソース</Filter>
-    </ClCompile>
-    <ClCompile Include="Physics\Fixture.cpp">
-      <Filter>Physics\ソース</Filter>
-    </ClCompile>
-    <ClCompile Include="Physics\Island.cpp">
-      <Filter>Physics\ソース</Filter>
-    </ClCompile>
-    <ClCompile Include="Physics\Joint.cpp">
-      <Filter>Physics\ソース</Filter>
-    </ClCompile>
-    <ClCompile Include="Physics\World.cpp">
-      <Filter>Physics\ソース</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\Collision.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Particle.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Physics\Setting.cpp">
-      <Filter>Physics\ソース</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\Audio\Audio.cpp">
       <Filter>Engine\Audio</Filter>
-    </ClCompile>
-    <ClCompile Include="Physics\BlockAllocator.cpp">
-      <Filter>Physics\ソース</Filter>
-    </ClCompile>
-    <ClCompile Include="Physics\StackAllocator.cpp">
-      <Filter>Physics\ソース</Filter>
-    </ClCompile>
-    <ClCompile Include="Physics\BroadPhase.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Physics\myCollision.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Physics\Distance.cpp">
-      <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -509,62 +470,14 @@
     <ClInclude Include="Engine\ParticleManger.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Physics\World.h">
-      <Filter>Physics\ヘッダー</Filter>
-    </ClInclude>
-    <ClInclude Include="Physics\Joint.h">
-      <Filter>Physics\ヘッダー</Filter>
-    </ClInclude>
-    <ClInclude Include="Physics\Island.h">
-      <Filter>Physics\ヘッダー</Filter>
-    </ClInclude>
-    <ClInclude Include="Physics\Fixture.h">
-      <Filter>Physics\ヘッダー</Filter>
-    </ClInclude>
-    <ClInclude Include="Physics\ContactManager.h">
-      <Filter>Physics\ヘッダー</Filter>
-    </ClInclude>
-    <ClInclude Include="Physics\Contact.h">
-      <Filter>Physics\ヘッダー</Filter>
-    </ClInclude>
-    <ClInclude Include="Physics\Body.h">
-      <Filter>Physics\ヘッダー</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\Collision.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Particle.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Physics\WorldCallBacks.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Physics\TimeStep.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Physics\Setting.h">
-      <Filter>Physics\ヘッダー</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\Audio\Audio.h">
       <Filter>Engine\Audio</Filter>
-    </ClInclude>
-    <ClInclude Include="Physics\StackAllocator.h">
-      <Filter>Physics\ヘッダー</Filter>
-    </ClInclude>
-    <ClInclude Include="Physics\BlockAllocator.h">
-      <Filter>Physics\ヘッダー</Filter>
-    </ClInclude>
-    <ClInclude Include="Physics\BroadPhase.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Physics\myCollision.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Physics\Common.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Physics\Distance.h">
-      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

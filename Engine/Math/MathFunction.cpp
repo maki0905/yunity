@@ -30,13 +30,13 @@ Vector2 Multiply(float k, const Vector2& v)
 	return result;
 }
 
-Vector2 Multiply(const myTransform& t, const Vector2& v)
-{
-	float x = (t.q.c * v.x - t.q.s * v.y) + t.p.x;
-	float y = (t.q.s * v.x + t.q.c * v.y) + t.p.y;
-
-	return Vector2(x, y);
-}
+//Vector2 Multiply(const myTransform& t, const Vector2& v)
+//{
+//	float x = (t.q.c * v.x - t.q.s * v.y) + t.p.x;
+//	float y = (t.q.s * v.x + t.q.c * v.y) + t.p.y;
+//
+//	return Vector2(x, y);
+//}
 
 inline float Dot(const Vector2& v1, const Vector2& v2)
 {

@@ -86,6 +86,7 @@ public:
 
 
 public:
+
 	/// <summary>
 	/// 初期化
 	/// </summary>
@@ -144,7 +145,7 @@ private:
 	D3D12_INDEX_BUFFER_VIEW indexBufferView_;
 
 	// インスタンス数
-	uint32_t kNumInstance = 10;
+	const uint32_t kNumMaxInstance = 100;
 
 	Microsoft::WRL::ComPtr<ID3D12Resource> instancingResource_;
 	WorldTransform* instancingData_;

@@ -134,13 +134,16 @@ void ParticleDrawer::Draw(WorldTransform* worldTransform, const Camera& camera)
 {
 	assert(device_);
 	assert(commandList_);
+
+	uint32_t numInstance = 0;
 	
 	//for (uint32_t index = 0; index < kNumInstance; index++) {
 	//	instancingData_[index].matWorld_ = worldTransform[index].matWorld_;
 	//	//instancingData_[index].constBuff_ = worldTransform[index].constBuff_;
 	//}
-	for (uint32_t index = 0; index < kNumInstance; index++) {
+	for (uint32_t index = 0; index < kNumMaxInstance; index++) {
 		instancingDatas_[index].world = worldTransform[index].matWorld_;
+		++numInstance;
 	}
 
 	// デスクリプタヒープの配列をセットするコマンド
@@ -161,7 +164,7 @@ void ParticleDrawer::Draw(WorldTransform* worldTransform, const Camera& camera)
 	// SRVをセット
 	TextureManager::GetInstance()->SetGraphicsRootDescriptorTable(commandList_, static_cast<UINT>(RootBindings::kTexture), textureHandle_);
 
-	commandList_->DrawInstanced(UINT(modelData.vertices.size()), kNumInstance, 0, 0);
+	commandList_->DrawInstanced(UINT(modelData.vertices.size()), numInstance, 0, 0);
 }
 
 void ParticleDrawer::SetMaterial(const Vector4& color)
@@ -192,11 +195,11 @@ void ParticleDrawer::CreateMesh()
 
 
 	//instancingResource_ = CreateBufferResource(sizeof(WorldTransform) * kNumInstance);
-	instancingResource_ = CreateBufferResource(sizeof(WorldTransformData) * kNumInstance);
+	instancingResource_ = CreateBufferResource(sizeof(WorldTransformData) * kNumMaxInstance);
 	//instancingResource_->Map(0, nullptr, (void**)&instancingData_);
 	instancingResource_->Map(0, nullptr, (void**)&instancingDatas_);
 
-	for (uint32_t index = 0; index < kNumInstance; ++index) {
+	for (uint32_t index = 0; index < kNumMaxInstance; ++index) {
 		instancingDatas_[index].world = MakeIdentity4x4();
 		//instancingDatas_[index].color = Vector4{ 1.0f, 1.0f, 1.0f, 1.0f };
 	}
@@ -216,7 +219,7 @@ void ParticleDrawer::CreateSRV()
 	instancingSrvDesc.ViewDimension = D3D12_SRV_DIMENSION_BUFFER;
 	instancingSrvDesc.Buffer.FirstElement = 0;
 	instancingSrvDesc.Buffer.Flags = D3D12_BUFFER_SRV_FLAG_NONE;
-	instancingSrvDesc.Buffer.NumElements = kNumInstance;
+	instancingSrvDesc.Buffer.NumElements = kNumMaxInstance;
 	//instancingSrvDesc.Buffer.StructureByteStride = sizeof(WorldTransform);
 	instancingSrvDesc.Buffer.StructureByteStride = sizeof(WorldTransformData);
 	/*instancingSrvHandleCPU_ = descriptorHeap_->GetCPUDescriptorHandleForHeapStart();

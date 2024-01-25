@@ -41,7 +41,8 @@ private:
 
 	std::unique_ptr<CollisionManager> collisionManager_;
 
-	ParticleDrawer* particle_ = nullptr;
+	//ParticleDrawer* particle_ = nullptr;
+	std::unique_ptr<ParticleDrawer> particle_ = nullptr;
 	uint32_t index_particle = 0;
 	
 

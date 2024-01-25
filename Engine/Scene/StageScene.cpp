@@ -22,8 +22,11 @@ void StageScene::Initialize()
 	sphere_.reset(PrimitiveDrawer::Create(PrimitiveDrawer::Type::kBox));
 	player_ = new Player();
 	player_->Initialize();
-	particle_ = new ParticleDrawer();
-	particle_ = ParticleDrawer::Create("uvChecker.png");
+
+	/*particle_ = new ParticleDrawer();
+	particle_ = ParticleDrawer::Create("uvChecker.png");*/
+	particle_ = std::make_unique<ParticleDrawer>();
+	particle_.reset(ParticleDrawer::Create("uvChecker.png"));
 	
 	block_ = new Block();
 	block_->Initialize();
@@ -83,7 +86,7 @@ void StageScene::Draw3D()
 	sphere_->Draw(worldTrasnform1_, camera_);*/
 	//skydome_->Draw(worldTransform_, camera_);
 	//particle_->Draw(worldTrasnform1_, camera_);
-	//particle_->Draw(worldTransformParticle_, camera_);
+	particle_->Draw(worldTransformParticle_, camera_);
 	player_->Draw(camera_);
 	/*block_->Draw(camera_);*/
 }
