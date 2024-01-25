@@ -204,7 +204,7 @@ bool IsCollision(const OBB& obb, const Sphere& sphere)
 	W.m[3][2] = obb.center.z;
 	W.m[3][3] = 1;
 	Matrix4x4 WInverse = Inverse(W);
-	Vector3 centerInOBBLocalSpace = Transform(sphere.center, WInverse);
+	Vector3 centerInOBBLocalSpace = TransformVector3(sphere.center, WInverse);
 	AABB aabbOBBLocal{
 		.min{Multiply(-1.0f, obb.size)},
 		.max{obb.size }
@@ -242,8 +242,8 @@ bool IsCollision(const OBB& obb, const Segment& segment)
 	W.m[3][2] = obb.center.z;
 	W.m[3][3] = 1;
 	Matrix4x4 WInverse = Inverse(W);
-	Vector3 localOrigin = Transform(segment.origin, WInverse);
-	Vector3 localEnd = Transform(Add(segment.origin, segment.diff), WInverse);
+	Vector3 localOrigin = TransformVector3(segment.origin, WInverse);
+	Vector3 localEnd = TransformVector3(Add(segment.origin, segment.diff), WInverse);
 
 	AABB localAABB{
 		{-obb.size.x, -obb.size.y, -obb.size.z},

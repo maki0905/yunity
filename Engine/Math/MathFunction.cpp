@@ -341,7 +341,7 @@ Matrix4x4 MakeScaleMatrix(const Vector3& scale) {
 }
 
 // 座標変換
-Vector3 Transform(const Vector3& vector, const Matrix4x4& matrix) {
+Vector3 TransformVector3(const Vector3& vector, const Matrix4x4& matrix) {
 	Vector3 result;
 	result.x = vector.x * matrix.m[0][0] + vector.y * matrix.m[1][0] + vector.z * matrix.m[2][0] +
 		1.0f * matrix.m[3][0];
@@ -586,7 +586,7 @@ Vector3 MapWorldToScreen(const Vector3& worldPosition, const Matrix4x4& matView,
 	Matrix4x4 matViewProjectionViewport = Multiply(Multiply(matView, matProjection), matViewport);
 
 	// ワールド->スクリーン座標変換
-	result = Transform(worldPosition, matViewProjectionViewport);
+	result = TransformVector3(worldPosition, matViewProjectionViewport);
 	return result;
 }
 

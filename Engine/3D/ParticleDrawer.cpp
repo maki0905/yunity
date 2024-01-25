@@ -144,6 +144,9 @@ void ParticleDrawer::Draw(WorldTransform* worldTransform, const Camera& camera)
 	for (uint32_t index = 0; index < kNumMaxInstance; index++) {
 		instancingDatas_[index].world = worldTransform[index].matWorld_;
 		++numInstance;
+		/*if (numInstance >= kNumMaxInstance) {
+			break;
+		}*/
 	}
 
 	// デスクリプタヒープの配列をセットするコマンド
@@ -195,7 +198,7 @@ void ParticleDrawer::CreateMesh()
 
 
 	//instancingResource_ = CreateBufferResource(sizeof(WorldTransform) * kNumInstance);
-	instancingResource_ = CreateBufferResource(sizeof(WorldTransformData) * kNumMaxInstance);
+	instancingResource_ = CreateBufferResource(sizeof(ParticleForCPU) * kNumMaxInstance);
 	//instancingResource_->Map(0, nullptr, (void**)&instancingData_);
 	instancingResource_->Map(0, nullptr, (void**)&instancingDatas_);
 
@@ -221,7 +224,7 @@ void ParticleDrawer::CreateSRV()
 	instancingSrvDesc.Buffer.Flags = D3D12_BUFFER_SRV_FLAG_NONE;
 	instancingSrvDesc.Buffer.NumElements = kNumMaxInstance;
 	//instancingSrvDesc.Buffer.StructureByteStride = sizeof(WorldTransform);
-	instancingSrvDesc.Buffer.StructureByteStride = sizeof(WorldTransformData);
+	instancingSrvDesc.Buffer.StructureByteStride = sizeof(ParticleForCPU);
 	/*instancingSrvHandleCPU_ = descriptorHeap_->GetCPUDescriptorHandleForHeapStart();
 	instancingSrvHandleGPU_ = descriptorHeap_->GetGPUDescriptorHandleForHeapStart();*/
 	instancingSrvHandleCPU_ = srvHandle.GetCPUHandle();

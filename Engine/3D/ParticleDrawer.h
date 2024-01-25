@@ -49,7 +49,7 @@ public:
 		MaterialData material;
 	};
 
-	struct WorldTransformData {
+	struct ParticleForCPU {
 		Matrix4x4 world;
 		/*Vector4 color;*/
 	};
@@ -145,11 +145,11 @@ private:
 	D3D12_INDEX_BUFFER_VIEW indexBufferView_;
 
 	// インスタンス数
-	const uint32_t kNumMaxInstance = 100;
+	const uint32_t kNumMaxInstance = 10;
 
 	Microsoft::WRL::ComPtr<ID3D12Resource> instancingResource_;
 	WorldTransform* instancingData_;
-	WorldTransformData* instancingDatas_;
+	ParticleForCPU* instancingDatas_;
 
 	D3D12_CPU_DESCRIPTOR_HANDLE instancingSrvHandleCPU_;
 	D3D12_GPU_DESCRIPTOR_HANDLE instancingSrvHandleGPU_;
