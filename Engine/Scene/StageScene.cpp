@@ -11,6 +11,8 @@ void StageScene::Initialize()
 	position_ = { 0.0f, 0.0f };
 
 	camera_.Initialize();
+	debugCamera_ = std::make_unique<DebugCamera>();
+
 	worldTransform_.Initialize();
 	worldTransform_.UpdateMatrix(RotationType::Euler);
 	worldTrasnform1_.Initialize();
@@ -80,11 +82,27 @@ void StageScene::Update()
 
 	for (Particle* particle : particles_) {
 		//particle->AddVecocity();
-		particle->AffineMatrix();
+		//particle->AffineMatrix();
+		particle->transform.rotate.z += 0.1f;
+		particle->BillboardMatrix(camera_);
 	}
 
 	worldTrasnform1_.UpdateMatrix(RotationType::Euler);
-	camera_.UpdateMatrix();
+
+#ifdef _DEBUG
+	if (Input::GetInstance()->TriggerKey(DIK_LSHIFT)) {
+		isDebug_ ^= true;
+	}
+#endif
+
+	if (isDebug_) {
+		debugCamera_->Update(&camera_);
+		camera_.UpdateMatrix();
+	}
+	else {
+		camera_.UpdateMatrix();
+	}
+
 	
 }
 

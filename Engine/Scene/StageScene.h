@@ -15,6 +15,7 @@
 #include "CollisionManager.h"
 #include "Random.h"
 #include "Particle.h"
+#include "DebugCamera.h"
 
 class StageScene : public IScene
 {
@@ -32,6 +33,9 @@ private:
 	Vector2 position_;
 
 	Camera camera_;
+	std::unique_ptr<DebugCamera> debugCamera_;
+	bool isDebug_ = false;
+
 	WorldTransform worldTransform_;
 	WorldTransform worldTrasnform1_;
 	WorldTransform worldTransformParticle_[10];

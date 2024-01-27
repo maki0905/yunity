@@ -23,7 +23,7 @@ struct Camera {
 	// ローカル座標
 	Vector3 translation_ = { 0, 10.0f, -50.0f }; // 座標
 	// 回転
-	Vector3 rotation_ = { 0, 0, 0 }; // 回転
+	Vector3 rotation_ = { /*std::numbers::pi_v<float> / 3.0f*/0, /*std::numbers::pi_v<float>*/0, 0 }; // 回転
 	Quaternion quaternion_ = {0.0f, 0.0f, 0.0f, 1.0f}; // クォータニオン
 	
 #pragma endregion
