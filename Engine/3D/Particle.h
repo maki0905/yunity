@@ -9,17 +9,22 @@
 #include "Matrix4x4.h"
 #include "Camera.h"
 
-struct Particle {
+struct ParticleForCPU {
 	Matrix4x4 world;
-	Transform transform;
+	Vector4 color = {1.0f, 1.0f, 1.0f, 1.0f};
+};
+
+struct Particle {
+
+	ParticleForCPU particleForCPU;
+	Transform transform = { .scale{1.0f, 1.0f, 1.0f},.rotate{0.0f, 0.0f, 0.0f}, .translate{0.0f, 0.0f, 0.0f} };
 	Vector3 velocity = { 0.0f, 0.0f, 0.0f };
-	Vector4 color;
 	float lifeTime;
 	float currentTime;
 
-	bool isBillboard;
 
-	void RotationMatrix();
+	void AddVecocity();
+	void AffineMatrix();
 	void BillboardMatrix(const Camera& camera);
 };
 

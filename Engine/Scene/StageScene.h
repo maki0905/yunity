@@ -14,6 +14,7 @@
 #include "Block.h"
 #include "CollisionManager.h"
 #include "Random.h"
+#include "Particle.h"
 
 class StageScene : public IScene
 {
@@ -43,6 +44,7 @@ private:
 
 	//ParticleDrawer* particle_ = nullptr;
 	std::unique_ptr<ParticleDrawer> particle_ = nullptr;
+	std::list<Particle*> particles_;
 	uint32_t index_particle = 0;
 	
 

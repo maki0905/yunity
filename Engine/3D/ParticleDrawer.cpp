@@ -130,7 +130,7 @@ void ParticleDrawer::Initialize(const std::string& modelname)
 	InitializeMaterial();
 }
 
-void ParticleDrawer::Draw(WorldTransform* worldTransform, const Camera& camera)
+void ParticleDrawer::Draw(/*WorldTransform* worldTransform,*/std::list<Particle*> particles, const Camera& camera)
 {
 	assert(device_);
 	assert(commandList_);
@@ -141,13 +141,26 @@ void ParticleDrawer::Draw(WorldTransform* worldTransform, const Camera& camera)
 	//	instancingData_[index].matWorld_ = worldTransform[index].matWorld_;
 	//	//instancingData_[index].constBuff_ = worldTransform[index].constBuff_;
 	//}
-	for (uint32_t index = 0; index < kNumMaxInstance; index++) {
-		instancingDatas_[index].world = worldTransform[index].matWorld_;
+	//for (uint32_t index = 0; index < kNumMaxInstance; index++) {
+	//	//instancingData_[index].world = worldTransform[index].matWorld_;
+	//	++numInstance;
+	//	/*if (numInstance >= kNumMaxInstance) {
+	//		break;
+	//	}*/
+	//}
+
+	for (uint32_t index = 0; Particle * particle : particles) {
+		instancingData_[index] = particle->particleForCPU;
+		//instancingData_[index] = particle->color;
+		index++;
 		++numInstance;
-		/*if (numInstance >= kNumMaxInstance) {
+
+		if (numInstance >= kNumMaxInstance) {
 			break;
-		}*/
+		}
 	}
+
+
 
 	// デスクリプタヒープの配列をセットするコマンド
 	ID3D12DescriptorHeap* ppHeaps[] = { /*srvHeap_.Get()*/ srvHeap_->GetHeapPointer() };
@@ -195,21 +208,22 @@ void ParticleDrawer::CreateMesh()
 	// 頂点リソースにデータを書き込む
 	vertexResource_->Map(0, nullptr, (void**)&vertexData_); // 書き込むためのアドレスを取得
 	std::memcpy(vertexData_, modelData.vertices.data(), sizeof(VertexData) * modelData.vertices.size()); // 頂点データをリソースにコピー
-
-
-	//instancingResource_ = CreateBufferResource(sizeof(WorldTransform) * kNumInstance);
-	instancingResource_ = CreateBufferResource(sizeof(ParticleForCPU) * kNumMaxInstance);
-	//instancingResource_->Map(0, nullptr, (void**)&instancingData_);
-	instancingResource_->Map(0, nullptr, (void**)&instancingDatas_);
-
-	for (uint32_t index = 0; index < kNumMaxInstance; ++index) {
-		instancingDatas_[index].world = MakeIdentity4x4();
-		//instancingDatas_[index].color = Vector4{ 1.0f, 1.0f, 1.0f, 1.0f };
-	}
 }
+
+
 
 void ParticleDrawer::CreateSRV()
 {
+	//instancingResource_ = CreateBufferResource(sizeof(WorldTransform) * kNumInstance);
+	instancingResource_ = CreateBufferResource(sizeof(ParticleForCPU) * kNumMaxInstance);
+	//instancingResource_->Map(0, nullptr, (void**)&instancingData_);
+	instancingResource_->Map(0, nullptr, (void**)&instancingData_);
+
+	for (uint32_t index = 0; index < kNumMaxInstance; ++index) {
+		instancingData_[index].world = MakeIdentity4x4();
+		//instancingDatas_[index].color = Vector4{ 1.0f, 1.0f, 1.0f, 1.0f };
+	}
+
 	HRESULT result = S_FALSE;
 
 	srvHeap_ = DirectXCore::GetInstance()->GetDescriptorHeap(DirectXCore::HeapType::kSRV);

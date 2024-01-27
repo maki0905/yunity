@@ -35,12 +35,19 @@ void StageScene::Initialize()
 	skydome1_->Initialize(Model::Create("skydome"));*/
 	//player_->Initialize();
 
+	particles_.clear();
 	for (uint32_t index = 0; index < 10; index++) {
 		worldTransformParticle_[index].Initialize();
 		worldTransformParticle_[index].scale_ = { 5.0f, 5.0f, 5.0f };
 		worldTransformParticle_[index].translation_ = { rng.NextFloatRange(-1.0f, 1.0f), rng.NextFloatRange(-1.0f, 1.0f), rng.NextFloatRange(-1.0f, 1.0f) };
 		worldTransformParticle_[index].UpdateMatrix(RotationType::Euler);
 		velocity_[index] = { rng.NextFloatRange(-0.1f, 0.1f), rng.NextFloatRange(-0.1f, 0.1f), 0.0f };
+
+		Particle* particle = new Particle();
+		particle->transform.translate = { index * 2.0f, index * 2.0f, 0.0f };
+		particle->velocity = { rng.NextFloatRange(-0.1f, 0.1f), rng.NextFloatRange(-0.1f, 0.1f), 0.0f };
+		particle->particleForCPU.color = { rng.NextFloatRange(0.0f, 1.0f),rng.NextFloatRange(0.0f, 1.0f),rng.NextFloatRange(0.0f, 1.0f), 1.0f };
+		particles_.push_back(particle);
 		
 	}
 
@@ -71,6 +78,11 @@ void StageScene::Update()
 		worldTransformParticle_[index].UpdateMatrix(RotationType::Euler);
 	}
 
+	for (Particle* particle : particles_) {
+		//particle->AddVecocity();
+		particle->AffineMatrix();
+	}
+
 	worldTrasnform1_.UpdateMatrix(RotationType::Euler);
 	camera_.UpdateMatrix();
 	
@@ -86,7 +98,7 @@ void StageScene::Draw3D()
 	sphere_->Draw(worldTrasnform1_, camera_);*/
 	//skydome_->Draw(worldTransform_, camera_);
 	//particle_->Draw(worldTrasnform1_, camera_);
-	particle_->Draw(worldTransformParticle_, camera_);
+	particle_->Draw(/*worldTransformParticle_,*/ particles_, camera_);
 	player_->Draw(camera_);
 	/*block_->Draw(camera_);*/
 }

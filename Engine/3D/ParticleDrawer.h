@@ -11,6 +11,7 @@
 #include "WorldTransform.h"
 #include "MathFunction.h"
 #include "DescriptorHeap.h"
+#include "Particle.h"
 
 
 
@@ -47,11 +48,6 @@ public:
 	struct ModelData {
 		std::vector<VertexData> vertices;
 		MaterialData material;
-	};
-
-	struct ParticleForCPU {
-		Matrix4x4 world;
-		/*Vector4 color;*/
 	};
 
 public:
@@ -98,7 +94,7 @@ public:
 	/// <param name="worldTransform">ワールドトランスフォーム</param>
 	/// <param name="viewProjection">ビュープロジェクション</param>
 	/// <param name="textureHandle">テクスチャハンドル</param>
-	void Draw(WorldTransform* worldTransform, const Camera& camera);
+	void Draw(/*WorldTransform* worldTransform,*/ std::list<Particle*> particles, const Camera& camera);
 
 	Vector4 GetMatrial() { return materialData_->color; }
 	void SetMaterial(const Vector4& color);
@@ -145,11 +141,11 @@ private:
 	D3D12_INDEX_BUFFER_VIEW indexBufferView_;
 
 	// インスタンス数
-	const uint32_t kNumMaxInstance = 10;
+	const uint32_t kNumMaxInstance = 100;
 
 	Microsoft::WRL::ComPtr<ID3D12Resource> instancingResource_;
-	WorldTransform* instancingData_;
-	ParticleForCPU* instancingDatas_;
+	//WorldTransform* instancingData_;
+	ParticleForCPU* instancingData_;
 
 	D3D12_CPU_DESCRIPTOR_HANDLE instancingSrvHandleCPU_;
 	D3D12_GPU_DESCRIPTOR_HANDLE instancingSrvHandleGPU_;
