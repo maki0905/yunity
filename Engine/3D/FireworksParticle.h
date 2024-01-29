@@ -1,22 +1,16 @@
 #pragma once
 
-#include "Particle.h"
+#include "BaseParticle.h"
 #include "ParticleDrawer.h"
 #include "Random.h"
 
-class FireworksParticle {
+class FireworksParticle : public BaseParticle {
 public:
-	void Initialize();
-
-	void Update();
-
-	void Draw(const Camera& camera);
+	void Initialize() override;
+	void Peculiar() override;
+	void Draw(const Camera& camera) override;
 
 private:
 	Random::RandomNumberGenerator rng;
-
 	std::unique_ptr<ParticleDrawer> particleDrawer_;
-	std::list<Particle*> particles_;
-
-
 };

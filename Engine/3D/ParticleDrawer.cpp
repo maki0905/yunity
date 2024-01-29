@@ -149,7 +149,7 @@ void ParticleDrawer::Draw(/*WorldTransform* worldTransform,*/std::list<Particle*
 	//	}*/
 	//}
 
-	for (uint32_t index = 0; Particle * particle : particles) {
+	for (uint32_t index = 0; Particle* particle : particles) {
 		instancingData_[index] = particle->particleForCPU;
 		//instancingData_[index] = particle->color;
 		index++;

@@ -16,6 +16,7 @@
 #include "Random.h"
 #include "Particle.h"
 #include "DebugCamera.h"
+#include "ParticleManager.h"
 
 class StageScene : public IScene
 {
@@ -51,6 +52,7 @@ private:
 	std::list<Particle*> particles_;
 	uint32_t index_particle = 0;
 	
+	std::unique_ptr<ParticleManager>  particleManager_;
 
 	float mass_ = 1.0f;
 	float gravityScale_ = 0.1f;

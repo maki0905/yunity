@@ -53,6 +53,10 @@ void StageScene::Initialize()
 		
 	}
 
+	particleManager_ = std::make_unique<ParticleManager>();
+	particleManager_->Initialize();
+	particleManager_->Add(&camera_);
+
 	collisionManager_ = std::make_unique<CollisionManager>();
 
 }
@@ -89,6 +93,8 @@ void StageScene::Update()
 
 	worldTrasnform1_.UpdateMatrix(RotationType::Euler);
 
+	particleManager_->Update();
+
 #ifdef _DEBUG
 	if (Input::GetInstance()->TriggerKey(DIK_LSHIFT)) {
 		isDebug_ ^= true;
@@ -116,7 +122,8 @@ void StageScene::Draw3D()
 	sphere_->Draw(worldTrasnform1_, camera_);*/
 	//skydome_->Draw(worldTransform_, camera_);
 	//particle_->Draw(worldTrasnform1_, camera_);
-	particle_->Draw(/*worldTransformParticle_,*/ particles_, camera_);
+	//particle_->Draw(/*worldTransformParticle_,*/ particles_, camera_);
+	particleManager_->Draw(camera_);
 	player_->Draw(camera_);
 	/*block_->Draw(camera_);*/
 }

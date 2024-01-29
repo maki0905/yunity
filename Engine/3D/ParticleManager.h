@@ -4,10 +4,12 @@
 #include <list>
 
 #include "Camera.h"
-#include "Particle.h"
+#include "BaseParticle.h"
 #include "ParticleDrawer.h"
 
-class ParticleManger
+#include "FireworksParticle.h"
+
+class ParticleManager
 {
 public:
 	void Initialize();
@@ -16,11 +18,10 @@ public:
 
 	void Draw(const Camera& camera);
 
-	void Add();
+	void Add(Camera* camera);
 
 
 private:
-	std::unique_ptr<ParticleDrawer> particleDrawer_;
-	std::list<Particle*> particles_;
+	std::list<BaseParticle*> particles_;
 };
 
