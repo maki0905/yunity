@@ -1,21 +1,30 @@
 #pragma once
 
 #include <memory>
+#include <list>
+#include <iostream>
 
 #include "IScene.h"
 #include "WorldTransform.h"
 #include "Camera.h"
 #include "Model.h"
 #include "Sprite.h"
-#include "PrimitiveDrawer.h"
-#include "Player.h"
-#include "Skydome.h"
-#include "ParticleDrawer.h"
 #include "CollisionManager.h"
 #include "Random.h"
-#include "Particle.h"
 #include "DebugCamera.h"
-#include "ParticleManager.h"
+#include "FollowCamera.h"
+
+#pragma region 新規作成
+#include "Skydome.h"
+#include "Floor.h"
+#include "MovingFloor.h"
+#include "Player.h"
+#include "Enemy.h"
+#include "StartBox.h"
+#include "EndBox.h"
+#include "LockOn.h"
+#include "Explosion.h"
+#pragma endregion
 
 class StageScene : public IScene
 {
@@ -25,44 +34,56 @@ public:
 	void DrawBack() override;
 	void Draw3D() override;
 	void DrawFront() override;
+
+	void Reset();
 private:
-	std::unique_ptr<Sprite> sprite_ = nullptr;
-	std::unique_ptr<Model> skydome_ = nullptr;
-	std::unique_ptr<PrimitiveDrawer> sphere_ = nullptr;
-	uint32_t textureHandle_ = 0;
-	Vector2 position_;
 
 	Camera camera_;
 	std::unique_ptr<DebugCamera> debugCamera_;
 	bool isDebug_ = false;
 
-	WorldTransform worldTransform_;
-	WorldTransform worldTrasnform1_;
-	WorldTransform worldTransformParticle_[10];
+	// 追従カメラ
+	std::unique_ptr<FollowCamera> followCamera_;
 
-	Player* player_ = nullptr;
-	std::unique_ptr<Skydome> skydome1_;
+	std::unique_ptr<CollisionManager> collisionManager_ = nullptr;
 
-	std::unique_ptr<CollisionManager> collisionManager_;
+	// モデル
+	std::unique_ptr<Model> skydomeModel_;
+	std::unique_ptr<Model> floorModel_;
+	std::unique_ptr<Model> movingFloorModel_;
+	std::unique_ptr<Model> startBoxModel_;
+	std::unique_ptr<Model> endBoxModel_;
 
-	//ParticleDrawer* particle_ = nullptr;
-	std::unique_ptr<ParticleDrawer> particle_ = nullptr;
-	std::list<Particle*> particles_;
-	uint32_t index_particle = 0;
-	
-	std::unique_ptr<ParticleManager>  particleManager_;
+	std::unique_ptr<Model> playerModel_Body_;
+	std::unique_ptr<Model> playerModel_Head_;
+	std::unique_ptr<Model> playerModel_Larm_;
+	std::unique_ptr<Model> playerModel_Rarm_;
+	std::unique_ptr<Model> playerModel_Hammer_;
+	std::unique_ptr<Model> enemyModel_Body_;
+	std::unique_ptr<Model> enemyModel_Larm_;
+	std::unique_ptr<Model> enemyModel_Rarm_;
 
-	float mass_ = 1.0f;
-	float gravityScale_ = 0.1f;
-	float miu_ = 0.5f;
+	std::unique_ptr<Model> particle_;
+
+	// オブジェクト
+	std::unique_ptr<Skydome> skydome_;
+	std::unique_ptr<StartBox> startBox_;
+	std::unique_ptr<EndBox> endBox_;
+	std::vector<Floor*> floors_;
+	std::vector<MovingFloor*> movingFloors_;
+	std::unique_ptr<Player> player_;
+	//std::unique_ptr<Enemy> enemy_;
+	std::list<std::unique_ptr<Enemy>> enemies_;
+	std::unique_ptr<LockOn> lockOn_;
 
 
-	Vector3 velocity_[10];
-	Vector3 acceleration_{};
+	Vector3 enemyPos_[5];
+	//std::unique_ptr<Pirticle> pirticle_;
+	std::list<Explosion*> explosion_;
 
 	Random::RandomNumberGenerator rng;
 
-	//std::unique_ptr<Player> player_ = nullptr;
+
 	
 };
 
