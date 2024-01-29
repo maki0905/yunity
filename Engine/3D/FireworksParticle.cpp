@@ -14,9 +14,15 @@ void FireworksParticle::Initialize()
 		particle->lifeTime = 5.0f;
 		particles_.push_back(particle);*/
 		Particle* particle = new Particle();
+		/*particle->velocity = { 
+			float(0.01f * cosf((36.0f * float(i)) * std::numbers::pi_v<float> / 180.0f)) - 0.01f * sinf((36.0f * float(i)) * std::numbers::pi_v<float> / 180.0f)), 
+			float(0.01f * sinf((36.0f * float(i)) * std::numbers::pi_v<float> / 180.0f)) + 0.01f * cosf((36.0f * float(i)) * std::numbers::pi_v<float> / 180.0f)), 
+			0.0f 
+		};*/
+
 		particle->velocity = { 
-			float(0.01f * cosf((36.0f * float(i)) * float(std::numbers::pi / 180.0f)) - 0.01f * sinf((36.0f * float(i)) * float(std::numbers::pi / 180.0f))), 
-			float(0.01f * sinf((36.0f * float(i)) * float(std::numbers::pi / 180.0f)) + 0.01f * cosf((36.0f * float(i)) * float(std::numbers::pi / 180.0f))), 
+			float(0.05f * std::cosf(36.0f * i * std::numbers::pi_v<float> / 180.0f) - 0.05f * std::sinf(36.0f * i * std::numbers::pi_v<float> / 180.0f)),
+			float(0.05f * std::sinf(36.0f * i * std::numbers::pi_v<float> / 180.0f) + 0.05f * std::cosf(36.0f * i * std::numbers::pi_v<float> / 180.0f)),
 			0.0f 
 		};
 		particle->particleForCPU.color = { rng.NextFloatRange(0.0f, 1.0f), rng.NextFloatRange(0.0f, 1.0f) , rng.NextFloatRange(0.0f, 1.0f) , 1.0f };
@@ -29,6 +35,7 @@ void FireworksParticle::Peculiar()
 {
 	for (auto& particle : particles_) {
 		particle->transform.translate = Add(particle->transform.translate, particle->velocity);
+		particle->particleForCPU.color.w = 1.0f - (particle->currentTime / particle->lifeTime);
 		particle->BillboardMatrix(*camera_);
 	}
 
