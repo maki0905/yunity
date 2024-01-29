@@ -516,13 +516,13 @@
     <FxCompile Include="Resources\Shaders\SpritePS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="LineVS.hlsl" />
-    <FxCompile Include="LinePS.hlsl" />
+    <FxCompile Include="Resources\Shaders\LineVS.hlsl" />
+    <FxCompile Include="Resources\Shaders\LinePS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\Object3d.hlsli">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Line.hlsli" />
+    <None Include="Resources\Shaders\Line.hlsli" />
   </ItemGroup>
 </Project>
