@@ -118,6 +118,15 @@
     <Filter Include="Engine\Audio">
       <UniqueIdentifier>{3eeb3def-afb5-4cbd-ac6a-659750681000}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Engine\3D\Particle">
+      <UniqueIdentifier>{fa964afc-2ad2-4761-8d91-7a4eddd277e0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Utility\PrimitiveDrawer">
+      <UniqueIdentifier>{e1d6a804-91fa-4ab3-92b4-77345970d9e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Add">
+      <UniqueIdentifier>{ec72d1f5-e602-45c5-95c3-c868ff7deaef}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -240,9 +249,6 @@
     <ClCompile Include="Engine\3D\WorldTransform.cpp">
       <Filter>Engine\3D</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Utility\PrimitiveDrawer.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\Collider.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -252,15 +258,6 @@
     <ClCompile Include="Engine\Skydome.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Additional\Player.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\3D\ParticleDrawer.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Additional\Block.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\Collision.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -268,16 +265,28 @@
       <Filter>Engine\Audio</Filter>
     </ClCompile>
     <ClCompile Include="Engine\3D\Particle.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>Engine\3D\Particle</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\3D\BaseParticle.cpp">
-      <Filter>ソース ファイル</Filter>
+    <ClCompile Include="Engine\3D\ParticleDrawer.cpp">
+      <Filter>Engine\3D\Particle</Filter>
     </ClCompile>
     <ClCompile Include="Engine\3D\ParticleManager.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>Engine\3D\Particle</Filter>
     </ClCompile>
     <ClCompile Include="Engine\3D\FireworksParticle.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>Engine\3D\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\3D\BaseParticle.cpp">
+      <Filter>Engine\3D\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Utility\PrimitiveDrawer.cpp">
+      <Filter>Engine\Utility\PrimitiveDrawer</Filter>
+    </ClCompile>
+    <ClCompile Include="Additional\Player.cpp">
+      <Filter>Add</Filter>
+    </ClCompile>
+    <ClCompile Include="Additional\Block.cpp">
+      <Filter>Add</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -443,9 +452,6 @@
     <ClInclude Include="Engine\3D\WorldTransform.h">
       <Filter>Engine\3D</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Utility\PrimitiveDrawer.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\Collider.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
@@ -458,38 +464,41 @@
     <ClInclude Include="Engine\Skydome.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Additional\Player.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\3D\ParticleDrawer.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Math\Transform.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Engine\Math\Random.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Additional\Block.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\Collision.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Audio\Audio.h">
       <Filter>Engine\Audio</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\3D\Particle.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="Engine\3D\FireworksParticle.h">
+      <Filter>Engine\3D\Particle</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\3D\BaseParticle.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="Engine\3D\Particle.h">
+      <Filter>Engine\3D\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\3D\ParticleDrawer.h">
+      <Filter>Engine\3D\Particle</Filter>
     </ClInclude>
     <ClInclude Include="Engine\3D\ParticleManager.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>Engine\3D\Particle</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\3D\FireworksParticle.h">
-      <Filter>ヘッダー ファイル</Filter>
+    <ClInclude Include="Engine\3D\BaseParticle.h">
+      <Filter>Engine\3D\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Math\Random.h">
+      <Filter>Engine\math</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Utility\PrimitiveDrawer.h">
+      <Filter>Engine\Utility\PrimitiveDrawer</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Math\Transform.h">
+      <Filter>Engine\math\ヘッダー</Filter>
+    </ClInclude>
+    <ClInclude Include="Additional\Player.h">
+      <Filter>Add</Filter>
+    </ClInclude>
+    <ClInclude Include="Additional\Block.h">
+      <Filter>Add</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -516,13 +525,19 @@
     <FxCompile Include="Resources\Shaders\SpritePS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="Resources\Shaders\LineVS.hlsl" />
-    <FxCompile Include="Resources\Shaders\LinePS.hlsl" />
+    <FxCompile Include="Resources\Shaders\LineVS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\Shaders\LinePS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\Object3d.hlsli">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Resources\Shaders\Line.hlsli" />
+    <None Include="Resources\Shaders\Line.hlsli">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>
