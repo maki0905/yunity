@@ -98,16 +98,22 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Additional\Block.cpp" />
+    <ClCompile Include="Additional\BaseObject.cpp" />
+    <ClCompile Include="Additional\Collision.cpp" />
+    <ClCompile Include="Additional\CollisionManager.cpp" />
+    <ClCompile Include="Additional\EndBox.cpp" />
+    <ClCompile Include="Additional\Enemy.cpp" />
+    <ClCompile Include="Additional\Explosion.cpp" />
+    <ClCompile Include="Additional\Floor.cpp" />
+    <ClCompile Include="Additional\LockOn.cpp" />
+    <ClCompile Include="Additional\MovingFloor.cpp" />
+    <ClCompile Include="Additional\StartBox.cpp" />
     <ClCompile Include="Engine\3D\BaseParticle.cpp" />
     <ClCompile Include="Engine\3D\FireworksParticle.cpp" />
     <ClCompile Include="Engine\3D\Particle.cpp" />
     <ClCompile Include="Engine\3D\ParticleManager.cpp" />
     <ClCompile Include="Engine\Audio\Audio.cpp" />
-    <ClCompile Include="Engine\Collision.cpp" />
     <ClCompile Include="Engine\base\BackBuffer.cpp" />
-    <ClCompile Include="Engine\Collider.cpp" />
-    <ClCompile Include="Engine\CollisionManager.cpp" />
     <ClCompile Include="Engine\Scene\ClearScene.cpp" />
     <ClCompile Include="Engine\base\CommandList.cpp" />
     <ClCompile Include="Engine\base\CommandQueue.cpp" />
@@ -156,16 +162,23 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Engine\3D\ParticleDrawer.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Additional\Block.h" />
+    <ClInclude Include="Additional\BaseObject.h" />
+    <ClInclude Include="Additional\Collider.h" />
+    <ClInclude Include="Additional\Collision.h" />
+    <ClInclude Include="Additional\CollisionConfig.h" />
+    <ClInclude Include="Additional\CollisionManager.h" />
+    <ClInclude Include="Additional\EndBox.h" />
+    <ClInclude Include="Additional\Enemy.h" />
+    <ClInclude Include="Additional\Explosion.h" />
+    <ClInclude Include="Additional\Floor.h" />
+    <ClInclude Include="Additional\LockOn.h" />
+    <ClInclude Include="Additional\MovingFloor.h" />
+    <ClInclude Include="Additional\StartBox.h" />
     <ClInclude Include="Engine\3D\BaseParticle.h" />
     <ClInclude Include="Engine\3D\FireworksParticle.h" />
     <ClInclude Include="Engine\3D\Particle.h" />
     <ClInclude Include="Engine\3D\ParticleManager.h" />
     <ClInclude Include="Engine\Audio\Audio.h" />
-    <ClInclude Include="Engine\Collision.h" />
-    <ClInclude Include="Engine\Collider.h" />
-    <ClInclude Include="Engine\CollisionConfig.h" />
-    <ClInclude Include="Engine\CollisionManager.h" />
     <ClInclude Include="Engine\Math\AABB.h" />
     <ClInclude Include="Engine\base\BackBuffer.h" />
     <ClInclude Include="Engine\Math\Capsule.h" />

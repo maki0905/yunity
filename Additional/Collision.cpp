@@ -1,5 +1,4 @@
 #include "Collision.h"
-
 #include "MathFunction.h"
 #include <iostream>
 #include <algorithm>

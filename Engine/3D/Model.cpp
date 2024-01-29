@@ -180,6 +180,11 @@ void Model::Draw(const WorldTransform& worldTransform, const Camera& camera)
 	commandList_->DrawInstanced(UINT(modelData.vertices.size()), 1, 0, 0);
 }
 
+void Model::SetMaterial(const Vector4& color)
+{
+	materialData_->color = color;
+}
+
 //void T::SetMaterial(const Vector4& color)
 //{
 //	color;

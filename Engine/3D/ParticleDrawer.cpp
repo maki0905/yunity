@@ -224,8 +224,6 @@ void ParticleDrawer::CreateSRV()
 		//instancingDatas_[index].color = Vector4{ 1.0f, 1.0f, 1.0f, 1.0f };
 	}
 
-	HRESULT result = S_FALSE;
-
 	srvHeap_ = DirectXCore::GetInstance()->GetDescriptorHeap(DirectXCore::HeapType::kSRV);
 	DescriptorHandle srvHandle = srvHeap_->Alloc();
 

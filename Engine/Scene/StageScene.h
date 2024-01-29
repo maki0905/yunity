@@ -11,7 +11,6 @@
 #include "Player.h"
 #include "Skydome.h"
 #include "ParticleDrawer.h"
-#include "Block.h"
 #include "CollisionManager.h"
 #include "Random.h"
 #include "Particle.h"
@@ -42,7 +41,6 @@ private:
 	WorldTransform worldTransformParticle_[10];
 
 	Player* player_ = nullptr;
-	Block* block_ = nullptr;
 	std::unique_ptr<Skydome> skydome1_;
 
 	std::unique_ptr<CollisionManager> collisionManager_;

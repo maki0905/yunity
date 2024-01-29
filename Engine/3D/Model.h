@@ -99,7 +99,7 @@ public:
 	void Draw(const WorldTransform& worldTransform, const Camera& camera, uint32_t textureHandle);
 	void Draw(const WorldTransform& worldTransform, const Camera& camera);
 
-	//void SetMaterial(const Vector4& color);
+	void SetMaterial(const Vector4& color);
 
 private:
 
