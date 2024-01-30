@@ -1,11 +1,12 @@
 #include "FollowCamera.h"
 #include "GlobalVariables.h"
 #include "json.hpp"
+#include "LockOn.h"
 
 
 void FollowCamera::Initialize(const Camera& camera)
 {
-	viewProjection_ = camera;
+	camera_ = camera;
 	// シングルトンインスタンスを取得
 	input_ = Input::GetInstance();
 
@@ -25,21 +26,21 @@ void FollowCamera::Update()
 	XINPUT_STATE joyState;
 	
 	if (lockOn_) {
-		//// ロックオン座標
-		//Vector3 lockOnPos = lockOn_->GetTargetPosition();
+		// ロックオン座標
+		Vector3 lockOnPos = lockOn_->GetTargetPosition();
 
-		//// 追従対象からロックオン対象へのベクトル
-		//Vector3 sub = Subtract(lockOnPos, target_->translation_);
+		// 追従対象からロックオン対象へのベクトル
+		Vector3 sub = Subtract(lockOnPos, target_->translation_);
 
-		///*sub.y = 0.0f;
-		//sub = Normalize(sub);
-		//float dot = Dot({ 0.0f, 0.0f, 1.0f }, sub);
-		//viewProjection_.rotation_.y = std::acosf(dot);*/
+		/*sub.y = 0.0f;
+		sub = Normalize(sub);
+		float dot = Dot({ 0.0f, 0.0f, 1.0f }, sub);
+		viewProjection_.rotation_.y = std::acosf(dot);*/
 
-		//// Y軸回り角度
-		//viewProjection_.rotation_.y = std::atan2(sub.x, sub.z);
+		// Y軸回り角度
+		camera_.rotation_.y = std::atan2(sub.x, sub.z);
 
-		//lockOn_ = nullptr;
+		lockOn_ = nullptr;
 
 	}
 	else if (Input::GetInstance()->IsControllerConnected()) {
@@ -55,8 +56,8 @@ void FollowCamera::Update()
 			}
 
 			// 最短角度補間
-			viewProjection_.rotation_.y =
-				LerpShortAngle(viewProjection_.rotation_.y, destinationAngleY_, delayAmount_);
+			camera_.rotation_.y =
+				LerpShortAngle(camera_.rotation_.y, destinationAngleY_, delayAmount_);
 			
 		}
 	}
@@ -72,10 +73,10 @@ void FollowCamera::Update()
 	Vector3 offset = Offset();
 
 	// カメラ座標
-	viewProjection_.translation_ = Add(interTarget_, offset);
+	camera_.translation_ = Add(interTarget_, offset);
 
 	// ビュー行列の更新
-	viewProjection_.UpdateMatrix();
+	camera_.UpdateMatrix();
 
 	ApplyGlobalVariables();
 }
@@ -91,7 +92,7 @@ Vector3 FollowCamera::Offset() const
 	// 追従対象からカメラまでのオフセット
 	Vector3 offset = { 0.0f, 10.0f, -30.0f };
 
-	Matrix4x4 rotate = MakeRotateYMatrix(viewProjection_.rotation_.y);
+	Matrix4x4 rotate = MakeRotateYMatrix(camera_.rotation_.y);
 
 	// オフセットをカメラの回転に合わせて回転させる
 	offset = TransformNormal(offset, rotate);
@@ -105,13 +106,13 @@ void FollowCamera::Reset()
 	if (target_) {
 		// 追従座標・角度の初期化
 		interTarget_ = target_->translation_;
-		viewProjection_.rotation_.y = target_->rotation_.y;
+		camera_.rotation_.y = target_->rotation_.y;
 	}
-	destinationAngleY_ = viewProjection_.rotation_.y;
+	destinationAngleY_ = camera_.rotation_.y;
 
 	// 追従対象からのオフセット
 	Vector3 offset = Offset();
-	viewProjection_.translation_ = Add(interTarget_, offset);
+	camera_.translation_ = Add(interTarget_, offset);
 }
 
 void FollowCamera::ApplyGlobalVariables()

@@ -217,7 +217,25 @@ void StageScene::DrawBack()
 
 void StageScene::Draw3D()
 {
-	
+	skydome_->Draw(camera_);
+	for (auto& movingFloor : movingFloors_) {
+		movingFloor->Draw(camera_);
+	}
+	for (auto& floor : floors_) {
+		floor->Draw(camera_);
+	}
+	endBox_->Draw(camera_);
+	startBox_->Draw(camera_);
+	//enemy_->Draw(viewProjection_);
+
+	for (auto& enemy : enemies_) {
+		enemy->Draw(camera_);
+	}
+	player_->Draw(camera_);
+
+	for (auto& explosion : explosion_) {
+		explosion->Draw(camera_);
+	}
 }
 
 void StageScene::DrawFront()

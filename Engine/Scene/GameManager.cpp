@@ -44,6 +44,11 @@ GameManager::GameManager()
 	textureManager_->Initialize(Device::GetInstance()->GetDevice());
 	TextureManager::Load("white1x1.png");
 
+	GlobalVariables::GetInstance()->LoadFiles();
+
+	screen_ = Screen::GetInstance();
+	screen_->Initialize();
+
 #pragma endregion
 
 	// 各シーンの配列
@@ -52,7 +57,7 @@ GameManager::GameManager()
 	sceneArr_[CLEAR] = std::make_unique<ClearScene>();
 
 	// 初期シーンの設定
-	currentSceneNo_ = GAME_STAGE;
+	currentSceneNo_ = TITLE;
 	sceneArr_[currentSceneNo_]->Initialize();
 
 }
@@ -75,6 +80,11 @@ void GameManager::Run()
 
 		input_->Update();
 
+#ifdef _DEBUG
+		GlobalVariables::GetInstance()->Updata();
+#endif // _DEBUG
+
+
 		// シーンのチェック
 		prevSceneNo_ = currentSceneNo_;
 		currentSceneNo_ = sceneArr_[currentSceneNo_]->GetSceneNo();
@@ -84,6 +94,7 @@ void GameManager::Run()
 			sceneArr_[currentSceneNo_]->Initialize();
 		}
 
+		screen_->Update();
 		// 更新
 		sceneArr_[currentSceneNo_]->Update();
 
@@ -91,9 +102,12 @@ void GameManager::Run()
 		imguiManager_->End();
 
 		directXCore_->PreDraw();
+
 #pragma region 背景描画
 		sprite_->PreDraw(directXCore_->GetCommandList());
+
 		sceneArr_[currentSceneNo_]->DrawBack();
+
 		sprite_->PostDraw();
 #pragma endregion 
 
@@ -101,8 +115,10 @@ void GameManager::Run()
 		model_->PreDraw(directXCore_->GetCommandList());
 		particle_->PreDraw(directXCore_->GetCommandList());
 		primitive_->PreDraw(directXCore_->GetCommandList());
+
 		// 描画
 		sceneArr_[currentSceneNo_]->Draw3D();
+
 		primitive_->PostDraw();
 		particle_->PostDraw();
 		model_->PostDraw();
@@ -111,7 +127,10 @@ void GameManager::Run()
 #pragma region 前景描画
 
 		sprite_->PreDraw(directXCore_->GetCommandList());
+
 		sceneArr_[currentSceneNo_]->DrawFront();
+		screen_->Draw();
+
 		sprite_->PostDraw();
 
 #pragma endregion

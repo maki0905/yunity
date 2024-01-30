@@ -641,6 +641,13 @@ float LerpShortAngle(float a, float b, float t) {
 	return a + diff * t;
 }
 
+float Lerp(float a, float b, float t)
+{
+	float result = a + t * (b - a);
+
+	return result;
+}
+
 Vector3 Lerp(const Vector3& v1, const Vector3& v2, float t) {
 	Vector3 result = Add(v1, Multiply(t, Subtract(v2, v1)));
 	return result;

@@ -14,7 +14,7 @@
 #include "DebugCamera.h"
 #include "FollowCamera.h"
 
-#pragma region V‹Kì¬
+#pragma region æ–°è¦ä½œæˆ
 #include "Skydome.h"
 #include "Floor.h"
 #include "MovingFloor.h"
@@ -42,12 +42,12 @@ private:
 	std::unique_ptr<DebugCamera> debugCamera_;
 	bool isDebug_ = false;
 
-	// ’Ç]ƒJƒƒ‰
+	// è¿½å¾“ã‚«ãƒ¡ãƒ©
 	std::unique_ptr<FollowCamera> followCamera_;
 
 	std::unique_ptr<CollisionManager> collisionManager_ = nullptr;
 
-	// ƒ‚ƒfƒ‹
+	// ãƒ¢ãƒ‡ãƒ«
 	std::unique_ptr<Model> skydomeModel_;
 	std::unique_ptr<Model> floorModel_;
 	std::unique_ptr<Model> movingFloorModel_;
@@ -65,7 +65,7 @@ private:
 
 	std::unique_ptr<Model> particle_;
 
-	// ƒIƒuƒWƒFƒNƒg
+	// ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
 	std::unique_ptr<Skydome> skydome_;
 	std::unique_ptr<StartBox> startBox_;
 	std::unique_ptr<EndBox> endBox_;

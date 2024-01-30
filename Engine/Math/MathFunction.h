@@ -2,6 +2,7 @@
 
 #include <cmath>
 #include <numbers>
+#include <algorithm>
 
 #include "Vecter2.h"
 #include "Vector3.h"
@@ -138,6 +139,7 @@ float ConvertToRadians(float degree);
 // 最短角度補間
 float LerpShortAngle(float a, float b, float t);
 
+float Lerp(float a, float b, float t);
 Vector3 Lerp(const Vector3& v1, const Vector3& v2, float t);
 Vector3 Slerp(const Vector3& v1, const Vector3& v2, float t);
 

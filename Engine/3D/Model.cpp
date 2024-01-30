@@ -157,6 +157,10 @@ void Model::Draw(const WorldTransform& worldTransform, const Camera& camera)
 	assert(commandList_);
 	assert(worldTransform.constBuff_.Get());
 
+	commandList_->SetGraphicsRootSignature(rootSignature_->GetSignature());
+	commandList_->SetPipelineState(pipelineState_->GetPipelineStateObject());
+	commandList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
 	// 頂点バッファの設定
 	commandList_->IASetVertexBuffers(0, 1, &vertexBufferView_);
 

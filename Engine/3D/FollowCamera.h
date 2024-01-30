@@ -5,9 +5,7 @@
 #include <memory>
 #include "Input.h"
 
-// GameSceneの前方宣言
-class GameScene;
-
+class StageScene;
 class LockOn;
 
 /// <summary>
@@ -18,7 +16,7 @@ public:
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Initialize(const Camera& viewProjection);
+	void Initialize(const Camera& camera);
 
 	/// <summary>
 	///　更新
@@ -28,7 +26,7 @@ public:
 	/// <summary>
 	/// 　Get
 	/// </summary>
-	Camera* GetViewProjection() { return &viewProjection_; }
+	Camera* GetViewProjection() { return &camera_; }
 
 
 	/// <summary>
@@ -50,9 +48,7 @@ public:
 
 private:
 	// ビュープロジェクション
-	Camera viewProjection_;
-	// ゲームシーン
-	std::unique_ptr<GameScene> gameScene_;
+	Camera camera_;
 	// 追従対象
 	const WorldTransform* target_ = nullptr;
 	// 入力
