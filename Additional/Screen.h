@@ -25,6 +25,8 @@ public:
 
 	void Playback(Type type, float duration = 1.0f, float waitingTime = 0.0f);
 
+	bool GetFlap() { return flap_; }
+
 private:
 	bool FadeOut();
 	bool FadeIn();
