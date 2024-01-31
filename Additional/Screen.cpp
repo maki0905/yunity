@@ -20,6 +20,7 @@ void Screen::Initialize()
 	duration_ = 0.0f;
 	waitingTime_ = 0.0f;
 	isOver_ = true;
+	isActive_ = false;
 	flap_ = false;
 	type_ = Type::None;
 
@@ -36,6 +37,8 @@ void Screen::Update()
 	{
 	case Screen::Type::None:
 		t_ = 0.0f;
+		isActive_ = false;
+		flap_ = false;
 		break;
 	case Screen::Type::Fade_Out_In:
 
@@ -43,6 +46,7 @@ void Screen::Update()
 			if (FadeIn()) {
 				type_ = Type::None;
 				isOver_ = true;
+				flap_ = false;
 			}
 		}
 		else {
@@ -54,6 +58,7 @@ void Screen::Update()
 			if (FadeOut()) {
 				type_ = Type::None;
 				isOver_ = true;
+				flap_ = false;
 			}
 		}
 		else {
@@ -74,11 +79,14 @@ void Screen::Draw()
 
 void Screen::Playback(Type type, float duration, float waitingTime)
 {
-	type_ = type;
-	isOver_ = false;
-	flap_ = false;
-	duration_ = duration;
-	waitingTime_ = waitingTime;
+	if (!isActive_) {
+		type_ = type;
+		isActive_ = true;
+		isOver_ = false;
+		flap_ = false;
+		duration_ = duration;
+		waitingTime_ = waitingTime;
+	}
 
 }
 

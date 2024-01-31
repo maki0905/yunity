@@ -3,6 +3,8 @@
 #include "TextureManager.h"
 #include "Input.h"
 
+#include "Screen.h"
+
 void StageScene::Initialize()
 {
 	camera_.Initialize();
@@ -14,16 +16,24 @@ void StageScene::Initialize()
 	lockOn_->Initalize();
 
 	// モデル
+	skydomeModel_ = std::make_unique<Model>();
 	skydomeModel_.reset(Model::Create("skydome"));
+	floorModel_ = std::make_unique<Model>();
 	floorModel_.reset(Model::Create("floor"));
 	std::vector<Model*> floorModels = {
 		floorModel_.get(),
 	};
+	movingFloorModel_ = std::make_unique<Model>();
 	movingFloorModel_.reset(Model::Create("Yfloor"));
 	std::vector<Model*> movingFloorModels = {
 		movingFloorModel_.get(),
 	};
 
+	playerModel_Body_ = std::make_unique<Model>();
+	playerModel_Head_ = std::make_unique<Model>();
+	playerModel_Larm_ = std::make_unique<Model>();
+	playerModel_Rarm_ = std::make_unique<Model>();
+	playerModel_Hammer_ = std::make_unique<Model>();
 	playerModel_Body_.reset(Model::Create("float_Body"));
 	playerModel_Head_.reset(Model::Create("float_Head"));
 	playerModel_Larm_.reset(Model::Create("float_L_arm"));
@@ -116,7 +126,15 @@ void StageScene::Initialize()
 
 void StageScene::Update()
 {
-	if (player_->GetIsAlive()) {
+	if (player_->GetIsClear()) {
+		Screen::GetInstance()->Playback(Screen::Type::Fade_Out_In, 2.0f, 2.0f);
+
+		if (Screen::GetInstance()->GetFlap()) {
+			sceneNo_ = CLEAR;
+		}
+
+	}
+	else if (player_->GetIsAlive()) {
 		// 衝突マネージャーのリストをクリア
 		collisionManager_->ClearCollider();
 		// コライダーを衝突マネージャーのリストに登録
@@ -209,6 +227,7 @@ void StageScene::Update()
 	else {
 		Reset();
 	}
+
 }
 
 void StageScene::DrawBack()
@@ -241,8 +260,14 @@ void StageScene::Draw3D()
 void StageScene::DrawFront()
 {
 	//sprite_->Draw();
+	lockOn_->Draw();
+	player_->DrawSprite();
 }
 
 void StageScene::Reset()
 {
+	player_->Reset();
+	for (auto& enemy : enemies_) {
+		enemy->Reset();
+	}
 }

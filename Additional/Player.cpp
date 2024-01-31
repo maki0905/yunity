@@ -46,6 +46,8 @@ void Player::Initialize(const std::vector<Model*>& models)
 	velocity_ = { 0.0f, 0.0f, 0.0f };
 	acceleration_ = { 0.0f, gravity_, 0.0f };
 
+	HP_ = 5;
+
 	obb_.center = worldTransform_Weapon_.translation_;
 	Matrix4x4 rotate = MakeRotateXYZMatrix(worldTransform_Weapon_.rotation_);
 	obb_.orientations[0].x = rotate.m[0][0];
@@ -84,6 +86,10 @@ void Player::Initialize(const std::vector<Model*>& models)
 	nlohmann::json json;
 	json.clear();
 
+	hpSprite_.reset(Sprite::Create(TextureManager::GetInstance()->Load("HP.png"), { 10.0f, 10.0f }));
+
+	isClear_ = false;
+
 
 }
 
@@ -97,40 +103,48 @@ void Player::Update()
 	}
 
 	capsule_.segment.origin = worldTransform_Body_.translation_;
-	if (behaviorRequest_) {
-		// 振る舞いを変更する
-		behavior_ = behaviorRequest_.value();
-		// 各振る舞いごとの初期化を実行
-		switch (behavior_) {
+	hpSprite_->SetTextureRect({ 0.0f, 0.0f }, { 300.0f - (5 - HP_) * 60.0f, 50.0f });
+	hpSprite_->SetSize({ 300.0f - (5 - HP_) * 60.0f, 50.0f });
 
+	if (workHit_.isActive) {
+		Hit();
+	}
+	else {
+		if (behaviorRequest_) {
+			// 振る舞いを変更する
+			behavior_ = behaviorRequest_.value();
+			// 各振る舞いごとの初期化を実行
+			switch (behavior_) {
+
+			case Behavior::kRoot:
+			default:
+				BehaviorRootInitialize();
+				break;
+			case Behavior::kAttack:
+				BehaviorAttackInitialize();
+				break;
+			case Behavior::kDash:
+				BehaviorDashInitialize();
+				break;
+			}
+			// 振る舞いリクエストをリセット
+			behaviorRequest_ = std::nullopt;
+		}
+
+		switch (behavior_) {
+			// 通常行動
 		case Behavior::kRoot:
 		default:
-			BehaviorRootInitialize();
+			BehaviorRootUpdate();
 			break;
+			// 攻撃行動
 		case Behavior::kAttack:
-			BehaviorAttackInitialize();
+			BehaviorAttackUpdate();
 			break;
 		case Behavior::kDash:
-			BehaviorDashInitialize();
+			BehaviorDashUpdate();
 			break;
 		}
-		// 振る舞いリクエストをリセット
-		behaviorRequest_ = std::nullopt;
-	}
-
-	switch (behavior_) {
-		// 通常行動
-	case Behavior::kRoot:
-	default:
-		BehaviorRootUpdate();
-		break;
-		// 攻撃行動
-	case Behavior::kAttack:
-		BehaviorAttackUpdate();
-		break;
-	case Behavior::kDash:
-		BehaviorDashUpdate();
-		break;
 	}
 	capsule_.segment.diff = Subtract(worldTransform_Body_.translation_, capsule_.segment.origin);
 
@@ -156,6 +170,10 @@ void Player::Update()
 	ApplyGlobalVariables();
 	joyStatePre_ = joyState_;
 
+	if (HP_ == 0) {
+		isAlive_ = false;
+	}
+
 }
 
 void Player::Draw(const Camera& camera)
@@ -170,6 +188,13 @@ void Player::Draw(const Camera& camera)
 		models_[3]->Draw(worldTransform_Rarm_, camera);
 	}
 
+}
+
+void Player::DrawSprite()
+{
+	if (!isClear_) {
+		hpSprite_->Draw();
+	}
 }
 
 void Player::Reset()
@@ -203,12 +228,23 @@ void Player::Reset()
 
 	velocity_ = { 0.0f, 0.0f, 0.0f };
 
+	HP_ = 5;
+	workHit_ = WorkHit{};
+
+	isClear_ = false;
+
 }
 
 void Player::OnCollision(uint32_t collisionAttribute)
 {
 	if (collisionAttribute == kCollisionAttributeEnemy) {
-		isAlive_ = false;
+		//isAlive_ = false;
+		if (!workHit_.isActive) {
+			workHit_.isActive = true;
+			workHit_.velocity = Multiply(-1.0f, RotateVector({ 0.0f, 0.0f, 1.0f }, worldTransform_Body_.quaternion_));
+			workHit_.velocity = Multiply(0.1f, workHit_.velocity);
+			--HP_;
+		}
 	}
 	else if (collisionAttribute == kCollisionAttributeFloor) {
 		isLanding_ = true;
@@ -220,7 +256,7 @@ void Player::OnCollision(uint32_t collisionAttribute)
 		worldTransform_Body_.translation_.y = 0.0f;
 	}
 	else if (collisionAttribute == kCollisionAttributeGoal) {
-		isAlive_ = false;
+		isClear_ = true;
 	}
 
 }
@@ -265,7 +301,8 @@ void Player::BehaviorRootUpdate()
 	// ジョイスティック状態取得
 	if (Input::GetInstance()->IsControllerConnected()) {
 		if (Input::GetInstance()->GetJoystickState(0, joyState)) {
-			if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_Y) {
+			
+			if ((joyState.Gamepad.wButtons & XINPUT_GAMEPAD_Y) && !workHit_.isActive) {
 				behaviorRequest_ = Behavior::kAttack;
 			}
 			if (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_B) {
@@ -559,5 +596,40 @@ void Player::BehaviorDashUpdate()
 	if (++workDash_.parameter >= workDash_.time) {
 		behaviorRequest_ = Behavior::kRoot;
 	}
+}
+
+void Player::Hit()
+{
+	if (++workHit_.time % 10 == 0) {
+		workHit_.flash ^= true;
+	}
+
+	if (workHit_.time > 120) {
+		workHit_.isActive = false;
+		workHit_.time = 0;
+		for (auto& model : models_) {
+			model->SetMaterial({ 1.0f, 1.0f, 1.0f, 1.0f });
+		}
+	}
+
+	for (auto& model : models_) {
+		if (workHit_.flash) {
+			model->SetMaterial({ 1.0f, 0.0f, 0.0f, 1.0f });
+		}
+		else {
+			model->SetMaterial({ 1.0f, 1.0f, 1.0f, 1.0f });
+		}
+	}
+
+	worldTransform_Body_.translation_ = Add(worldTransform_Body_.translation_, workHit_.velocity);
+
+	sphere_.center = { worldTransform_Body_.matWorld_.m[3][0], worldTransform_Body_.matWorld_.m[3][1], worldTransform_Body_.matWorld_.m[3][2] };
+	isLanding_ = false;
+	isMove_ = false;
+
+	worldTransform_Head_.parent_ = &worldTransform_Body_;
+	worldTransform_Larm_.parent_ = &worldTransform_Body_;
+	worldTransform_Rarm_.parent_ = &worldTransform_Body_;
+	worldTransform_Weapon_.parent_ = &worldTransform_Body_;
 }
 

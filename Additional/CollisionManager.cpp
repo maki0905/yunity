@@ -59,9 +59,9 @@ void CollisionManager::CheckCollisionPair(BaseObject* colliderA, BaseObject* col
 			//colliderB->OnCollision(colliderA->GetCollisionAttribute());
 		}
 
-		if (IsCollision(capsuleA, sphereB)) {
+		/*if (IsCollision(capsuleA, sphereB)) {
 			colliderA->OnCollision(colliderB->GetCollisionAttribute());
-		}
+		}*/
 
 		if (IsCollision(obbA, sphereB)) {
 			colliderB->OnCollision(colliderA->GetCollisionAttribute());

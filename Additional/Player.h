@@ -5,6 +5,8 @@
 #include <vector>
 #include <optional>
 
+#include "Sprite.h"
+
 class LockOn;
 
 
@@ -57,6 +59,13 @@ public:
 		float speed;
 	};
 
+	struct WorkHit {
+		Vector3 velocity;
+		uint32_t time = 0;
+		bool isActive = false;
+		bool flash = false;
+	};
+
 public:
 	/// <summary>
 	/// 初期化
@@ -73,6 +82,8 @@ public:
 	/// </summary>
 	void Draw(const Camera& camera) override;
 
+	void DrawSprite();
+
 	void Reset();
 
 	void OnCollision(uint32_t collisionAttribute)override;
@@ -82,6 +93,7 @@ public:
 	void ApplyGlobalVariables();
 
 	bool GetIsAlive() { return isAlive_; }
+	bool GetIsClear() { return isClear_; }
 	bool GetIsMove() { return isMove_; }
 	Behavior GetBehavior() { return behavior_; }
 	Vector3 GetWorldPosition() { return Vector3(worldTransform_Body_.matWorld_.m[3][0], worldTransform_Body_.matWorld_.m[3][1], worldTransform_Body_.matWorld_.m[3][2]); };
@@ -105,6 +117,8 @@ private:
 	void BehaviorDashInitialize();
 	// ダッシュ行動更新
 	void BehaviorDashUpdate();
+	
+	void Hit();
 
 
 private:
@@ -125,7 +139,7 @@ private:
 	Model* model_ = nullptr;
 
 	const float gravity_ = -0.325f;
-	const float jumpValue_ = 3.0f;
+	const float jumpValue_ = 2.5f;
 	Vector3 velocity_;
 	Vector3 acceleration_;
 	bool isLanding_ = false;
@@ -137,9 +151,12 @@ private:
 	// 
 	bool isAlive_;
 
+	bool isClear_;
+
 	// パラメータ
 	WorkAttack workAttack_;
 	WorkDash workDash_;
+	WorkHit workHit_;
 
 	// コンボ定数表
 	static const std::array<ConstAttack, ComboNum> kConstAttacks_;
@@ -155,5 +172,8 @@ private:
 
 	Vector4 color_ = { 1.0f, 1.0f, 1.0f, 1.0f };
 
+	uint32_t HP_;
+
+	std::unique_ptr<Sprite> hpSprite_;
 };
 

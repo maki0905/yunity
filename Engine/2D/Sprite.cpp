@@ -378,6 +378,7 @@ void Sprite::SetTextureRect(const Vector2 texBase, const Vector2& texSize)
 
 void Sprite::Draw()
 {
+
 	// ワールド行列の更新
 	matWorld_ = MakeIdentity4x4();
 	matWorld_ = Multiply(matWorld_, MakeRotateZMatrix(rotation_));

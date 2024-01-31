@@ -26,6 +26,8 @@ public:
 	void Playback(Type type, float duration = 1.0f, float waitingTime = 0.0f);
 
 	bool GetFlap() { return flap_; }
+	bool GetActive() { return isActive_; }
+	bool GetOver() { return isOver_; }
 
 private:
 	bool FadeOut();
@@ -38,6 +40,7 @@ private:
 	const Screen& operator=(const Screen&) = delete;
 
 private:
+	bool isActive_;
 	bool isOver_;
 	bool flap_;
 	std::unique_ptr<Sprite> sprite_;
