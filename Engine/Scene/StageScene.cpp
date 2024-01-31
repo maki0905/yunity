@@ -59,6 +59,9 @@ void StageScene::Initialize()
 
 	collisionManager_ = std::make_unique<CollisionManager>();
 
+	ball_ = std::make_unique<Model>();
+	ball_.reset(Model::Create("particle"));
+
 }
 
 void StageScene::Update()
@@ -123,9 +126,10 @@ void StageScene::Draw3D()
 	//skydome_->Draw(worldTransform_, camera_);
 	//particle_->Draw(worldTrasnform1_, camera_);
 	//particle_->Draw(/*worldTransformParticle_,*/ particles_, camera_);
-	particleManager_->Draw(camera_);
-	player_->Draw(camera_);
+	//particleManager_->Draw(camera_);
+	//player_->Draw(camera_);
 	/*block_->Draw(camera_);*/
+	ball_->Draw(worldTransform_, camera_);
 }
 
 void StageScene::DrawFront()

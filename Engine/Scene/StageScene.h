@@ -64,6 +64,8 @@ private:
 
 	Random::RandomNumberGenerator rng;
 
+	std::unique_ptr<Model> ball_;
+
 	//std::unique_ptr<Player> player_ = nullptr;
 	
 };
