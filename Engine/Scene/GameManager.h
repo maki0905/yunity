@@ -18,6 +18,7 @@
 #include "Sprite.h"
 #include "PrimitiveDrawer.h"
 #include "ParticleDrawer.h"
+#include "SphereDrawer.h"
 
 
 class GameManager
@@ -52,6 +53,6 @@ private:
 	Sprite* sprite_ = nullptr;
 	PrimitiveDrawer* primitive_ = nullptr;
 	ParticleDrawer* particle_ = nullptr;
-
+	SphereDrawer* sphere_ = nullptr;
 };
 

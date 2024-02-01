@@ -59,8 +59,8 @@ void StageScene::Initialize()
 
 	collisionManager_ = std::make_unique<CollisionManager>();
 
-	ball_ = std::make_unique<Model>();
-	ball_.reset(Model::Create("particle"));
+	ball_ = std::make_unique<SphereDrawer>();
+	ball_.reset(SphereDrawer::Create("monsterBall.png"));
 
 }
 

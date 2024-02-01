@@ -267,6 +267,9 @@
     <ClCompile Include="Engine\base\Common.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\3D\SphereDrawer.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Math\Capsule.h">
@@ -456,6 +459,9 @@
       <Filter>Add</Filter>
     </ClInclude>
     <ClInclude Include="Engine\base\Common.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\3D\SphereDrawer.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>

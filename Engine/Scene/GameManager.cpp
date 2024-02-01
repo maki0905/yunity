@@ -44,6 +44,9 @@ GameManager::GameManager()
 	textureManager_->Initialize(Device::GetInstance()->GetDevice());
 	TextureManager::Load("white1x1.png");
 
+	sphere_ = new SphereDrawer();
+	sphere_->StaticInitialize();
+
 #pragma endregion
 
 	// 各シーンの配列
@@ -99,12 +102,14 @@ void GameManager::Run()
 
 #pragma region 3D描画
 		model_->PreDraw(directXCore_->GetCommandList());
+		sphere_->PreDraw(directXCore_->GetCommandList());
 		particle_->PreDraw(directXCore_->GetCommandList());
 		primitive_->PreDraw(directXCore_->GetCommandList());
 		// 描画
 		sceneArr_[currentSceneNo_]->Draw3D();
 		primitive_->PostDraw();
 		particle_->PostDraw();
+		sphere_->PostDraw();
 		model_->PostDraw();
 #pragma endregion
 
