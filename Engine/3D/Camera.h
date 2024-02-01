@@ -11,6 +11,10 @@ struct ConstBufferDataViewProjection {
 	Matrix4x4 projection; // ビュー → プロジェクション変換行列
 };
 
+struct CameraForGPU {
+	Vector3 worldPosition;
+};
+
  ///<summary>
  ///ビュープロジェクション変換データ
  ///</summary>
@@ -19,6 +23,9 @@ struct Camera {
 	Microsoft::WRL::ComPtr<ID3D12Resource> constBuff_;
 	// マッピング済みアドレス
 	ConstBufferDataViewProjection* constMap_ = nullptr;
+
+	Microsoft::WRL::ComPtr<ID3D12Resource> cameraForGPU_;
+	CameraForGPU* cameraForGPUMap_ = nullptr;
 
 #pragma region ビュー行列の設定
 	// ローカル座標
@@ -52,7 +59,7 @@ struct Camera {
 	/// <summary>
 	/// 定数バッファ生成
 	/// </summary>
-	void CreateConstBuffer();
+	//void CreateConstBuffer();
 	/// <summary>
 	/// マッピングする
 	/// </summary>

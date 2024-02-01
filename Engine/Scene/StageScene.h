@@ -17,6 +17,7 @@
 #include "Particle.h"
 #include "DebugCamera.h"
 #include "ParticleManager.h"
+#include "Sphere.h"
 
 class StageScene : public IScene
 {

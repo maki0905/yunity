@@ -94,6 +94,7 @@ void StageScene::Update()
 		particle->BillboardMatrix(camera_);
 	}
 
+	worldTransform_.UpdateMatrix(RotationType::Euler);
 	worldTrasnform1_.UpdateMatrix(RotationType::Euler);
 
 	particleManager_->Update();

@@ -7,6 +7,7 @@ void WorldTransform::Initialize() {
     CreateConstBuffer();
     Map();
     matWorld_ = MakeIdentity4x4();
+    matWorldInverseTranspose_ = Transpose(Inverse(matWorld_));
     TransferMatrix();
     quaternion_ = IndentityQuaternion();
 }
@@ -61,6 +62,8 @@ void WorldTransform::UpdateMatrix(RotationType type) {
         matWorld_ = Multiply(matWorld_, parent_->matWorld_);
     }
 
+    matWorldInverseTranspose_ = Transpose(Inverse(matWorld_));
+
     TransferMatrix();
 }
 
@@ -68,4 +71,5 @@ void WorldTransform::TransferMatrix()
 {
     // 定数バッファに書き込み
     constMap->matWorld = matWorld_;
+    constMap->matWorldInverseTranspose = matWorldInverseTranspose_;
 }

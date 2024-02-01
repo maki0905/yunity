@@ -26,6 +26,7 @@ class Model
 		kTexture,        // テクスチャ
 		kMaterial,       // マテリアル
 		kLight,          // ライティング
+		kCamera,         // カメラ
 		kCount,          // 最大数
 	};
 
@@ -39,6 +40,8 @@ public:
 
 	struct MaterialData {
 		Vector4 color;
+		uint32_t enableLighting;
+		float shininess;
 		std::string textureFilePath;
 	};
 
