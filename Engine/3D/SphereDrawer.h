@@ -12,6 +12,7 @@
 #include "Camera.h"
 #include "WorldTransform.h"
 #include "MathFunction.h"
+#include "PointLight.h"
 
 
 class PipelineState;
@@ -29,6 +30,7 @@ class SphereDrawer
 		kMaterial,       // マテリアル
 		kLight,          // ライティング
 		kCamera,         // カメラ
+		kPointLight,
 		kCount,          // 最大数
 	};
 
@@ -100,6 +102,8 @@ public:
 
 	void SetTextureHandle(const std::string& textureName);
 
+	void SetPointLight(const PointLight& pointLight);
+
 	//void SetMaterial(const Vector4& color);
 
 private:
@@ -145,5 +149,8 @@ private:
 
 	// テクスチャハンドル
 	uint32_t textureHandle_;
+
+	Microsoft::WRL::ComPtr<ID3D12Resource> pointLightResource_;
+	PointLight* pointLightData_;
 };
 

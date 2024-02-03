@@ -11,6 +11,8 @@
 #include "WorldTransform.h"
 #include "MathFunction.h"
 
+#include "PointLight.h"
+
 
 class PipelineState;
 class RootSignature;
@@ -27,6 +29,7 @@ class Model
 		kMaterial,       // マテリアル
 		kLight,          // ライティング
 		kCamera,         // カメラ
+		kPointLight,
 		kCount,          // 最大数
 	};
 
@@ -53,7 +56,7 @@ public:
 	struct DirectionalLight {
 		Vector4 color; // ライトの色
 		Vector3 direction; // ライトの向き
-		float intensity; // 輝度
+		float intensity = 0; // 輝度
 	};
 
 public:
@@ -103,6 +106,8 @@ public:
 	void Draw(const WorldTransform& worldTransform, const Camera& camera);
 
 	//void SetMaterial(const Vector4& color);
+
+	void SetPointLight(const PointLight& pointLight);
 
 private:
 
@@ -159,5 +164,9 @@ private:
 
 	// テクスチャハンドル
 	uint32_t textureHandle_;
+
+	Microsoft::WRL::ComPtr<ID3D12Resource> pointLightResource_;
+	PointLight* pointLightData_;
+
 };
 

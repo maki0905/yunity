@@ -21,6 +21,7 @@
 #include "SphereDrawer.h"
 
 
+
 class GameManager
 {
 public:
@@ -54,5 +55,6 @@ private:
 	PrimitiveDrawer* primitive_ = nullptr;
 	ParticleDrawer* particle_ = nullptr;
 	SphereDrawer* sphere_ = nullptr;
+	
 };
 

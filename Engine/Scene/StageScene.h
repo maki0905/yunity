@@ -19,6 +19,7 @@
 #include "ParticleManager.h"
 #include "SphereDrawer.h"
 
+
 class StageScene : public IScene
 {
 public:
@@ -66,6 +67,9 @@ private:
 	Random::RandomNumberGenerator rng;
 
 	std::unique_ptr<SphereDrawer> ball_;
+	std::unique_ptr<Model> terrain_;
+
+	PointLight pointLight{};
 
 	//std::unique_ptr<Player> player_ = nullptr;
 	

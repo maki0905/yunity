@@ -66,6 +66,7 @@ void Model::InitializeGraphicsPipeline()
 	rootSignature_->GetParameter(static_cast<size_t>(RootBindings::kMaterial)).InitializeAsConstantBuffer(0, D3D12_SHADER_VISIBILITY_PIXEL);
 	rootSignature_->GetParameter(static_cast<size_t>(RootBindings::kLight)).InitializeAsConstantBuffer(1, D3D12_SHADER_VISIBILITY_PIXEL);
 	rootSignature_->GetParameter(static_cast<size_t>(RootBindings::kCamera)).InitializeAsConstantBuffer(2, D3D12_SHADER_VISIBILITY_PIXEL);
+	rootSignature_->GetParameter(static_cast<size_t>(RootBindings::kPointLight)).InitializeAsConstantBuffer(3, D3D12_SHADER_VISIBILITY_PIXEL);
 
 	rootSignature_->Finalize(D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
 
@@ -179,6 +180,8 @@ void Model::Draw(const WorldTransform& worldTransform, const Camera& camera)
 
 	commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(RootBindings::kCamera), camera.cameraForGPU_->GetGPUVirtualAddress());
 
+	commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(RootBindings::kPointLight), pointLightResource_->GetGPUVirtualAddress());
+
 
 	// SRVをセット
 	if (textureHandle_ != TextureManager::Load(modelData.material.textureFilePath)) {
@@ -187,6 +190,13 @@ void Model::Draw(const WorldTransform& worldTransform, const Camera& camera)
 	TextureManager::GetInstance()->SetGraphicsRootDescriptorTable(commandList_, static_cast<UINT>(RootBindings::kTexture), textureHandle_);
 
 	commandList_->DrawInstanced(UINT(modelData.vertices.size()), 1, 0, 0);
+}
+
+void Model::SetPointLight(const PointLight& pointLight)
+{
+	pointLightData_->color = pointLight.color;
+	pointLightData_->position = pointLight.position;
+	pointLightData_->intensity = pointLight.intensity;
 }
 
 //void T::SetMaterial(const Vector4& color)
@@ -330,7 +340,16 @@ void Model::InitializeDirectionalLight()
 	// デフォルト値
 	directionalLightData_->color = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
 	directionalLightData_->direction = Vector3(0.0f, -1.0f, 0.0f);
-	directionalLightData_->intensity = 1.0f;
+	directionalLightData_->intensity = 0.0f;
+
+	pointLightResource_ = CreateBufferResource(sizeof(PointLight));
+	pointLightData_ = nullptr;
+	pointLightResource_->Map(0, nullptr, reinterpret_cast<void**>(&pointLightData_));
+
+	pointLightData_->color = { 1.0f, 1.0f, 1.0f, 1.0f };
+	pointLightData_->position = { 0.0f, 2.0f, 0.0f };
+	pointLightData_->intensity = 1.0f;
+
 
 }
 
@@ -341,7 +360,7 @@ void Model::InitializeMaterial()
 	materialResource_->Map(0, nullptr, reinterpret_cast<void**>(&materialData_));
 	materialData_->color = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
 	materialData_->enableLighting = 1;
-	materialData_->shininess = 10.0f;
+	materialData_->shininess = 50.0f;
 }
 
 ID3D12Resource* Model::CreateBufferResource(size_t sizeInBytes)

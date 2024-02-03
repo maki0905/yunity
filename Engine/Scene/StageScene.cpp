@@ -2,6 +2,7 @@
 
 #include "TextureManager.h"
 #include "Input.h"
+#include "ImGuiManager.h"
 
 void StageScene::Initialize()
 {
@@ -62,6 +63,11 @@ void StageScene::Initialize()
 	ball_ = std::make_unique<SphereDrawer>();
 	ball_.reset(SphereDrawer::Create("monsterBall.png"));
 
+	terrain_ = std::make_unique<Model>();
+	terrain_.reset(Model::Create("terrain"));
+
+	
+
 }
 
 void StageScene::Update()
@@ -113,6 +119,15 @@ void StageScene::Update()
 		camera_.UpdateMatrix();
 	}
 
+	ImGui::Begin("PointLight");
+	ImGui::SliderFloat3("position", &pointLight.position.x, -10.0f, 10.0f);
+	ImGui::SliderFloat("intensity", &pointLight.intensity, 0.0f, 100.0f);
+	ImGui::SliderFloat("radius", &pointLight.radius, 0.0f, 100.0f);
+	ImGui::SliderFloat("decay", &pointLight.decay, 0.0f, 100.0f);
+	ImGui::End();
+
+	ball_->SetPointLight(pointLight);
+	terrain_->SetPointLight(pointLight);
 	
 }
 
@@ -130,7 +145,9 @@ void StageScene::Draw3D()
 	//particleManager_->Draw(camera_);
 	//player_->Draw(camera_);
 	/*block_->Draw(camera_);*/
+	
 	ball_->Draw(worldTransform_, camera_);
+	terrain_->Draw(worldTrasnform1_, camera_);
 }
 
 void StageScene::DrawFront()
