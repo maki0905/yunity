@@ -19,6 +19,7 @@
 #include "PrimitiveDrawer.h"
 #include "ParticleDrawer.h"
 #include "SphereDrawer.h"
+#include "Audio/Audio.h"
 
 
 
@@ -55,6 +56,7 @@ private:
 	PrimitiveDrawer* primitive_ = nullptr;
 	ParticleDrawer* particle_ = nullptr;
 	SphereDrawer* sphere_ = nullptr;
+	Audio* audio_ = nullptr;
 	
 };
 

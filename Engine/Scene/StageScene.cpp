@@ -66,12 +66,14 @@ void StageScene::Initialize()
 	terrain_ = std::make_unique<Model>();
 	terrain_.reset(Model::Create("terrain"));
 
+	handle_ = Audio::GetInstance()->LoadWave("fanfare.wav");
 	
-
 }
 
 void StageScene::Update()
 {
+	
+
 	// 衝突マネージャーのリストをクリア
 	collisionManager_->ClearCollider();
 	// コライダーを衝突マネージャーのリストに登録

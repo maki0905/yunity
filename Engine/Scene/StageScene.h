@@ -18,6 +18,7 @@
 #include "DebugCamera.h"
 #include "ParticleManager.h"
 #include "SphereDrawer.h"
+#include "Audio/Audio.h"
 
 
 class StageScene : public IScene
@@ -70,6 +71,8 @@ private:
 	std::unique_ptr<Model> terrain_;
 
 	PointLight pointLight{};
+
+	uint32_t handle_;
 
 	//std::unique_ptr<Player> player_ = nullptr;
 	

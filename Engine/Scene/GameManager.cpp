@@ -47,6 +47,9 @@ GameManager::GameManager()
 	sphere_ = new SphereDrawer();
 	sphere_->StaticInitialize();
 
+	audio_ = Audio::GetInstance();
+	audio_->Initialize();
+
 #pragma endregion
 
 	// 各シーンの配列
