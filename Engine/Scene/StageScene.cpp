@@ -121,11 +121,20 @@ void StageScene::Update()
 		camera_.UpdateMatrix();
 	}
 
+	ImGui::Begin("DebugCamera");
+	ImGui::SliderFloat3("position", &camera_.translation_.x, -100.0f, 100.0f);
+	ImGui::SliderFloat3("rotation", &camera_.rotation_.x, 0.0f, 6.28f);
+
+	ImGui::End();
+
+	ImGui::Begin("MonsterBall");
+	ImGui::SliderFloat3("scale", &worldTransform_.scale_.x, 1.0f, 10.0f);
+	ImGui::SliderFloat3("position", &worldTransform_.translation_.x, -10.0f, 10.0f);
+	ImGui::End();
+
 	ImGui::Begin("PointLight");
 	ImGui::SliderFloat3("position", &pointLight.position.x, -10.0f, 10.0f);
 	ImGui::SliderFloat("intensity", &pointLight.intensity, 0.0f, 100.0f);
-	ImGui::SliderFloat("radius", &pointLight.radius, 0.0f, 100.0f);
-	ImGui::SliderFloat("decay", &pointLight.decay, 0.0f, 100.0f);
 	ImGui::End();
 
 	ball_->SetPointLight(pointLight);

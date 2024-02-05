@@ -45,27 +45,7 @@ struct PixelShaderOutput
 
 PixelShaderOutput main(VertexShaderOutput input)
 {
-	//PixelShaderOutput output;
- //   float4 textureColor = gTexture.Sample(gSampler, input.texcoord);
- //   float NdotL = dot(normalize(input.normal), -gDirectionalLight.direction);
- //   float cos = pow(NdotL * 0.5f + 0.5f, 2.0f);
- //   if (textureColor.a <= 0.5)
- //   {
- //       discard;
- //   }
-    
- //   if (textureColor.a == 0.0)
- //   {
- //       discard;
- //   }
-    
- //   if (output.color.a == 0.0)
- //   {
- //       discard;
- //   }
- //   output.color.rgb =   gMaterial.color.rgb * textureColor.rgb * gDirectionalLight.color.rgb * cos * gDirectionalLight.intensity;
- //   output.color.a = gMaterial.color.a * textureColor.a;
-    
+	
     PixelShaderOutput output;
         
     float4 textureColor = gTexture.Sample(gSampler, input.texcoord);
@@ -87,12 +67,13 @@ PixelShaderOutput main(VertexShaderOutput input)
     //}
     
     //float factor = 1.0f / (distance * distance);
-    float factor = pow(saturate(-distance / gPointLight.radius + 1.0f), gPointLight.decay);
-    
+    //float factor = pow(saturate(-distance / gPointLight.radius + 1.0f), gPointLight.decay);
+    float factor = 1.0f / (max(distance * distance, 0.01f * 0.01f));
     
     float3 pointLightdirection = normalize(input.worldPosition - gPointLight.position);
     float4 pointLightColor = gPointLight.color;
     pointLightColor.rgb = gPointLight.color.rgb * gPointLight.intensity * factor;
+    
         
     // Phong Reflection
     //float3 reflectLight = reflect(gDirectionalLight.direction, normalize(input.normal));

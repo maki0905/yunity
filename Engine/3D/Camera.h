@@ -68,6 +68,9 @@ struct Camera {
 	/// 行列を更新する
 	/// </summary>
 	void UpdateMatrix();
+
+	void SetTranslation(const Vector3 translation) { translation_ = translation; }
+	void SetRotation(const Vector3 rotation) { rotation_ = rotation; }
 };
 
 //class Camera {
