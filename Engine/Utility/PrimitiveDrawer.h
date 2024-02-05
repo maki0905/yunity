@@ -77,7 +77,7 @@ public:
 	/// </summary>
 	/// <param name="worldTransform">ワールドトランスフォーム</param>
 	/// <param name="viewProjection">ビュープロジェクション</param>
-	void Draw(const WorldTransform& worldTransform, const Camera& camera);
+	void Draw(const WorldTransform& worldTransform);
 
 	void SetCamera(Camera* camera) { camera_ = camera; }
 

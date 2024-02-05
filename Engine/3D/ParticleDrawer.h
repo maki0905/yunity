@@ -94,7 +94,7 @@ public:
 	/// <param name="worldTransform">ワールドトランスフォーム</param>
 	/// <param name="viewProjection">ビュープロジェクション</param>
 	/// <param name="textureHandle">テクスチャハンドル</param>
-	void Draw(/*WorldTransform* worldTransform,*/ std::list<Particle*> particles, const Camera& camera);
+	void Draw(/*WorldTransform* worldTransform,*/ std::list<Particle*> particles);
 
 	Vector4 GetMatrial() { return materialData_->color; }
 

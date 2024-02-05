@@ -9,6 +9,7 @@
 #include "Matrix4x4.h"
 #include "Camera.h"
 
+
 struct ParticleForCPU {
 	Matrix4x4 world;
 	Vector4 color = {1.0f, 1.0f, 1.0f, 1.0f};
@@ -27,5 +28,6 @@ struct Particle {
 	void AffineMatrix();
 	void BillboardMatrix(const Camera& camera);
 };
+
 
 

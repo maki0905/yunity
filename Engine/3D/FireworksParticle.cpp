@@ -1,9 +1,10 @@
 #include "FireworksParticle.h"
 
-void FireworksParticle::Initialize()
+void FireworksParticle::Initialize(const Vector3& position)
 {
 	isActive_ = true;
-	particleDrawer_.reset(ParticleDrawer::Create("uvChecker.png"));
+	particleDrawer_.reset(ParticleDrawer::Create("circle.png"));
+	particleDrawer_->SetCamera(camera_);
 	particles_.clear();
 
 	for (uint32_t i = 0; i < 10; ++i) {
@@ -14,6 +15,7 @@ void FireworksParticle::Initialize()
 		particle->lifeTime = 5.0f;
 		particles_.push_back(particle);*/
 		Particle* particle = new Particle();
+		particle->transform.translate = position;
 		/*particle->velocity = { 
 			float(0.01f * cosf((36.0f * float(i)) * std::numbers::pi_v<float> / 180.0f)) - 0.01f * sinf((36.0f * float(i)) * std::numbers::pi_v<float> / 180.0f)), 
 			float(0.01f * sinf((36.0f * float(i)) * std::numbers::pi_v<float> / 180.0f)) + 0.01f * cosf((36.0f * float(i)) * std::numbers::pi_v<float> / 180.0f)), 
@@ -41,7 +43,8 @@ void FireworksParticle::Peculiar()
 
 }
 
-void FireworksParticle::Draw(const Camera& camera)
+void FireworksParticle::Draw()
 {
-	particleDrawer_->Draw(particles_, camera);
+	particleDrawer_->Draw(particles_);
 }
+

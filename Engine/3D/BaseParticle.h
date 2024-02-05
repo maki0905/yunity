@@ -5,12 +5,12 @@
 
 class BaseParticle {
 public:
-	virtual void Initialize() = 0;
+	virtual void Initialize(const Vector3& position) = 0;
 	virtual void Peculiar() = 0;
 	void Updata();
-	virtual void Draw(const Camera& camera) = 0;
+	virtual void Draw() = 0;
 
-	void GetCamera(Camera* camera) { camera_ = camera; }
+	void SetCamera(Camera* camera) { camera_ = camera; }
 
 public:
 	bool isActive_ = true;

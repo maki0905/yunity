@@ -129,7 +129,7 @@ void PrimitiveDrawer::InitializeGraphicsPipeline()
 
 }
 
-void PrimitiveDrawer::Draw(const WorldTransform& worldTransform, const Camera& camera)
+void PrimitiveDrawer::Draw(const WorldTransform& worldTransform)
 {
 	assert(device_);
 	assert(commandList_);

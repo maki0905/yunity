@@ -270,6 +270,9 @@
     <ClCompile Include="Engine\3D\SphereDrawer.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\3D\ParticleEmitter.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Math\Capsule.h">
@@ -466,6 +469,9 @@
     </ClInclude>
     <ClInclude Include="Engine\3D\PointLight.h">
       <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\3D\ParticleEmitter.h">
+      <Filter>Engine\3D\Particle</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

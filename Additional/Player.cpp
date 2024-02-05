@@ -33,5 +33,5 @@ void Player::Update()
 
 void Player::Draw(const Camera& camera)
 {
-	HitBox_->Draw(worldTransfrom_, camera);
+	HitBox_->Draw(worldTransfrom_);
 }

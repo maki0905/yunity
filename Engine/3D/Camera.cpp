@@ -4,6 +4,7 @@
 #include <cassert>
 #include "Device.h"
 #include "Common.h"
+#include "ImGuiManager.h"
 
 //void Camera::Initialize() {
 //    // 定数バッファの生成
@@ -101,6 +102,10 @@ Camera::Camera() :
 
 void Camera::Update()
 {
+	ImGui::Begin("Camera");
+	ImGui::SliderFloat3("translate", &transform_.translate.x, -100.0f, 100.0f);
+	ImGui::End();
+
 	worldMatrix_ = MakeAffineMatrix(transform_);
 	viewMatrix_ = Inverse(worldMatrix_);
 	projectionMatrix_ = MakePerspectiveFovMatrix(fovAngleY_, aspectRatio_, nearClip_, farClip_);

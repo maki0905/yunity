@@ -19,5 +19,5 @@ void Block::Update()
 
 void Block::Draw(const Camera& camera)
 {
-	HitBox_->Draw(worldTransfrom_, camera);
+	HitBox_->Draw(worldTransfrom_);
 }

@@ -130,7 +130,7 @@ void ParticleDrawer::Initialize(const std::string& modelname)
 	InitializeMaterial();
 }
 
-void ParticleDrawer::Draw(/*WorldTransform* worldTransform,*/std::list<Particle*> particles, const Camera& camera)
+void ParticleDrawer::Draw(/*WorldTransform* worldTransform,*/std::list<Particle*> particles)
 {
 	assert(device_);
 	assert(commandList_);

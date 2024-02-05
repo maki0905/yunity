@@ -106,6 +106,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Engine\3D\BaseParticle.cpp" />
     <ClCompile Include="Engine\3D\FireworksParticle.cpp" />
     <ClCompile Include="Engine\3D\Particle.cpp" />
+    <ClCompile Include="Engine\3D\ParticleEmitter.cpp" />
     <ClCompile Include="Engine\3D\ParticleManager.cpp" />
     <ClCompile Include="Engine\3D\SphereDrawer.cpp" />
     <ClCompile Include="Engine\Audio\Audio.cpp" />
@@ -159,6 +160,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\3D\BaseParticle.h" />
     <ClInclude Include="Engine\3D\FireworksParticle.h" />
     <ClInclude Include="Engine\3D\Particle.h" />
+    <ClInclude Include="Engine\3D\ParticleEmitter.h" />
     <ClInclude Include="Engine\3D\ParticleManager.h" />
     <ClInclude Include="Engine\3D\PointLight.h" />
     <ClInclude Include="Engine\3D\SphereDrawer.h" />

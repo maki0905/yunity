@@ -56,7 +56,11 @@ void StageScene::Initialize()
 
 	particleManager_ = std::make_unique<ParticleManager>();
 	particleManager_->Initialize();
-	particleManager_->Add(camera_.get());
+	particleManager_->SetCamera(camera_.get());
+	ParticleEmitter* particleEmitter = new ParticleEmitter();
+	particleEmitter->SetCamera(camera_.get());
+	particleEmitter->Initialize({ .scale{1.0f, 1.0f, 1.0f}, .rotate{0.0f, 0.0f, 0.0f}, .translate{0.0f, 0.0f, 0.0f} }, 1.0f, 1.0f);
+	particleManager_->AddEmitter(particleEmitter);
 
 	collisionManager_ = std::make_unique<CollisionManager>();
 
@@ -148,12 +152,12 @@ void StageScene::Draw3D()
 	//skydome_->Draw(worldTransform_, camera_);
 	//particle_->Draw(worldTrasnform1_, camera_);
 	//particle_->Draw(/*worldTransformParticle_,*/ particles_, camera_);
-	//particleManager_->Draw(camera_);
+	particleManager_->Draw();
 	//player_->Draw(camera_);
 	/*block_->Draw(camera_);*/
 	
-	ball_->Draw(worldTransform_, *camera_);
-	terrain_->Draw(worldTrasnform1_);
+	/*ball_->Draw(worldTransform_, *camera_);
+	terrain_->Draw(worldTrasnform1_);*/
 }
 
 void StageScene::DrawFront()
