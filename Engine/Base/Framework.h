@@ -20,6 +20,7 @@
 #include "ParticleDrawer.h"
 #include "SphereDrawer.h"
 #include "Audio/Audio.h"
+#include "SceneManager.h"
 
 class Framework {
 public:
@@ -47,4 +48,5 @@ protected:
 	ParticleDrawer* particle_ = nullptr;
 	SphereDrawer* sphere_ = nullptr;
 	Audio* audio_ = nullptr;
+	SceneManager* sceneManager_ = nullptr;
 };

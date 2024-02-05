@@ -3,6 +3,7 @@
 #include "TextureManager.h"
 #include "Input.h"
 #include "ImGuiManager.h"
+#include "SceneManager.h"
 
 void StageScene::Initialize()
 {
@@ -79,6 +80,9 @@ void StageScene::Initialize()
 void StageScene::Update()
 {
 	
+	if (Input::GetInstance()->TriggerKey(DIK_SPACE)) {
+		SceneManager::GetInstance()->ChangeScene("TITLE");
+	}
 
 	// 衝突マネージャーのリストをクリア
 	collisionManager_->ClearCollider();

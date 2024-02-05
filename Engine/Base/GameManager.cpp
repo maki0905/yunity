@@ -33,7 +33,8 @@ void GameManager::Draw()
 	directXCore_->PreDraw();
 #pragma region 背景描画
 	sprite_->PreDraw(directXCore_->GetCommandList());
-	sceneArr_[currentSceneNo_]->DrawBack();
+	//sceneArr_[currentSceneNo_]->DrawBack();
+	SceneManager::GetInstance()->DrawBack();
 	sprite_->PostDraw();
 #pragma endregion 
 
@@ -43,7 +44,8 @@ void GameManager::Draw()
 	particle_->PreDraw(directXCore_->GetCommandList());
 	primitive_->PreDraw(directXCore_->GetCommandList());
 	// 描画
-	sceneArr_[currentSceneNo_]->Draw3D();
+	//sceneArr_[currentSceneNo_]->Draw3D();
+	SceneManager::GetInstance()->Draw3D();
 	primitive_->PostDraw();
 	particle_->PostDraw();
 	sphere_->PostDraw();
@@ -53,7 +55,8 @@ void GameManager::Draw()
 #pragma region 前景描画
 
 	sprite_->PreDraw(directXCore_->GetCommandList());
-	sceneArr_[currentSceneNo_]->DrawFront();
+	//sceneArr_[currentSceneNo_]->DrawFront();
+	SceneManager::GetInstance()->DrawFront();
 	sprite_->PostDraw();
 
 #pragma endregion

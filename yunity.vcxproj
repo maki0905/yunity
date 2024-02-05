@@ -61,7 +61,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalIncludeDirectories>$(ProjectDir)Engine;$(ProjectDir)Engine\2D;$(ProjectDir)Engine\3D;$(ProjectDir)Engine\base;$(ProjectDir)Engine\Input;$(ProjectDir)Engine\Math;$(ProjectDir)Engine\Scene;$(ProjectDir)Engine\Utility;$(ProjectDir)Externals;$(ProjectDir)Externals\imgui;$(ProjectDir)Externals\nlohmann;$(ProjectDir)Additional;$(ProjectDir)imgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Engine;$(ProjectDir)Engine\2D;$(ProjectDir)Engine\3D;$(ProjectDir)Engine\Audio;$(ProjectDir)Engine\Base;$(ProjectDir)Engine\Core;$(ProjectDir)Engine\Input;$(ProjectDir)Engine\Math;$(ProjectDir)Engine\Scene;$(ProjectDir)Engine\Utility;$(ProjectDir)Engine\base;$(ProjectDir)Externals;$(ProjectDir)Externals\imgui;$(ProjectDir)Externals\nlohmann;$(ProjectDir)Additional;$(ProjectDir)imgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
@@ -85,7 +85,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalIncludeDirectories>$(ProjectDir)Engine;$(ProjectDir)Engine\2D;$(ProjectDir)Engine\3D;$(ProjectDir)Engine\Core;$(ProjectDir)Engine\Base;$(ProjectDir)Engine\Input;$(ProjectDir)Engine\Math;$(ProjectDir)Engine\Scene;$(ProjectDir)Engine\Utility;$(ProjectDir)Externals;$(ProjectDir)Externals\nlohmann;$(ProjectDir)Additional;$(ProjectDir)Physics;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Engine;$(ProjectDir)Engine\2D;$(ProjectDir)Engine\3D;$(ProjectDir)Engine\Audio;$(ProjectDir)Engine\Base;$(ProjectDir)Engine\Core;$(ProjectDir)Engine\Input;$(ProjectDir)Engine\Math;$(ProjectDir)Engine\Scene;$(ProjectDir)Engine\Utility;$(ProjectDir)Engine\Core;$(ProjectDir)Engine\Base;$(ProjectDir)Engine\Input;$(ProjectDir)Engine\Math;$(ProjectDir)Engine\Scene;$(ProjectDir)Engine\Utility;$(ProjectDir)Externals;$(ProjectDir)Externals\nlohmann;$(ProjectDir)Additional;$(ProjectDir)Physics;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
@@ -127,6 +127,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Engine\Core\DirectXCore.cpp" />
     <ClCompile Include="Engine\3D\FollowCamera.cpp" />
     <ClCompile Include="Engine\Base\GameManager.cpp" />
+    <ClCompile Include="Engine\Scene\SceneFactory.cpp" />
+    <ClCompile Include="Engine\Scene\SceneManager.cpp" />
     <ClCompile Include="Engine\Utility\GlobalVariables.cpp" />
     <ClCompile Include="Engine\Utility\ImGuiManager.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
@@ -175,6 +177,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\Math\AABB.h" />
     <ClInclude Include="Engine\Core\BackBuffer.h" />
     <ClInclude Include="Engine\Math\Capsule.h" />
+    <ClInclude Include="Engine\Scene\AbstractSceneFactory.h" />
     <ClInclude Include="Engine\Scene\ClearScene.h" />
     <ClInclude Include="Engine\Core\CommandList.h" />
     <ClInclude Include="Engine\Core\CommandQueue.h" />
@@ -186,6 +189,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\Core\DirectXCore.h" />
     <ClInclude Include="Engine\3D\FollowCamera.h" />
     <ClInclude Include="Engine\Base\GameManager.h" />
+    <ClInclude Include="Engine\Scene\SceneFactory.h" />
+    <ClInclude Include="Engine\Scene\SceneManager.h" />
     <ClInclude Include="Engine\Utility\GlobalVariables.h" />
     <ClInclude Include="Engine\Utility\ImGuiManager.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>

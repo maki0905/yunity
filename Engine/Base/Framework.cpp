@@ -46,16 +46,21 @@ void Framework::Initialize()
 	audio_ = Audio::GetInstance();
 	audio_->Initialize();
 
+	sceneManager_ = SceneManager::GetInstance();
+	sceneManager_->Initialize();
+	sceneManager_->ChangeScene("GAMESTAGE");
+
+
 #pragma endregion
 
 	// 各シーンの配列
-	sceneArr_[TITLE] = std::make_unique<TitleScene>();
+	/*sceneArr_[TITLE] = std::make_unique<TitleScene>();
 	sceneArr_[GAME_STAGE] = std::make_unique<StageScene>();
-	sceneArr_[CLEAR] = std::make_unique<ClearScene>();
+	sceneArr_[CLEAR] = std::make_unique<ClearScene>();*/
 
 	// 初期シーンの設定
-	currentSceneNo_ = GAME_STAGE;
-	sceneArr_[currentSceneNo_]->Initialize();
+	/*currentSceneNo_ = GAME_STAGE;
+	sceneArr_[currentSceneNo_]->Initialize();*/
 }
 
 void Framework::Finalize()
@@ -72,16 +77,18 @@ void Framework::Update()
 	input_->Update();
 
 	// シーンのチェック
-	prevSceneNo_ = currentSceneNo_;
-	currentSceneNo_ = sceneArr_[currentSceneNo_]->GetSceneNo();
+	/*prevSceneNo_ = currentSceneNo_;
+	currentSceneNo_ = sceneArr_[currentSceneNo_]->GetSceneNo();*/
 
 	// シーン変更チェック
-	if (prevSceneNo_ != currentSceneNo_) {
+	/*if (prevSceneNo_ != currentSceneNo_) {
 		sceneArr_[currentSceneNo_]->Initialize();
-	}
+	}*/
 
 	// 更新
-	sceneArr_[currentSceneNo_]->Update();
+	//sceneArr_[currentSceneNo_]->Update();
+
+	sceneManager_->Update();
 
 	// ImGui受付終了
 	imguiManager_->End();
