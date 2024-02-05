@@ -213,7 +213,7 @@
     <ClCompile Include="Engine\Core\DescriptorHeap.cpp">
       <Filter>Engine\base\Descriptor</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\GameManager.cpp">
+    <ClCompile Include="Engine\Base\GameManager.cpp">
       <Filter>Engine\Scene\Manager</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Core\DirectXCore.cpp">
@@ -273,7 +273,7 @@
     <ClCompile Include="Engine\3D\ParticleEmitter.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Framework.cpp">
+    <ClCompile Include="Engine\Base\Framework.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -404,7 +404,7 @@
     <ClInclude Include="Engine\Core\DescriptorHeap.h">
       <Filter>Engine\base\Descriptor</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\GameManager.h">
+    <ClInclude Include="Engine\Base\GameManager.h">
       <Filter>Engine\Scene\Manager</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Core\DirectXCore.h">
@@ -476,7 +476,7 @@
     <ClInclude Include="Engine\3D\ParticleEmitter.h">
       <Filter>Engine\3D\Particle</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Framework.h">
+    <ClInclude Include="Engine\Base\Framework.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
