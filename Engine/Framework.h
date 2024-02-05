@@ -21,24 +21,14 @@
 #include "SphereDrawer.h"
 #include "Audio/Audio.h"
 
-
-
-class GameManager
-{
+class Framework {
 public:
-	/// <summary>
-	/// コンストラクタ
-	/// </summary>
-	GameManager();
+	virtual void Initialize();
+	virtual void Finalize();
+	virtual void Update();
+	virtual void Draw() = 0;
 
-	/// <summary>
-	/// デストラクタ
-	/// </summary>
-	~GameManager();
-
-	void Run();
-
-private:
+protected:
 	// シーンを保持するメンバ変数
 	std::unique_ptr<IScene> sceneArr_[COUNT];
 
@@ -57,6 +47,4 @@ private:
 	ParticleDrawer* particle_ = nullptr;
 	SphereDrawer* sphere_ = nullptr;
 	Audio* audio_ = nullptr;
-	
 };
-
