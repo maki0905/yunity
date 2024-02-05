@@ -43,8 +43,8 @@ void WorldTransform::Map() {
     assert(SUCCEEDED(result));
 }
 
-void WorldTransform::UpdateMatrix(RotationType type) {
-
+void WorldTransform::UpdateMatrix(RotationType type)
+{
     switch (type)
     {
     case RotationType::Euler:
@@ -53,7 +53,7 @@ void WorldTransform::UpdateMatrix(RotationType type) {
         break;
     case RotationType::Quaternion:
         // スケール、回転、平行移動を合成して行列を計算する
-        matWorld_ = MakeAffineMatrix(scale_,quaternion_, translation_);
+        matWorld_ = MakeAffineMatrix(scale_, quaternion_, translation_);
         break;
     }
 

@@ -17,5 +17,5 @@ void Skydome::Update()
 
 void Skydome::Draw(const Camera& camera)
 {
-	model_->Draw(worldTransform_, camera);
+	model_->Draw(worldTransform_);
 }

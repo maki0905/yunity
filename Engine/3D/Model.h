@@ -103,10 +103,11 @@ public:
 	/// <param name="viewProjection">ビュープロジェクション</param>
 	/// <param name="textureHandle">テクスチャハンドル</param>
 	void Draw(const WorldTransform& worldTransform, const Camera& camera, uint32_t textureHandle);
-	void Draw(const WorldTransform& worldTransform, const Camera& camera);
+	void Draw(const WorldTransform& worldTransform/*, const Camera& camera*/);
 
 	//void SetMaterial(const Vector4& color);
 
+	void SetCamera(Camera* camera) { camera_ = camera; }
 	void SetPointLight(const PointLight& pointLight);
 
 private:
@@ -137,7 +138,7 @@ private:
 	static PipelineState* pipelineState_;
 
 private:
-
+	Camera* camera_ = nullptr;
 
 	ModelData modelData;
 	// 頂点バッファ

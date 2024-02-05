@@ -36,7 +36,7 @@ private:
 	uint32_t textureHandle_ = 0;
 	Vector2 position_;
 
-	Camera camera_;
+	std::unique_ptr<Camera> camera_;
 	std::unique_ptr<DebugCamera> debugCamera_;
 	bool isDebug_ = false;
 

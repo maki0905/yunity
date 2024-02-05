@@ -3,6 +3,8 @@
 #include "Input.h"
 #include "Camera.h"
 
+
+
 /// <summary>
 /// デバッグ用カメラ
 /// </summary>
@@ -25,8 +27,4 @@ public:
 	/// <returns>ビュープロジェクション</returns>
 	//const ViewProjection& GetViewProjection() { return viewProjection_; }
 
-	
-private:
-
-	static constexpr double pi = 3.14159265358979323846;
 };

@@ -97,6 +97,8 @@ public:
 	void Draw(/*WorldTransform* worldTransform,*/ std::list<Particle*> particles, const Camera& camera);
 
 	Vector4 GetMatrial() { return materialData_->color; }
+
+	void SetCamera(Camera* camera) { camera_ = camera; }
 	void SetMaterial(const Vector4& color);
 
 private:
@@ -122,6 +124,8 @@ private:
 	static PipelineState* pipelineState_;
 
 private:
+
+	Camera* camera_ = nullptr;
 
 	// SRV用ヒープ
 	DescriptorHeap* srvHeap_;

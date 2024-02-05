@@ -11,7 +11,7 @@ void StageScene::Initialize()
 	sprite_.reset(Sprite::Create(textureHandle_, { 0.0f, 0.0f }));
 	position_ = { 0.0f, 0.0f };
 
-	camera_.Initialize();
+	camera_ = std::make_unique<Camera>();
 	debugCamera_ = std::make_unique<DebugCamera>();
 
 	worldTransform_.Initialize();
@@ -56,15 +56,17 @@ void StageScene::Initialize()
 
 	particleManager_ = std::make_unique<ParticleManager>();
 	particleManager_->Initialize();
-	particleManager_->Add(&camera_);
+	particleManager_->Add(camera_.get());
 
 	collisionManager_ = std::make_unique<CollisionManager>();
 
 	ball_ = std::make_unique<SphereDrawer>();
 	ball_.reset(SphereDrawer::Create("monsterBall.png"));
+	ball_->SetCamera(camera_.get());
 
 	terrain_ = std::make_unique<Model>();
 	terrain_.reset(Model::Create("terrain"));
+	terrain_->SetCamera(camera_.get());
 
 	handle_ = Audio::GetInstance()->LoadWave("fanfare.wav");
 	
@@ -99,7 +101,7 @@ void StageScene::Update()
 		//particle->AddVecocity();
 		//particle->AffineMatrix();
 		particle->transform.rotate.z += 0.1f;
-		particle->BillboardMatrix(camera_);
+		particle->BillboardMatrix(*camera_);
 	}
 
 	worldTransform_.UpdateMatrix(RotationType::Euler);
@@ -114,11 +116,11 @@ void StageScene::Update()
 #endif
 
 	if (isDebug_) {
-		debugCamera_->Update(&camera_);
-		camera_.UpdateMatrix();
+		debugCamera_->Update(camera_.get());
+		camera_->Update();
 	}
 	else {
-		camera_.UpdateMatrix();
+		camera_->Update();
 	}
 
 	ImGui::Begin("PointLight");
@@ -126,6 +128,8 @@ void StageScene::Update()
 	ImGui::SliderFloat("intensity", &pointLight.intensity, 0.0f, 100.0f);
 	ImGui::SliderFloat("radius", &pointLight.radius, 0.0f, 100.0f);
 	ImGui::SliderFloat("decay", &pointLight.decay, 0.0f, 100.0f);
+	ImGui::SliderFloat3("scale", &worldTransform_.scale_.x, 1.0f, 10.0f);
+	ImGui::SliderFloat3("position", &worldTransform_.translation_.x, -10.0f, 10.0f);
 	ImGui::End();
 
 	ball_->SetPointLight(pointLight);
@@ -148,8 +152,8 @@ void StageScene::Draw3D()
 	//player_->Draw(camera_);
 	/*block_->Draw(camera_);*/
 	
-	ball_->Draw(worldTransform_, camera_);
-	terrain_->Draw(worldTrasnform1_, camera_);
+	ball_->Draw(worldTransform_, *camera_);
+	terrain_->Draw(worldTrasnform1_);
 }
 
 void StageScene::DrawFront()

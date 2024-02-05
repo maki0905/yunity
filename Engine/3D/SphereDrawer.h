@@ -100,6 +100,7 @@ public:
 	/// <param name="textureHandle">テクスチャハンドル</param>
 	void Draw(const WorldTransform& worldTransform, const Camera& camera);
 
+	void SetCamera(Camera* camera) { camera_ = camera; }
 	void SetTextureHandle(const std::string& textureName);
 
 	void SetPointLight(const PointLight& pointLight);
@@ -122,6 +123,8 @@ private:
 	static PipelineState* pipelineState_;
 
 private:
+
+	Camera* camera_ = nullptr;
 
 	const uint32_t kSubdivision = 16;
 

@@ -173,7 +173,7 @@ void ParticleDrawer::Draw(/*WorldTransform* worldTransform,*/std::list<Particle*
 	//commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(RootBindings::kWorldTransform), worldTransform.constBuff_->GetGPUVirtualAddress());
 	commandList_->SetGraphicsRootDescriptorTable(static_cast<UINT>(RootBindings::kWorldTransform), instancingSrvHandleGPU_);
 	// CBVをセット(ビュープロジェクション行列)
-	commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(RootBindings::kViewProjection), camera.constBuff_->GetGPUVirtualAddress());
+	commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(RootBindings::kViewProjection), camera_->GetConstBuff()->GetGPUVirtualAddress());
 	commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(RootBindings::kMaterial), materialResource_->GetGPUVirtualAddress());
 
 
