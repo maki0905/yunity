@@ -22,9 +22,12 @@ void Framework::Initialize()
 	input_ = Input::GetInstance();
 	input_->Initialize();
 
+
+	modelManager_ = ModelManager::GetInstance();
+	modelManager_->Initialize();
 	// 3Dオブジェクト
-	model_ = new Model();
-	model_->StaticInitialize();
+	/*model_ = new Model();
+	model_->StaticInitialize();*/
 
 	sprite_ = new Sprite();
 	sprite_->StaticInitialize();
@@ -49,6 +52,7 @@ void Framework::Initialize()
 	sceneManager_ = SceneManager::GetInstance();
 	sceneManager_->Initialize();
 	sceneManager_->ChangeScene("GAMESTAGE");
+
 
 
 #pragma endregion

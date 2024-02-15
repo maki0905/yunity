@@ -102,9 +102,11 @@ Camera::Camera() :
 
 void Camera::Update()
 {
+#ifdef _DEBUG
 	ImGui::Begin("Camera");
 	ImGui::SliderFloat3("translate", &transform_.translate.x, -100.0f, 100.0f);
 	ImGui::End();
+#endif // _DEBUG
 
 	worldMatrix_ = MakeAffineMatrix(transform_);
 	viewMatrix_ = Inverse(worldMatrix_);

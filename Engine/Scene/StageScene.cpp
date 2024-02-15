@@ -65,13 +65,27 @@ void StageScene::Initialize()
 
 	collisionManager_ = std::make_unique<CollisionManager>();
 
+
+
 	ball_ = std::make_unique<SphereDrawer>();
 	ball_.reset(SphereDrawer::Create("monsterBall.png"));
 	ball_->SetCamera(camera_.get());
 
-	terrain_ = std::make_unique<Model>();
+	/*terrain_ = std::make_unique<Model>();
+	terrain_.reset(ModelManager::GetInstance()->Load("terrain"));
+	terrain_->SetCamera(camera_.get());
+	terrain_->SetLighting(false);
+
+	terrain1_ = std::make_unique<Model>();
+	terrain1_.reset(ModelManager::GetInstance()->Load("terrain"));
+	terrain1_->SetCamera(camera_.get());*/
+
 	terrain_.reset(Model::Create("terrain"));
 	terrain_->SetCamera(camera_.get());
+	terrain_->SetLighting(false);
+	terrain1_.reset(Model::Create("terrain"));
+	terrain1_->SetCamera(camera_.get());
+	
 
 	handle_ = Audio::GetInstance()->LoadWave("fanfare.wav");
 	
@@ -112,6 +126,11 @@ void StageScene::Update()
 		particle->BillboardMatrix(*camera_);
 	}
 
+	ImGui::Begin("model");
+	ImGui::SliderFloat3("pos", &worldTransform_.translation_.x, -10.0f, 10.0f);
+	ImGui::SliderFloat3("pos1", &worldTrasnform1_.translation_.x, -10.0f, 10.0f);
+	ImGui::End();
+
 	worldTransform_.UpdateMatrix(RotationType::Euler);
 	worldTrasnform1_.UpdateMatrix(RotationType::Euler);
 
@@ -131,6 +150,7 @@ void StageScene::Update()
 		camera_->Update();
 	}
 
+#ifdef _DEBUG
 	ImGui::Begin("PointLight");
 	ImGui::SliderFloat3("position", &pointLight.position.x, -10.0f, 10.0f);
 	ImGui::SliderFloat("intensity", &pointLight.intensity, 0.0f, 100.0f);
@@ -139,6 +159,7 @@ void StageScene::Update()
 	ImGui::SliderFloat3("scale", &worldTransform_.scale_.x, 1.0f, 10.0f);
 	ImGui::SliderFloat3("position", &worldTransform_.translation_.x, -10.0f, 10.0f);
 	ImGui::End();
+#endif // _DEBUG
 
 	ball_->SetPointLight(pointLight);
 	terrain_->SetPointLight(pointLight);
@@ -162,6 +183,8 @@ void StageScene::Draw3D()
 	
 	/*ball_->Draw(worldTransform_, *camera_);
 	terrain_->Draw(worldTrasnform1_);*/
+	terrain_->Draw(worldTrasnform1_);
+	terrain1_->Draw(worldTransform_);
 }
 
 void StageScene::DrawFront()

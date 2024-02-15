@@ -88,8 +88,6 @@ public:
 	/// </summary>
 	static void InitializeGraphicsPipeline();
 
-
-
 public:
 	/// <summary>
 	/// 初期化
@@ -109,6 +107,9 @@ public:
 
 	void SetCamera(Camera* camera) { camera_ = camera; }
 	void SetPointLight(const PointLight& pointLight);
+	void SetLighting(bool flag) { materialData_->enableLighting = flag; }
+
+	void SetModelData(const std::string& modelname);
 
 private:
 

@@ -21,6 +21,7 @@
 #include "SphereDrawer.h"
 #include "Audio/Audio.h"
 #include "SceneManager.h"
+#include "ModelManager.h"
 
 class Framework {
 public:
@@ -49,4 +50,5 @@ protected:
 	SphereDrawer* sphere_ = nullptr;
 	Audio* audio_ = nullptr;
 	SceneManager* sceneManager_ = nullptr;
+	ModelManager* modelManager_ = nullptr;
 };

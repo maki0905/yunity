@@ -19,9 +19,11 @@ void ParticleEmitter::Initialize(Transform transform, float frequency, uint32_t 
 
 bool ParticleEmitter::Update()
 {
+#ifdef _DEBUG
 	ImGui::Begin("Emitter");
 	ImGui::SliderFloat3("translation", &worldTransform_.translation_.x, -10.0f, 10.0f);
 	ImGui::End();
+#endif // _DEBUG
 
 	worldTransform_.UpdateMatrix(RotationType::Euler);
 

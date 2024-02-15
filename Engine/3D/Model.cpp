@@ -8,6 +8,7 @@
 #include "RootSignature.h"
 #include "PipelineState.h"
 #include "ShaderCompiler.h"
+#include "ModelManager.h"
 
 ID3D12Device* Model::device_ = nullptr;
 ID3D12GraphicsCommandList* Model::commandList_ = nullptr;
@@ -40,7 +41,7 @@ void Model::PostDraw()
 Model* Model::Create(const std::string& modelname)
 {
 	Model* model = new Model();
-	model->LoadObjFile(modelname);
+	model->SetModelData(modelname);
 	model->Initialize();
 	return model;
 }
@@ -197,6 +198,11 @@ void Model::SetPointLight(const PointLight& pointLight)
 	pointLightData_->color = pointLight.color;
 	pointLightData_->position = pointLight.position;
 	pointLightData_->intensity = pointLight.intensity;
+}
+
+void Model::SetModelData(const std::string& modelname)
+{
+	modelData = *ModelManager::GetInstance()->Load(modelname);
 }
 
 //void T::SetMaterial(const Vector4& color)
