@@ -163,7 +163,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Additional\Block.h" />
     <ClInclude Include="Engine\3D\BaseParticle.h" />
     <ClInclude Include="Engine\3D\FireworksParticle.h" />
-    <ClInclude Include="Engine\3D\ModelCommon.h" />
     <ClInclude Include="Engine\3D\ModelManager.h" />
     <ClInclude Include="Engine\3D\Particle.h" />
     <ClInclude Include="Engine\3D\ParticleEmitter.h" />
