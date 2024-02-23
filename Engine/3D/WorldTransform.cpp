@@ -7,6 +7,7 @@ void WorldTransform::Initialize() {
     CreateConstBuffer();
     Map();
     matWorld_ = MakeIdentity4x4();
+    matWorldInverseTranspose_ = Transpose(Inverse(matWorld_));
     TransferMatrix();
     quaternion_ = IndentityQuaternion();
 }
@@ -42,8 +43,8 @@ void WorldTransform::Map() {
     assert(SUCCEEDED(result));
 }
 
-void WorldTransform::UpdateMatrix(RotationType type) {
-
+void WorldTransform::UpdateMatrix(RotationType type)
+{
     switch (type)
     {
     case RotationType::Euler:
@@ -52,7 +53,7 @@ void WorldTransform::UpdateMatrix(RotationType type) {
         break;
     case RotationType::Quaternion:
         // スケール、回転、平行移動を合成して行列を計算する
-        matWorld_ = MakeAffineMatrix(scale_,quaternion_, translation_);
+        matWorld_ = MakeAffineMatrix(scale_, quaternion_, translation_);
         break;
     }
 
@@ -61,6 +62,8 @@ void WorldTransform::UpdateMatrix(RotationType type) {
         matWorld_ = Multiply(matWorld_, parent_->matWorld_);
     }
 
+    matWorldInverseTranspose_ = Transpose(Inverse(matWorld_));
+
     TransferMatrix();
 }
 
@@ -68,4 +71,5 @@ void WorldTransform::TransferMatrix()
 {
     // 定数バッファに書き込み
     constMap->matWorld = matWorld_;
+    constMap->matWorldInverseTranspose = matWorldInverseTranspose_;
 }

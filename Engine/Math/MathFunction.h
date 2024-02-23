@@ -9,6 +9,7 @@
 #include "Vector4.h"
 #include "Matrix4x4.h"
 #include "Quaternion.h"
+#include "Transform.h"
 
 const float M_PI = 3.14159265359f;
 
@@ -109,6 +110,7 @@ Matrix4x4 MakeRotateXYZMatrix(const Vector3& rotation);
 Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rot, const Vector3& translate);
 Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Matrix4x4& rotateMatrix, const Vector3& translate);
 Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Quaternion& quaternion, const Vector3& translate);
+Matrix4x4 MakeAffineMatrix(const Transform& transform);
 
 // 透視投射行列
 Matrix4x4 MakePerspectiveFovMatrix(float fovY, float aspectRatio, float nearClip, float farClip);

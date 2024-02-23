@@ -6,7 +6,8 @@
 #include <unordered_map>
 #include <wrl.h>
 
-#include "DescriptorHeap.h"
+#include "Core/DescriptorHeap.h"
+
 
 /// <summary>
 /// テクスチャマネージャ

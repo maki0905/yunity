@@ -488,6 +488,27 @@ Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Quaternion& quaternion, c
 	return result;
 }
 
+Matrix4x4 MakeAffineMatrix(const Transform& transform)
+{
+	Matrix4x4 result;
+	for (int line = 0; line < 4; line++) {
+		for (int column = 0; column < 4; column++) {
+			result.m[line][column] = 0;
+		}
+	}
+	// スケーリング行列の作成
+	Matrix4x4 scaleMatrix = MakeScaleMatrix(transform.scale);
+
+	// 回転行列の合成(Z回転 * X回転 * Y回転)
+	Matrix4x4 rotateMatrix = MakeRotateXYZMatrix(transform.rotate);
+
+	// 平行移動行列の作成
+	Matrix4x4 translateMatrix = MakeTranslateMatrix(transform.translate);
+
+	result = Multiply(Multiply(scaleMatrix, rotateMatrix), translateMatrix);
+	return result;
+}
+
 // 単位行列の作成
 Matrix4x4 MakeIdentity4x4() {
 	Matrix4x4 result;

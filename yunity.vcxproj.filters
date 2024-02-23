@@ -13,9 +13,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="imgui">
-      <UniqueIdentifier>{7087bd48-7edc-4561-be49-19478300adf1}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Shaders">
       <UniqueIdentifier>{4c6822d5-d1c3-4061-ab7e-ee33108a38f9}</UniqueIdentifier>
     </Filter>
@@ -132,61 +129,40 @@
     <ClCompile Include="main.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="externals\imgui\imgui.cpp">
-      <Filter>imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="externals\imgui\imgui_demo.cpp">
-      <Filter>imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="externals\imgui\imgui_draw.cpp">
-      <Filter>imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="externals\imgui\imgui_impl_dx12.cpp">
-      <Filter>imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="externals\imgui\imgui_impl_win32.cpp">
-      <Filter>imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="externals\imgui\imgui_tables.cpp">
-      <Filter>imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="externals\imgui\imgui_widgets.cpp">
-      <Filter>imgui</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\Math\MathFunction.cpp">
       <Filter>Engine\math</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\base\CommandList.cpp">
+    <ClCompile Include="Engine\Core\CommandList.cpp">
       <Filter>Engine\base\Command</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\base\CommandQueue.cpp">
+    <ClCompile Include="Engine\Core\CommandQueue.cpp">
       <Filter>Engine\base\Command</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\base\BackBuffer.cpp">
+    <ClCompile Include="Engine\Core\BackBuffer.cpp">
       <Filter>Engine\base\Buffer</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\base\DepthBuffer.cpp">
+    <ClCompile Include="Engine\Core\DepthBuffer.cpp">
       <Filter>Engine\base\Buffer</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Input\Input.cpp">
       <Filter>Engine\base\Input</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\base\ShaderCompiler.cpp">
+    <ClCompile Include="Engine\Core\ShaderCompiler.cpp">
       <Filter>Engine\base\ShaderCompiler</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\base\RootSignature.cpp">
+    <ClCompile Include="Engine\Core\RootSignature.cpp">
       <Filter>Engine\base\RootSignature</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\base\RootParameter.cpp">
+    <ClCompile Include="Engine\Core\RootParameter.cpp">
       <Filter>Engine\base\RootSignature</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\base\PipelineState.cpp">
+    <ClCompile Include="Engine\Core\PipelineState.cpp">
       <Filter>Engine\base\PipelineState</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\base\Device.cpp">
+    <ClCompile Include="Engine\Core\Device.cpp">
       <Filter>Engine\base\Device</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\base\SwapChain.cpp">
+    <ClCompile Include="Engine\Core\SwapChain.cpp">
       <Filter>Engine\base\SwapChain</Filter>
     </ClCompile>
     <ClCompile Include="Engine\2D\TextureManager.cpp">
@@ -207,7 +183,7 @@
     <ClCompile Include="Engine\3D\FollowCamera.cpp">
       <Filter>Engine\3D\Camera</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\base\WindowsAPI.cpp">
+    <ClCompile Include="Engine\Core\WindowsAPI.cpp">
       <Filter>Engine\base\WindowsAPI</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Utility\GlobalVariables.cpp">
@@ -231,16 +207,16 @@
     <ClCompile Include="Engine\Utility\StringUtility.cpp">
       <Filter>Engine\Utility\StringUtility</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\base\DescriptorHandle.cpp">
+    <ClCompile Include="Engine\Core\DescriptorHandle.cpp">
       <Filter>Engine\base\Descriptor</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\base\DescriptorHeap.cpp">
+    <ClCompile Include="Engine\Core\DescriptorHeap.cpp">
       <Filter>Engine\base\Descriptor</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Scene\GameManager.cpp">
+    <ClCompile Include="Engine\Base\GameManager.cpp">
       <Filter>Engine\Scene\Manager</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\base\DirectXCore.cpp">
+    <ClCompile Include="Engine\Core\DirectXCore.cpp">
       <Filter>Engine\base\Core</Filter>
     </ClCompile>
     <ClCompile Include="Engine\3D\Model.cpp">
@@ -309,32 +285,29 @@
     <ClCompile Include="Additional\Screen.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\Core\Common.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\3D\SphereDrawer.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\3D\ParticleEmitter.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Base\Framework.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Scene\SceneFactory.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Scene\SceneManager.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\3D\ModelManager.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="externals\imgui\imconfig.h">
-      <Filter>imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="externals\imgui\imgui.h">
-      <Filter>imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="externals\imgui\imgui_impl_dx12.h">
-      <Filter>imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="externals\imgui\imgui_impl_win32.h">
-      <Filter>imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="externals\imgui\imgui_internal.h">
-      <Filter>imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="externals\imgui\imstb_rectpack.h">
-      <Filter>imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="externals\imgui\imstb_textedit.h">
-      <Filter>imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="externals\imgui\imstb_truetype.h">
-      <Filter>imgui</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\Math\Capsule.h">
       <Filter>Engine\math\ヘッダー</Filter>
     </ClInclude>
@@ -374,37 +347,37 @@
     <ClInclude Include="Engine\Math\AABB.h">
       <Filter>Engine\math\ヘッダー</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\base\CommandQueue.h">
+    <ClInclude Include="Engine\Core\CommandQueue.h">
       <Filter>Engine\base\Command</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\base\CommandList.h">
+    <ClInclude Include="Engine\Core\CommandList.h">
       <Filter>Engine\base\Command</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\base\BackBuffer.h">
+    <ClInclude Include="Engine\Core\BackBuffer.h">
       <Filter>Engine\base\Buffer</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\base\DepthBuffer.h">
+    <ClInclude Include="Engine\Core\DepthBuffer.h">
       <Filter>Engine\base\Buffer</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Input\Input.h">
       <Filter>Engine\base\Input</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\base\ShaderCompiler.h">
+    <ClInclude Include="Engine\Core\ShaderCompiler.h">
       <Filter>Engine\base\ShaderCompiler</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\base\RootSignature.h">
+    <ClInclude Include="Engine\Core\RootSignature.h">
       <Filter>Engine\base\RootSignature</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\base\RootParameter.h">
+    <ClInclude Include="Engine\Core\RootParameter.h">
       <Filter>Engine\base\RootSignature</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\base\PipelineState.h">
+    <ClInclude Include="Engine\Core\PipelineState.h">
       <Filter>Engine\base\PipelineState</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\base\Device.h">
+    <ClInclude Include="Engine\Core\Device.h">
       <Filter>Engine\base\Device</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\base\SwapChain.h">
+    <ClInclude Include="Engine\Core\SwapChain.h">
       <Filter>Engine\base\SwapChain</Filter>
     </ClInclude>
     <ClInclude Include="Engine\2D\TextureManager.h">
@@ -428,7 +401,7 @@
     <ClInclude Include="SafeDelete.h">
       <Filter>Engine</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\base\WindowsAPI.h">
+    <ClInclude Include="Engine\Core\WindowsAPI.h">
       <Filter>Engine\base\WindowsAPI</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Utility\GlobalVariables.h">
@@ -455,16 +428,16 @@
     <ClInclude Include="Engine\Utility\StringUtility.h">
       <Filter>Engine\Utility\StringUtility</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\base\DescriptorHandle.h">
+    <ClInclude Include="Engine\Core\DescriptorHandle.h">
       <Filter>Engine\base\Descriptor</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\base\DescriptorHeap.h">
+    <ClInclude Include="Engine\Core\DescriptorHeap.h">
       <Filter>Engine\base\Descriptor</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Scene\GameManager.h">
+    <ClInclude Include="Engine\Base\GameManager.h">
       <Filter>Engine\Scene\Manager</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\base\DirectXCore.h">
+    <ClInclude Include="Engine\Core\DirectXCore.h">
       <Filter>Engine\base\Core</Filter>
     </ClInclude>
     <ClInclude Include="Engine\3D\Model.h">
@@ -545,11 +518,33 @@
     <ClInclude Include="Additional\Screen.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="externals\imgui\LICENSE.txt">
-      <Filter>imgui</Filter>
-    </Text>
+    <ClInclude Include="Engine\Core\Common.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\3D\SphereDrawer.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\3D\PointLight.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\3D\ParticleEmitter.h">
+      <Filter>Engine\3D\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Base\Framework.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Scene\AbstractSceneFactory.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Scene\SceneFactory.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Scene\SceneManager.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\3D\ModelManager.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\Shaders\BasicPS.hlsl">

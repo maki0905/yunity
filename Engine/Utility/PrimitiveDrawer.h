@@ -77,7 +77,9 @@ public:
 	/// </summary>
 	/// <param name="worldTransform">ワールドトランスフォーム</param>
 	/// <param name="viewProjection">ビュープロジェクション</param>
-	void Draw(const WorldTransform& worldTransform, const Camera& camera);
+	void Draw(const WorldTransform& worldTransform);
+
+	void SetCamera(Camera* camera) { camera_ = camera; }
 
 private:
 
@@ -102,6 +104,8 @@ private:
 	static PipelineState* pipelineState_;
 
 private:
+	Camera* camera_ = nullptr;
+
 	// 頂点バッファ
 	Microsoft::WRL::ComPtr<ID3D12Resource> vertexResource_;
 	// 頂点バッファビュー

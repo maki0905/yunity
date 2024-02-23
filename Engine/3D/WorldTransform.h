@@ -8,6 +8,7 @@
 // 定数バッファ用データ構造体
 struct ConstBufferDataWorldTransform {
 	Matrix4x4 matWorld; // ローカル → ワールド変換行列
+	Matrix4x4 matWorldInverseTranspose; // ワールドの逆転置行列
 };
 
 enum class RotationType
@@ -35,6 +36,8 @@ struct WorldTransform {
 	Matrix4x4 matWorld_;
 	// 親となるワールド変換へのポインタ
 	WorldTransform* parent_ = nullptr;
+	// ワールドの逆転置行列
+	Matrix4x4 matWorldInverseTranspose_;
 
 
 	/// <summary>

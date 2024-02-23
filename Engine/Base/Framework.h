@@ -18,26 +18,21 @@
 #include "Sprite.h"
 #include "PrimitiveDrawer.h"
 #include "ParticleDrawer.h"
+#include "SphereDrawer.h"
+#include "Audio/Audio.h"
+#include "SceneManager.h"
+#include "ModelManager.h"
 #include "GlobalVariables.h"
 #include "Screen.h"
 
-
-class GameManager
-{
+class Framework {
 public:
-	/// <summary>
-	/// コンストラクタ
-	/// </summary>
-	GameManager();
+	virtual void Initialize();
+	virtual void Finalize();
+	virtual void Update();
+	virtual void Draw() = 0;
 
-	/// <summary>
-	/// デストラクタ
-	/// </summary>
-	~GameManager();
-
-	void Run();
-
-private:
+protected:
 	// シーンを保持するメンバ変数
 	std::unique_ptr<IScene> sceneArr_[COUNT];
 
@@ -57,3 +52,8 @@ private:
 	Screen* screen_ = nullptr;
 };
 
+	SphereDrawer* sphere_ = nullptr;
+	Audio* audio_ = nullptr;
+	SceneManager* sceneManager_ = nullptr;
+	ModelManager* modelManager_ = nullptr;
+};

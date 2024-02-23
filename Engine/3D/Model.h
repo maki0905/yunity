@@ -11,6 +11,8 @@
 #include "WorldTransform.h"
 #include "MathFunction.h"
 
+#include "PointLight.h"
+
 
 class PipelineState;
 class RootSignature;
@@ -26,6 +28,8 @@ class Model
 		kTexture,        // テクスチャ
 		kMaterial,       // マテリアル
 		kLight,          // ライティング
+		kCamera,         // カメラ
+		kPointLight,
 		kCount,          // 最大数
 	};
 
@@ -39,6 +43,8 @@ public:
 
 	struct MaterialData {
 		Vector4 color;
+		uint32_t enableLighting;
+		float shininess;
 		std::string textureFilePath;
 	};
 
@@ -50,7 +56,7 @@ public:
 	struct DirectionalLight {
 		Vector4 color; // ライトの色
 		Vector3 direction; // ライトの向き
-		float intensity; // 輝度
+		float intensity = 0; // 輝度
 	};
 
 public:
@@ -82,8 +88,6 @@ public:
 	/// </summary>
 	static void InitializeGraphicsPipeline();
 
-
-
 public:
 	/// <summary>
 	/// 初期化
@@ -97,9 +101,15 @@ public:
 	/// <param name="viewProjection">ビュープロジェクション</param>
 	/// <param name="textureHandle">テクスチャハンドル</param>
 	void Draw(const WorldTransform& worldTransform, const Camera& camera, uint32_t textureHandle);
-	void Draw(const WorldTransform& worldTransform, const Camera& camera);
+	void Draw(const WorldTransform& worldTransform/*, const Camera& camera*/);
 
 	void SetMaterial(const Vector4& color);
+
+	void SetCamera(Camera* camera) { camera_ = camera; }
+	void SetPointLight(const PointLight& pointLight);
+	void SetLighting(bool flag) { materialData_->enableLighting = flag; }
+
+	void SetModelData(const std::string& modelname);
 
 private:
 
@@ -129,7 +139,7 @@ private:
 	static PipelineState* pipelineState_;
 
 private:
-
+	Camera* camera_ = nullptr;
 
 	ModelData modelData;
 	// 頂点バッファ
@@ -156,5 +166,9 @@ private:
 
 	// テクスチャハンドル
 	uint32_t textureHandle_;
+
+	Microsoft::WRL::ComPtr<ID3D12Resource> pointLightResource_;
+	PointLight* pointLightData_;
+
 };
 

@@ -8,6 +8,7 @@
 #include "RootSignature.h"
 #include "PipelineState.h"
 #include "ShaderCompiler.h"
+#include "ModelManager.h"
 
 ID3D12Device* Model::device_ = nullptr;
 ID3D12GraphicsCommandList* Model::commandList_ = nullptr;
@@ -40,7 +41,7 @@ void Model::PostDraw()
 Model* Model::Create(const std::string& modelname)
 {
 	Model* model = new Model();
-	model->LoadObjFile(modelname);
+	model->SetModelData(modelname);
 	model->Initialize();
 	return model;
 }
@@ -65,6 +66,8 @@ void Model::InitializeGraphicsPipeline()
 	rootSignature_->GetParameter(static_cast<size_t>(RootBindings::kTexture)).InitializeAsDescriptorRange(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 0, 1, D3D12_SHADER_VISIBILITY_PIXEL);
 	rootSignature_->GetParameter(static_cast<size_t>(RootBindings::kMaterial)).InitializeAsConstantBuffer(0, D3D12_SHADER_VISIBILITY_PIXEL);
 	rootSignature_->GetParameter(static_cast<size_t>(RootBindings::kLight)).InitializeAsConstantBuffer(1, D3D12_SHADER_VISIBILITY_PIXEL);
+	rootSignature_->GetParameter(static_cast<size_t>(RootBindings::kCamera)).InitializeAsConstantBuffer(2, D3D12_SHADER_VISIBILITY_PIXEL);
+	rootSignature_->GetParameter(static_cast<size_t>(RootBindings::kPointLight)).InitializeAsConstantBuffer(3, D3D12_SHADER_VISIBILITY_PIXEL);
 
 	rootSignature_->Finalize(D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
 
@@ -142,7 +145,8 @@ void Model::Draw(const WorldTransform& worldTransform, const Camera& camera, uin
 	commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(RootBindings::kWorldTransform), worldTransform.constBuff_->GetGPUVirtualAddress());
 
 	// CBVをセット(ビュープロジェクション行列)
-	commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(RootBindings::kViewProjection), camera.constBuff_->GetGPUVirtualAddress());
+	commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(RootBindings::kViewProjection), camera_->GetConstBuff()->GetGPUVirtualAddress());
+	//commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(RootBindings::kViewProjection), camera.GetConstBuff()->GetGPUVirtualAddress());
 
 	// SRVをセット
 	TextureManager::GetInstance()->SetGraphicsRootDescriptorTable(commandList_, static_cast<UINT>(RootBindings::kTexture), textureHandle);
@@ -151,7 +155,7 @@ void Model::Draw(const WorldTransform& worldTransform, const Camera& camera, uin
 
 }
 
-void Model::Draw(const WorldTransform& worldTransform, const Camera& camera)
+void Model::Draw(const WorldTransform& worldTransform/*, const Camera& camera*/)
 {
 	assert(device_);
 	assert(commandList_);
@@ -168,11 +172,16 @@ void Model::Draw(const WorldTransform& worldTransform, const Camera& camera)
 	commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(RootBindings::kWorldTransform), worldTransform.constBuff_->GetGPUVirtualAddress());
 
 	// CBVをセット(ビュープロジェクション行列)
-	commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(RootBindings::kViewProjection), camera.constBuff_->GetGPUVirtualAddress());
+	commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(RootBindings::kViewProjection), camera_->GetConstBuff()->GetGPUVirtualAddress());
+	//commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(RootBindings::kViewProjection), camera.GetConstBuff()->GetGPUVirtualAddress());
 	commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(RootBindings::kMaterial), materialResource_->GetGPUVirtualAddress());
 
 	// CBVをセット(ビュープロジェクション行列)
 	commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(RootBindings::kLight), directionalLightResource_->GetGPUVirtualAddress());
+
+	commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(RootBindings::kCamera), camera_->GetCameraForGPU()->GetGPUVirtualAddress());
+
+	commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(RootBindings::kPointLight), pointLightResource_->GetGPUVirtualAddress());
 
 
 	// SRVをセット
@@ -184,9 +193,16 @@ void Model::Draw(const WorldTransform& worldTransform, const Camera& camera)
 	commandList_->DrawInstanced(UINT(modelData.vertices.size()), 1, 0, 0);
 }
 
-void Model::SetMaterial(const Vector4& color)
+void Model::SetPointLight(const PointLight& pointLight)
 {
-	materialData_->color = color;
+	pointLightData_->color = pointLight.color;
+	pointLightData_->position = pointLight.position;
+	pointLightData_->intensity = pointLight.intensity;
+}
+
+void Model::SetModelData(const std::string& modelname)
+{
+	modelData = *ModelManager::GetInstance()->Load(modelname);
 }
 
 //void T::SetMaterial(const Vector4& color)
@@ -330,7 +346,16 @@ void Model::InitializeDirectionalLight()
 	// デフォルト値
 	directionalLightData_->color = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
 	directionalLightData_->direction = Vector3(0.0f, -1.0f, 0.0f);
-	directionalLightData_->intensity = 1.0f;
+	directionalLightData_->intensity = 0.0f;
+
+	pointLightResource_ = CreateBufferResource(sizeof(PointLight));
+	pointLightData_ = nullptr;
+	pointLightResource_->Map(0, nullptr, reinterpret_cast<void**>(&pointLightData_));
+
+	pointLightData_->color = { 1.0f, 1.0f, 1.0f, 1.0f };
+	pointLightData_->position = { 0.0f, 2.0f, 0.0f };
+	pointLightData_->intensity = 1.0f;
+
 
 }
 
@@ -340,6 +365,8 @@ void Model::InitializeMaterial()
 	materialData_ = nullptr;
 	materialResource_->Map(0, nullptr, reinterpret_cast<void**>(&materialData_));
 	materialData_->color = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+	materialData_->enableLighting = 1;
+	materialData_->shininess = 50.0f;
 }
 
 ID3D12Resource* Model::CreateBufferResource(size_t sizeInBytes)

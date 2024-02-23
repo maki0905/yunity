@@ -101,7 +101,7 @@ public:
 	/// <param name="soundDatahandle">サウンドデータハンドル</param>
 	/// <param name="loopFlag">ループ再生フラグ</param>
 	/// <returns>再生ハンドル</returns>
-	uint32_t PlayWave(uint32_t soundDatahandle, bool loopFlag = false);
+	uint32_t PlayWave(uint32_t soundDataHandle, bool loopFlag = false);
 
 	/// <summary>
 	/// 音声停止
@@ -130,6 +130,8 @@ private:
 	uint32_t indexVoice_ = 0u;
 	// オーディオコールバック
 	XAudio2VoiceCallback voiceCallback_;
+	// マスターボイス
+	IXAudio2MasteringVoice* masterVoice_;
 
 
 

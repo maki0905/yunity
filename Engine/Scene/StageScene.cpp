@@ -2,6 +2,8 @@
 
 #include "TextureManager.h"
 #include "Input.h"
+#include "ImGuiManager.h"
+#include "SceneManager.h"
 
 #include "Screen.h"
 
@@ -228,6 +230,7 @@ void StageScene::Update()
 		Reset();
 	}
 
+	
 }
 
 void StageScene::DrawBack()

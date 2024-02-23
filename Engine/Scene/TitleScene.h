@@ -1,4 +1,7 @@
 #pragma once
+
+#include <memory>
+
 #include "IScene.h"
 
 #include <memory>
@@ -10,6 +13,8 @@
 #include "Skydome.h"
 #include "Input.h"
 
+#include "Sprite.h"
+#include "Model.h"
 class TitleScene : public IScene
 {
 public:
@@ -37,5 +42,7 @@ private:
 	bool display_;
 	bool flag_;
 
+	std::unique_ptr<Sprite> sprite_ = nullptr;
+	std::unique_ptr<Model> model_ = nullptr;
 };
 

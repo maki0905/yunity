@@ -13,6 +13,10 @@
 #include "Random.h"
 #include "DebugCamera.h"
 #include "FollowCamera.h"
+#include "ParticleManager.h"
+#include "SphereDrawer.h"
+#include "Audio/Audio.h"
+#include "ModelManager.h"
 
 #pragma region 新規作成
 #include "Skydome.h"
@@ -38,16 +42,16 @@ public:
 	void Reset();
 private:
 
-	Camera camera_;
+	std::unique_ptr<Camera> camera_;
 	std::unique_ptr<DebugCamera> debugCamera_;
 	bool isDebug_ = false;
 
-	// 追従カメラ
+	// �Ǐ]�J����
 	std::unique_ptr<FollowCamera> followCamera_;
 
 	std::unique_ptr<CollisionManager> collisionManager_ = nullptr;
 
-	// モデル
+	// ���f��
 	std::unique_ptr<Model> skydomeModel_;
 	std::unique_ptr<Model> floorModel_;
 	std::unique_ptr<Model> movingFloorModel_;
@@ -65,7 +69,7 @@ private:
 
 	std::unique_ptr<Model> particle_;
 
-	// オブジェクト
+	// �I�u�W�F�N�g
 	std::unique_ptr<Skydome> skydome_;
 	std::unique_ptr<StartBox> startBox_;
 	std::unique_ptr<EndBox> endBox_;

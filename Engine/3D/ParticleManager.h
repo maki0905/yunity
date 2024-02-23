@@ -6,6 +6,7 @@
 #include "Camera.h"
 #include "BaseParticle.h"
 #include "ParticleDrawer.h"
+#include "ParticleEmitter.h"
 
 #include "FireworksParticle.h"
 
@@ -16,12 +17,16 @@ public:
 
 	void Update();
 
-	void Draw(const Camera& camera);
+	void Draw();
 
-	void Add(Camera* camera);
+	void AddEmitter(ParticleEmitter* emitter);
+	void Add(Camera* camera = nullptr);
 
+	void SetCamera(Camera* camera) { camera_ = camera; }
 
 private:
+	Camera* camera_ = nullptr;
+	std::list<ParticleEmitter*> emitters_;
 	std::list<BaseParticle*> particles_;
 };
 

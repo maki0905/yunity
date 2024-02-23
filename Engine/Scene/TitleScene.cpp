@@ -4,6 +4,8 @@
 #include "TextureManager.h"
 
 
+#include "SceneManager.h"
+
 void TitleScene::Initialize()
 {
 	camera_.Initialize();
