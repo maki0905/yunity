@@ -61,7 +61,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalIncludeDirectories>$(ProjectDir)Engine;$(ProjectDir)Engine\2D;$(ProjectDir)Engine\3D;$(ProjectDir)Engine\Audio;$(ProjectDir)Engine\Base;$(ProjectDir)Engine\Core;$(ProjectDir)Engine\Input;$(ProjectDir)Engine\Math;$(ProjectDir)Engine\Scene;$(ProjectDir)Engine\Utility;$(ProjectDir)Engine\base;$(ProjectDir)Externals;$(ProjectDir)Externals\imgui;$(ProjectDir)Externals\nlohmann;$(ProjectDir)Additional;$(ProjectDir)imgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Engine;$(ProjectDir)Engine\2D;$(ProjectDir)Engine\3D;$(ProjectDir)Engine\Audio;$(ProjectDir)Engine\Base;$(ProjectDir)Engine\Core;$(ProjectDir)Engine\Input;$(ProjectDir)Engine\Math;$(ProjectDir)Engine\Scene;$(ProjectDir)Engine\Utility;$(ProjectDir)Engine\Physics;$(ProjectDir)Engine\base;$(ProjectDir)Externals;$(ProjectDir)Externals\imgui;$(ProjectDir)Externals\nlohmann;$(ProjectDir)Additional;$(ProjectDir)imgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
@@ -85,7 +85,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalIncludeDirectories>$(ProjectDir)Engine;$(ProjectDir)Engine\2D;$(ProjectDir)Engine\3D;$(ProjectDir)Engine\Audio;$(ProjectDir)Engine\Base;$(ProjectDir)Engine\Core;$(ProjectDir)Engine\Input;$(ProjectDir)Engine\Math;$(ProjectDir)Engine\Scene;$(ProjectDir)Engine\Utility;$(ProjectDir)Externals;$(ProjectDir)Externals\nlohmann;$(ProjectDir)Additional;$(ProjectDir)Physics;$(ProjectDir)imgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Engine;$(ProjectDir)Engine\2D;$(ProjectDir)Engine\3D;$(ProjectDir)Engine\Audio;$(ProjectDir)Engine\Base;$(ProjectDir)Engine\Core;$(ProjectDir)Engine\Input;$(ProjectDir)Engine\Math;$(ProjectDir)Engine\Scene;$(ProjectDir)Engine\Physics;$(ProjectDir)Engine\Utility;$(ProjectDir)Externals;$(ProjectDir)Externals\nlohmann;$(ProjectDir)Additional;$(ProjectDir)Physics;$(ProjectDir)imgui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
@@ -103,6 +103,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Additional\Block.cpp" />
+    <ClCompile Include="Additional\BlockManager.cpp" />
     <ClCompile Include="Engine\3D\BaseParticle.cpp" />
     <ClCompile Include="Engine\3D\FireworksParticle.cpp" />
     <ClCompile Include="Engine\3D\ModelManager.cpp" />
@@ -117,6 +118,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Engine\Collider.cpp" />
     <ClCompile Include="Engine\CollisionManager.cpp" />
     <ClCompile Include="Engine\Base\Framework.cpp" />
+    <ClCompile Include="Engine\Physics\World.cpp" />
     <ClCompile Include="Engine\Scene\ClearScene.cpp" />
     <ClCompile Include="Engine\Core\CommandList.cpp" />
     <ClCompile Include="Engine\Core\CommandQueue.cpp" />
@@ -130,6 +132,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Engine\Base\GameManager.cpp" />
     <ClCompile Include="Engine\Scene\SceneFactory.cpp" />
     <ClCompile Include="Engine\Scene\SceneManager.cpp" />
+    <ClCompile Include="Engine\Utility\CSV.cpp" />
     <ClCompile Include="Engine\Utility\GlobalVariables.cpp" />
     <ClCompile Include="Engine\Utility\ImGuiManager.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
@@ -161,6 +164,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Additional\Block.h" />
+    <ClInclude Include="Additional\BlockManager.h" />
     <ClInclude Include="Engine\3D\BaseParticle.h" />
     <ClInclude Include="Engine\3D\FireworksParticle.h" />
     <ClInclude Include="Engine\3D\ModelManager.h" />
@@ -179,6 +183,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\Math\AABB.h" />
     <ClInclude Include="Engine\Core\BackBuffer.h" />
     <ClInclude Include="Engine\Math\Capsule.h" />
+    <ClInclude Include="Engine\Physics\World.h" />
     <ClInclude Include="Engine\Scene\AbstractSceneFactory.h" />
     <ClInclude Include="Engine\Scene\ClearScene.h" />
     <ClInclude Include="Engine\Core\CommandList.h" />
@@ -193,6 +198,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\Base\GameManager.h" />
     <ClInclude Include="Engine\Scene\SceneFactory.h" />
     <ClInclude Include="Engine\Scene\SceneManager.h" />
+    <ClInclude Include="Engine\Utility\CSV.h" />
     <ClInclude Include="Engine\Utility\GlobalVariables.h" />
     <ClInclude Include="Engine\Utility\ImGuiManager.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>

@@ -22,6 +22,7 @@
 #include "Audio/Audio.h"
 #include "SceneManager.h"
 #include "ModelManager.h"
+#include "CSV.h"
 
 class Framework {
 public:
@@ -51,4 +52,5 @@ protected:
 	Audio* audio_ = nullptr;
 	SceneManager* sceneManager_ = nullptr;
 	ModelManager* modelManager_ = nullptr;
+	CSV* csv_ = nullptr;
 };

@@ -1,12 +1,18 @@
 #include "Player.h"
-#include "Input.h"
 
-void Player::Initialize()
+#include "ImGuiManager.h"
+
+void Player::Initialize(Camera* camera)
 {
 	worldTransfrom_.Initialize();
-	HitBox_.reset(PrimitiveDrawer::Create(PrimitiveDrawer::Type::kBox));
 
-	Create(&worldTransfrom_, Type::kSphere);
+	model_.reset(Model::Create("startBox"));
+	model_->SetCamera(camera);
+	camera_ = camera;
+
+
+	Create(&worldTransfrom_, Type::kAABB, RotationType::Euler, camera);
+	Collider::SetMass(1.0f);
 
 	// 衝突属性を設定
 	SetCollisionAttribute(kCollisionAttributePlayer);
@@ -17,21 +23,29 @@ void Player::Initialize()
 
 void Player::Update()
 {
-	
+	float x = worldTransfrom_.translation_.x;
+	camera_->SetTranslate(Vector3(x, camera_->GetTranslate().y, camera_->GetTranslate().z));
 	if (Input::GetInstance()->PushKey(DIK_A)) {
-		//worldTransfrom_.translation_.x -= 0.1f;
-		SetVelocity(Vector3{ -0.1f, 0.0f, 0.0f });
+		worldTransfrom_.translation_.x -= 0.1f;
+		//SetVelocity(Vector3{ -0.1f, 0.0f, 0.0f });
 	}
 	if (Input::GetInstance()->PushKey(DIK_D)) {
-		//worldTransfrom_.translation_.x += 0.1f;
-		SetVelocity(Vector3{ 0.1f, 0.0f, 0.0f });
+		worldTransfrom_.translation_.x += 0.1f;
+		//SetVelocity(Vector3{ 0.1f, 0.0f, 0.0f });
 	}
-	Step(RotationType::Euler);
+	if (Input::GetInstance()->TriggerKey(DIK_W)) {
+		//worldTransfrom_.translation_.x += 0.1f;
+		SetVelocity(Vector3{ 0.0f, 10.0f, 0.0f });
+	}
 
-	//worldTransfrom_.UpdateMatrix(RotationType::Euler);
+	ImGui::Begin("Player");
+	ImGui::SliderFloat3("pos", &worldTransfrom_.translation_.x, -100.0f, 100.9f);
+	ImGui::End();
+	
 }
 
-void Player::Draw(const Camera& camera)
+void Player::Draw()
 {
-	HitBox_->Draw(worldTransfrom_);
+	model_->Draw(worldTransfrom_, TextureManager::GetInstance()->Load("Black1x1.png"));
+	Collider::HitBox();
 }

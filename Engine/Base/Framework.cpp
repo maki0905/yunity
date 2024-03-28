@@ -53,6 +53,9 @@ void Framework::Initialize()
 	sceneManager_->Initialize();
 	sceneManager_->ChangeScene("GAMESTAGE");
 
+	csv_ = CSV::GetInstance();
+	csv_->Initialize();
+
 
 
 #pragma endregion

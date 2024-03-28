@@ -1,6 +1,6 @@
 ﻿//#pragma once
 //
-//#include "ViewProjection.h"
+//#include "Camera.h"
 //#include "WorldTransform.h"
 //#include <memory>
 //#include "Input.h"

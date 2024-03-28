@@ -132,11 +132,15 @@ void Model::Initialize()
 	InitializeMaterial();
 }
 
-void Model::Draw(const WorldTransform& worldTransform, const Camera& camera, uint32_t textureHandle)
+void Model::Draw(const WorldTransform& worldTransform, uint32_t textureHandle)
 {
 	assert(device_);
 	assert(commandList_);
 	assert(worldTransform.constBuff_.Get());
+
+	commandList_->SetGraphicsRootSignature(rootSignature_->GetSignature());
+	commandList_->SetPipelineState(pipelineState_->GetPipelineStateObject());
+	commandList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	// 頂点バッファの設定
 	commandList_->IASetVertexBuffers(0, 1, &vertexBufferView_);
@@ -147,12 +151,19 @@ void Model::Draw(const WorldTransform& worldTransform, const Camera& camera, uin
 	// CBVをセット(ビュープロジェクション行列)
 	commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(RootBindings::kViewProjection), camera_->GetConstBuff()->GetGPUVirtualAddress());
 	//commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(RootBindings::kViewProjection), camera.GetConstBuff()->GetGPUVirtualAddress());
+	commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(RootBindings::kMaterial), materialResource_->GetGPUVirtualAddress());
+
+	// CBVをセット(ビュープロジェクション行列)
+	commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(RootBindings::kLight), directionalLightResource_->GetGPUVirtualAddress());
+
+	commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(RootBindings::kCamera), camera_->GetCameraForGPU()->GetGPUVirtualAddress());
+
+	commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(RootBindings::kPointLight), pointLightResource_->GetGPUVirtualAddress());
 
 	// SRVをセット
 	TextureManager::GetInstance()->SetGraphicsRootDescriptorTable(commandList_, static_cast<UINT>(RootBindings::kTexture), textureHandle);
 
 	commandList_->DrawInstanced(UINT(modelData.vertices.size()), 1, 0, 0);
-
 }
 
 void Model::Draw(const WorldTransform& worldTransform/*, const Camera& camera*/)
@@ -365,7 +376,7 @@ void Model::InitializeMaterial()
 	materialData_ = nullptr;
 	materialResource_->Map(0, nullptr, reinterpret_cast<void**>(&materialData_));
 	materialData_->color = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
-	materialData_->enableLighting = 1;
+	materialData_->enableLighting = 0;
 	materialData_->shininess = 50.0f;
 }
 

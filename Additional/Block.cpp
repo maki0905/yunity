@@ -1,11 +1,14 @@
 #include "Block.h"
 
-void Block::Initialize()
+void Block::Initialize(Camera* camera)
 {
 	worldTransfrom_.Initialize();
-	HitBox_.reset(PrimitiveDrawer::Create(PrimitiveDrawer::Type::kBox));
 
-	Create(&worldTransfrom_, Type::kSphere);
+	model_.reset(Model::Create("startBox"));
+	model_->SetCamera(camera);
+	
+
+	Create(&worldTransfrom_, Type::kAABB, RotationType::Euler, camera);
 
 	// 衝突属性を設定
 	SetCollisionAttribute(kCollisionAttributeEnemy);
@@ -15,9 +18,12 @@ void Block::Initialize()
 
 void Block::Update()
 {
+	worldTransfrom_.UpdateMatrix(RotationType::Euler);
+
 }
 
-void Block::Draw(const Camera& camera)
+void Block::Draw()
 {
-	HitBox_->Draw(worldTransfrom_);
+	model_->Draw(worldTransfrom_, TextureManager::GetInstance()->Load("white1x1.png"));
+	Collider::HitBox();
 }

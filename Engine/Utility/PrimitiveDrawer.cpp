@@ -108,7 +108,7 @@ void PrimitiveDrawer::InitializeGraphicsPipeline()
 	// DepthStencilStateの設定
 	D3D12_DEPTH_STENCIL_DESC depthStencilDesc{};
 	// Depthの機能を有効化する
-	depthStencilDesc.DepthEnable = true;
+	depthStencilDesc.DepthEnable = false;
 	// 書き込みします
 	depthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
 	// 比較関数はLessEqual。つまり、近ければ描画される
@@ -206,25 +206,25 @@ void PrimitiveDrawer::CreateSphere()
 			vertexData[0].position.y = sin(lat);
 			vertexData[0].position.z = cos(lat) * sin(lon);
 			vertexData[0].position.w = 1.0f;
-			vertexData[0].color = { 1, 1, 1, 1 };
+			vertexData[0].color = { 1, 0, 0, 1 };
 			// b
 			vertexData[1].position.x = cos(lat + kLatEvery) * cos(lon);
 			vertexData[1].position.y = sin(lat + kLatEvery);
 			vertexData[1].position.z = cos(lat + kLatEvery) * sin(lon);
 			vertexData[1].position.w = 1.0f;
-			vertexData[1].color = { 1, 1, 1, 1 };
+			vertexData[1].color = { 1, 0, 0, 1 };
 			// c
 			vertexData[2].position.x = cos(lat) * cos(lon + kLonEvery);
 			vertexData[2].position.y = sin(lat);
 			vertexData[2].position.z = cos(lat) * sin(lon + kLonEvery);
 			vertexData[2].position.w = 1.0f;
-			vertexData[2].color = { 1, 1, 1, 1 };
+			vertexData[2].color = { 1, 0, 0, 1 };
 			// d
 			vertexData[3].position.x = cos(lat + kLatEvery) * cos(lon + kLonEvery);
 			vertexData[3].position.y = sin(lat + kLatEvery);
 			vertexData[3].position.z = cos(lat + kLatEvery) * sin(lon + kLonEvery);
 			vertexData[3].position.w = 1.0f;
-			vertexData[3].color = { 1, 1, 1, 1 };
+			vertexData[3].color = { 1, 0, 0, 1 };
 
 			for (uint32_t i = 0; i < 4; i++) {
 				vertices_.push_back(vertexData[i]);
@@ -315,14 +315,14 @@ void PrimitiveDrawer::CreateBox()
 	//indexBuff_->Map(0, nullptr, (void**)&indexData_);
 
 	VertexData vertexData[8];
-	vertexData[0] = { Vector4(-0.5f, -0.5f, -0.5f, 1.0f), Vector4(1.0f, 1.0f, 1.0f, 1.0f) };
-	vertexData[1] = { Vector4(-0.5f, 0.5f, -0.5f, 1.0f), Vector4(1.0f, 1.0f, 1.0f, 1.0f) };
-	vertexData[2] = { Vector4(0.5f, 0.5f, -0.5f, 1.0f), Vector4(1.0f, 1.0f, 1.0f, 1.0f) };
-	vertexData[3] = { Vector4(0.5f, -0.5f, -0.5f, 1.0f), Vector4(1.0f, 1.0f, 1.0f, 1.0f) };
-	vertexData[4] = { Vector4(-0.5f, -0.5f, 0.5f, 1.0f), Vector4(1.0f, 1.0f, 1.0f, 1.0f) };
-	vertexData[5] = { Vector4(-0.5f, 0.5f, 0.5f, 1.0f), Vector4(1.0f, 1.0f, 1.0f, 1.0f) };
-	vertexData[6] = { Vector4(0.5f, 0.5f, 0.5f, 1.0f), Vector4(1.0f, 1.0f, 1.0f, 1.0f) };
-	vertexData[7] = { Vector4(0.5f, -0.5f, 0.5f, 1.0f), Vector4(1.0f, 1.0f, 1.0f, 1.0f) };
+	vertexData[0] = { Vector4(-0.5f, -0.5f, -0.5f, 1.0f), Vector4(1.0f, 0.0f, 0.0f, 1.0f) };
+	vertexData[1] = { Vector4(-0.5f, 0.5f, -0.5f, 1.0f), Vector4(1.0f, 0.0f, 0.0f, 1.0f) };
+	vertexData[2] = { Vector4(0.5f, 0.5f, -0.5f, 1.0f), Vector4(1.0f, 0.0f, 0.0f, 1.0f) };
+	vertexData[3] = { Vector4(0.5f, -0.5f, -0.5f, 1.0f), Vector4(1.0f, 0.0f, 0.0f, 1.0f) };
+	vertexData[4] = { Vector4(-0.5f, -0.5f, 0.5f, 1.0f), Vector4(1.0f, 0.0f, 0.0f, 1.0f) };
+	vertexData[5] = { Vector4(-0.5f, 0.5f, 0.5f, 1.0f), Vector4(1.0f, 0.0f, 0.0f, 1.0f) };
+	vertexData[6] = { Vector4(0.5f, 0.5f, 0.5f, 1.0f), Vector4(1.0f, 0.0f, 0.0f, 1.0f) };
+	vertexData[7] = { Vector4(0.5f, -0.5f, 0.5f, 1.0f), Vector4(1.0f, 0.0f, 0.0f, 1.0f) };
 
 	for (int32_t i = 0; i < 8; i++) {
 		vertices_.push_back(vertexData[i]);

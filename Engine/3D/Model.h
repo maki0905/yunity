@@ -100,7 +100,7 @@ public:
 	/// <param name="worldTransform">ワールドトランスフォーム</param>
 	/// <param name="viewProjection">ビュープロジェクション</param>
 	/// <param name="textureHandle">テクスチャハンドル</param>
-	void Draw(const WorldTransform& worldTransform, const Camera& camera, uint32_t textureHandle);
+	void Draw(const WorldTransform& worldTransform, uint32_t textureHandle);
 	void Draw(const WorldTransform& worldTransform/*, const Camera& camera*/);
 
 	//void SetMaterial(const Vector4& color);

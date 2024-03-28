@@ -11,7 +11,7 @@ public:
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Initialize(Model* model);
+	void Initialize(Model* model, Camera* camera);
 
 	/// <summary>
 	/// 更新

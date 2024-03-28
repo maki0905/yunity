@@ -4,6 +4,7 @@
 #include "Collider.h"
 #include "Collision.h"
 #include "CollisionConfig.h"
+#include "ImGuiManager.h"
 
 
 void CollisionManager::CheckAllCollision() {
@@ -27,22 +28,64 @@ void CollisionManager::CheckAllCollision() {
 }
 
 void CollisionManager::CheckCollisionPair(Collider* colliderA, Collider* colliderB) {
+	ImGui::Begin("HitCheck");
+
+	/*if (colliderA->GetMass() == 0 && colliderB->GetMass() == 0) {
+		return;
+	}*/
+
+	switch (colliderB->GetType())
+	{
+	case Collider::kSphere:
+		
+		break;
+	case Collider::kPlane:
+		break;
+	case Collider::kAABB:
+		if (IsCollision(*colliderA->GetAABB(), *colliderB->GetAABB())) {
+			colliderA->OnCollision();
+			if (colliderA->GetMass() != 0) {
+				colliderA->resolveCollision(*colliderB->GetAABB());
+			}
+			else {
+				colliderB->resolveCollision(*colliderA->GetAABB());
+			}
+			//colliderA->resolveCollision(*colliderB->GetAABB());
+			colliderB->OnCollision();
+			ImGui::Text("TURE");
+
+		}
+		else {
+			ImGui::Text("FALSE");
+		}
+		break;
+	case Collider::kCapsule:
+		break;
+	case Collider::kOBB:
+		break;
+	default:
+		break;
+	}
+
+	ImGui::End();
+
+
 	// 衝突フィルタリング
-	if (colliderA->GetCollisionAttribute() != kCollisionAttributePlayer) {
+	/*if (colliderA->GetCollisionAttribute() != kCollisionAttributePlayer) {
 		return;
 	}
 	if ((colliderA->GetCollisionAttribute() & colliderB->GetCollisionMask()) == 0 ||
 		(colliderB->GetCollisionAttribute() & colliderA->GetCollisionMask()) == 0) {
 		return;
-	}
+	}*/
 
-	sphere[0] = *colliderA->GetSphere();
+	/*sphere[0] = *colliderA->GetSphere();
 	sphere[1] = *colliderB->GetSphere();
 
 	if (IsCollision(sphere[0], sphere[1])) {
 		colliderA->OnCollision();
 		colliderB->OnCollision();
-	}
+	}*/
 
 
 

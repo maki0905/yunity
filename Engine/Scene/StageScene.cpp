@@ -7,140 +7,57 @@
 
 void StageScene::Initialize()
 {
-	textureHandle_ = TextureManager::Load("uvChecker.png");
-	sprite_ = std::make_unique<Sprite>();
-	sprite_.reset(Sprite::Create(textureHandle_, { 0.0f, 0.0f }));
-	position_ = { 0.0f, 0.0f };
+	world_ = std::make_unique<World>();
+	world_->Initialize();
 
 	camera_ = std::make_unique<Camera>();
 	debugCamera_ = std::make_unique<DebugCamera>();
+	bool isDebug_ = false;
 
-	worldTransform_.Initialize();
-	worldTransform_.UpdateMatrix(RotationType::Euler);
-	worldTrasnform1_.Initialize();
-	//worldTrasnform1_.translation_.y = 0.0f;
-	worldTrasnform1_.UpdateMatrix(RotationType::Euler);
+	player_ = std::make_unique<Player>();
+	player_->Initialize(camera_.get());
 
-	skydome_.reset(Model::Create("skydome"));
+	blockManager_ = std::make_unique<BlockManager>();
+	blockManager_->Initialize(camera_.get(), world_.get());
 
-	sphere_.reset(PrimitiveDrawer::Create(PrimitiveDrawer::Type::kBox));
-	player_ = new Player();
-	player_->Initialize();
+	start_ = std::make_unique<Model>();
+	start_.reset(Model::Create("startBox"));
+	start_->SetCamera(camera_.get());
+	worldTransform_start_.Initialize();
+	worldTransform_start_.translation_ = { -20.0f, 5.0f, 0.0f };
+	worldTransform_start_.UpdateMatrix(RotationType::Euler);
 
-	/*particle_ = new ParticleDrawer();
-	particle_ = ParticleDrawer::Create("uvChecker.png");*/
-	particle_ = std::make_unique<ParticleDrawer>();
-	particle_.reset(ParticleDrawer::Create("uvChecker.png"));
-	
-	block_ = new Block();
-	block_->Initialize();
-	//player_ = std::make_unique<Player>();
-	/*skydome1_ = std::make_unique<Skydome>();
-	skydome1_->Initialize(Model::Create("skydome"));*/
-	//player_->Initialize();
+	end_ = std::make_unique<Model>();
+	end_.reset(Model::Create("endBox"));
+	end_->SetCamera(camera_.get());
+	worldTransform_end_.Initialize();
+	worldTransform_end_.translation_ = { 50.0f, 3.0f, 0.0f };
+	worldTransform_end_.UpdateMatrix(RotationType::Euler);
 
-	particles_.clear();
-	for (uint32_t index = 0; index < 10; index++) {
-		worldTransformParticle_[index].Initialize();
-		worldTransformParticle_[index].scale_ = { 5.0f, 5.0f, 5.0f };
-		worldTransformParticle_[index].translation_ = { rng.NextFloatRange(-1.0f, 1.0f), rng.NextFloatRange(-1.0f, 1.0f), rng.NextFloatRange(-1.0f, 1.0f) };
-		worldTransformParticle_[index].UpdateMatrix(RotationType::Euler);
-		velocity_[index] = { rng.NextFloatRange(-0.1f, 0.1f), rng.NextFloatRange(-0.1f, 0.1f), 0.0f };
+	world_->Add(player_.get());
 
-		Particle* particle = new Particle();
-		particle->transform.translate = { index * 2.0f, index * 2.0f, 0.0f };
-		particle->velocity = { rng.NextFloatRange(-0.1f, 0.1f), rng.NextFloatRange(-0.1f, 0.1f), 0.0f };
-		particle->particleForCPU.color = { rng.NextFloatRange(0.0f, 1.0f),rng.NextFloatRange(0.0f, 1.0f),rng.NextFloatRange(0.0f, 1.0f), 1.0f };
-		particles_.push_back(particle);
-		
-	}
+	player_->SetTranslation(worldTransform_start_.translation_);
 
-	particleManager_ = std::make_unique<ParticleManager>();
-	particleManager_->Initialize();
-	particleManager_->SetCamera(camera_.get());
-	ParticleEmitter* particleEmitter = new ParticleEmitter();
-	particleEmitter->SetCamera(camera_.get());
-	particleEmitter->Initialize({ .scale{1.0f, 1.0f, 1.0f}, .rotate{0.0f, 0.0f, 0.0f}, .translate{0.0f, 0.0f, 0.0f} }, 1.0f, 1.0f);
-	particleManager_->AddEmitter(particleEmitter);
+	primitiveDrawer_.reset(PrimitiveDrawer::Create(PrimitiveDrawer::Type::kBox));
+	primitiveDrawer_->SetCamera(camera_.get());
 
-	collisionManager_ = std::make_unique<CollisionManager>();
-
-
-
-	ball_ = std::make_unique<SphereDrawer>();
-	ball_.reset(SphereDrawer::Create("monsterBall.png"));
-	ball_->SetCamera(camera_.get());
-
-	/*terrain_ = std::make_unique<Model>();
-	terrain_.reset(ModelManager::GetInstance()->Load("terrain"));
-	terrain_->SetCamera(camera_.get());
-	terrain_->SetLighting(false);
-
-	terrain1_ = std::make_unique<Model>();
-	terrain1_.reset(ModelManager::GetInstance()->Load("terrain"));
-	terrain1_->SetCamera(camera_.get());*/
-
-	terrain_.reset(Model::Create("terrain"));
-	terrain_->SetCamera(camera_.get());
-	terrain_->SetLighting(false);
-	terrain1_.reset(Model::Create("terrain"));
-	terrain1_->SetCamera(camera_.get());
-	
-
-	handle_ = Audio::GetInstance()->LoadWave("fanfare.wav");
-	
 }
 
 void StageScene::Update()
 {
-	
-	if (Input::GetInstance()->TriggerKey(DIK_SPACE)) {
-		SceneManager::GetInstance()->ChangeScene("TITLE");
-	}
-
-	// 衝突マネージャーのリストをクリア
-	collisionManager_->ClearCollider();
-	// コライダーを衝突マネージャーのリストに登録
-	collisionManager_->SetCollider(player_);
-	collisionManager_->SetCollider(block_);
-	// 衝突マネージャーの当たり判定処理を呼び出す
-	collisionManager_->CheckAllCollision();
-
-
-	//player_->Update();
 	player_->Update();
 
-	if (index_particle > 10) {
-		index_particle = 0;
+	if (player_->GetTranslation().x > worldTransform_end_.translation_.x) {
+		player_->SetTranslation(worldTransform_start_.translation_);
 	}
 
-	for (uint32_t index = 0; index < 10; index++) {
-		worldTransformParticle_[index].translation_ = Add(worldTransformParticle_[index].translation_, velocity_[index]);
-		worldTransformParticle_[index].UpdateMatrix(RotationType::Euler);
-	}
+	blockManager_->Update(world_.get());
 
-	for (Particle* particle : particles_) {
-		//particle->AddVecocity();
-		//particle->AffineMatrix();
-		particle->transform.rotate.z += 0.1f;
-		particle->BillboardMatrix(*camera_);
-	}
+	world_->Solve();
 
-	ImGui::Begin("model");
-	ImGui::SliderFloat3("pos", &worldTransform_.translation_.x, -10.0f, 10.0f);
-	ImGui::SliderFloat3("pos1", &worldTrasnform1_.translation_.x, -10.0f, 10.0f);
-	ImGui::End();
-
-	worldTransform_.UpdateMatrix(RotationType::Euler);
-	worldTrasnform1_.UpdateMatrix(RotationType::Euler);
-
-	particleManager_->Update();
-
-#ifdef _DEBUG
 	if (Input::GetInstance()->TriggerKey(DIK_LSHIFT)) {
 		isDebug_ ^= true;
 	}
-#endif
 
 	if (isDebug_) {
 		debugCamera_->Update(camera_.get());
@@ -149,21 +66,6 @@ void StageScene::Update()
 	else {
 		camera_->Update();
 	}
-
-#ifdef _DEBUG
-	ImGui::Begin("PointLight");
-	ImGui::SliderFloat3("position", &pointLight.position.x, -10.0f, 10.0f);
-	ImGui::SliderFloat("intensity", &pointLight.intensity, 0.0f, 100.0f);
-	ImGui::SliderFloat("radius", &pointLight.radius, 0.0f, 100.0f);
-	ImGui::SliderFloat("decay", &pointLight.decay, 0.0f, 100.0f);
-	ImGui::SliderFloat3("scale", &worldTransform_.scale_.x, 1.0f, 10.0f);
-	ImGui::SliderFloat3("position", &worldTransform_.translation_.x, -10.0f, 10.0f);
-	ImGui::End();
-#endif // _DEBUG
-
-	ball_->SetPointLight(pointLight);
-	terrain_->SetPointLight(pointLight);
-	
 }
 
 void StageScene::DrawBack()
@@ -172,22 +74,15 @@ void StageScene::DrawBack()
 
 void StageScene::Draw3D()
 {
-	/*skydome_->Draw(worldTransform_, camera_);
-	sphere_->Draw(worldTrasnform1_, camera_);*/
-	//skydome_->Draw(worldTransform_, camera_);
-	//particle_->Draw(worldTrasnform1_, camera_);
-	//particle_->Draw(/*worldTransformParticle_,*/ particles_, camera_);
-	particleManager_->Draw();
-	//player_->Draw(camera_);
-	/*block_->Draw(camera_);*/
-	
-	/*ball_->Draw(worldTransform_, *camera_);
-	terrain_->Draw(worldTrasnform1_);*/
-	terrain_->Draw(worldTrasnform1_);
-	terrain1_->Draw(worldTransform_);
+	player_->Draw();
+	blockManager_->Draw();
+	primitiveDrawer_->Draw(worldTransform_start_);
+	start_->Draw(worldTransform_start_);
+	end_->Draw(worldTransform_end_);
+	//primitiveDrawer_->Draw(worldTransform_start_);
 }
 
 void StageScene::DrawFront()
 {
-	//sprite_->Draw();
+	
 }

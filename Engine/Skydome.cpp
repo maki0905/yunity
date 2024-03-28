@@ -1,6 +1,6 @@
 #include "Skydome.h"
 
-void Skydome::Initialize(Model* model)
+void Skydome::Initialize(Model* model, Camera* camera)
 {
 	model_ = model;
 
@@ -8,7 +8,7 @@ void Skydome::Initialize(Model* model)
 	worldTransform_.UpdateMatrix(RotationType::Euler);
 
 	collider_ = new Collider();
-	collider_->Create(&worldTransform_, Collider::Type::kSphere);
+	collider_->Create(&worldTransform_, Collider::Type::kSphere, RotationType::Euler, camera);
 }
 
 void Skydome::Update()
