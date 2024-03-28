@@ -1,9 +1,9 @@
 #include "FireworksParticle.h"
 
-void FireworksParticle::Initialize(const Vector3& position)
+void FireworksParticle::Initialize(const Vector3& position, std::string textureName)
 {
 	isActive_ = true;
-	particleDrawer_.reset(ParticleDrawer::Create("circle.png"));
+	particleDrawer_.reset(ParticleDrawer::Create(textureName));
 	particleDrawer_->SetCamera(camera_);
 	particles_.clear();
 

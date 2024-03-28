@@ -6,7 +6,7 @@
 
 class FireworksParticle : public BaseParticle {
 public:
-	void Initialize(const Vector3& position) override;
+	void Initialize(const Vector3& position, std::string textureName) override;
 	void Peculiar() override;
 	void Draw() override;
 

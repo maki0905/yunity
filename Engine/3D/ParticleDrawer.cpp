@@ -135,6 +135,10 @@ void ParticleDrawer::Draw(/*WorldTransform* worldTransform,*/std::list<Particle*
 	assert(device_);
 	assert(commandList_);
 
+	commandList_->SetGraphicsRootSignature(rootSignature_->GetSignature());
+	commandList_->SetPipelineState(pipelineState_->GetPipelineStateObject());
+	commandList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
 	uint32_t numInstance = 0;
 	
 	//for (uint32_t index = 0; index < kNumInstance; index++) {

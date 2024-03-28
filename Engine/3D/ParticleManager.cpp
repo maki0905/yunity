@@ -13,7 +13,7 @@ void ParticleManager::Update()
 
 			FireworksParticle* fireworksParticle = new FireworksParticle();
 			fireworksParticle->SetCamera(camera_);
-			fireworksParticle->Initialize(emitter->GetPosition());
+			fireworksParticle->Initialize(emitter->GetPosition(), emitter->GetTextureName());
 			particles_.push_back(fireworksParticle);
 		}
 	}

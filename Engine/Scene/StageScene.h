@@ -9,6 +9,7 @@
 #include "Player.h"
 #include "BlockManager.h"
 #include "Block.h"
+#include "Sprite.h"
 
 #include "World.h"
 
@@ -39,6 +40,9 @@ private:
 
 	std::unique_ptr<World> world_;
 	std::unique_ptr<PrimitiveDrawer> primitiveDrawer_;
+
+	std::unique_ptr<Sprite> sprite0_ = nullptr;
+	std::unique_ptr<Sprite> sprite1_ = nullptr;
 
 };
 

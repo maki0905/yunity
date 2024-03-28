@@ -5,6 +5,7 @@
 #include "IScene.h"
 #include "Sprite.h"
 #include "Model.h"
+#include "ParticleManager.h"
 class TitleScene : public IScene
 {
 public:
@@ -19,7 +20,10 @@ private:
 
 	WorldTransform worldTransform_;
 
-	std::unique_ptr<Sprite> sprite_ = nullptr;
-	std::unique_ptr<Model> model_ = nullptr;
+	std::unique_ptr<Model> model0_ = nullptr;
+	std::unique_ptr<Model> model1_ = nullptr;
+
+	std::unique_ptr<ParticleManager> particleManager_ = nullptr;
+
 };
 

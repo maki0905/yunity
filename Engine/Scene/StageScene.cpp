@@ -41,10 +41,20 @@ void StageScene::Initialize()
 	primitiveDrawer_.reset(PrimitiveDrawer::Create(PrimitiveDrawer::Type::kBox));
 	primitiveDrawer_->SetCamera(camera_.get());
 
+	sprite0_ = std::make_unique<Sprite>();
+	sprite0_.reset(Sprite::Create(TextureManager::GetInstance()->Load("uvChecker.png"), { 0.0f, 0.0f }));
+
+	sprite1_ = std::make_unique<Sprite>();
+	sprite1_.reset(Sprite::Create(TextureManager::GetInstance()->Load("monsterBall.png"), { 400.0f, 0.0f }));
+
 }
 
 void StageScene::Update()
 {
+	if (Input::GetInstance()->TriggerKey(DIK_SPACE)) {
+		SceneManager::GetInstance()->ChangeScene("TITLE");
+	}
+
 	player_->Update();
 
 	if (player_->GetTranslation().x > worldTransform_end_.translation_.x) {
@@ -84,5 +94,6 @@ void StageScene::Draw3D()
 
 void StageScene::DrawFront()
 {
-	
+	sprite0_->Draw();	
+	sprite1_->Draw();
 }

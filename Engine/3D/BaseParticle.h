@@ -5,7 +5,7 @@
 
 class BaseParticle {
 public:
-	virtual void Initialize(const Vector3& position) = 0;
+	virtual void Initialize(const Vector3& position, std::string textureName) = 0;
 	virtual void Peculiar() = 0;
 	void Updata();
 	virtual void Draw() = 0;

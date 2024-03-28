@@ -17,6 +17,7 @@ IScene* SceneFactory::CreateScene(const std::string& sceneName)
     else if (sceneName == "GAMESTAGE") {
         newScene = new StageScene();
     }
+   
 
     return newScene;
 }

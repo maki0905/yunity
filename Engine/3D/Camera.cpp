@@ -102,6 +102,14 @@ Camera::Camera() :
 
 void Camera::Update()
 {
+#ifdef _DEBUG
+	ImGui::Begin("Camera");
+	ImGui::SliderFloat3("Position", &transform_.translate.x, -100.0f, 100.0f);
+	ImGui::End();
+#endif // _DEBUG
+
+	
+
 	worldMatrix_ = MakeAffineMatrix(transform_);
 	viewMatrix_ = Inverse(worldMatrix_);
 	projectionMatrix_ = MakePerspectiveFovMatrix(fovAngleY_, aspectRatio_, nearClip_, farClip_);

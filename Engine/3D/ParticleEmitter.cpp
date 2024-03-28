@@ -22,6 +22,14 @@ bool ParticleEmitter::Update()
 #ifdef _DEBUG
 	ImGui::Begin("Emitter");
 	ImGui::SliderFloat3("translation", &worldTransform_.translation_.x, -10.0f, 10.0f);
+	if (ImGui::Button("circle.png")) {
+		textureName_ = "circle.png";
+	}
+	if (ImGui::Button("uvChecker.png")) {
+		textureName_ = "uvChecker.png";
+	}
+
+
 	ImGui::End();
 #endif // _DEBUG
 
@@ -41,3 +49,7 @@ void ParticleEmitter::Draw()
 	primitiveDrawer_->Draw(worldTransform_);
 
 }
+
+
+
+

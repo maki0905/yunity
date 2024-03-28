@@ -51,7 +51,7 @@ void Framework::Initialize()
 
 	sceneManager_ = SceneManager::GetInstance();
 	sceneManager_->Initialize();
-	sceneManager_->ChangeScene("GAMESTAGE");
+	sceneManager_->ChangeScene("TITLE");
 
 	csv_ = CSV::GetInstance();
 	csv_->Initialize();
