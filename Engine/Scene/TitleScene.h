@@ -1,5 +1,7 @@
 #pragma once
 #include "IScene.h"
+
+#include "Sprite.h"
 class TitleScene : public IScene
 {
 public:
@@ -10,6 +12,7 @@ public:
 	void DrawFront() override;
 
 private:
+	std::unique_ptr<Sprite> sprite_ = nullptr;
 
 };
 

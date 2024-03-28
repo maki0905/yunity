@@ -58,7 +58,7 @@ GameManager::GameManager()
 	sceneArr_[CLEAR] = std::make_unique<ClearScene>();
 
 	// 初期シーンの設定
-	currentSceneNo_ = GAME_STAGE;
+	currentSceneNo_ = TITLE;
 	sceneArr_[currentSceneNo_]->Initialize();
 
 }

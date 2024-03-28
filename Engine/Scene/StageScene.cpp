@@ -6,9 +6,11 @@
 
 void StageScene::Initialize()
 {
-	textureHandle_ = TextureManager::Load("uvChecker.png");
+	textureHandle_ = TextureManager::Load("GamePlayScene.png");
 	sprite_ = std::make_unique<Sprite>();
 	sprite_.reset(Sprite::Create(textureHandle_, { 0.0f, 0.0f }));
+	sprite_->SetSize(Vector2(1280.0f, 720.0f));
+	
 	position_ = { 0.0f, 0.0f };
 
 	camera_.Initialize();
@@ -163,5 +165,5 @@ void StageScene::Draw3D()
 
 void StageScene::DrawFront()
 {
-	//sprite_->Draw();
+	sprite_->Draw();
 }
