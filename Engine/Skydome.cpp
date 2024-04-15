@@ -1,21 +1,19 @@
 #include "Skydome.h"
 
-void Skydome::Initialize(Model* model, Camera* camera)
+void Skydome::Initialize(Camera* camera)
 {
-	model_ = model;
 
+	model_.reset(Model::Create("skydome"));
+	model_->SetCamera(camera);
 	worldTransform_.Initialize();
 	worldTransform_.UpdateMatrix(RotationType::Euler);
-
-	collider_ = new Collider();
-	collider_->Create(&worldTransform_, Collider::Type::kSphere, RotationType::Euler, camera);
 }
 
 void Skydome::Update()
 {
 }
 
-void Skydome::Draw(const Camera& camera)
+void Skydome::Draw()
 {
 	model_->Draw(worldTransform_);
 }

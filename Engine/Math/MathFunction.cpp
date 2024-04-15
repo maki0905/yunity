@@ -45,7 +45,7 @@ inline float Dot(const Vector2& v1, const Vector2& v2)
 	return result;
 }
 
-inline float DistanceSquared(const Vector2& a, const Vector2& b)
+float DistanceSquared(const Vector2& a, const Vector2& b)
 {
 	float result;
 	Vector2 c = Subtract(a, b);
@@ -831,5 +831,25 @@ Quaternion Slerp(const Quaternion& q0, const Quaternion& q1, float t)
 float Dot(const Quaternion& q1, const Quaternion& q2)
 {
 	float result = (q1.x * q2.x) + (q1.y * q2.y) + (q1.z * q2.z) + (q1.w * q2.w);
+	return result;
+}
+
+Vector3 CatmullRom(Vector3 p0, Vector3 p1, Vector3 p2, Vector3 p3, float t)
+{
+	Vector3 result;
+	float t2 = t * t;
+	float t3 = t2 * t;
+
+	float P0 = -t3 + 2.0f * t2 - t;
+	float P1 = 3.0f * t3 - 5.0f * t2 + 2.0f;
+	float P2 = -3.0f * t3 + 4.0f * t2 + t;
+	float P3 = t3 - t2;
+
+
+
+	result.x = (P0 * p0.x + P1 * p1.x + P2 * p2.x + P3 * p3.x) * 0.5f;
+	result.y = (P0 * p0.y + P1 * p1.y + P2 * p2.y + P3 * p3.y) * 0.5f;
+	result.z = (P0 * p0.z + P1 * p1.z + P2 * p2.z + P3 * p3.z) * 0.5f;
+
 	return result;
 }

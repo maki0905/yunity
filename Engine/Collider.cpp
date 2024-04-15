@@ -223,7 +223,7 @@ void Collider::resolveCollision(AABB& other)
 
 Vector3 Collider::GetWorldPosition()
 {
-	return Vector3();
+	return Vector3(worldTransform_->matWorld_.m[3][0], worldTransform_->matWorld_.m[3][1], worldTransform_->matWorld_.m[3][2]);
 }
 
 void Collider::SetVelocity(const Vector3& velocity)

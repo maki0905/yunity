@@ -11,7 +11,7 @@ public:
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Initialize(Model* model, Camera* camera);
+	void Initialize(Camera* camera);
 
 	/// <summary>
 	/// 更新
@@ -21,13 +21,11 @@ public:
 	/// <summary>
 	/// 描画
 	/// </summary>
-	void Draw(const Camera& camera);
+	void Draw();
 
 
 private:
 	WorldTransform worldTransform_;
-	Model* model_ = nullptr;
-
-	Collider* collider_;
+	std::unique_ptr<Model> model_ = nullptr;
 };
 

@@ -104,6 +104,11 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
   <ItemGroup>
     <ClCompile Include="Additional\Block.cpp" />
     <ClCompile Include="Additional\BlockManager.cpp" />
+    <ClCompile Include="Additional\Enemy.cpp" />
+    <ClCompile Include="Additional\EnemyBullet.cpp" />
+    <ClCompile Include="Additional\PlayerBullet.cpp" />
+    <ClCompile Include="Additional\RailCamera.cpp" />
+    <ClCompile Include="Additional\TimedCall.cpp" />
     <ClCompile Include="Engine\3D\BaseParticle.cpp" />
     <ClCompile Include="Engine\3D\FireworksParticle.cpp" />
     <ClCompile Include="Engine\3D\ModelManager.cpp" />
@@ -165,6 +170,11 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
   <ItemGroup>
     <ClInclude Include="Additional\Block.h" />
     <ClInclude Include="Additional\BlockManager.h" />
+    <ClInclude Include="Additional\Enemy.h" />
+    <ClInclude Include="Additional\EnemyBullet.h" />
+    <ClInclude Include="Additional\PlayerBullet.h" />
+    <ClInclude Include="Additional\RailCamera.h" />
+    <ClInclude Include="Additional\TimedCall.h" />
     <ClInclude Include="Engine\3D\BaseParticle.h" />
     <ClInclude Include="Engine\3D\FireworksParticle.h" />
     <ClInclude Include="Engine\3D\ModelManager.h" />

@@ -11,57 +11,87 @@ void StageScene::Initialize()
 	world_->Initialize();
 
 	camera_ = std::make_unique<Camera>();
+	camera_->Update();
+
 	debugCamera_ = std::make_unique<DebugCamera>();
-	bool isDebug_ = false;
+	isDebug_ = false;
+
+	// レールカメラの生成
+	railCamera_ = std::make_unique<RailCamera>();
+	// レールカメラの初期化
+	Vector3 translation = { 0.0f, 0.0f, -200.0f };
+	Vector3 rotation = { 0.0f, 0.0f, 0.0f };
+	//railCamera_->Initialize(camera_.get(), translation, rotation);
 
 	player_ = std::make_unique<Player>();
 	player_->Initialize(camera_.get());
+	//player_->SetParent(&railCamera_->GetWorldMatrix());
 
-	blockManager_ = std::make_unique<BlockManager>();
-	blockManager_->Initialize(camera_.get(), world_.get());
+	skydome_ = std::make_unique<Skydome>();
+	skydome_->Initialize(camera_.get());
 
-	start_ = std::make_unique<Model>();
-	start_.reset(Model::Create("startBox"));
-	start_->SetCamera(camera_.get());
-	worldTransform_start_.Initialize();
-	worldTransform_start_.translation_ = { -20.0f, 5.0f, 0.0f };
-	worldTransform_start_.UpdateMatrix(RotationType::Euler);
-
-	end_ = std::make_unique<Model>();
-	end_.reset(Model::Create("endBox"));
-	end_->SetCamera(camera_.get());
-	worldTransform_end_.Initialize();
-	worldTransform_end_.translation_ = { 50.0f, 3.0f, 0.0f };
-	worldTransform_end_.UpdateMatrix(RotationType::Euler);
+	// 敵発生データの読み込み
+	LoadEnemyPopData();
+	
 
 	world_->Add(player_.get());
-
-	player_->SetTranslation(worldTransform_start_.translation_);
-
-	primitiveDrawer_.reset(PrimitiveDrawer::Create(PrimitiveDrawer::Type::kBox));
-	primitiveDrawer_->SetCamera(camera_.get());
-
-	sprite0_ = std::make_unique<Sprite>();
-	sprite0_.reset(Sprite::Create(TextureManager::GetInstance()->Load("uvChecker.png"), { 0.0f, 0.0f }));
-
-	sprite1_ = std::make_unique<Sprite>();
-	sprite1_.reset(Sprite::Create(TextureManager::GetInstance()->Load("monsterBall.png"), { 400.0f, 0.0f }));
-
 }
 
 void StageScene::Update()
 {
+
 	if (Input::GetInstance()->TriggerKey(DIK_SPACE)) {
 		SceneManager::GetInstance()->ChangeScene("TITLE");
 	}
 
-	player_->Update();
+	// 敵キャラの発生
+	UpdateEnemyPopCommands();
 
-	if (player_->GetTranslation().x > worldTransform_end_.translation_.x) {
-		player_->SetTranslation(worldTransform_start_.translation_);
+	// 敵キャラの更新
+	for (Enemy* enemy : enemys_) {
+		enemy->Update();
+		if (enemy->IsLockon()) {
+			player_->SetEnemy(enemy);
+		}
 	}
 
-	blockManager_->Update(world_.get());
+	// 敵弾更新
+	for (EnemyBullet* bullet : enemyBullets_) {
+		bullet->SetPlayer(player_.get());
+		bullet->Update();
+	}
+
+	// デスフラグの立った敵弾を削除
+	enemyBullets_.remove_if([](EnemyBullet* bullet) {
+		if (bullet->IsDead()) {
+			delete bullet;
+			return true;
+		}
+		return false;
+	});
+	// デスフラグの立った敵を削除
+	enemys_.remove_if([](Enemy* enemy) {
+		if (enemy->IsDead()) {
+			delete enemy;
+			return true;
+		}
+		return false;
+	});
+
+	player_->Update();
+
+
+	world_->Add(player_.get());
+	for (Enemy* enemy : enemys_) {
+		world_->Add(enemy);
+	}
+	const std::list<PlayerBullet*>& playerBullets = player_->GetBullets();
+	for (PlayerBullet* bullet : playerBullets) {
+		world_->Add(bullet);
+	}
+	for (EnemyBullet* bullet : enemyBullets_) {
+		world_->Add(bullet);
+	}
 
 	world_->Solve();
 
@@ -74,6 +104,7 @@ void StageScene::Update()
 		camera_->Update();
 	}
 	else {
+		//railCamera_->Update(/*&viewProjection_*/);
 		camera_->Update();
 	}
 }
@@ -84,16 +115,129 @@ void StageScene::DrawBack()
 
 void StageScene::Draw3D()
 {
+	skydome_->Draw();
 	player_->Draw();
-	blockManager_->Draw();
-	primitiveDrawer_->Draw(worldTransform_start_);
-	start_->Draw(worldTransform_start_);
-	end_->Draw(worldTransform_end_);
-	//primitiveDrawer_->Draw(worldTransform_start_);
+	// 敵キャラの描画
+	for (Enemy* enemy : enemys_) {
+		enemy->Draw();
+	}
+	// 敵弾描画
+	for (EnemyBullet* bullet : enemyBullets_) {
+		bullet->Draw();
+	}
+	
 }
 
 void StageScene::DrawFront()
 {
-	sprite0_->Draw();	
-	sprite1_->Draw();
+	for (Enemy* enemy : enemys_) {
+		enemy->DrawLockon();
+	}
+	player_->DrawUI();
+
+}
+
+void StageScene::AddEnemyBullet(EnemyBullet* enemyBullet)
+{
+	// リストに登録する
+	enemyBullets_.push_back(enemyBullet);
+}
+
+void StageScene::LoadEnemyPopData()
+{
+	// ファイルを開く
+	std::ifstream file;
+	file.open("Resources/enemyPop.csv");
+	assert(file.is_open());
+
+	// ファイルの内容を文字列ストリームにコピー
+	enemyPopCommands << file.rdbuf();
+
+	// ファイルを閉じる
+	file.close();
+}
+
+void StageScene::UpdateEnemyPopCommands()
+{
+	// 待機処理
+	if (waitFlag_) {
+		waitTimer_--;
+		if (waitTimer_ <= 0) {
+			// 待機完了
+			waitFlag_ = false;
+		}
+		return;
+	}
+	// 1行分の文字列を入れる変数
+	std::string line;
+
+	// コマンド実行ループ
+	while (getline(enemyPopCommands, line)) {
+		// 1行分の文字列をストリームに変換して解析しやすくする
+		std::istringstream line_stream(line);
+
+		std::string word;
+		// ,区切りで行の先頭文字列を取得
+		getline(line_stream, word, ',');
+
+		// "//"から始まる行はコメント
+		if (word.find("//") == 0) {
+			// コメント行を飛ばす
+			continue;
+
+		}
+
+		// POPコマンド
+		if (word.find("POP") == 0) {
+			// x座標
+			getline(line_stream, word, ',');
+			float x = (float)std::atof(word.c_str());
+
+			// y座標
+			getline(line_stream, word, ',');
+			float y = (float)std::atof(word.c_str());
+
+			// z座標
+			getline(line_stream, word, ',');
+			float z = (float)std::atof(word.c_str());
+
+			// 敵を発生させる
+			EnemyPop(Vector3(x, y, z));
+
+
+		}
+		// WAITコマンド
+		else if (word.find("WAIT") == 0) {
+			getline(line_stream, word, ',');
+
+			// 待ち時間
+			int32_t waitTime = atoi(word.c_str());
+
+			// 待機開始
+			waitFlag_ = true;
+			waitTimer_ = waitTime;
+
+			// コマンドループを抜ける
+			break;
+
+		}
+
+
+	}
+}
+
+void StageScene::EnemyPop(Vector3 position)
+{
+	// 敵キャラの生成
+	Enemy* newEnemy = new Enemy();
+	// 敵キャラの初期化
+	newEnemy->Initialize(camera_.get(), position);
+	newEnemy->SetStageScene(this);
+	// 敵キャラを登録する
+	enemys_.push_back(newEnemy);
+
+	// 敵キャラに自キャラのアドレスを渡す
+	for (Enemy* enemy : enemys_) {
+		enemy->SetPlayer(player_.get());
+	}
 }

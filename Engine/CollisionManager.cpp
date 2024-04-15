@@ -28,11 +28,11 @@ void CollisionManager::CheckAllCollision() {
 }
 
 void CollisionManager::CheckCollisionPair(Collider* colliderA, Collider* colliderB) {
-	ImGui::Begin("HitCheck");
-
-	/*if (colliderA->GetMass() == 0 && colliderB->GetMass() == 0) {
+	// 衝突フィルタリング
+	if ((colliderA->GetCollisionAttribute() & colliderB->GetCollisionMask()) == 0 ||
+		(colliderB->GetCollisionAttribute() & colliderA->GetCollisionMask()) == 0) {
 		return;
-	}*/
+	}
 
 	switch (colliderB->GetType())
 	{
@@ -52,11 +52,9 @@ void CollisionManager::CheckCollisionPair(Collider* colliderA, Collider* collide
 			}
 			//colliderA->resolveCollision(*colliderB->GetAABB());
 			colliderB->OnCollision();
-			ImGui::Text("TURE");
 
 		}
 		else {
-			ImGui::Text("FALSE");
 		}
 		break;
 	case Collider::kCapsule:
@@ -66,8 +64,6 @@ void CollisionManager::CheckCollisionPair(Collider* colliderA, Collider* collide
 	default:
 		break;
 	}
-
-	ImGui::End();
 
 
 	// 衝突フィルタリング

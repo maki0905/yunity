@@ -36,7 +36,7 @@ public:
 	void HitBox();
 
 	// 衝突時に呼ばれる関数
-	void OnCollision();
+	virtual void OnCollision();
 
 	void resolveCollision(AABB& other);
 
@@ -66,6 +66,7 @@ public:
 
 	void SetVelocity(const Vector3& velocity);
 	void SetMass(float mass) { mass_ = mass; }
+	void SetIsPhysical(bool flag) { isPhysical_ = flag; }
 
 private:
 	// 衝突属性(自分)
@@ -90,7 +91,7 @@ private:
 	float gravityScale_ = 0.1f;
 	float miu_ = 0.5f;
 
-
+	bool isPhysical_ = false;
 
 
 	RotationType rotationType_;
@@ -104,5 +105,7 @@ private:
 	Type type_;
 	WorldTransform worldTransform_HitBox_;
 	std::unique_ptr<PrimitiveDrawer> HitBox_;
+
+
 	
 };

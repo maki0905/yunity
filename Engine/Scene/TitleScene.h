@@ -6,6 +6,7 @@
 #include "Sprite.h"
 #include "Model.h"
 #include "ParticleManager.h"
+
 class TitleScene : public IScene
 {
 public:
@@ -18,12 +19,13 @@ public:
 private:
 	std::unique_ptr<Camera> camera_;
 
-	WorldTransform worldTransform_;
+	std::unique_ptr<Sprite> title_ = nullptr;
+	std::unique_ptr<Sprite> pushA_ = nullptr;
 
-	std::unique_ptr<Model> model0_ = nullptr;
-	std::unique_ptr<Model> model1_ = nullptr;
+	bool isDraw_;
+	int timer_;
 
-	std::unique_ptr<ParticleManager> particleManager_ = nullptr;
+	XINPUT_STATE pad_;
 
 };
 

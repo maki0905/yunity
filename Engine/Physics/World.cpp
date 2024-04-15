@@ -20,5 +20,5 @@ void World::Solve()
 		obj->Solve();
 	}
 
-
+	allocator_.clear();
 }

@@ -49,7 +49,7 @@ Vector2 Multiply(float k, const Vector2& v);
 //Vector2 Multiply(const myTransform& t, const Vector2& v);
 inline float Dot(const Vector2& v1, const Vector2& v2);
 
-inline float DistanceSquared(const Vector2& v1, const Vector2& v2);
+float DistanceSquared(const Vector2& v1, const Vector2& v2);
 
 // ベクトルの加法
 Vector3 Add(const Vector3& v1, const Vector3& v2);
@@ -165,4 +165,6 @@ Matrix4x4 MakeRotateMatrix(const Quaternion& q);
 Quaternion Slerp(const Quaternion& q0, const Quaternion& q1, float t);
 
 float Dot(const Quaternion& q1, const Quaternion& q2);
+
+Vector3 CatmullRom(Vector3 p0, Vector3 p1, Vector3 p2, Vector3 p3, float t);
 
