@@ -6,6 +6,10 @@
 #include <memory>
 #include <wrl.h>
 
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
+
 #include "TextureManager.h"
 #include "Camera.h"
 #include "WorldTransform.h"
