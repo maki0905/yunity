@@ -44,7 +44,43 @@ void CommandList::CommandClear()
 }
 
 
-void CommandList::SetViewport(float width, float height)
+
+void CommandList::OMSetRenderTargets(ID3D12DescriptorHeap* dsvHeap_)
+{
+	if (dsvHeap_) {
+		// 深度ステンシルビュー用デスクリプタヒープのハンドルを取得
+		D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle =
+			D3D12_CPU_DESCRIPTOR_HANDLE(dsvHeap_->GetCPUDescriptorHandleForHeapStart());
+	}
+	// レンダーターゲットをセット
+	commandList_->OMSetRenderTargets(1, &cpuDescHandleRTV_, false, &dsvHandle);
+}
+
+void CommandList::OMSetRenderTargets(const D3D12_CPU_DESCRIPTOR_HANDLE* cpuDescHandleRTV, ID3D12DescriptorHeap* dsvHeap_)
+{
+	if (dsvHeap_) {
+		// 深度ステンシルビュー用デスクリプタヒープのハンドルを取得
+		D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle =
+			D3D12_CPU_DESCRIPTOR_HANDLE(dsvHeap_->GetCPUDescriptorHandleForHeapStart());
+		// レンダーターゲットをセット
+		commandList_->OMSetRenderTargets(1, cpuDescHandleRTV, false, &dsvHandle);
+	}
+	else {
+		// レンダーターゲットをセット
+		commandList_->OMSetRenderTargets(1, cpuDescHandleRTV, false, nullptr);
+	}
+}
+
+void CommandList::ClearRenderTargetView()
+{
+}
+
+void CommandList::ClearDepthStencilView()
+{
+}
+
+
+void CommandList::RSSetViewports(float width, float height)
 {
 	D3D12_VIEWPORT viewport =
 		D3D12_VIEWPORT(0.0f, 0.0f, width, height, D3D12_MIN_DEPTH, D3D12_MAX_DEPTH);
@@ -52,7 +88,7 @@ void CommandList::SetViewport(float width, float height)
 
 }
 
-void CommandList::SetRect(UINT width, UINT height)
+void CommandList::RSSetScissorRects(UINT width, UINT height)
 {
 	D3D12_RECT rect = D3D12_RECT(0, 0, width, height);
 	commandList_->RSSetScissorRects(1, &rect);

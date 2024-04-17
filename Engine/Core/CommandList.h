@@ -35,19 +35,23 @@ public:
 	/// </summary>
 	void CommandClear();
 
+	void OMSetRenderTargets(const D3D12_CPU_DESCRIPTOR_HANDLE* cpuDescHandleRTV,ID3D12DescriptorHeap* dsvHeap_ = nullptr);
+	void ClearRenderTargetView();
+	void ClearDepthStencilView();
+
 	/// <summary>
 	/// ビューポート設定
 	/// </summary>
 	/// <param name="width">幅</param>
 	/// <param name="height">高さ</param>
-	void SetViewport(float width, float height);
+	void RSSetViewports(float width, float height);
 
 	/// <summary>
 	/// シザリング矩形
 	/// </summary>
 	/// <param name="width">幅</param>
 	/// <param name="height">高さ</param>
-	void SetRect(UINT width, UINT height);
+	void RSSetScissorRects(UINT width, UINT height);
 
 	ID3D12GraphicsCommandList* GetCommandList() {
 		return commandList_.Get();

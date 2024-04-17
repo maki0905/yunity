@@ -67,7 +67,6 @@ void BackBuffer::SetRenderTarget(IDXGISwapChain4* swapChain, ID3D12DescriptorHea
 		D3D12_CPU_DESCRIPTOR_HANDLE(dsvHeap_->GetCPUDescriptorHandleForHeapStart());
 	// レンダーターゲットをセット
 	commandList_->OMSetRenderTargets(1, &rtvHandles_[bbIndex], false, &dsvHandle);
-
 }
 
 void BackBuffer::ClearRenderTarget(IDXGISwapChain4* swapChain)
