@@ -18,6 +18,12 @@ struct ViewProjection
 };
 ConstantBuffer<ViewProjection> gViewProjection : register(b1);
 
+struct Node
+{
+    float4x4 localMatrix;
+};
+ConstantBuffer<Node> gNode : register(b2);
+
 struct VertexShaderInput
 {
     float4 position : POSITION0;
@@ -27,11 +33,14 @@ struct VertexShaderInput
 
 VertexShaderOutput main(VertexShaderInput input) {
 	VertexShaderOutput output;
-    output.position = mul(mul(input.position, gWorldTransform.world), mul(gViewProjection.view, gViewProjection.projection));
+    float4x4 world = gNode.localMatrix * gWorldTransform.world;
+    //output.position = mul(mul(input.position, gWorldTransform.world), mul(gViewProjection.view, gViewProjection.projection));
+    output.position = mul(mul(input.position,world), mul(gViewProjection.view, gViewProjection.projection));
     //output.normal = normalize(mul(input.normal, (float3x3)gWorldTransform.world));
     output.normal = normalize(mul(input.normal, (float3x3) gWorldTransform.worldInverseTranspose));
     output.texcoord = input.texcoord;
-    output.worldPosition = mul(input.position, gWorldTransform.world).xyz;
+    //output.worldPosition = mul(input.position, gWorldTransform.world).xyz;
+    output.worldPosition = mul(input.position, world).xyz;
 	return output;
 }
 

@@ -40,7 +40,7 @@ void GameManager::Draw()
 
 #pragma region 3D描画
 	model_->PreDraw(directXCore_->GetCommandList());
-	sphere_->PreDraw(directXCore_->GetCommandList());
+	//sphere_->PreDraw(directXCore_->GetCommandList());
 	particle_->PreDraw(directXCore_->GetCommandList());
 	primitive_->PreDraw(directXCore_->GetCommandList());
 	// 描画
@@ -48,7 +48,7 @@ void GameManager::Draw()
 	SceneManager::GetInstance()->Draw3D();
 	primitive_->PostDraw();
 	particle_->PostDraw();
-	sphere_->PostDraw();
+	//sphere_->PostDraw();
 	model_->PostDraw();
 #pragma endregion
 

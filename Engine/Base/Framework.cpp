@@ -43,8 +43,8 @@ void Framework::Initialize()
 	textureManager_->Initialize(Device::GetInstance()->GetDevice());
 	TextureManager::Load("white1x1.png");
 
-	sphere_ = new SphereDrawer();
-	sphere_->StaticInitialize();
+	/*sphere_ = new SphereDrawer();
+	sphere_->StaticInitialize();*/
 
 	audio_ = Audio::GetInstance();
 	audio_->Initialize();

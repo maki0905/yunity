@@ -4,10 +4,6 @@
 #include <fstream>
 #include <sstream>
 
-#include <assimp/Importer.hpp>
-#include <assimp/scene.h>
-#include <assimp/postprocess.h>
-
 Model::ModelData* ModelManager::Load(const std::string& fileName, const std::string format)
 {
 	return ModelManager::GetInstance()->LoadInternal(fileName, format);
@@ -31,7 +27,7 @@ Model::ModelData* ModelManager::LoadInternal(const std::string& fileName, const 
 
 	auto itr = models_.find(fileName);
 	if (itr == models_.end()) {
-		models_[fileName] = LoadObjFile(fileName, format);
+		models_[fileName] = LoadModelFile(fileName, format);
 	}
 	return &models_.at(fileName);
 	
@@ -105,7 +101,7 @@ Model::ModelData* ModelManager::LoadInternal(const std::string& fileName, const 
 //	return modelData;
 //}
 
-Model::ModelData ModelManager::LoadObjFile(const std::string& fileName, const std::string format)
+Model::ModelData ModelManager::LoadModelFile(const std::string& fileName, const std::string format)
 {
 	Model::ModelData modelData;
 
@@ -146,6 +142,8 @@ Model::ModelData ModelManager::LoadObjFile(const std::string& fileName, const st
 
 	}
 
+	modelData.rootNode = ReadNode(scene->mRootNode);
+
 	for (uint32_t materialIndex = 0; materialIndex < scene->mNumMaterials; ++materialIndex) {
 		aiMaterial* material = scene->mMaterials[materialIndex];
 		if (material->GetTextureCount(aiTextureType_DIFFUSE) != 0) {
@@ -156,6 +154,27 @@ Model::ModelData ModelManager::LoadObjFile(const std::string& fileName, const st
 	}
 
 	return modelData;
+}
+
+Model::Node ModelManager::ReadNode(aiNode* node)
+{
+	Model::Node result;
+	aiMatrix4x4 aiLocalMatrix = node->mTransformation;
+	aiLocalMatrix.Transpose();
+
+	for (uint32_t i = 0; i < 4; i++) {
+		for (uint32_t j = 0; j < 4; j++) {
+			result.localMatrix.m[i][j] = aiLocalMatrix[i][j];
+		}
+	}
+
+	result.name = node->mName.C_Str();
+	result.children.resize(node->mNumChildren);
+	for (uint32_t childIndex = 0; childIndex < node->mNumChildren; ++childIndex) {
+		result.children[childIndex] = ReadNode(node->mChildren[childIndex]);
+	}
+
+	return result;
 }
 
 Model::MaterialData ModelManager::LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& filename)

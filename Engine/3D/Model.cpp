@@ -63,6 +63,7 @@ void Model::InitializeGraphicsPipeline()
 
 	rootSignature_->GetParameter(static_cast<size_t>(RootBindings::kWorldTransform)).InitializeAsConstantBuffer(0, D3D12_SHADER_VISIBILITY_VERTEX);
 	rootSignature_->GetParameter(static_cast<size_t>(RootBindings::kViewProjection)).InitializeAsConstantBuffer(1, D3D12_SHADER_VISIBILITY_VERTEX);
+	rootSignature_->GetParameter(static_cast<size_t>(RootBindings::kRootNode)).InitializeAsConstantBuffer(2, D3D12_SHADER_VISIBILITY_VERTEX);
 	rootSignature_->GetParameter(static_cast<size_t>(RootBindings::kTexture)).InitializeAsDescriptorRange(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 0, 1, D3D12_SHADER_VISIBILITY_PIXEL);
 	rootSignature_->GetParameter(static_cast<size_t>(RootBindings::kMaterial)).InitializeAsConstantBuffer(0, D3D12_SHADER_VISIBILITY_PIXEL);
 	rootSignature_->GetParameter(static_cast<size_t>(RootBindings::kLight)).InitializeAsConstantBuffer(1, D3D12_SHADER_VISIBILITY_PIXEL);
@@ -130,6 +131,7 @@ void Model::Initialize()
 	CreateMesh();
 	InitializeDirectionalLight();
 	InitializeMaterial();
+	InitializeNode();
 }
 
 void Model::Draw(const WorldTransform& worldTransform, uint32_t textureHandle)
@@ -184,6 +186,7 @@ void Model::Draw(const WorldTransform& worldTransform/*, const Camera& camera*/)
 
 	// CBVをセット(ビュープロジェクション行列)
 	commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(RootBindings::kViewProjection), camera_->GetConstBuff()->GetGPUVirtualAddress());
+	commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(RootBindings::kRootNode), nodeResource_->GetGPUVirtualAddress());
 	//commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(RootBindings::kViewProjection), camera.GetConstBuff()->GetGPUVirtualAddress());
 	commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(RootBindings::kMaterial), materialResource_->GetGPUVirtualAddress());
 
@@ -259,146 +262,6 @@ void Model::CreateMesh()
 
 }
 
-//void Model::LoadObjFile(const std::string& filename)
-//{
-//	// 1. 変数の宣言
-//	std::vector<Vector4> positions;
-//	std::vector<Vector3> normals;
-//	std::vector<Vector2> texcoords;
-//	std::string line;
-//
-//	std::ifstream file("Resources/Models/" + filename + "/" + filename + ".obj");
-//	assert(file.is_open());
-//
-//	while (std::getline(file, line)) {
-//		std::string identifier;
-//		std::istringstream s(line);
-//		s >> identifier;
-//
-//		if (identifier == "v") {
-//			Vector4 position;
-//			s >> position.x >> position.y >> position.z;
-//			position.w = 1.0f;
-//			positions.push_back(position);
-//		}
-//		else if (identifier == "vt") {
-//			Vector2 texcoord;
-//			s >> texcoord.x >> texcoord.y;
-//			texcoords.push_back(texcoord);
-//		}
-//		else if (identifier == "vn") {
-//			Vector3 normal;
-//			s >> normal.x >> normal.y >> normal.z;
-//			normals.push_back(normal);
-//		}
-//		else if (identifier == "mtllib") {
-//			std::string materialFilename;
-//			s >> materialFilename;
-//			modelData.material = LoadMaterialTemplateFile(filename, materialFilename);
-//		}
-//		else if (identifier == "f") {
-//			VertexData triangle[3];
-//			for (int32_t faceVertex = 0; faceVertex < 3; ++faceVertex) {
-//				std::string vertexDefinition;
-//				s >> vertexDefinition;
-//				std::istringstream v(vertexDefinition);
-//				uint32_t elementIndices[3];
-//				for (int32_t element = 0; element < 3; ++element) {
-//					std::string index;
-//					std::getline(v, index, '/'); // 区切りでインデックスを読んでいく
-//					elementIndices[element] = std::stoi(index);
-//				}
-//				// 要素へのIndexから、実際の要素の値を取得して、頂点を構築する
-//				Vector4 position = positions[elementIndices[0] - 1];
-//				position.z *= -1.0f;
-//				Vector2 texcoord = texcoords[elementIndices[1] - 1];
-//				texcoord.y = 1.0f - texcoord.y;
-//				Vector3 normal = normals[elementIndices[2] - 1];
-//				normal.z *= -1.0f;
-//				triangle[faceVertex] = { position, texcoord, normal };
-//			}
-//			modelData.vertices.push_back(triangle[2]);
-//			modelData.vertices.push_back(triangle[1]);
-//			modelData.vertices.push_back(triangle[0]);
-//		}
-//	}
-//}
-
-//void Model::LoadObjFile(const std::string& filename)
-//{
-//	Assimp::Importer importer;
-//	std::string directoryPath = "Resources/Models/" + filename + "/";
-//	std::string filePath = directoryPath + filename;
-//	const aiScene* scene = importer.ReadFile(filePath.c_str(), aiProcess_FlipWindingOrder | aiProcess_FlipUVs);
-//	assert(scene->HasMeshes()); // メッシュがないのは対応しない
-//
-//	for (uint32_t meshIndex = 0; meshIndex < scene->mNumMeshes; ++meshIndex) {
-//		aiMesh* mesh = scene->mMeshes[meshIndex];
-//		assert(mesh->HasNormals());        // 法線がないMeshは今回は非対応
-//		assert(mesh->HasTextureCoords(0)); // TexcoordがないMeshは今回は非対応
-//
-//		// ここからFaceの解析
-//		for (uint32_t faceIndex = 0; faceIndex < mesh->mNumFaces; ++faceIndex) {
-//			aiFace& face = mesh->mFaces[faceIndex];
-//			assert(face.mNumIndices == 3); // 三角形のみサポート
-//
-//			// assimpではaiProcess_Triangulateオプションを指定することで、四角形以上のポリゴンを三角形に自動分割できる
-//
-//			// ここからVertexの解析
-//			for (uint32_t element = 0; element < face.mNumIndices; ++element) {
-//				uint32_t vertexIndex = face.mIndices[element];
-//				aiVector3D& position = mesh->mVertices[vertexIndex];
-//				aiVector3D& normal = mesh->mNormals[vertexIndex];
-//				aiVector3D& texcoord = mesh->mTextureCoords[0][vertexIndex];
-//				VertexData vertex;
-//				vertex.position = { position.x, position.y, position.z, 1.0f };
-//				vertex.normal = { normal.x, normal.y, normal.z };
-//				vertex.texcoord = { texcoord.x, texcoord.y };
-//				// aiProcess_MakeLeftHandedはz*=-1で、右手->左手に変換するので手動で対処
-//				vertex.position.x *= -1.0f;
-//				vertex.normal.x *= -1.0f;
-//				modelData.vertices.push_back(vertex);
-//			}
-//		}
-//
-//	}
-//
-//	for (uint32_t materialIndex = 0; materialIndex < scene->mNumMaterials;) {
-//		aiMaterial* material = scene->mMaterials[materialIndex];
-//		if (material->GetTextureCount(aiTextureType_DIFFUSE) != 0) {
-//			aiString textureFilePath;
-//			material->GetTexture(aiTextureType_DIFFUSE, 0, &textureFilePath);
-//			modelData.material.textureFilePath = directoryPath + textureFilePath.C_Str();
-//		}
-//	}
-//
-//}
-
-Model::MaterialData Model::LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& filename)
-{
-	// 1. 変数の宣言
-	Model::MaterialData materialData;
-	std::string line;
-	// 2. ファイルを開く
-	std::ifstream file("Resources/Models/"+ directoryPath + "/" + filename);
-	assert(file.is_open());
-	// 3. 実際にファイルを読み、MaterialDataを構築していく
-	while (std::getline(file, line)) {
-		std::string identifier;
-		std::istringstream s(line);
-		s >> identifier;
-
-		// identifierに応じた処理
-		if (identifier == "map_Kd") {
-			std::string textureFilename;
-			s >> textureFilename;
-			// 連結してファイルパスにする
-			materialData.textureFilePath =  "Models/" + directoryPath + "/" + textureFilename;
-		}
-	}
-	return materialData;
-}
-
 void Model::InitializeDirectionalLight()
 {
 	directionalLightResource_ = CreateBufferResource(sizeof(DirectionalLight));
@@ -428,6 +291,14 @@ void Model::InitializeMaterial()
 	materialData_->color = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
 	materialData_->enableLighting = 0;
 	materialData_->shininess = 50.0f;
+}
+
+void Model::InitializeNode()
+{
+	nodeResource_ = CreateBufferResource(sizeof(Matrix4x4));
+	nodeData_ = nullptr;
+	nodeResource_->Map(0, nullptr, reinterpret_cast<void**>(&nodeData_));
+	*nodeData_ = modelData.rootNode.localMatrix;
 }
 
 ID3D12Resource* Model::CreateBufferResource(size_t sizeInBytes)

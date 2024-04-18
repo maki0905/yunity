@@ -25,6 +25,7 @@ class Model
 	enum class RootBindings {
 		kWorldTransform, // ワールド変換行列
 		kViewProjection, // ビュープロジェクション変換行列
+		kRootNode,       // ルートノード
 		kTexture,        // テクスチャ
 		kMaterial,       // マテリアル
 		kLight,          // ライティング
@@ -48,9 +49,16 @@ public:
 		std::string textureFilePath;
 	};
 
+	struct Node {
+		Matrix4x4 localMatrix;
+		std::string name;
+		std::vector<Node> children;
+	};
+
 	struct ModelData {
 		std::vector<VertexData> vertices;
 		MaterialData material;
+		Node rootNode;
 	};
 
 	struct DirectionalLight {
@@ -116,14 +124,11 @@ private:
 	// メッシュ生成
 	void CreateMesh();
 
-	// オブジェファイル読み込み
-	void LoadObjFile(const std::string& filename);
-
-	MaterialData LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& filename);
-
 	void InitializeDirectionalLight();
 
 	void InitializeMaterial();
+
+	void InitializeNode();
 
 	/// <summary>
 	/// 定数バッファ生成
@@ -169,6 +174,10 @@ private:
 
 	Microsoft::WRL::ComPtr<ID3D12Resource> pointLightResource_;
 	PointLight* pointLightData_;
+
+	Microsoft::WRL::ComPtr<ID3D12Resource> nodeResource_;
+	Matrix4x4* nodeData_;
+
 
 };
 

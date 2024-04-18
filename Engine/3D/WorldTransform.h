@@ -40,6 +40,7 @@ struct WorldTransform {
 	Matrix4x4 matWorldInverseTranspose_;
 
 
+
 	/// <summary>
 	/// 初期化
 	/// </summary>

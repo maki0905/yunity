@@ -6,6 +6,10 @@
 #include <wrl.h>
 #include <memory>
 
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
+
 #include "Model.h"
 
 /// <summary>
@@ -26,7 +30,8 @@ private:
 	ModelManager& operator=(const ModelManager&) = delete;
 private:
 	Model::ModelData* LoadInternal(const std::string& fileName, const std::string format);
-	Model::ModelData LoadObjFile(const std::string& fileName, const std::string format);
+	Model::ModelData LoadModelFile(const std::string& fileName, const std::string format);
+	Model::Node ReadNode(aiNode* node);
 	Model::MaterialData LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& filename);
 private:
 	Model* model = nullptr;

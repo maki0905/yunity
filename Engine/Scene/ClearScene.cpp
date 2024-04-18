@@ -7,15 +7,15 @@ void ClearScene::Initialize()
 	bool isDebug_ = false;
 
 	model0_ = std::make_unique<Model>();
-	model0_.reset(Model::Create("terrain", "obj"));
+	//model0_.reset(Model::Create("terrain", "obj"));
+	model0_.reset(Model::Create("plane", "gltf"));
 	model0_->SetCamera(camera_.get());
 	worldTransform0_.Initialize();
-
-
 }
 
 void ClearScene::Update()
 {
+	worldTransform0_.rotation_.y += 0.05f;
 	worldTransform0_.UpdateMatrix(RotationType::Euler);
 
 	if (Input::GetInstance()->TriggerKey(DIK_LSHIFT)) {
