@@ -1,5 +1,14 @@
 #pragma once
+#include <memory>
+
 #include "IScene.h"
+#include "Camera.h"
+#include "DebugCamera.h"
+#include "Model.h"
+#include "World.h"
+
+
+
 class ClearScene : public IScene
 {
 public:
@@ -10,5 +19,12 @@ public:
 	void DrawFront() override;
 
 private:
+	bool isDebug_ = false;
+
+	std::unique_ptr<Camera> camera_;
+	std::unique_ptr<DebugCamera> debugCamera_;
+
+	std::unique_ptr<Model> model0_;
+	WorldTransform worldTransform0_;
 };
 
