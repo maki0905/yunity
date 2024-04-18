@@ -6,10 +6,6 @@
 #include <memory>
 #include <wrl.h>
 
-#include <assimp/Importer.hpp>
-#include <assimp/scene.h>
-#include <assimp/postprocess.h>
-
 #include "TextureManager.h"
 #include "Camera.h"
 #include "WorldTransform.h"
@@ -85,7 +81,7 @@ public:
 	/// 3Dモデル生成
 	/// </summary>
 	/// <returns></returns>
-	static Model* Create(const std::string& modelname);
+	static Model* Create(const std::string& fileName, const std::string format);
 
 	/// <summary>
 	/// グラフィックスパイプライン生成
@@ -113,7 +109,7 @@ public:
 	void SetPointLight(const PointLight& pointLight);
 	void SetLighting(bool flag) { materialData_->enableLighting = flag; }
 
-	void SetModelData(const std::string& modelname);
+	void SetModelData(const std::string& fileName, const std::string format);
 
 private:
 

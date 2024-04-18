@@ -7,7 +7,7 @@ void ClearScene::Initialize()
 	bool isDebug_ = false;
 
 	model0_ = std::make_unique<Model>();
-	model0_.reset(Model::Create("terrain"));
+	model0_.reset(Model::Create("terrain", "obj"));
 	model0_->SetCamera(camera_.get());
 	worldTransform0_.Initialize();
 

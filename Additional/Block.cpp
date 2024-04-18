@@ -4,7 +4,7 @@ void Block::Initialize(Camera* camera)
 {
 	worldTransfrom_.Initialize();
 
-	model_.reset(Model::Create("startBox"));
+	model_.reset(Model::Create("startBox", "obj"));
 	model_->SetCamera(camera);
 	
 

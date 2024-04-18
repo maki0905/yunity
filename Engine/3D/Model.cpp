@@ -38,10 +38,10 @@ void Model::PostDraw()
 	commandList_ = nullptr;
 }
 
-Model* Model::Create(const std::string& modelname)
+Model* Model::Create(const std::string& fileName, const std::string format)
 {
 	Model* model = new Model();
-	model->SetModelData(modelname);
+	model->SetModelData(fileName, format);
 	model->Initialize();
 	return model;
 }
@@ -211,9 +211,9 @@ void Model::SetPointLight(const PointLight& pointLight)
 	pointLightData_->intensity = pointLight.intensity;
 }
 
-void Model::SetModelData(const std::string& modelname)
+void Model::SetModelData(const std::string& fileName, const std::string format)
 {
-	modelData = *ModelManager::GetInstance()->Load(modelname);
+	modelData = *ModelManager::GetInstance()->Load(fileName, format);
 }
 
 //void T::SetMaterial(const Vector4& color)
@@ -324,55 +324,55 @@ void Model::CreateMesh()
 //	}
 //}
 
-void Model::LoadObjFile(const std::string& filename)
-{
-	Assimp::Importer importer;
-	std::string directoryPath = "Resources/Models/" + filename + "/";
-	std::string filePath = directoryPath + filename + ".obj";
-	const aiScene* scene = importer.ReadFile(filePath.c_str(), aiProcess_FlipWindingOrder | aiProcess_FlipUVs);
-	assert(scene->HasMeshes()); // メッシュがないのは対応しない
-
-	for (uint32_t meshIndex = 0; meshIndex < scene->mNumMeshes; ++meshIndex) {
-		aiMesh* mesh = scene->mMeshes[meshIndex];
-		assert(mesh->HasNormals());        // 法線がないMeshは今回は非対応
-		assert(mesh->HasTextureCoords(0)); // TexcoordがないMeshは今回は非対応
-
-		// ここからFaceの解析
-		for (uint32_t faceIndex = 0; faceIndex < mesh->mNumFaces; ++faceIndex) {
-			aiFace& face = mesh->mFaces[faceIndex];
-			assert(face.mNumIndices == 3); // 三角形のみサポート
-
-			// assimpではaiProcess_Triangulateオプションを指定することで、四角形以上のポリゴンを三角形に自動分割できる
-
-			// ここからVertexの解析
-			for (uint32_t element = 0; element < face.mNumIndices; ++element) {
-				uint32_t vertexIndex = face.mIndices[element];
-				aiVector3D& position = mesh->mVertices[vertexIndex];
-				aiVector3D& normal = mesh->mNormals[vertexIndex];
-				aiVector3D& texcoord = mesh->mTextureCoords[0][vertexIndex];
-				VertexData vertex;
-				vertex.position = { position.x, position.y, position.z, 1.0f };
-				vertex.normal = { normal.x, normal.y, normal.z };
-				vertex.texcoord = { texcoord.x, texcoord.y };
-				// aiProcess_MakeLeftHandedはz*=-1で、右手->左手に変換するので手動で対処
-				vertex.position.x *= -1.0f;
-				vertex.normal.x *= -1.0f;
-				modelData.vertices.push_back(vertex);
-			}
-		}
-
-	}
-
-	for (uint32_t materialIndex = 0; materialIndex < scene->mNumMaterials;) {
-		aiMaterial* material = scene->mMaterials[materialIndex];
-		if (material->GetTextureCount(aiTextureType_DIFFUSE) != 0) {
-			aiString textureFilePath;
-			material->GetTexture(aiTextureType_DIFFUSE, 0, &textureFilePath);
-			modelData.material.textureFilePath = directoryPath + textureFilePath.C_Str();
-		}
-	}
-
-}
+//void Model::LoadObjFile(const std::string& filename)
+//{
+//	Assimp::Importer importer;
+//	std::string directoryPath = "Resources/Models/" + filename + "/";
+//	std::string filePath = directoryPath + filename;
+//	const aiScene* scene = importer.ReadFile(filePath.c_str(), aiProcess_FlipWindingOrder | aiProcess_FlipUVs);
+//	assert(scene->HasMeshes()); // メッシュがないのは対応しない
+//
+//	for (uint32_t meshIndex = 0; meshIndex < scene->mNumMeshes; ++meshIndex) {
+//		aiMesh* mesh = scene->mMeshes[meshIndex];
+//		assert(mesh->HasNormals());        // 法線がないMeshは今回は非対応
+//		assert(mesh->HasTextureCoords(0)); // TexcoordがないMeshは今回は非対応
+//
+//		// ここからFaceの解析
+//		for (uint32_t faceIndex = 0; faceIndex < mesh->mNumFaces; ++faceIndex) {
+//			aiFace& face = mesh->mFaces[faceIndex];
+//			assert(face.mNumIndices == 3); // 三角形のみサポート
+//
+//			// assimpではaiProcess_Triangulateオプションを指定することで、四角形以上のポリゴンを三角形に自動分割できる
+//
+//			// ここからVertexの解析
+//			for (uint32_t element = 0; element < face.mNumIndices; ++element) {
+//				uint32_t vertexIndex = face.mIndices[element];
+//				aiVector3D& position = mesh->mVertices[vertexIndex];
+//				aiVector3D& normal = mesh->mNormals[vertexIndex];
+//				aiVector3D& texcoord = mesh->mTextureCoords[0][vertexIndex];
+//				VertexData vertex;
+//				vertex.position = { position.x, position.y, position.z, 1.0f };
+//				vertex.normal = { normal.x, normal.y, normal.z };
+//				vertex.texcoord = { texcoord.x, texcoord.y };
+//				// aiProcess_MakeLeftHandedはz*=-1で、右手->左手に変換するので手動で対処
+//				vertex.position.x *= -1.0f;
+//				vertex.normal.x *= -1.0f;
+//				modelData.vertices.push_back(vertex);
+//			}
+//		}
+//
+//	}
+//
+//	for (uint32_t materialIndex = 0; materialIndex < scene->mNumMaterials;) {
+//		aiMaterial* material = scene->mMaterials[materialIndex];
+//		if (material->GetTextureCount(aiTextureType_DIFFUSE) != 0) {
+//			aiString textureFilePath;
+//			material->GetTexture(aiTextureType_DIFFUSE, 0, &textureFilePath);
+//			modelData.material.textureFilePath = directoryPath + textureFilePath.C_Str();
+//		}
+//	}
+//
+//}
 
 Model::MaterialData Model::LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& filename)
 {

@@ -13,7 +13,7 @@
 /// </summary>
 class ModelManager {
 public:
-	static Model::ModelData* Load(const std::string& fileName);
+	static Model::ModelData* Load(const std::string& fileName, const std::string format);
 
 	static ModelManager* GetInstance();
 
@@ -25,8 +25,8 @@ private:
 	ModelManager(const ModelManager&) = delete;
 	ModelManager& operator=(const ModelManager&) = delete;
 private:
-	Model::ModelData* LoadInternal(const std::string& fileName);
-	Model::ModelData LoadObjFile(const std::string& fileName);
+	Model::ModelData* LoadInternal(const std::string& fileName, const std::string format);
+	Model::ModelData LoadObjFile(const std::string& fileName, const std::string format);
 	Model::MaterialData LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& filename);
 private:
 	Model* model = nullptr;
