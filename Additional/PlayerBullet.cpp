@@ -50,7 +50,7 @@ void PlayerBullet::Initialize(Camera* camera, const Vector3& position, const Vec
 
 void PlayerBullet::Update() {
 
-	if (enemy_ == nullptr) {
+	if (enemy_->IsDead() || enemy_ == nullptr) {
 		// 座標を移動させる(1フレーム分の移動量を足しこむ)
 		worldTransform_.translation_ = Add(worldTransform_.translation_, velocity_);
 		worldTransform_.UpdateMatrix(RotationType::Euler);
@@ -64,7 +64,8 @@ void PlayerBullet::Update() {
 		Normalize(toPlayer);
 		Normalize(velocity_);
 		// 球面線形補間により、今の速度と自キャラへのベクトルを内挿し、新たな速度とする
-		velocity_ = Multiply(BulletSpeed, Slerp(velocity_, toPlayer, 0.5f));
+		//velocity_ = Multiply(BulletSpeed, Slerp(velocity_, toPlayer, 0.5f));
+		velocity_ = Multiply(BulletSpeed, Lerp(velocity_, toPlayer, 0.5f));
 		// 進行方向に見た目の回転を合わせる
 		// Y軸周り角度(θy)
 		worldTransform_.rotation_.y = std::atan2(velocity_.x, velocity_.z);

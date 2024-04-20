@@ -106,7 +106,7 @@ public:
 	void SetPlayer(Player* player) { player_ = player; }
 
 	// 衝突を検出したら呼び出されるコールバック関数
-	void OnCollision() { isDead_ = true; }
+	void OnCollision() override;
 
 	bool IsDead() { return isDead_; }
 

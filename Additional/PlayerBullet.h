@@ -33,7 +33,7 @@ public:
 	bool IsDead() const { return isDead_; }
 
 	// 衝突を検出したら呼び出されるコールバック関数
-	void OnCollision();
+	void OnCollision() override;
 
 private:
 	// ワールド変換データ

@@ -80,20 +80,29 @@ void Player::Update()
 	// キャラクター攻撃処理
 	Attack();
 
+	for (std::list<PlayerBullet*>::iterator playerBulletIterator = bullets_.begin(); playerBulletIterator != bullets_.end();) {
+		if ((*playerBulletIterator)->IsDead()) {
+			playerBulletIterator = bullets_.erase(playerBulletIterator);
+			continue;
+		}
+		(*playerBulletIterator)->Update();
+		// 次のイテレーターへ
+		++playerBulletIterator;
+	}
 	// 弾更新
-	for (PlayerBullet* bullet : bullets_) {
+	/*for (PlayerBullet* bullet : bullets_) {
 		bullet->Update();
 
-	}
+	}*/
 
 	// デスフラグの立った弾を削除
-	bullets_.remove_if([](PlayerBullet* bullet) {
+	/*bullets_.remove_if([](PlayerBullet* bullet) {
 		if (bullet->IsDead()) {
 			delete bullet;
 			return true;
 		}
 		return false;
-		});
+		});*/
 
 	// 座標移動(ベクトルの加算)
 	worldTransfrom_.translation_ = Add(worldTransfrom_.translation_, move);

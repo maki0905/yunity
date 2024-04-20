@@ -21,7 +21,7 @@ void StageScene::Initialize()
 	// レールカメラの初期化
 	Vector3 translation = { 0.0f, 0.0f, -200.0f };
 	Vector3 rotation = { 0.0f, 0.0f, 0.0f };
-	//railCamera_->Initialize(camera_.get(), translation, rotation);
+	railCamera_->Initialize(camera_.get(), translation, rotation);
 
 	player_ = std::make_unique<Player>();
 	player_->Initialize(camera_.get());
@@ -47,38 +47,62 @@ void StageScene::Update()
 	// 敵キャラの発生
 	UpdateEnemyPopCommands();
 
+	player_->Update();
+
+	for (std::list<Enemy*>::iterator enemyIterator =enemys_.begin(); enemyIterator != enemys_.end();) {
+		if ((*enemyIterator)->IsDead()) {
+			enemyIterator = enemys_.erase(enemyIterator);
+			continue;
+		}
+		(*enemyIterator)->Update();
+		if ((*enemyIterator)->IsLockon()) {
+			player_->SetEnemy(*enemyIterator);
+		}
+		// 次のイテレーターへ
+		++enemyIterator;
+	}
+
+	for (std::list<EnemyBullet*>::iterator enemyBulletIterator = enemyBullets_.begin(); enemyBulletIterator != enemyBullets_.end();) {
+		if ((*enemyBulletIterator)->IsDead()) {
+			enemyBulletIterator = enemyBullets_.erase(enemyBulletIterator);
+			continue;
+		}
+		(*enemyBulletIterator)->SetPlayer(player_.get());
+		(*enemyBulletIterator)->Update();
+		// 次のイテレーターへ
+		++enemyBulletIterator;
+	}
+
 	// 敵キャラの更新
-	for (Enemy* enemy : enemys_) {
+	/*for (Enemy* enemy : enemys_) {
 		enemy->Update();
 		if (enemy->IsLockon()) {
 			player_->SetEnemy(enemy);
 		}
-	}
+	}*/
 
 	// 敵弾更新
-	for (EnemyBullet* bullet : enemyBullets_) {
+	/*for (EnemyBullet* bullet : enemyBullets_) {
 		bullet->SetPlayer(player_.get());
 		bullet->Update();
-	}
+	}*/
 
 	// デスフラグの立った敵弾を削除
-	enemyBullets_.remove_if([](EnemyBullet* bullet) {
+	/*enemyBullets_.remove_if([](EnemyBullet* bullet) {
 		if (bullet->IsDead()) {
 			delete bullet;
 			return true;
 		}
 		return false;
-	});
+	});*/
 	// デスフラグの立った敵を削除
-	enemys_.remove_if([](Enemy* enemy) {
+	/*enemys_.remove_if([](Enemy* enemy) {
 		if (enemy->IsDead()) {
 			delete enemy;
 			return true;
 		}
 		return false;
-	});
-
-	player_->Update();
+	});*/
 
 
 	world_->Add(player_.get());

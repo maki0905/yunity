@@ -193,6 +193,11 @@ void Enemy::ApproachPhaseInitialize() {
 
 }
 
+void Enemy::OnCollision()
+{
+	isDead_ = true;
+}
+
 void Enemy::chageState(EnemyState* newState) {
 	state_ = newState;
 }
