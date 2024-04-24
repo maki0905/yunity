@@ -33,7 +33,7 @@ void RenderTexture::ClearRenderTargetView()
 
 void RenderTexture::CreateResorce()
 {
-	renderTextureResource = CreateRenderTextureResource(Device::GetInstance()->GetDevice(), WindowsAPI::kWindowWidth, WindowsAPI::kWindowHeight, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, kRenderTargetClearValue);
+	renderTextureResource = CreateRenderTextureResource(WindowsAPI::kWindowWidth, WindowsAPI::kWindowHeight, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, kRenderTargetClearValue);
 }
 
 void RenderTexture::CreateRTV()
@@ -66,19 +66,25 @@ void RenderTexture::CreateSRV()
 
 }
 
-Microsoft::WRL::ComPtr<ID3D12Resource> RenderTexture::CreateRenderTextureResource(Microsoft::WRL::ComPtr<ID3D12Device> device, uint32_t width, uint32_t hight, DXGI_FORMAT format, const Vector4& clearColor)
+Microsoft::WRL::ComPtr<ID3D12Resource> RenderTexture::CreateRenderTextureResource(uint32_t width, uint32_t hight, DXGI_FORMAT format, const Vector4& clearColor)
 {
 	HRESULT result = S_FALSE;
 
 	D3D12_HEAP_PROPERTIES heapProperties{};
 	heapProperties.Type = D3D12_HEAP_TYPE_DEFAULT;
 
+	// リソースの設定
 	D3D12_RESOURCE_DESC resourceDesc{};
-	resourceDesc.Width = width;
+	// バッファリソース
+	resourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
+	resourceDesc.Width = width; // リソースのサイズ
 	resourceDesc.Height = hight;
-	resourceDesc.Format = format;
+	resourceDesc.DepthOrArraySize = 1;
+	resourceDesc.MipLevels = 1;
+	resourceDesc.SampleDesc.Count = 1;
 	resourceDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET;
-
+	resourceDesc.Format = format;
+	
 	D3D12_CLEAR_VALUE clearValue;
 	clearValue.Format = format;
 	clearValue.Color[0] = clearColor.x;
@@ -87,7 +93,7 @@ Microsoft::WRL::ComPtr<ID3D12Resource> RenderTexture::CreateRenderTextureResourc
 	clearValue.Color[3] = clearColor.w;
 
 	Microsoft::WRL::ComPtr<ID3D12Resource> resource = nullptr;
-	result = device->CreateCommittedResource(
+	result = Device::GetInstance()->GetDevice()->CreateCommittedResource(
 		&heapProperties,
 		D3D12_HEAP_FLAG_NONE,
 		&resourceDesc,
