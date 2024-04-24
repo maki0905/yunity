@@ -8,9 +8,6 @@
 
 class RenderTexture {
 public:
-	static void StaticInitialize();
-
-public:
 	/// <summary>
 	/// 生成
 	/// </summary>
@@ -18,6 +15,11 @@ public:
 
 	void OMSetREnderTargets(ID3D12DescriptorHeap* dsvHeap_);
 	void ClearRenderTargetView();
+
+	Vector4 GetRenderTargetClearValue() { return kRenderTargetClearValue; }
+
+	D3D12_CPU_DESCRIPTOR_HANDLE* GetCpuDescHandleRTV() { return &cpuDescHandleRTV_; }
+
 private:
 	
 	void CreateResorce();
@@ -28,7 +30,6 @@ private:
 	
 
 private:
-	static ID3D12Device* device_;
 	const Vector4 kRenderTargetClearValue{ 1.0f, 0.0f, 0.0f, 1.0f };
 	Microsoft::WRL::ComPtr<ID3D12Resource> renderTextureResource;
 	D3D12_CPU_DESCRIPTOR_HANDLE cpuDescHandleRTV_;

@@ -29,6 +29,8 @@ public:
 	void ClearDepthView();
 
 	ID3D12DescriptorHeap* GetDescriptorHeap() { return dsvHeap_->GetHeapPointer(); }
+	//D3D12_CPU_DESCRIPTOR_HANDLE GetDescriptorHandle() { return D3D12_CPU_DESCRIPTOR_HANDLE(dsvHeap_->GetHeapPointer()->GetCPUDescriptorHandleForHeapStart()); }
+
 
 private:
 

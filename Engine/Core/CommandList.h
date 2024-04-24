@@ -4,6 +4,8 @@
 #include <dxgi1_6.h>
 #include <wrl.h>
 
+#include "Vector4.h"
+
 class BackBuffer;
 class DepthBuffer;
 class SwapChain;
@@ -35,9 +37,9 @@ public:
 	/// </summary>
 	void CommandClear();
 
-	void OMSetRenderTargets(const D3D12_CPU_DESCRIPTOR_HANDLE* cpuDescHandleRTV,ID3D12DescriptorHeap* dsvHeap_ = nullptr);
-	void ClearRenderTargetView();
-	void ClearDepthStencilView();
+	void OMSetRenderTargets(const D3D12_CPU_DESCRIPTOR_HANDLE* cpuDescHandleRTV, ID3D12DescriptorHeap* dsvHeap = nullptr);
+	void ClearRenderTargetView(const Vector4 clearColorValue, const D3D12_CPU_DESCRIPTOR_HANDLE cpuDescHandleRTV);
+	void ClearDepthStencilView(ID3D12DescriptorHeap* dsvHeap);
 
 	/// <summary>
 	/// ビューポート設定

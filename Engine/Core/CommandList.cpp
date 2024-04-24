@@ -43,25 +43,12 @@ void CommandList::CommandClear()
 
 }
 
-
-
-void CommandList::OMSetRenderTargets(ID3D12DescriptorHeap* dsvHeap_)
+void CommandList::OMSetRenderTargets(const D3D12_CPU_DESCRIPTOR_HANDLE* cpuDescHandleRTV, ID3D12DescriptorHeap* dsvHeap)
 {
-	if (dsvHeap_) {
+	if (dsvHeap) {
 		// 深度ステンシルビュー用デスクリプタヒープのハンドルを取得
 		D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle =
-			D3D12_CPU_DESCRIPTOR_HANDLE(dsvHeap_->GetCPUDescriptorHandleForHeapStart());
-	}
-	// レンダーターゲットをセット
-	commandList_->OMSetRenderTargets(1, &cpuDescHandleRTV_, false, &dsvHandle);
-}
-
-void CommandList::OMSetRenderTargets(const D3D12_CPU_DESCRIPTOR_HANDLE* cpuDescHandleRTV, ID3D12DescriptorHeap* dsvHeap_)
-{
-	if (dsvHeap_) {
-		// 深度ステンシルビュー用デスクリプタヒープのハンドルを取得
-		D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle =
-			D3D12_CPU_DESCRIPTOR_HANDLE(dsvHeap_->GetCPUDescriptorHandleForHeapStart());
+			D3D12_CPU_DESCRIPTOR_HANDLE(dsvHeap->GetCPUDescriptorHandleForHeapStart());
 		// レンダーターゲットをセット
 		commandList_->OMSetRenderTargets(1, cpuDescHandleRTV, false, &dsvHandle);
 	}
@@ -71,12 +58,21 @@ void CommandList::OMSetRenderTargets(const D3D12_CPU_DESCRIPTOR_HANDLE* cpuDescH
 	}
 }
 
-void CommandList::ClearRenderTargetView()
+void CommandList::ClearRenderTargetView(const Vector4 clearColorValue, const D3D12_CPU_DESCRIPTOR_HANDLE cpuDescHandleRTV)
 {
+	// 全画面クリア        Red   Green Blue  Alpha
+	//float clearColor[] = { 0.1f, 0.25f, 0.5f, 0.0f }; // 青っぽい色
+	float clearColor[] = { clearColorValue.x, clearColorValue.y, clearColorValue.z, clearColorValue.w };
+	commandList_->ClearRenderTargetView(cpuDescHandleRTV, clearColor, 0, nullptr);
 }
 
-void CommandList::ClearDepthStencilView()
+void CommandList::ClearDepthStencilView(ID3D12DescriptorHeap* dsvHeap)
 {
+	// 深度ステンシルビュー用デスクリプタヒープのハンドルを取得
+	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle =
+		D3D12_CPU_DESCRIPTOR_HANDLE(dsvHeap->GetCPUDescriptorHandleForHeapStart());
+	// 深度バッファのクリア
+	commandList_->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 }
 
 

@@ -7,14 +7,6 @@
 #include "DirectXCore.h"
 #include "DescriptorHeap.h"
 
-ID3D12Device* RenderTexture::device_ = nullptr;
-
-
-
-void RenderTexture::StaticInitialize()
-{
-	device_ = Device::GetInstance()->GetDevice();
-}
 
 void RenderTexture::Create()
 {
@@ -41,7 +33,7 @@ void RenderTexture::ClearRenderTargetView()
 
 void RenderTexture::CreateResorce()
 {
-	renderTextureResource = CreateRenderTextureResource(device_, WindowsAPI::kWindowWidth, WindowsAPI::kWindowHeight, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, kRenderTargetClearValue);
+	renderTextureResource = CreateRenderTextureResource(Device::GetInstance()->GetDevice(), WindowsAPI::kWindowWidth, WindowsAPI::kWindowHeight, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, kRenderTargetClearValue);
 }
 
 void RenderTexture::CreateRTV()
@@ -56,7 +48,7 @@ void RenderTexture::CreateRTV()
 	// ディスクリプタヒープのハンドルを取得
 	cpuDescHandleRTV_ = rtvDescriptorHeap_->Alloc().GetCPUHandle();
 
-	device_->CreateRenderTargetView(renderTextureResource.Get(), &renderTargetViewDesc, cpuDescHandleRTV_);
+	Device::GetInstance()->GetDevice()->CreateRenderTargetView(renderTextureResource.Get(), &renderTargetViewDesc, cpuDescHandleRTV_);
 }
 
 void RenderTexture::CreateSRV()
@@ -70,7 +62,7 @@ void RenderTexture::CreateSRV()
 	DescriptorHeap* srvDescriptorHeap_ = DirectXCore::GetInstance()->GetDescriptorHeap(DirectXCore::HeapType::kSRV);
 	D3D12_CPU_DESCRIPTOR_HANDLE handle = srvDescriptorHeap_->Alloc().GetCPUHandle();
 
-	device_->CreateShaderResourceView(renderTextureResource.Get(), &renderTextureSrvDesc, handle);
+	Device::GetInstance()->GetDevice()->CreateShaderResourceView(renderTextureResource.Get(), &renderTextureSrvDesc, handle);
 
 }
 

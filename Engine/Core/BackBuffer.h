@@ -38,6 +38,8 @@ public:
 
 	UINT GetBackBufferCount() { return backBufferCount_; }
 
+	D3D12_CPU_DESCRIPTOR_HANDLE* GetCpuDescHandleRTV() { return rtvHandles_; }
+
 private:
 	Microsoft::WRL::ComPtr<ID3D12Device> device_;
 	Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> commandList_;

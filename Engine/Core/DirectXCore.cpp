@@ -64,22 +64,37 @@ void DirectXCore::Initialize()
 	shaderCompiler_ = ShaderCompiler::GetInstance();
 	shaderCompiler_->Initialize();
 
-	
-
+	renderTexture_ = new RenderTexture();
+	renderTexture_->Create();
 }
 
-void DirectXCore::PreDraw()
+void DirectXCore::PreDrawRenderTexture()
 {
 	commandList_->BarrierChange(swapChain_->GetSwapChain(), D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
-	backBuffer_->SetRenderTarget(swapChain_->GetSwapChain(), depthBuffer_->GetDescriptorHeap());
-	backBuffer_->ClearRenderTarget(swapChain_->GetSwapChain());
-	depthBuffer_->ClearDepthView();
 
-	commandList_->SetViewport(float(windowWidth_), float(windowHeight_));
-	commandList_->SetRect(windowWidth_, windowHeight_);
+	commandList_->OMSetRenderTargets(renderTexture_->GetCpuDescHandleRTV(), depthBuffer_->GetDescriptorHeap());
+	commandList_->ClearRenderTargetView(renderTexture_->GetRenderTargetClearValue(), *renderTexture_->GetCpuDescHandleRTV());
+	commandList_->ClearDepthStencilView(depthBuffer_->GetDescriptorHeap());
+	commandList_->RSSetViewports(float(windowWidth_), float(windowHeight_));
+	commandList_->RSSetScissorRects(windowWidth_, windowHeight_);
 }
 
-void DirectXCore::PostDraw()
+void DirectXCore::PostDrawRenderTexture()
+{
+}
+
+void DirectXCore::PreDrawSwapchain()
+{
+	commandList_->OMSetRenderTargets(&backBuffer_->GetCpuDescHandleRTV()[swapChain_->GetSwapChain()->GetCurrentBackBufferIndex()]);
+	commandList_->ClearRenderTargetView(Vector4(0.1f, 0.25f, 0.5f, 0.0f), backBuffer_->GetCpuDescHandleRTV()[swapChain_->GetSwapChain()->GetCurrentBackBufferIndex()]);
+	commandList_->RSSetViewports(float(windowWidth_), float(windowHeight_));
+	commandList_->RSSetScissorRects(windowWidth_, windowHeight_);
+	//backBuffer_->SetRenderTarget(swapChain_->GetSwapChain(), depthBuffer_->GetDescriptorHeap());
+	//backBuffer_->ClearRenderTarget(swapChain_->GetSwapChain());
+	//depthBuffer_->ClearDepthView();
+}
+
+void DirectXCore::PostDrawSwapchain()
 {
 	HRESULT result = S_FALSE;
 	commandList_->BarrierChange(swapChain_->GetSwapChain(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
@@ -110,8 +125,9 @@ void DirectXCore::PostDraw()
 	// FPS固定
 	UpdateFixFPS();
 	commandList_->CommandClear();
-
 }
+
+
 
 void DirectXCore::InitializeFixFPS()
 {

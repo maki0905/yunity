@@ -11,6 +11,7 @@
 #include "CommandList.h"
 #include "ImGuiManager.h"
 #include "BackBuffer.h"
+#include "RenderTexture.h"
 
 
 class SwapChain;
@@ -35,8 +36,11 @@ public:
 
 	void Initialize();
 
-	void PreDraw();
-	void PostDraw();
+	void PreDrawRenderTexture();
+	void PostDrawRenderTexture();
+
+	void PreDrawSwapchain();
+	void PostDrawSwapchain();
 
 	DescriptorHeap* GetDescriptorHeap(HeapType heapType) { return descriptorHeaps_[static_cast<int>(heapType)].get(); }
 	ID3D12GraphicsCommandList* GetCommandList() { return commandList_->GetCommandList(); }
@@ -72,6 +76,7 @@ private:
 	std::chrono::steady_clock::time_point reference_;
 
 	ImGuiManager* imguiManager_ = nullptr;
+	RenderTexture* renderTexture_ = nullptr;
 	
 };
 

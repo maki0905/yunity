@@ -30,7 +30,7 @@ void GameManager::Update()
 
 void GameManager::Draw()
 {
-	directXCore_->PreDraw();
+	directXCore_->PreDrawRenderTexture();
 #pragma region 背景描画
 	sprite_->PreDraw(directXCore_->GetCommandList());
 	//sceneArr_[currentSceneNo_]->DrawBack();
@@ -60,11 +60,12 @@ void GameManager::Draw()
 	sprite_->PostDraw();
 
 #pragma endregion
+	directXCore_->PreDrawSwapchain();
 
 	// ImGui描画
 	imguiManager_->Draw();
 
-	directXCore_->PostDraw();
+	directXCore_->PostDrawSwapchain();
 }
 
 void GameManager::Run()
