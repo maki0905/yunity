@@ -294,7 +294,7 @@
     <ClCompile Include="Engine\Physics\World.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\RenderTexture.cpp">
+    <ClCompile Include="Engine\Core\RenderTexture.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -521,7 +521,7 @@
     <ClInclude Include="Engine\Physics\World.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\RenderTexture.h">
+    <ClInclude Include="Engine\Core\RenderTexture.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
@@ -550,6 +550,8 @@
     <FxCompile Include="Resources\Shaders\LinePS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
+    <FxCompile Include="Resources\Shaders\CopyImage.VS.hlsl" />
+    <FxCompile Include="Resources\Shaders\CopyImage.PS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\Object3d.hlsli">
@@ -558,5 +560,6 @@
     <None Include="Resources\Shaders\Line.hlsli">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="Resources\Shaders\CopyImage.hlsli" />
   </ItemGroup>
 </Project>
