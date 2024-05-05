@@ -115,6 +115,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Engine\3D\ParticleEmitter.cpp" />
     <ClCompile Include="Engine\3D\ParticleManager.cpp" />
     <ClCompile Include="Engine\3D\SphereDrawer.cpp" />
+    <ClCompile Include="Engine\Animation.cpp" />
     <ClCompile Include="Engine\Audio\Audio.cpp" />
     <ClCompile Include="Engine\Core\Common.cpp" />
     <ClCompile Include="Engine\Collision.cpp" />
@@ -177,6 +178,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\3D\ParticleManager.h" />
     <ClInclude Include="Engine\3D\PointLight.h" />
     <ClInclude Include="Engine\3D\SphereDrawer.h" />
+    <ClInclude Include="Engine\Animation.h" />
     <ClInclude Include="Engine\Audio\Audio.h" />
     <ClInclude Include="Engine\Core\Common.h" />
     <ClInclude Include="Engine\Collision.h" />
@@ -184,6 +186,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\CollisionConfig.h" />
     <ClInclude Include="Engine\CollisionManager.h" />
     <ClInclude Include="Engine\Base\Framework.h" />
+    <ClInclude Include="Engine\Keyframe.h" />
     <ClInclude Include="Engine\Math\AABB.h" />
     <ClInclude Include="Engine\Core\BackBuffer.h" />
     <ClInclude Include="Engine\Math\Capsule.h" />

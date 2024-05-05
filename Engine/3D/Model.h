@@ -10,9 +10,8 @@
 #include "Camera.h"
 #include "WorldTransform.h"
 #include "MathFunction.h"
-
 #include "PointLight.h"
-
+#include "Animation.h"
 
 class PipelineState;
 class RootSignature;
@@ -100,7 +99,7 @@ public:
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Initialize();
+	void Initialize(const ModelData& modelData, const Animation& animation);
 
 	/// <summary>
 	/// 描画
@@ -117,7 +116,12 @@ public:
 	void SetPointLight(const PointLight& pointLight);
 	void SetLighting(bool flag) { materialData_->enableLighting = flag; }
 
-	void SetModelData(const std::string& fileName, const std::string format);
+	//void SetModelData(const std::string& fileName, const std::string format);
+
+	bool IsAnimation() { return isAnimation_; }
+	void PlayAnimation() { isAnimation_ = true; }
+	void StopAnimation() { isAnimation_ = false; }
+	void PlayingAnimation();
 
 private:
 
@@ -146,7 +150,8 @@ private:
 private:
 	Camera* camera_ = nullptr;
 
-	ModelData modelData;
+	ModelData modelData_;
+	Animation animation_;
 	// 頂点バッファ
 	Microsoft::WRL::ComPtr<ID3D12Resource> vertexResource_;
 	// 頂点データ
@@ -177,7 +182,8 @@ private:
 
 	Microsoft::WRL::ComPtr<ID3D12Resource> nodeResource_;
 	Matrix4x4* nodeData_;
-
+	float animationTime_ = 0.0f;
+	bool isAnimation_ = false;
 
 };
 

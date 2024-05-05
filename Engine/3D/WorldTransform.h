@@ -39,8 +39,6 @@ struct WorldTransform {
 	// ワールドの逆転置行列
 	Matrix4x4 matWorldInverseTranspose_;
 
-
-
 	/// <summary>
 	/// 初期化
 	/// </summary>

@@ -41,8 +41,8 @@ void Model::PostDraw()
 Model* Model::Create(const std::string& fileName, const std::string format)
 {
 	Model* model = new Model();
-	model->SetModelData(fileName, format);
-	model->Initialize();
+	//model->SetModelData(fileName, format);
+	////model->Initialize();
 	return model;
 }
 
@@ -125,9 +125,10 @@ void Model::InitializeGraphicsPipeline()
 	pipelineState_->Finalize();
 }
 
-
-void Model::Initialize()
+void Model::Initialize(const ModelData& modelData, const Animation& animation)
 {
+	modelData_ = modelData;
+	animation_ = animation;
 	CreateMesh();
 	InitializeDirectionalLight();
 	InitializeMaterial();
@@ -165,7 +166,7 @@ void Model::Draw(const WorldTransform& worldTransform, uint32_t textureHandle)
 	// SRVをセット
 	TextureManager::GetInstance()->SetGraphicsRootDescriptorTable(commandList_, static_cast<UINT>(RootBindings::kTexture), textureHandle);
 
-	commandList_->DrawInstanced(UINT(modelData.vertices.size()), 1, 0, 0);
+	commandList_->DrawInstanced(UINT(modelData_.vertices.size()), 1, 0, 0);
 }
 
 void Model::Draw(const WorldTransform& worldTransform/*, const Camera& camera*/)
@@ -199,12 +200,12 @@ void Model::Draw(const WorldTransform& worldTransform/*, const Camera& camera*/)
 
 
 	// SRVをセット
-	if (textureHandle_ != TextureManager::Load(modelData.material.textureFilePath)) {
-		textureHandle_ = TextureManager::Load(modelData.material.textureFilePath);
+	if (textureHandle_ != TextureManager::Load(modelData_.material.textureFilePath)) {
+		textureHandle_ = TextureManager::Load(modelData_.material.textureFilePath);
 	}
 	TextureManager::GetInstance()->SetGraphicsRootDescriptorTable(commandList_, static_cast<UINT>(RootBindings::kTexture), textureHandle_);
 
-	commandList_->DrawInstanced(UINT(modelData.vertices.size()), 1, 0, 0);
+	commandList_->DrawInstanced(UINT(modelData_.vertices.size()), 1, 0, 0);
 }
 
 void Model::SetPointLight(const PointLight& pointLight)
@@ -214,9 +215,22 @@ void Model::SetPointLight(const PointLight& pointLight)
 	pointLightData_->intensity = pointLight.intensity;
 }
 
-void Model::SetModelData(const std::string& fileName, const std::string format)
+//void Model::SetModelData(const std::string& fileName, const std::string format)
+//{
+//	modelData_ = *ModelManager::GetInstance()->Load(fileName, format);
+//}
+
+void Model::PlayingAnimation()
 {
-	modelData = *ModelManager::GetInstance()->Load(fileName, format);
+	animationTime_ += 1.0f / 60.0f;
+	animationTime_ = std::fmod(animationTime_, animation_.duration);
+	NodeAnimation& rootNodeAnimation = animation_.nodeAnimations[modelData_.rootNode.name];
+	Vector3 translate = CalculateValue(rootNodeAnimation.translate, animationTime_);
+	Quaternion rotate = CalculateQuaternion(rootNodeAnimation.rotate, animationTime_);
+	Vector3 scale = CalculateValue(rootNodeAnimation.scale, animationTime_);
+	Matrix4x4 localMatrix = MakeAffineMatrix(scale, rotate, translate);
+
+	*nodeData_ = localMatrix;
 }
 
 //void T::SetMaterial(const Vector4& color)
@@ -229,15 +243,15 @@ void Model::CreateMesh()
 
 
 	// 頂点リソース
-	vertexResource_ = CreateBufferResource(sizeof(VertexData) * modelData.vertices.size());
+	vertexResource_ = CreateBufferResource(sizeof(VertexData) * modelData_.vertices.size());
 	// 頂点バッファビュー
 	vertexBufferView_.BufferLocation = vertexResource_->GetGPUVirtualAddress(); // リソースの先頭のアドレスから使う
-	vertexBufferView_.SizeInBytes = UINT(sizeof(VertexData) * modelData.vertices.size()); // 使用するリソースのサイズは頂点サイズ
+	vertexBufferView_.SizeInBytes = UINT(sizeof(VertexData) * modelData_.vertices.size()); // 使用するリソースのサイズは頂点サイズ
 	vertexBufferView_.StrideInBytes = sizeof(VertexData); // 1頂点当たりのサイズ
 
 	// 頂点リソースにデータを書き込む
 	vertexResource_->Map(0, nullptr, (void**)&vertexData_); // 書き込むためのアドレスを取得
-	std::memcpy(vertexData_, modelData.vertices.data(), sizeof(VertexData) * modelData.vertices.size()); // 頂点データをリソースにコピー
+	std::memcpy(vertexData_, modelData_.vertices.data(), sizeof(VertexData) * modelData_.vertices.size()); // 頂点データをリソースにコピー
 
 
 	/*HRESULT result = S_FALSE;
@@ -298,7 +312,7 @@ void Model::InitializeNode()
 	nodeResource_ = CreateBufferResource(sizeof(Matrix4x4));
 	nodeData_ = nullptr;
 	nodeResource_->Map(0, nullptr, reinterpret_cast<void**>(&nodeData_));
-	*nodeData_ = modelData.rootNode.localMatrix;
+	*nodeData_ = modelData_.rootNode.localMatrix;
 }
 
 ID3D12Resource* Model::CreateBufferResource(size_t sizeInBytes)
@@ -319,7 +333,7 @@ ID3D12Resource* Model::CreateBufferResource(size_t sizeInBytes)
 	ResourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
 	// リソースを作る
 	ID3D12Resource* resource = nullptr;
-	result = device_->CreateCommittedResource(&uploadHeapProperties, D3D12_HEAP_FLAG_NONE,
+	result = Device::GetInstance()->GetDevice()->CreateCommittedResource(&uploadHeapProperties, D3D12_HEAP_FLAG_NONE,
 		&ResourceDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(&resource));
 	assert(SUCCEEDED(result));
 	return resource;

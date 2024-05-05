@@ -4,10 +4,10 @@
 #include <fstream>
 #include <sstream>
 
-Model::ModelData* ModelManager::Load(const std::string& fileName, const std::string format)
-{
-	return ModelManager::GetInstance()->LoadInternal(fileName, format);
-}
+//Model::ModelData* ModelManager::Load(const std::string& fileName, const std::string format)
+//{
+//	return ModelManager::GetInstance()->LoadInternal(fileName, format);
+//}
 
 ModelManager* ModelManager::GetInstance()
 {
@@ -17,21 +17,45 @@ ModelManager* ModelManager::GetInstance()
 
 void ModelManager::Initialize()
 {
+	dataStorage_.clear();
 	models_.clear();
-	model = new Model();
-	model->StaticInitialize();
 }
 
-Model::ModelData* ModelManager::LoadInternal(const std::string& fileName, const std::string format)
+void ModelManager::Update()
 {
-
-	auto itr = models_.find(fileName);
-	if (itr == models_.end()) {
-		models_[fileName] = LoadModelFile(fileName, format);
+	for (auto& model : models_) {
+		if (model->IsAnimation()) {
+			model->PlayingAnimation();
+		}
 	}
-	return &models_.at(fileName);
-	
 }
+
+Model* ModelManager::CreateModel(const std::string& fileName, const std::string format, bool have)
+{
+	Model* model = new Model();
+	//LoadInternal(fileName, format);
+	auto itr = dataStorage_.find(fileName);
+	if (itr == dataStorage_.end()) {
+		dataStorage_[fileName].modelData = LoadModelFile(fileName, format);
+	}
+	if (have) {
+		dataStorage_[fileName].animation = LoadAnimationFile(fileName, format);
+	}
+	model->Initialize(dataStorage_[fileName].modelData, dataStorage_[fileName].animation);
+	models_.emplace_back(model);
+	return model;
+}
+
+//Model::ModelData* ModelManager::LoadInternal(const std::string& fileName, const std::string format)
+//{
+//
+//	auto itr = models_.find(fileName);
+//	if (itr == models_.end()) {
+//		models_[fileName].modelData = LoadModelFile(fileName, format);
+//	}
+//	return &models_.at(fileName).modelData;
+//	
+//}
 
 //Model::ModelData ModelManager::LoadObjFile(const std::string& fileName)
 //{
@@ -100,6 +124,15 @@ Model::ModelData* ModelManager::LoadInternal(const std::string& fileName, const 
 //	}
 //	return modelData;
 //}
+
+void ModelManager::LoadInternal(const std::string& fileName, const std::string format)
+{
+	auto itr = dataStorage_.find(fileName);
+		if (itr == dataStorage_.end()) {
+			dataStorage_[fileName].modelData = LoadModelFile(fileName, format);
+			dataStorage_[fileName].animation = LoadAnimationFile(fileName, format);
+		}
+}
 
 Model::ModelData ModelManager::LoadModelFile(const std::string& fileName, const std::string format)
 {

@@ -26,8 +26,8 @@ void Framework::Initialize()
 	modelManager_ = ModelManager::GetInstance();
 	modelManager_->Initialize();
 	// 3Dオブジェクト
-	/*model_ = new Model();
-	model_->StaticInitialize();*/
+	model_ = new Model();
+	model_->StaticInitialize();
 
 	sprite_ = new Sprite();
 	sprite_->StaticInitialize();
