@@ -36,6 +36,18 @@ void CommandList::BarrierChange(IDXGISwapChain4* swapChain, D3D12_RESOURCE_STATE
 
 }
 
+void CommandList::BarrierChange(ID3D12Resource* resource, D3D12_RESOURCE_STATES before, D3D12_RESOURCE_STATES after)
+{
+	HRESULT result = S_FALSE;
+
+	// リソースバリアを変更
+	D3D12_RESOURCE_BARRIER barrier{};
+	barrier.Transition.pResource = resource;
+	barrier.Transition.StateBefore = before;
+	barrier.Transition.StateAfter = after;
+	commandList_->ResourceBarrier(1, &barrier);
+}
+
 void CommandList::CommandClear()
 {
 	commandAllocator_->Reset();

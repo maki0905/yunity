@@ -89,6 +89,11 @@ void ShaderCompiler::ShaderCompile()
 	assert(vsblob_[static_cast<size_t>(FileName::kParticle)]);
 	psblob_[static_cast<size_t>(FileName::kParticle)] = CompileShader(L"Resources/Shaders/ParticlePS.hlsl", L"ps_6_0");
 	assert(psblob_[static_cast<size_t>(FileName::kParticle)]);
+
+	vsblob_[static_cast<size_t>(FileName::kCopyImage)] = CompileShader(L"Resources/Shaders/CopyImage.VS.hlsl", L"vs_6_0");
+	assert(vsblob_[static_cast<size_t>(FileName::kCopyImage)]);
+	psblob_[static_cast<size_t>(FileName::kCopyImage)] = CompileShader(L"Resources/Shaders/CopyImage.PS.hlsl", L"ps_6_0");
+	assert(psblob_[static_cast<size_t>(FileName::kCopyImage)]);
 }
 
 ID3DBlob* ShaderCompiler::CompileShader(const std::wstring& filePath, const wchar_t* profile)

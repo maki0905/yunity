@@ -19,6 +19,7 @@ public:
 		kSprite,
 		kLine,
 		kParticle,
+		kCopyImage,
 		kCount
 
 	};

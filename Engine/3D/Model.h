@@ -20,8 +20,8 @@ class RootSignature;
 class Model
 {
 	/// <summary>
-		/// ルートパラメータ番号
-		/// </summary>
+	/// ルートパラメータ番号
+	/// </summary>
 	enum class RootBindings {
 		kWorldTransform, // ワールド変換行列
 		kViewProjection, // ビュープロジェクション変換行列

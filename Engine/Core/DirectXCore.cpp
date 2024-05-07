@@ -65,13 +65,14 @@ void DirectXCore::Initialize()
 	shaderCompiler_->Initialize();
 
 	renderTexture_ = new RenderTexture();
+	renderTexture_->InitializeGraphicsPipeline();
 	renderTexture_->Create();
 }
 
 void DirectXCore::PreDrawRenderTexture()
 {
-	commandList_->BarrierChange(swapChain_->GetSwapChain(), D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
-
+	//commandList_->BarrierChange(swapChain_->GetSwapChain(), D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
+	
 	commandList_->OMSetRenderTargets(renderTexture_->GetCpuDescHandleRTV(), depthBuffer_->GetDescriptorHeap());
 	commandList_->ClearRenderTargetView(renderTexture_->GetRenderTargetClearValue(), *renderTexture_->GetCpuDescHandleRTV());
 	commandList_->ClearDepthStencilView(depthBuffer_->GetDescriptorHeap());
@@ -81,10 +82,17 @@ void DirectXCore::PreDrawRenderTexture()
 
 void DirectXCore::PostDrawRenderTexture()
 {
+	
+	commandList_->BarrierChange(renderTexture_->GetResource(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+	PreDrawSwapchain();
+	renderTexture_->Copy();
+	commandList_->BarrierChange(renderTexture_->GetResource(), D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_RENDER_TARGET);
 }
 
 void DirectXCore::PreDrawSwapchain()
 {
+	commandList_->BarrierChange(swapChain_->GetSwapChain(), D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
+	
 	commandList_->OMSetRenderTargets(&backBuffer_->GetCpuDescHandleRTV()[swapChain_->GetSwapChain()->GetCurrentBackBufferIndex()]);
 	commandList_->ClearRenderTargetView(Vector4(0.1f, 0.25f, 0.5f, 0.0f), backBuffer_->GetCpuDescHandleRTV()[swapChain_->GetSwapChain()->GetCurrentBackBufferIndex()]);
 	commandList_->RSSetViewports(float(windowWidth_), float(windowHeight_));

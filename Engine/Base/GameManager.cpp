@@ -59,8 +59,9 @@ void GameManager::Draw()
 	SceneManager::GetInstance()->DrawFront();
 	sprite_->PostDraw();
 
+	directXCore_->PostDrawRenderTexture();
 #pragma endregion
-	directXCore_->PreDrawSwapchain();
+	//directXCore_->PreDrawSwapchain();
 
 	// ImGui描画
 	imguiManager_->Draw();

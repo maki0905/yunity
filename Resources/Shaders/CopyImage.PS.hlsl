@@ -8,7 +8,10 @@ struct PixelShaderOutput
     float32_t4 color : SV_TARGET0;
 };
 
-PixelShaderOutput main() : SV_TARGET
+PixelShaderOutput main(VertexShaerOutput input)
 {
-	return float4(1.0f, 1.0f, 1.0f, 1.0f);
+    PixelShaderOutput output;
+    output.color = gTexture.Sample(gSampler, input.texcoord);
+    
+	return output;
 }
