@@ -101,6 +101,9 @@ void ShaderCompiler::ShaderCompile()
 
 	psblob_[static_cast<size_t>(FileName::kBoxFilter)] = CompileShader(L"Resources/Shaders/BoxFilter.PS.hlsl", L"ps_6_0");
 	assert(psblob_[static_cast<size_t>(FileName::kBoxFilter)]);
+
+	psblob_[static_cast<size_t>(FileName::kGaussianFilter)] = CompileShader(L"Resources/Shaders/GaussianFilter.PS.hlsl", L"ps_6_0");
+	assert(psblob_[static_cast<size_t>(FileName::kGaussianFilter)]);
 }
 
 ID3DBlob* ShaderCompiler::CompileShader(const std::wstring& filePath, const wchar_t* profile)

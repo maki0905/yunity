@@ -23,6 +23,7 @@ public:
 		kGrayscale,
 		kVignette,
 		kBoxFilter,
+		kGaussianFilter,
 		kCount
 
 	};

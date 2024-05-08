@@ -554,6 +554,7 @@
     <FxCompile Include="Resources\Shaders\Grayscale.PS.hlsl" />
     <FxCompile Include="Resources\Shaders\Vignette.PS.hlsl" />
     <FxCompile Include="Resources\Shaders\BoxFilter.PS.hlsl" />
+    <FxCompile Include="Resources\Shaders\GaussianFilter.PS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\Object3d.hlsli">

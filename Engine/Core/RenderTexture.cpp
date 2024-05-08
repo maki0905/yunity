@@ -65,7 +65,7 @@ void RenderTexture::InitializeGraphicsPipeline()
 
 	pipelineState_->SetInputLayout(inputLayoutDesc);
 	pipelineState_->SetShader(PipelineState::ShaderType::kVS, ShaderCompiler::GetInstance()->Get(ShaderCompiler::FileName::kFullscreen, ShaderCompiler::ShaderType::kVS));
-	pipelineState_->SetShader(PipelineState::ShaderType::kPS, ShaderCompiler::GetInstance()->Get(ShaderCompiler::FileName::kBoxFilter, ShaderCompiler::ShaderType::kPS));
+	pipelineState_->SetShader(PipelineState::ShaderType::kPS, ShaderCompiler::GetInstance()->Get(ShaderCompiler::FileName::kGaussianFilter, ShaderCompiler::ShaderType::kPS));
 	pipelineState_->SetBlendState(blendDesc);
 	pipelineState_->SetRasterizerState(rasterizerDesc);
 	pipelineState_->SetDepthStencilState(depthStencilDesc);
