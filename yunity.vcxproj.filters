@@ -552,6 +552,7 @@
     </FxCompile>
     <FxCompile Include="Resources\Shaders\Fullscreen.VS.hlsl" />
     <FxCompile Include="Resources\Shaders\Grayscale.PS.hlsl" />
+    <FxCompile Include="Resources\Shaders\Vignette.PS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\Object3d.hlsli">

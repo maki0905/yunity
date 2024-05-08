@@ -21,6 +21,7 @@ public:
 		kParticle,
 		kFullscreen,
 		kGrayscale,
+		kVignette,
 		kCount
 
 	};

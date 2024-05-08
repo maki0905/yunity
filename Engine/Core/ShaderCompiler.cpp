@@ -95,6 +95,9 @@ void ShaderCompiler::ShaderCompile()
 	
 	psblob_[static_cast<size_t>(FileName::kGrayscale)] = CompileShader(L"Resources/Shaders/Grayscale.PS.hlsl", L"ps_6_0");
 	assert(psblob_[static_cast<size_t>(FileName::kGrayscale)]);
+
+	psblob_[static_cast<size_t>(FileName::kVignette)] = CompileShader(L"Resources/Shaders/Vignette.PS.hlsl", L"ps_6_0");
+	assert(psblob_[static_cast<size_t>(FileName::kVignette)]);
 }
 
 ID3DBlob* ShaderCompiler::CompileShader(const std::wstring& filePath, const wchar_t* profile)
