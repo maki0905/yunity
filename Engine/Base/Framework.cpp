@@ -96,6 +96,7 @@ void Framework::Update()
 	//sceneArr_[currentSceneNo_]->Update();
 
 	sceneManager_->Update();
+	modelManager_->Update();
 
 	// ImGui受付終了
 	imguiManager_->End();

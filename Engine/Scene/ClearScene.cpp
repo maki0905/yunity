@@ -13,6 +13,7 @@ void ClearScene::Initialize()
 	//model0_.reset(Model::Create("plane", "gltf"));
 	model0_.reset(ModelManager::GetInstance()->CreateModel("AnimatedCube", "gltf", true));
 	model0_->SetCamera(camera_.get());
+	model0_->PlayAnimation();
 	worldTransform0_.Initialize();
 }
 

@@ -227,7 +227,8 @@ void Model::PlayingAnimation()
 	NodeAnimation& rootNodeAnimation = animation_.nodeAnimations[modelData_.rootNode.name];
 	Vector3 translate = CalculateValue(rootNodeAnimation.translate, animationTime_);
 	Quaternion rotate = CalculateQuaternion(rootNodeAnimation.rotate, animationTime_);
-	Vector3 scale = CalculateValue(rootNodeAnimation.scale, animationTime_);
+	//Vector3 scale = CalculateValue(rootNodeAnimation.scale, animationTime_);
+	Vector3 scale = Vector3(1.0f, 1.0f, 1.0f);
 	Matrix4x4 localMatrix = MakeAffineMatrix(scale, rotate, translate);
 
 	*nodeData_ = localMatrix;

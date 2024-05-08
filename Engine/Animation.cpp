@@ -6,7 +6,7 @@ Animation LoadAnimationFile(const std::string& filename, const std::string forma
 {
     Animation animation;
     Assimp::Importer importer;
-    std::string filePath = "Resources/Models/" + filename + "/" + format;
+    std::string filePath = "Resources/Models/" + filename + "/" + filename + "." + format;
     const aiScene* scene = importer.ReadFile(filePath.c_str(), 0);
     assert(scene->mNumAnimations != 0); // アニメーションがない
     aiAnimation* animationAssimp = scene->mAnimations[0]; // 最初のアニメーションだけ採用。もちろん複数対応するにこしたことはない
