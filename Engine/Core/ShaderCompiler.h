@@ -22,6 +22,7 @@ public:
 		kFullscreen,
 		kGrayscale,
 		kVignette,
+		kBoxFilter,
 		kCount
 
 	};
