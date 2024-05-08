@@ -19,7 +19,8 @@ public:
 		kSprite,
 		kLine,
 		kParticle,
-		kCopyImage,
+		kFullscreen,
+		kGrayscale,
 		kCount
 
 	};

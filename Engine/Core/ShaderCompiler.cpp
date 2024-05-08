@@ -90,10 +90,11 @@ void ShaderCompiler::ShaderCompile()
 	psblob_[static_cast<size_t>(FileName::kParticle)] = CompileShader(L"Resources/Shaders/ParticlePS.hlsl", L"ps_6_0");
 	assert(psblob_[static_cast<size_t>(FileName::kParticle)]);
 
-	vsblob_[static_cast<size_t>(FileName::kCopyImage)] = CompileShader(L"Resources/Shaders/Fullscreen.VS.hlsl", L"vs_6_0");
-	assert(vsblob_[static_cast<size_t>(FileName::kCopyImage)]);
-	psblob_[static_cast<size_t>(FileName::kCopyImage)] = CompileShader(L"Resources/Shaders/Fullscreen.PS.hlsl", L"ps_6_0");
-	assert(psblob_[static_cast<size_t>(FileName::kCopyImage)]);
+	vsblob_[static_cast<size_t>(FileName::kFullscreen)] = CompileShader(L"Resources/Shaders/Fullscreen.VS.hlsl", L"vs_6_0");
+	assert(vsblob_[static_cast<size_t>(FileName::kFullscreen)]);
+	
+	psblob_[static_cast<size_t>(FileName::kGrayscale)] = CompileShader(L"Resources/Shaders/Grayscale.PS.hlsl", L"ps_6_0");
+	assert(psblob_[static_cast<size_t>(FileName::kGrayscale)]);
 }
 
 ID3DBlob* ShaderCompiler::CompileShader(const std::wstring& filePath, const wchar_t* profile)
