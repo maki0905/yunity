@@ -117,7 +117,7 @@ void BlockManager::Update(World* world)
 
 	for (auto& block : blocks_) {
 		if (ImGui::TreeNode((std::to_string(count)).c_str())) {
-			Transform transform{};
+			EulerTransform transform{};
 			transform.scale = block->GetWordTransform().scale_;
 			transform.rotate = block->GetWordTransform().rotation_;
 			transform.translate = block->GetWordTransform().translation_;

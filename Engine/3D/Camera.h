@@ -108,7 +108,7 @@ private:
 	Matrix4x4 projectionMatrix_;
 
 #pragma region ビュー行列の設定
-	Transform transform_;
+	EulerTransform transform_;
 #pragma endregion
 
 #pragma region 射影行列の設定

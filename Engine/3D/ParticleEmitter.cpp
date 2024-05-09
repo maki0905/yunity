@@ -2,7 +2,7 @@
 
 #include "ImGuiManager.h"
 
-void ParticleEmitter::Initialize(Transform transform, float frequency, uint32_t count)
+void ParticleEmitter::Initialize(EulerTransform transform, float frequency, uint32_t count)
 {
 	worldTransform_.Initialize();
 	worldTransform_.scale_ = transform.scale;

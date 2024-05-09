@@ -18,7 +18,7 @@ struct ParticleForCPU {
 struct Particle {
 
 	ParticleForCPU particleForCPU;
-	Transform transform = { .scale{1.0f, 1.0f, 1.0f},.rotate{0.0f, 0.0f, 0.0f}, .translate{0.0f, 0.0f, 0.0f} };
+	EulerTransform transform = { .scale{1.0f, 1.0f, 1.0f},.rotate{0.0f, 0.0f, 0.0f}, .translate{0.0f, 0.0f, 0.0f} };
 	Vector3 velocity = { 0.0f, 0.0f, 0.0f };
 	float lifeTime;
 	float currentTime;

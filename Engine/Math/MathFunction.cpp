@@ -488,7 +488,7 @@ Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Quaternion& quaternion, c
 	return result;
 }
 
-Matrix4x4 MakeAffineMatrix(const Transform& transform)
+Matrix4x4 MakeAffineMatrix(const EulerTransform& transform)
 {
 	Matrix4x4 result;
 	for (int line = 0; line < 4; line++) {

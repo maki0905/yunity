@@ -109,7 +109,7 @@ Matrix4x4 MakeRotateXYZMatrix(const Vector3& rotation);
 Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rot, const Vector3& translate);
 Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Matrix4x4& rotateMatrix, const Vector3& translate);
 Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Quaternion& quaternion, const Vector3& translate);
-Matrix4x4 MakeAffineMatrix(const Transform& transform);
+Matrix4x4 MakeAffineMatrix(const EulerTransform& transform);
 
 // 透視投射行列
 Matrix4x4 MakePerspectiveFovMatrix(float fovY, float aspectRatio, float nearClip, float farClip);

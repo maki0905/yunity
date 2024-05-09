@@ -6,7 +6,7 @@
 
 class ParticleEmitter {
 public:
-	void Initialize(Transform transform, float frequency, uint32_t count);
+	void Initialize(EulerTransform transform, float frequency, uint32_t count);
 
 	bool Update();
 

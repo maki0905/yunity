@@ -10,7 +10,7 @@ void DebugCamera::Update(Camera* camera)
 {
 	int32_t wheel = Input::GetInstance()->GetWheel();
 	Vector2 mouseMove = Input::GetInstance()->GetMouseMove();
-	Transform transform = { .scale{1.0f, 1.0f, 1.0f}, .rotate{camera->GetRotate()}, .translate{camera->GetTranslate()} };
+	EulerTransform transform = { .scale{1.0f, 1.0f, 1.0f}, .rotate{camera->GetRotate()}, .translate{camera->GetTranslate()} };
 	if (Input::GetInstance()->PushMouse(1)) {
 		float rot = static_cast<float>(std::numbers::pi_v<float> / 180.0f);
 		transform.rotate.x += rot * mouseMove.y * 0.1f;
