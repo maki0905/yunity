@@ -230,7 +230,6 @@ void Model::PlayingAnimation()
 	//Vector3 scale = CalculateValue(rootNodeAnimation.scale, animationTime_);
 	Vector3 scale = Vector3(1.0f, 1.0f, 1.0f);
 	Matrix4x4 localMatrix = MakeAffineMatrix(scale, rotate, translate);
-
 	*nodeData_ = localMatrix;
 }
 

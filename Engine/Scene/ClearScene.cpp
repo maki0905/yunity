@@ -20,7 +20,10 @@ void ClearScene::Initialize()
 void ClearScene::Update()
 {
 	/*worldTransform0_.rotation_.y += 0.05f;*/
-	worldTransform0_.UpdateMatrix(RotationType::Euler);
+	//worldTransform0_.quaternion_.y += 0.01f;
+	//worldTransform0_.rotation_.y += 0.05f;
+	//worldTransform0_.UpdateMatrix(RotationType::Euler);
+	worldTransform0_.UpdateMatrix(RotationType::Quaternion);
 
 	if (Input::GetInstance()->TriggerKey(DIK_LSHIFT)) {
 		isDebug_ ^= true;
