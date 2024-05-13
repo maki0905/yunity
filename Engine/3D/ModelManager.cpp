@@ -192,14 +192,23 @@ Model::ModelData ModelManager::LoadModelFile(const std::string& fileName, const 
 Model::Node ModelManager::ReadNode(aiNode* node)
 {
 	Model::Node result;
-	aiMatrix4x4 aiLocalMatrix = node->mTransformation;
+	aiVector3D scale;
+	aiVector3D translate;
+	aiQuaternion rotate;
+
+	node->mTransformation.Decompose(scale, rotate, translate); // assimpの行列からSRTを抽出する関数を利用
+	result.transform.scale = { scale.x, scale.y, scale.z }; // scaleはそのまま 
+	result.transform.rotate = { rotate.x, -rotate.y, -rotate.z, rotate.w }; // x軸を反転、さらに回転方向が逆なので軸を反転させる
+	result.transform.translate = { -translate.x, translate.y, translate.z }; // x軸を反転
+	result.localMatrix = MakeAffineMatrix(result.transform.scale, result.transform.rotate, result.transform.translate);
+	/*aiMatrix4x4 aiLocalMatrix = node->mTransformation;
 	aiLocalMatrix.Transpose();
 
 	for (uint32_t i = 0; i < 4; i++) {
 		for (uint32_t j = 0; j < 4; j++) {
 			result.localMatrix.m[i][j] = aiLocalMatrix[i][j];
 		}
-	}
+	}*/
 
 	result.name = node->mName.C_Str();
 	result.children.resize(node->mNumChildren);

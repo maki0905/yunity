@@ -128,6 +128,7 @@ void Model::InitializeGraphicsPipeline()
 void Model::Initialize(const ModelData& modelData, const Animation& animation)
 {
 	modelData_ = modelData;
+	skeleton_ = CreateSkelton(modelData_.rootNode);
 	animation_ = animation;
 	CreateMesh();
 	InitializeDirectionalLight();
@@ -313,6 +314,7 @@ void Model::InitializeNode()
 	nodeData_ = nullptr;
 	nodeResource_->Map(0, nullptr, reinterpret_cast<void**>(&nodeData_));
 	*nodeData_ = modelData_.rootNode.localMatrix;
+	
 }
 
 ID3D12Resource* Model::CreateBufferResource(size_t sizeInBytes)
@@ -337,4 +339,36 @@ ID3D12Resource* Model::CreateBufferResource(size_t sizeInBytes)
 		&ResourceDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(&resource));
 	assert(SUCCEEDED(result));
 	return resource;
+}
+
+Model::Skeleton Model::CreateSkelton(const Node& rootNode)
+{
+	Skeleton skeleton;
+	skeleton.root = CreateJoint(rootNode, {}, skeleton.joints);
+
+	// 名前とindexのマッピングを行いアクセスしやすくする
+	for (const Joint& joint : skeleton.joints) {
+		skeleton.jointMap.emplace(joint.name, joint.index);
+	}
+
+	return skeleton;
+}
+
+int32_t Model::CreateJoint(const Node& node, const std::optional<int32_t>& parent, std::vector<Joint>& joints)
+{
+	Joint joint;
+	joint.name = node.name;
+	joint.localMatrix = node.localMatrix;
+	joint.skeletonSpaceMatrix = MakeIdentity4x4();
+	joint.transform = node.transform;
+	joint.index = int32_t(joints.size()); // 現在要録されている数をIndexに
+	joint.parent = parent;
+	joints.push_back(joint);
+	for (const Node& child : node.children) {
+		// 子Jointを作成し、そのIndexを登録
+		int32_t childIndex = CreateJoint(child, joint.index, joints);
+		joints[joint.index].children.push_back(childIndex);
+	}
+	// 自身のIndexを返す
+	return joint.index;
 }

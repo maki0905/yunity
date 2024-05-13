@@ -5,6 +5,7 @@
 #include <vector>
 #include <memory>
 #include <wrl.h>
+#include <optional>
 
 #include "TextureManager.h"
 #include "Camera.h"
@@ -49,6 +50,7 @@ public:
 	};
 
 	struct Node {
+		QuaternionTransform transform;
 		Matrix4x4 localMatrix;
 		std::string name;
 		std::vector<Node> children;
@@ -64,6 +66,22 @@ public:
 		Vector4 color; // ライトの色
 		Vector3 direction; // ライトの向き
 		float intensity = 0; // 輝度
+	};
+
+	struct Joint {
+		QuaternionTransform transform; // Transform情報
+		Matrix4x4 localMatrix; // localMatrix
+		Matrix4x4 skeletonSpaceMatrix; // skeletonSpaceでの変換行列
+		std::string name; // 名前
+		std::vector<int32_t> children; // 子JointのIndexリスト。いなければ空
+		int32_t index; // 自身のIndex
+		std::optional<int32_t> parent; // 親JointのIndex。いなければnull
+	};
+
+	struct Skeleton {
+		int32_t root; // RootJointのIndex
+		std::map<std::string, int32_t> jointMap; // Joint名とIndexとの辞書
+		std::vector<Joint> joints; // 所属しているジョイント
 	};
 
 public:
@@ -141,6 +159,10 @@ private:
 	/// <returns>サイズ</returns>
 	ID3D12Resource* CreateBufferResource(size_t sizeInBytes);
 
+	Skeleton CreateSkelton(const Node& rootNode);
+
+	int32_t CreateJoint(const Node& node, const std::optional<int32_t>& parent, std::vector<Joint>& joints);
+
 private:
 	static ID3D12Device* device_;
 	static ID3D12GraphicsCommandList* commandList_;
@@ -151,6 +173,7 @@ private:
 	Camera* camera_ = nullptr;
 
 	ModelData modelData_;
+	Skeleton skeleton_;
 	Animation animation_;
 	// 頂点バッファ
 	Microsoft::WRL::ComPtr<ID3D12Resource> vertexResource_;
