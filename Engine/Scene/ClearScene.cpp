@@ -11,15 +11,17 @@ void ClearScene::Initialize()
 	model0_ = std::make_unique<Model>();
 	//model0_.reset(Model::Create("terrain", "obj"));
 	//model0_.reset(Model::Create("plane", "gltf"));
-	model0_.reset(ModelManager::GetInstance()->CreateModel("AnimatedCube", "gltf", true));
+	model0_.reset(ModelManager::GetInstance()->CreateModel(gltf, true, "human", "sneakWalk"));
 	model0_->SetCamera(camera_.get());
 	model0_->PlayAnimation();
 	worldTransform0_.Initialize();
+	worldTransform0_.scale_ = Vector3(100.0f, 100.0f, 100.0f);
+	//worldTransform0_.rotation_.y = 210.5f;
 }
 
 void ClearScene::Update()
 {
-	/*worldTransform0_.rotation_.y += 0.05f;*/
+	//worldTransform0_.rotation_.y += 0.05f;
 	//worldTransform0_.quaternion_.y += 0.01f;
 	//worldTransform0_.rotation_.y += 0.05f;
 	//worldTransform0_.UpdateMatrix(RotationType::Euler);

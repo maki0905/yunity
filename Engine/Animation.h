@@ -5,6 +5,7 @@
 
 
 #include "Keyframe.h"
+#include "Format.h"
 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
@@ -34,7 +35,7 @@ struct Animation {
 };
 
 // Animation解析
-Animation LoadAnimationFile(const std::string& filename, const std::string format);
+Animation LoadAnimationFile(Format format, const std::string& folderName, const std::string& fileName = "");
 
 Vector3 CalculateValue(const std::vector<KeyframeVector3>& keyframes, float time);
 Quaternion CalculateQuaternion(const std::vector<KeyframeQuaternion>& keyframes, float time);

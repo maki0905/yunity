@@ -12,6 +12,7 @@
 
 #include "Model.h"
 #include "Animation.h"
+#include "Format.h"
 
 /// <summary>
 /// モデルマネージャー
@@ -30,7 +31,7 @@ public:
 
 	void Update();
 
-	Model* CreateModel(const std::string& fileName, const std::string format, bool have);
+	Model* CreateModel(Format format, bool have, const std::string& folderName, const std::string& fileName = "");
 
 private:
 	ModelManager() = default;
@@ -40,7 +41,7 @@ private:
 private:
 	void LoadInternal(const std::string& fileName, const std::string format);
 	//Model::ModelData* LoadInternal(const std::string& fileName, const std::string format);
-	Model::ModelData LoadModelFile(const std::string& fileName, const std::string format);
+	Model::ModelData LoadModelFile(Format format, const std::string& folderName, const std::string& fileName = "");
 	Model::Node ReadNode(aiNode* node);
 	Model::MaterialData LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& filename);
 private:

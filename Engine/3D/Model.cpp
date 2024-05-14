@@ -129,6 +129,7 @@ void Model::Initialize(const ModelData& modelData, const Animation& animation)
 {
 	modelData_ = modelData;
 	skeleton_ = CreateSkelton(modelData_.rootNode);
+	SkeletonUpdate();
 	animation_ = animation;
 	CreateMesh();
 	InitializeDirectionalLight();
@@ -232,6 +233,38 @@ void Model::PlayingAnimation()
 	Vector3 scale = Vector3(1.0f, 1.0f, 1.0f);
 	Matrix4x4 localMatrix = MakeAffineMatrix(scale, rotate, translate);
 	*nodeData_ = localMatrix;
+}
+
+void Model::SkeletonUpdate()
+{
+	// すべてのJointを更新。親が若いので通常ループで処理可能になっている
+	for (Joint& joint : skeleton_.joints) {
+		joint.localMatrix = MakeAffineMatrix(joint.transform.scale, joint.transform.rotate, joint.transform.translate);
+		if (joint.parent) { // 親がいれば親の行列を掛ける
+			joint.skeletonSpaceMatrix = Multiply(joint.localMatrix, skeleton_.joints[*joint.parent].skeletonSpaceMatrix);
+		}
+		else { // 親がいないのでlocalMatrixとskeletonSpaceMatrixは一致する
+			joint.skeletonSpaceMatrix = joint.localMatrix;
+		}
+	}
+}
+
+void Model::ApplyAnimation()
+{
+	animationTime_ += 1.0f / 60.0f;
+	for (Joint& joint : skeleton_.joints) {
+		// 対象のJointのAnimationがあれば、値の適用を行う。下記のif文はC++17から可能になった初期化付きif文
+		if (auto it = animation_.nodeAnimations.find(joint.name); it != animation_.nodeAnimations.end()) {
+			const NodeAnimation& rootNodeAnimation = (*it).second;
+			joint.transform.translate = CalculateValue(rootNodeAnimation.translate, animationTime_);
+			joint.transform.rotate = CalculateQuaternion(rootNodeAnimation.rotate, animationTime_);
+			//joint.transform.scale = CalculateValue(rootNodeAnimation.scale, animationTime_);
+			joint.transform.scale = Vector3(1.0f, 1.0f, 1.0f);
+		}
+	}
+
+	SkeletonUpdate();
+
 }
 
 //void T::SetMaterial(const Vector4& color)
@@ -350,6 +383,8 @@ Model::Skeleton Model::CreateSkelton(const Node& rootNode)
 	for (const Joint& joint : skeleton.joints) {
 		skeleton.jointMap.emplace(joint.name, joint.index);
 	}
+
+
 
 	return skeleton;
 }

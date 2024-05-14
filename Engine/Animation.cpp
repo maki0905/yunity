@@ -2,11 +2,16 @@
 
 #include <cassert>
 
-Animation LoadAnimationFile(const std::string& filename, const std::string format)
+Animation LoadAnimationFile(Format format, const std::string& folderName, const std::string& fileName)
 {
     Animation animation;
     Assimp::Importer importer;
-    std::string filePath = "Resources/Models/" + filename + "/" + filename + "." + format;
+    std::string filePath = "Resources/Models/" + folderName + "/" + folderName;
+    if (fileName.size()) {
+        filePath = "Resources/Models/" + folderName + "/" + fileName;
+    }
+    filePath = AddToFormat(filePath, format);
+
     const aiScene* scene = importer.ReadFile(filePath.c_str(), 0);
     assert(scene->mNumAnimations != 0); // アニメーションがない
     aiAnimation* animationAssimp = scene->mAnimations[0]; // 最初のアニメーションだけ採用。もちろん複数対応するにこしたことはない
@@ -30,7 +35,7 @@ Animation LoadAnimationFile(const std::string& filename, const std::string forma
             aiQuatKey& keyAssimp = nodeAnimationAssimp->mRotationKeys[keyIndex];
             KeyframeQuaternion keyframe;
             keyframe.time = float(keyAssimp.mTime / animationAssimp->mTicksPerSecond); // ここも秒に変換
-            keyframe.value = { keyAssimp.mValue.x, -keyAssimp.mValue.y, -keyAssimp.mValue.z, keyAssimp.mValue.w}; // 右手->左手
+            keyframe.value = { keyAssimp.mValue.x, -keyAssimp.mValue.y, -keyAssimp.mValue.z, keyAssimp.mValue.w }; // 右手->左手
             nodeAnimation.rotate.push_back(keyframe);
         }
 

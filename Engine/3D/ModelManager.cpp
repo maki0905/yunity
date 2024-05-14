@@ -25,23 +25,25 @@ void ModelManager::Update()
 {
 	for (auto& model : models_) {
 		if (model->IsAnimation()) {
-			model->PlayingAnimation();
+			//model->PlayingAnimation();
+			model->ApplyAnimation();
 		}
 	}
 }
 
-Model* ModelManager::CreateModel(const std::string& fileName, const std::string format, bool have)
+Model* ModelManager::CreateModel(Format format, bool have, const std::string& folderName, const std::string& fileName)
 {
 	Model* model = new Model();
 	//LoadInternal(fileName, format);
-	auto itr = dataStorage_.find(fileName);
+	std::string path = folderName + "/" + fileName;
+	auto itr = dataStorage_.find(path);
 	if (itr == dataStorage_.end()) {
-		dataStorage_[fileName].modelData = LoadModelFile(fileName, format);
+		dataStorage_[path].modelData = LoadModelFile(format, folderName, fileName);
 	}
 	if (have) {
-		dataStorage_[fileName].animation = LoadAnimationFile(fileName, format);
+		dataStorage_[path].animation = LoadAnimationFile(format, folderName, fileName);
 	}
-	model->Initialize(dataStorage_[fileName].modelData, dataStorage_[fileName].animation);
+	model->Initialize(dataStorage_[path].modelData, dataStorage_[path].animation);
 	models_.emplace_back(model);
 	return model;
 }
@@ -125,22 +127,28 @@ Model* ModelManager::CreateModel(const std::string& fileName, const std::string 
 //	return modelData;
 //}
 
-void ModelManager::LoadInternal(const std::string& fileName, const std::string format)
-{
-	auto itr = dataStorage_.find(fileName);
-		if (itr == dataStorage_.end()) {
-			dataStorage_[fileName].modelData = LoadModelFile(fileName, format);
-			dataStorage_[fileName].animation = LoadAnimationFile(fileName, format);
-		}
-}
+//void ModelManager::LoadInternal(const std::string& fileName, const std::string format)
+//{
+//	auto itr = dataStorage_.find(fileName);
+//		if (itr == dataStorage_.end()) {
+//			dataStorage_[fileName].modelData = LoadModelFile(fileName, format);
+//			dataStorage_[fileName].animation = LoadAnimationFile(fileName, format);
+//		}
+//}
 
-Model::ModelData ModelManager::LoadModelFile(const std::string& fileName, const std::string format)
+Model::ModelData ModelManager::LoadModelFile(Format format, const std::string& folderName, const std::string& fileName)
 {
 	Model::ModelData modelData;
 
 	Assimp::Importer importer;
-	std::string directoryPath = "Resources/Models/" + fileName + "/";
-	std::string filePath = directoryPath + fileName + "." + format;
+	std::string directoryPath = "Resources/Models/";
+	std::string filePath = directoryPath + folderName + "/" + folderName;
+	if (fileName.size()) {
+		filePath = directoryPath + folderName + "/" + fileName;
+	}
+
+	filePath = AddToFormat(filePath, format);
+
 	const aiScene* scene = importer.ReadFile(filePath.c_str(), aiProcess_FlipWindingOrder | aiProcess_FlipUVs);
 	assert(scene->HasMeshes()); // メッシュがないのは対応しない
 
@@ -182,7 +190,8 @@ Model::ModelData ModelManager::LoadModelFile(const std::string& fileName, const 
 		if (material->GetTextureCount(aiTextureType_DIFFUSE) != 0) {
 			aiString textureFilePath;
 			material->GetTexture(aiTextureType_DIFFUSE, 0, &textureFilePath);
-			modelData.material.textureFilePath = "Models/" + fileName + "/" + textureFilePath.C_Str();
+			modelData.material.textureFilePath = "Models/" + folderName + "/" + textureFilePath.C_Str();
+			
 		}
 	}
 

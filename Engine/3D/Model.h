@@ -141,6 +141,9 @@ public:
 	void StopAnimation() { isAnimation_ = false; }
 	void PlayingAnimation();
 
+	void SkeletonUpdate();
+	void ApplyAnimation();
+
 private:
 
 	// メッシュ生成
