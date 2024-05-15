@@ -24,9 +24,9 @@ static const float32_t kKernel3x3[3][3] =
 
 PixelShaderOutput main(VertexShaerOutput input)
 {   
+    // uvStepSizeÇÃéZèo
     uint32_t width;
     uint32_t height;
-    
     gTexture.GetDimensions(width, height);
     float32_t2 uvStepSize = float32_t2(rcp(width), rcp(height));
     
@@ -37,7 +37,9 @@ PixelShaderOutput main(VertexShaerOutput input)
     {
         for (int32_t y = 0; y < 3; ++y)
         {
+            // texcoordÇéZèo
             float32_t2 texcoord = input.texcoord + kIndex3x3[x][y] * uvStepSize;
+            // êFÇ…1/9ä|ÇØÇƒë´Ç∑
             float32_t3 fetchColor = gTexture.Sample(gSampler, texcoord).rgb;
             output.color.rgb += fetchColor * kKernel3x3[x][y];
         }

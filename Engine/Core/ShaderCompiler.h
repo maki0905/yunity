@@ -24,6 +24,7 @@ public:
 		kVignette,
 		kBoxFilter,
 		kGaussianFilter,
+		kLuminanceBasedOutline,
 		kCount
 
 	};

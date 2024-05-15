@@ -104,6 +104,9 @@ void ShaderCompiler::ShaderCompile()
 
 	psblob_[static_cast<size_t>(FileName::kGaussianFilter)] = CompileShader(L"Resources/Shaders/GaussianFilter.PS.hlsl", L"ps_6_0");
 	assert(psblob_[static_cast<size_t>(FileName::kGaussianFilter)]);
+
+	psblob_[static_cast<size_t>(FileName::kLuminanceBasedOutline)] = CompileShader(L"Resources/Shaders/LuminanceBasedOutline.PS.hlsl", L"ps_6_0");
+	assert(psblob_[static_cast<size_t>(FileName::kLuminanceBasedOutline)]);
 }
 
 ID3DBlob* ShaderCompiler::CompileShader(const std::wstring& filePath, const wchar_t* profile)

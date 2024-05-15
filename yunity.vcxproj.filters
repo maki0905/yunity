@@ -524,6 +524,9 @@
     <ClInclude Include="Engine\Core\RenderTexture.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\PostEffect.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\Shaders\BasicPS.hlsl">
@@ -555,6 +558,8 @@
     <FxCompile Include="Resources\Shaders\Vignette.PS.hlsl" />
     <FxCompile Include="Resources\Shaders\BoxFilter.PS.hlsl" />
     <FxCompile Include="Resources\Shaders\GaussianFilter.PS.hlsl" />
+    <FxCompile Include="Resources\Shaders\LuminanceBasedOutline.PS.hlsl" />
+    <FxCompile Include="Resources\Shaders\DepthBasedOutline.PS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\Object3d.hlsli">
