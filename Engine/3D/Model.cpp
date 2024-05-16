@@ -5,6 +5,7 @@
 #include <sstream>
 
 #include "Device.h"
+#include "DirectXCore.h"
 #include "RootSignature.h"
 #include "PipelineState.h"
 #include "ShaderCompiler.h"
@@ -130,6 +131,7 @@ void Model::Initialize(const ModelData& modelData, const Animation& animation)
 	modelData_ = modelData;
 	skeleton_ = CreateSkelton(modelData_.rootNode);
 	SkeletonUpdate();
+	skinCluster_ = CreateSkinCluster();
 	animation_ = animation;
 	CreateMesh();
 	CreateIndex();
@@ -424,4 +426,66 @@ int32_t Model::CreateJoint(const Node& node, const std::optional<int32_t>& paren
 	}
 	// 自身のIndexを返す
 	return joint.index;
+}
+
+Model::SkinCluster Model::CreateSkinCluster()
+{
+	SkinCluster skinCluster;
+	// palette用のResourceを確保
+	skinCluster.paletteResource = CreateBufferResource(sizeof(WellForGPU) * skeleton_.joints.size());
+	WellForGPU* mappedPalette = nullptr;
+	skinCluster.paletteResource->Map(0, nullptr, reinterpret_cast<void**>(&mappedPalette));
+	skinCluster.mappedPalette = { mappedPalette, skeleton_.joints.size() }; // spanを使ってアクセスするようにする
+	DescriptorHandle srvDescriptorHandle = DirectXCore::GetInstance()->GetDescriptorHeap(DirectXCore::HeapType::kSRV)->Alloc();
+	skinCluster.paletteSrvHandle.first = srvDescriptorHandle.GetCPUHandle();
+	skinCluster.paletteSrvHandle.second = srvDescriptorHandle.GetGPUHandle();
+
+	// palette用のsrvを作成。StructuredBufferでアクセスできるようにする。
+	D3D12_SHADER_RESOURCE_VIEW_DESC paletteSrvDesc{};
+	paletteSrvDesc.Format = DXGI_FORMAT_UNKNOWN;
+	paletteSrvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+	paletteSrvDesc.ViewDimension = D3D12_SRV_DIMENSION_BUFFER;
+	paletteSrvDesc.Buffer.FirstElement = 0;
+	paletteSrvDesc.Buffer.Flags = D3D12_BUFFER_SRV_FLAG_NONE;
+	paletteSrvDesc.Buffer.NumElements = UINT(skeleton_.joints.size());
+	paletteSrvDesc.Buffer.StructureByteStride = sizeof(WellForGPU);
+	Device::GetInstance()->GetDevice()->CreateShaderResourceView(skinCluster.paletteResource.Get(), &paletteSrvDesc, skinCluster.paletteSrvHandle.first);
+
+	// influence用のResourceを確保。頂点ごとにinfluence情報を追加できるようにする
+	skinCluster.influenceResource = CreateBufferResource(sizeof(VertexInfluence) * modelData_.vertices.size());
+	VertexInfluence* mappedInfluence = nullptr;
+	skinCluster.influenceResource->Map(0, nullptr, reinterpret_cast<void**>(&mappedInfluence));
+	std::memset(mappedInfluence, 0, sizeof(VertexInfluence) * modelData_.vertices.size()); // 0埋め。weightを0にしておく。
+	skinCluster.mappedInfluence = { mappedInfluence, modelData_.vertices.size() };
+
+	// influence用のVBVを作成
+	skinCluster.influenceBufferView.BufferLocation = skinCluster.influenceResource->GetGPUVirtualAddress();
+	skinCluster.influenceBufferView.SizeInBytes = UINT(sizeof(VertexInfluence) * modelData_.vertices.size());
+	skinCluster.influenceBufferView.StrideInBytes = sizeof(VertexInfluence);
+
+	// InverseBindPoseMatrixを格納する場所を作成して、単位行列で埋める
+	skinCluster.inverseBindPoseMatrices.resize(skeleton_.joints.size());
+	std::generate(skinCluster.inverseBindPoseMatrices.begin(), skinCluster.inverseBindPoseMatrices.end(), MakeIdentity4x4);
+
+	// ModelDataのSkinCluster情報を解析してInfluenceの中身を埋める
+	for (const auto& jointWeight : modelData_.skinClusterData) {
+		auto it = skeleton_.jointMap.find(jointWeight.first); // jointWeight.firstはjoint名なので、skeletonに対象となるjointが含まれているか判断
+		if (it == skeleton_.jointMap.end()) { // そんな名前のJointは存在しない。次に回す
+			continue;
+		}
+		// (*it).secondにはjointのindexが入っているので、該当のindexのinverseBindPoseMatrixを代入
+		skinCluster.inverseBindPoseMatrices[(*it).second] = jointWeight.second.inverseBindPoseMatrix;
+		for (const auto& vertexWeight : jointWeight.second.vertexWeights) {
+			auto& currentInfluence = skinCluster.mappedInfluence[vertexWeight.vertexIndex]; // 該当のvertexIndexのinfluence情報を参照しておく
+			for (uint32_t index = 0; index < kNumMaxInfluence; ++index) { // 空いているところに入れる
+				if (currentInfluence.weights[index] == 0.0f) { // weight == 0が空いている状態なので、その場所にweightとjointのindexを代入
+					currentInfluence.weights[index] = vertexWeight.weight;
+					currentInfluence.jointIndices[index] = (*it).second;
+					break;
+				}
+			}
+		}
+	}
+
+	return skinCluster;
 }
