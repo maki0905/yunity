@@ -132,6 +132,7 @@ void Model::Initialize(const ModelData& modelData, const Animation& animation)
 	SkeletonUpdate();
 	animation_ = animation;
 	CreateMesh();
+	CreateIndex();
 	InitializeDirectionalLight();
 	InitializeMaterial();
 	InitializeNode();
@@ -184,6 +185,9 @@ void Model::Draw(const WorldTransform& worldTransform/*, const Camera& camera*/)
 	// 頂点バッファの設定
 	commandList_->IASetVertexBuffers(0, 1, &vertexBufferView_);
 
+	//インデックスバッファの設定
+	commandList_->IASetIndexBuffer(&indexBufferView_);
+
 	// CBVをセット(ワールド行列)
 	commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(RootBindings::kWorldTransform), worldTransform.constBuff_->GetGPUVirtualAddress());
 
@@ -207,7 +211,8 @@ void Model::Draw(const WorldTransform& worldTransform/*, const Camera& camera*/)
 	}
 	TextureManager::GetInstance()->SetGraphicsRootDescriptorTable(commandList_, static_cast<UINT>(RootBindings::kTexture), textureHandle_);
 
-	commandList_->DrawInstanced(UINT(modelData_.vertices.size()), 1, 0, 0);
+	//commandList_->DrawInstanced(UINT(modelData_.vertices.size()), 1, 0, 0);
+	commandList_->DrawIndexedInstanced(modelData_.indices.size(), 1, 0, 0, 0);
 }
 
 void Model::SetPointLight(const PointLight& pointLight)
@@ -307,6 +312,19 @@ void Model::CreateMesh()
 		std::copy(vertexData_.begin(), vertexData_.end(), vertexData);
 		vertexResource_->Unmap(0, nullptr);
 	}*/
+
+}
+
+void Model::CreateIndex()
+{
+	indexResource_ = CreateBufferResource(sizeof(uint32_t) * modelData_.indices.size());
+
+	indexBufferView_.BufferLocation = indexResource_->GetGPUVirtualAddress();
+	indexBufferView_.SizeInBytes = sizeof(uint32_t) * modelData_.indices.size();
+	indexBufferView_.Format = DXGI_FORMAT_R32_UINT;
+
+	indexResource_->Map(0, nullptr, reinterpret_cast<void**>(&mappedIndex_));
+	std::memcpy(mappedIndex_, modelData_.indices.data(), sizeof(uint32_t) * modelData_.indices.size());
 
 }
 

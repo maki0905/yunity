@@ -58,6 +58,7 @@ public:
 
 	struct ModelData {
 		std::vector<VertexData> vertices;
+		std::vector<uint32_t> indices;
 		MaterialData material;
 		Node rootNode;
 	};
@@ -149,6 +150,8 @@ private:
 	// メッシュ生成
 	void CreateMesh();
 
+	void CreateIndex();
+
 	void InitializeDirectionalLight();
 
 	void InitializeMaterial();
@@ -184,12 +187,11 @@ private:
 	VertexData* vertexData_;
 	// 頂点バッファビュー
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferView_;
-	// インデックスバッファ
+
+	// インデックス
 	Microsoft::WRL::ComPtr<ID3D12Resource> indexResource_;
-	// インデックスデータ
-	std::vector<uint16_t> indexData_;
-	// インデックスバッファビュー
 	D3D12_INDEX_BUFFER_VIEW indexBufferView_;
+	uint32_t* mappedIndex_;
 
 	// ライティング
 	Microsoft::WRL::ComPtr<ID3D12Resource> directionalLightResource_;

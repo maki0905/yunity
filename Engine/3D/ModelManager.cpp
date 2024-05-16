@@ -152,35 +152,62 @@ Model::ModelData ModelManager::LoadModelFile(Format format, const std::string& f
 	const aiScene* scene = importer.ReadFile(filePath.c_str(), aiProcess_FlipWindingOrder | aiProcess_FlipUVs);
 	assert(scene->HasMeshes()); // メッシュがないのは対応しない
 
+	//for (uint32_t meshIndex = 0; meshIndex < scene->mNumMeshes; ++meshIndex) {
+	//	aiMesh* mesh = scene->mMeshes[meshIndex];
+	//	assert(mesh->HasNormals());        // 法線がないMeshは今回は非対応
+	//	assert(mesh->HasTextureCoords(0)); // TexcoordがないMeshは今回は非対応
+
+	//	// ここからFaceの解析
+	//	for (uint32_t faceIndex = 0; faceIndex < mesh->mNumFaces; ++faceIndex) {
+	//		aiFace& face = mesh->mFaces[faceIndex];
+	//		assert(face.mNumIndices == 3); // 三角形のみサポート
+
+	//		// assimpではaiProcess_Triangulateオプションを指定することで、四角形以上のポリゴンを三角形に自動分割できる
+
+	//		// ここからVertexの解析
+	//		for (uint32_t element = 0; element < face.mNumIndices; ++element) {
+	//			uint32_t vertexIndex = face.mIndices[element];
+	//			aiVector3D& position = mesh->mVertices[vertexIndex];
+	//			aiVector3D& normal = mesh->mNormals[vertexIndex];
+	//			aiVector3D& texcoord = mesh->mTextureCoords[0][vertexIndex];
+	//			Model::VertexData vertex;
+	//			vertex.position = { position.x, position.y, position.z, 1.0f };
+	//			vertex.normal = { normal.x, normal.y, normal.z };
+	//			vertex.texcoord = { texcoord.x, texcoord.y };
+	//			// aiProcess_MakeLeftHandedはz*=-1で、右手->左手に変換するので手動で対処
+	//			vertex.position.x *= -1.0f;
+	//			vertex.normal.x *= -1.0f;
+	//			modelData.vertices.push_back(vertex);
+	//		}
+	//	}
+
+	//}
+
 	for (uint32_t meshIndex = 0; meshIndex < scene->mNumMeshes; ++meshIndex) {
 		aiMesh* mesh = scene->mMeshes[meshIndex];
 		assert(mesh->HasNormals());        // 法線がないMeshは今回は非対応
 		assert(mesh->HasTextureCoords(0)); // TexcoordがないMeshは今回は非対応
+		modelData.vertices.resize(mesh->mNumVertices); // 最初に頂点数分のメモリを確保しておく
 
-		// ここからFaceの解析
+		for (uint32_t vertexIndex = 0; vertexIndex < mesh->mNumVertices; ++vertexIndex) {
+			aiVector3D& position = mesh->mVertices[vertexIndex];
+			aiVector3D& normal = mesh->mNormals[vertexIndex];
+			aiVector3D& texcoord = mesh->mTextureCoords[0][vertexIndex];
+			// 右手系->左手系
+			modelData.vertices[vertexIndex].position = { -position.x, position.y, position.z, 1.0f };
+			modelData.vertices[vertexIndex].normal = { -normal.x, normal.y, normal.z };
+			modelData.vertices[vertexIndex].texcoord = { texcoord.x, texcoord.y };
+		}
+		// Indexの解析
 		for (uint32_t faceIndex = 0; faceIndex < mesh->mNumFaces; ++faceIndex) {
 			aiFace& face = mesh->mFaces[faceIndex];
-			assert(face.mNumIndices == 3); // 三角形のみサポート
+			assert(face.mNumIndices == 3);
 
-			// assimpではaiProcess_Triangulateオプションを指定することで、四角形以上のポリゴンを三角形に自動分割できる
-
-			// ここからVertexの解析
 			for (uint32_t element = 0; element < face.mNumIndices; ++element) {
 				uint32_t vertexIndex = face.mIndices[element];
-				aiVector3D& position = mesh->mVertices[vertexIndex];
-				aiVector3D& normal = mesh->mNormals[vertexIndex];
-				aiVector3D& texcoord = mesh->mTextureCoords[0][vertexIndex];
-				Model::VertexData vertex;
-				vertex.position = { position.x, position.y, position.z, 1.0f };
-				vertex.normal = { normal.x, normal.y, normal.z };
-				vertex.texcoord = { texcoord.x, texcoord.y };
-				// aiProcess_MakeLeftHandedはz*=-1で、右手->左手に変換するので手動で対処
-				vertex.position.x *= -1.0f;
-				vertex.normal.x *= -1.0f;
-				modelData.vertices.push_back(vertex);
+				modelData.indices.push_back(vertexIndex);
 			}
 		}
-
 	}
 
 	modelData.rootNode = ReadNode(scene->mRootNode);
