@@ -32,6 +32,7 @@ class Model
 		kLight,          // ライティング
 		kCamera,         // カメラ
 		kPointLight,
+		kMatrixPalette,
 		kCount,          // 最大数
 	};
 
@@ -177,6 +178,7 @@ public:
 
 	void SkeletonUpdate();
 	void ApplyAnimation();
+	void SkinClusterUpdate();
 
 private:
 

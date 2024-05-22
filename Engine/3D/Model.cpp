@@ -70,6 +70,7 @@ void Model::InitializeGraphicsPipeline()
 	rootSignature_->GetParameter(static_cast<size_t>(RootBindings::kLight)).InitializeAsConstantBuffer(1, D3D12_SHADER_VISIBILITY_PIXEL);
 	rootSignature_->GetParameter(static_cast<size_t>(RootBindings::kCamera)).InitializeAsConstantBuffer(2, D3D12_SHADER_VISIBILITY_PIXEL);
 	rootSignature_->GetParameter(static_cast<size_t>(RootBindings::kPointLight)).InitializeAsConstantBuffer(3, D3D12_SHADER_VISIBILITY_PIXEL);
+	rootSignature_->GetParameter(static_cast<size_t>(RootBindings::kMatrixPalette)).InitializeAsDescriptorRange(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 0, 1, D3D12_SHADER_VISIBILITY_VERTEX);
 
 	rootSignature_->Finalize(D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
 
@@ -79,7 +80,9 @@ void Model::InitializeGraphicsPipeline()
 	D3D12_INPUT_ELEMENT_DESC inputElementDescs[] = {
 		{.SemanticName = "POSITION", .SemanticIndex = 0, .Format = DXGI_FORMAT_R32G32B32A32_FLOAT, .AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT},
 		{.SemanticName = "TEXCOORD", .SemanticIndex = 0, .Format = DXGI_FORMAT_R32G32_FLOAT, .AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT},
-		{.SemanticName = "NORMAL", .SemanticIndex = 0, .Format = DXGI_FORMAT_R32G32B32_FLOAT, .AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT}
+		{.SemanticName = "NORMAL", .SemanticIndex = 0, .Format = DXGI_FORMAT_R32G32B32_FLOAT, .AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT},
+		{.SemanticName = "WEIGHT", .SemanticIndex = 0, .Format = DXGI_FORMAT_R32G32B32A32_FLOAT/*float32_t4*/, .InputSlot = 1/*1番目のslotのVBVのことだと伝える*/, .AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT},
+		{.SemanticName = "INDEX", .SemanticIndex = 0, .Format = DXGI_FORMAT_R32G32B32A32_SINT/*int32_t4*/, .InputSlot = 1/*1番目のslotのVBVのことだと伝える*/, .AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT}
 	};
 	D3D12_INPUT_LAYOUT_DESC inputLayoutDesc{};
 	inputLayoutDesc.pInputElementDescs = inputElementDescs;
@@ -185,7 +188,12 @@ void Model::Draw(const WorldTransform& worldTransform/*, const Camera& camera*/)
 	commandList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	// 頂点バッファの設定
-	commandList_->IASetVertexBuffers(0, 1, &vertexBufferView_);
+	D3D12_VERTEX_BUFFER_VIEW vbvs[2] = {
+		vertexBufferView_,
+		skinCluster_.influenceBufferView
+	};
+	commandList_->IASetVertexBuffers(0, 2, vbvs);
+	//commandList_->IASetVertexBuffers(0, 1, &vertexBufferView_);
 
 	//インデックスバッファの設定
 	commandList_->IASetIndexBuffer(&indexBufferView_);
@@ -206,6 +214,7 @@ void Model::Draw(const WorldTransform& worldTransform/*, const Camera& camera*/)
 
 	commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(RootBindings::kPointLight), pointLightResource_->GetGPUVirtualAddress());
 
+	//commandList_->SetGraphicsRootDescriptorTable(static_cast<UINT>(RootBindings::kMatrixPalette), );
 
 	// SRVをセット
 	if (textureHandle_ != TextureManager::Load(modelData_.material.textureFilePath)) {
@@ -271,7 +280,16 @@ void Model::ApplyAnimation()
 	}
 
 	SkeletonUpdate();
+	SkinClusterUpdate();
+}
 
+void Model::SkinClusterUpdate()
+{
+	for (size_t jointIndex = 0; jointIndex < skeleton_.joints.size(); ++jointIndex) {
+		assert(jointIndex < skinCluster_.inverseBindPoseMatrices.size());
+		skinCluster_.mappedPalette[jointIndex].skeletonSpaceMatrix = Multiply(skinCluster_.inverseBindPoseMatrices[jointIndex], skeleton_.joints[jointIndex].skeletonSpaceMatrix);
+		skinCluster_.mappedPalette[jointIndex].skeletonSpaceInverseTransposeMatrix = Transpose(Inverse(skinCluster_.mappedPalette[jointIndex].skeletonSpaceMatrix));
+	}
 }
 
 //void T::SetMaterial(const Vector4& color)
