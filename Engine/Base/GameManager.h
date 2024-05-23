@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Framework.h"
+#include "CameraManager.h"
 
 class GameManager : public Framework
 {
@@ -21,9 +22,8 @@ public:
 	void Draw() override;
 
 	void Run();
-
 private:
-
+	CameraManager* cameraManager_;
 	
 };
 

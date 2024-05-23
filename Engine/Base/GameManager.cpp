@@ -18,6 +18,8 @@ GameManager::~GameManager()
 
 void GameManager::Initialize()
 {
+	cameraManager_ = CameraManager::GetInstance();
+	cameraManager_->Initialize();
 }
 
 void GameManager::Finalize()
@@ -26,6 +28,7 @@ void GameManager::Finalize()
 
 void GameManager::Update()
 {
+	cameraManager_->Update();
 }
 
 void GameManager::Draw()
@@ -78,6 +81,7 @@ void GameManager::Run()
 		}
 
 		Framework::Update();
+		Update();
 		Draw();
 		
 	}

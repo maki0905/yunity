@@ -64,7 +64,7 @@ void DirectXCore::Initialize()
 	shaderCompiler_ = ShaderCompiler::GetInstance();
 	shaderCompiler_->Initialize();
 
-	renderTexture_ = new RenderTexture();
+	renderTexture_ = RenderTexture::GetInstance();
 	renderTexture_->InitializeGraphicsPipeline();
 	renderTexture_->Create();
 }

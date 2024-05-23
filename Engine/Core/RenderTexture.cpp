@@ -9,6 +9,7 @@
 #include "RootSignature.h"
 #include "PipelineState.h"
 #include "TextureManager.h"
+#include "CameraManager.h"
 
 RootSignature* RenderTexture::rootSignature_ = nullptr;
 PipelineState* RenderTexture::pipelineState_ = nullptr;
@@ -17,18 +18,35 @@ void RenderTexture::InitializeGraphicsPipeline()
 {
 	rootSignature_ = new RootSignature(Device::GetInstance()->GetDevice(), static_cast<int>(RootBindings::kCount), 1);
 
-	D3D12_STATIC_SAMPLER_DESC staticSamplers = {};
-	staticSamplers.Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;
-	staticSamplers.AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP; //0~1の範囲外をリピート
-	staticSamplers.AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
-	staticSamplers.AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
-	staticSamplers.ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER; //比較しない
-	staticSamplers.MaxLOD = D3D12_FLOAT32_MAX;
-	staticSamplers.ShaderRegister = 0; //レジスタ番号0を使う
-	staticSamplers.ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL; //PixelShaderを使う
-	rootSignature_->InitializeStaticSampler(0, staticSamplers, D3D12_SHADER_VISIBILITY_PIXEL);
+	D3D12_STATIC_SAMPLER_DESC staticSamplers[2];
+	staticSamplers[0].Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;
+	staticSamplers[0].AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP; //0~1の範囲外をリピート
+	staticSamplers[0].AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+	staticSamplers[0].AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+	staticSamplers[0].ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER; //比較しない
+	staticSamplers[0].MaxLOD = D3D12_FLOAT32_MAX;
+	staticSamplers[0].ShaderRegister = 0; //レジスタ番号0を使う
+	staticSamplers[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL; //PixelShaderを使う
+
+	staticSamplers[1].Filter = D3D12_FILTER_MIN_MAG_MIP_POINT; // ポイントフィルタ
+	staticSamplers[1].AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP; //0~1の範囲外をリピート
+	staticSamplers[1].AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+	staticSamplers[1].AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+	staticSamplers[1].ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER; //比較しない
+	staticSamplers[1].MaxLOD = D3D12_FLOAT32_MAX;
+	staticSamplers[1].ShaderRegister = 1; //レジスタ番号1を使う
+	staticSamplers[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL; //PixelShaderを使う
+
+
+	rootSignature_->InitializeStaticSampler(0, staticSamplers[0], D3D12_SHADER_VISIBILITY_PIXEL);
+
+	rootSignature_->InitializeStaticSampler(1, staticSamplers[1], D3D12_SHADER_VISIBILITY_PIXEL);
 
 	rootSignature_->GetParameter(static_cast<size_t>(RootBindings::kTexture)).InitializeAsDescriptorRange(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 0, 1, D3D12_SHADER_VISIBILITY_PIXEL);
+
+	rootSignature_->GetParameter(static_cast<size_t>(RootBindings::kDepthTexture)).InitializeAsDescriptorRange(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 0, 1, D3D12_SHADER_VISIBILITY_PIXEL);
+
+	rootSignature_->GetParameter(static_cast<size_t>(RootBindings::kMaterial)).InitializeAsConstantBuffer(0, D3D12_SHADER_VISIBILITY_PIXEL);
 
 	rootSignature_->Finalize(D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
 
@@ -64,8 +82,8 @@ void RenderTexture::InitializeGraphicsPipeline()
 	depthStencilDesc.DepthEnable = false;
 
 	pipelineState_->SetInputLayout(inputLayoutDesc);
-	pipelineState_->SetShader(PipelineState::ShaderType::kVS, ShaderCompiler::GetInstance()->Get(ShaderCompiler::FileName::kFullscreen, ShaderCompiler::ShaderType::kVS));
-	pipelineState_->SetShader(PipelineState::ShaderType::kPS, ShaderCompiler::GetInstance()->Get(ShaderCompiler::FileName::kLuminanceBasedOutline, ShaderCompiler::ShaderType::kPS));
+	pipelineState_->SetShader(PipelineState::ShaderType::kVS, ShaderCompiler::GetInstance()->Get("Fullscreen", ShaderCompiler::ShaderType::kVS));
+	pipelineState_->SetShader(PipelineState::ShaderType::kPS, ShaderCompiler::GetInstance()->Get("DepthBasedOutline", ShaderCompiler::ShaderType::kPS));
 	pipelineState_->SetBlendState(blendDesc);
 	pipelineState_->SetRasterizerState(rasterizerDesc);
 	pipelineState_->SetDepthStencilState(depthStencilDesc);
@@ -73,6 +91,13 @@ void RenderTexture::InitializeGraphicsPipeline()
 	pipelineState_->SetPrimitiveTopologyType(D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE);
 	pipelineState_->SetSampleMask(D3D12_DEFAULT_SAMPLE_MASK);
 	pipelineState_->Finalize();
+}
+
+RenderTexture* RenderTexture::GetInstance()
+{
+	static RenderTexture instance;
+
+	return &instance;
 }
 
 void RenderTexture::Create()
@@ -85,10 +110,12 @@ void RenderTexture::Create()
 
 void RenderTexture::Copy()
 {
+	materialData_->projectionInverse = Inverse(CameraManager::GetInstance()->GetCamera()->GetProjectionMatrix());
+
 	commandList_->SetGraphicsRootSignature(rootSignature_->GetSignature());
 	commandList_->SetPipelineState(pipelineState_->GetPipelineStateObject());
 	commandList_->SetGraphicsRootDescriptorTable(static_cast<size_t>(RootBindings::kTexture), gpuDescHandleSRV_);
-
+	commandList_->SetGraphicsRootDescriptorTable(static_cast<size_t>(RootBindings::kDepthTexture), depthTextureGpuDescHandleSRV_);
 	//TextureManager::GetInstance()->SetGraphicsRootDescriptorTable(commandList_.Get(), static_cast<size_t>(RootBindings::kTexture), 0);
 	commandList_->DrawInstanced(3, 1, 0, 0);
 }
@@ -111,6 +138,7 @@ void RenderTexture::ClearRenderTargetView()
 void RenderTexture::CreateResorce()
 {
 	renderTextureResource = CreateRenderTextureResource(WindowsAPI::kWindowWidth, WindowsAPI::kWindowHeight, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, kRenderTargetClearValue);
+	depthTextureResource = CreateRenderTextureResource(WindowsAPI::kWindowWidth, WindowsAPI::kWindowHeight, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, kRenderTargetClearValue);
 }
 
 void RenderTexture::CreateRTV()
@@ -142,6 +170,27 @@ void RenderTexture::CreateSRV()
 	gpuDescHandleSRV_ = descriptorHandleSRV_.GetGPUHandle();
 	Device::GetInstance()->GetDevice()->CreateShaderResourceView(renderTextureResource.Get(), &renderTextureSrvDesc, cpuDescHandleSRV_);
 
+	// DepthTexture用のSRV
+	D3D12_SHADER_RESOURCE_VIEW_DESC depthTextureSrvDesc{};
+	// DXGI_FORMAT_D24_UNORM_S8_UINTのDepthを読むときはDXGI_FORMAT_UNORM_X8_TYPELESS
+	depthTextureSrvDesc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
+	depthTextureSrvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+	depthTextureSrvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+	depthTextureSrvDesc.Texture2D.MipLevels = 1;
+	DescriptorHeap* depthTextureSrvDescriptorHeap_ = DirectXCore::GetInstance()->GetDescriptorHeap(DirectXCore::HeapType::kSRV);
+	DescriptorHandle depthTextureDescriptorHandleSRV_ = depthTextureSrvDescriptorHeap_->Alloc();
+	depthTextureCpuDescHandleSRV_ = depthTextureDescriptorHandleSRV_.GetCPUHandle();
+	depthTextureGpuDescHandleSRV_ = depthTextureDescriptorHandleSRV_.GetGPUHandle();
+	Device::GetInstance()->GetDevice()->CreateShaderResourceView(renderTextureResource.Get(), &depthTextureSrvDesc, depthTextureCpuDescHandleSRV_);
+
+}
+
+void RenderTexture::InitializeMaterial()
+{
+	materialResource_ = CreateBufferResource(sizeof(Material));
+	materialData_ = nullptr;
+	materialResource_->Map(0, nullptr, reinterpret_cast<void**>(&materialData_));
+	materialData_->projectionInverse = MakeIdentity4x4();
 }
 
 Microsoft::WRL::ComPtr<ID3D12Resource> RenderTexture::CreateRenderTextureResource(uint32_t width, uint32_t hight, DXGI_FORMAT format, const Vector4& clearColor)
@@ -182,5 +231,29 @@ Microsoft::WRL::ComPtr<ID3D12Resource> RenderTexture::CreateRenderTextureResourc
 
 	assert(SUCCEEDED(result));
 
+	return resource;
+}
+
+ID3D12Resource* RenderTexture::CreateBufferResource(size_t sizeInBytes)
+{
+	HRESULT result = S_FALSE;
+	// リソース用のヒープの設定
+	D3D12_HEAP_PROPERTIES uploadHeapProperties{};
+	uploadHeapProperties.Type = D3D12_HEAP_TYPE_UPLOAD; // uploadHeapを使う
+	// リソースの設定
+	D3D12_RESOURCE_DESC ResourceDesc{};
+	// バッファリソース
+	ResourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
+	ResourceDesc.Width = sizeInBytes; // リソースのサイズ
+	ResourceDesc.Height = 1;
+	ResourceDesc.DepthOrArraySize = 1;
+	ResourceDesc.MipLevels = 1;
+	ResourceDesc.SampleDesc.Count = 1;
+	ResourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
+	// リソースを作る
+	ID3D12Resource* resource = nullptr;
+	result = Device::GetInstance()->GetDevice()->CreateCommittedResource(&uploadHeapProperties, D3D12_HEAP_FLAG_NONE,
+		&ResourceDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(&resource));
+	assert(SUCCEEDED(result));
 	return resource;
 }

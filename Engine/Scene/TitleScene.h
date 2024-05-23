@@ -3,8 +3,10 @@
 #include <memory>
 
 #include "IScene.h"
+#include "CameraManager.h"
 #include "Sprite.h"
 #include "Model.h"
+
 class TitleScene : public IScene
 {
 public:

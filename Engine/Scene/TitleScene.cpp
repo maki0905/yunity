@@ -4,7 +4,7 @@
 
 void TitleScene::Initialize()
 {
-	camera_ = std::make_unique<Camera>();
+	camera_.reset(CameraManager::GetInstance()->GetCamera());
 	worldTransform_.Initialize();
 
 	sprite_ = std::make_unique<Sprite>();
@@ -24,8 +24,6 @@ void TitleScene::Update()
 	}
 
 	worldTransform_.UpdateMatrix(RotationType::Euler);
-	camera_->Update();
-
 }
 
 void TitleScene::DrawBack()

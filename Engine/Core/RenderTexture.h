@@ -5,7 +5,7 @@
 #include <wrl.h>
 #include <cmath>
 
-#include "Vector4.h"
+#include "MathFunction.h"
 
 class PipelineState;
 class RootSignature;
@@ -16,10 +16,18 @@ class RenderTexture {
 	/// </summary>
 	enum class RootBindings {
 		kTexture,        // テクスチャ
+		kDepthTexture,   // depth
+		kMaterial,
 		kCount,          // 最大数
+	};
+
+public:
+	struct Material {
+		Matrix4x4 projectionInverse;
 	};
 public:
 	static void InitializeGraphicsPipeline();
+	static RenderTexture* GetInstance();
 public:
 	/// <summary>
 	/// 生成
@@ -37,13 +45,29 @@ public:
 
 	ID3D12Resource* GetResource() { return renderTextureResource.Get(); }
 
+
+
 private:
 
 	void CreateResorce();
 	void CreateRTV();
 	void CreateSRV();
 
+	void InitializeMaterial();
+
 	Microsoft::WRL::ComPtr<ID3D12Resource> CreateRenderTextureResource(uint32_t width, uint32_t hight, DXGI_FORMAT format, const Vector4& clearColor);
+
+	/// <summary>
+	/// 定数バッファ生成
+	/// </summary>
+	/// <param name="sizeInBytes"></param>
+	/// <returns>サイズ</returns>
+	ID3D12Resource* CreateBufferResource(size_t sizeInBytes);
+private:
+	RenderTexture() = default;
+	~RenderTexture() = default;
+	RenderTexture(const RenderTexture&) = delete;
+	RenderTexture& operator=(const RenderTexture&) = delete;
 private:
 	static RootSignature* rootSignature_;
 	static PipelineState* pipelineState_;
@@ -51,10 +75,20 @@ private:
 private:
 	const Vector4 kRenderTargetClearValue{ 1.0f, 0.0f, 0.0f, 1.0f };
 	Microsoft::WRL::ComPtr<ID3D12Resource> renderTextureResource;
-	D3D12_CPU_DESCRIPTOR_HANDLE cpuDescHandleRTV_;
+	Microsoft::WRL::ComPtr<ID3D12Resource> depthTextureResource;
 	Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> commandList_;
+	D3D12_CPU_DESCRIPTOR_HANDLE cpuDescHandleRTV_;
 	// シェーダリソースビューのハンドル(CPU)
 	D3D12_CPU_DESCRIPTOR_HANDLE cpuDescHandleSRV_;
 	// シェーダリソースビューのハンドル(GPU)
 	D3D12_GPU_DESCRIPTOR_HANDLE gpuDescHandleSRV_;
+	// DepthTexture用のシェーダリソースビューのハンドル(CPU)
+	D3D12_CPU_DESCRIPTOR_HANDLE depthTextureCpuDescHandleSRV_;
+	// DepthTexture用のシェーダリソースビューのハンドル(GPU)
+	D3D12_GPU_DESCRIPTOR_HANDLE depthTextureGpuDescHandleSRV_;
+
+	// マテリアル
+	Microsoft::WRL::ComPtr<ID3D12Resource> materialResource_;
+	Material* materialData_;
+
 };
