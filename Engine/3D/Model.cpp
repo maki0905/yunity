@@ -78,11 +78,11 @@ void Model::InitializeGraphicsPipeline()
 
 	// InputLayout
 	D3D12_INPUT_ELEMENT_DESC inputElementDescs[] = {
-		{.SemanticName = "POSITION", .SemanticIndex = 0, .Format = DXGI_FORMAT_R32G32B32A32_FLOAT, .AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT},
-		{.SemanticName = "TEXCOORD", .SemanticIndex = 0, .Format = DXGI_FORMAT_R32G32_FLOAT, .AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT},
-		{.SemanticName = "NORMAL", .SemanticIndex = 0, .Format = DXGI_FORMAT_R32G32B32_FLOAT, .AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT},
-		{.SemanticName = "WEIGHT", .SemanticIndex = 0, .Format = DXGI_FORMAT_R32G32B32A32_FLOAT/*float32_t4*/, .InputSlot = 1/*1番目のslotのVBVのことだと伝える*/, .AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT},
-		{.SemanticName = "INDEX", .SemanticIndex = 0, .Format = DXGI_FORMAT_R32G32B32A32_SINT/*int32_t4*/, .InputSlot = 1/*1番目のslotのVBVのことだと伝える*/, .AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT}
+		{.SemanticName = "POSITION", .SemanticIndex = 0, .Format = DXGI_FORMAT_R32G32B32A32_FLOAT,.AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT},
+		{.SemanticName = "TEXCOORD", .SemanticIndex = 0, .Format = DXGI_FORMAT_R32G32_FLOAT,.AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT},
+		{.SemanticName = "NORMAL", .SemanticIndex = 0, .Format = DXGI_FORMAT_R32G32B32_FLOAT,.AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT},
+		{.SemanticName = "WEIGHT", .SemanticIndex = 0, .Format = DXGI_FORMAT_R32G32B32A32_FLOAT, .InputSlot = 1, .AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT},
+		{.SemanticName = "INDEX", .SemanticIndex = 0, .Format = DXGI_FORMAT_R32G32B32A32_SINT, .InputSlot = 1, .AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT}
 	};
 	D3D12_INPUT_LAYOUT_DESC inputLayoutDesc{};
 	inputLayoutDesc.pInputElementDescs = inputElementDescs;
@@ -118,7 +118,7 @@ void Model::InitializeGraphicsPipeline()
 
 	
 	pipelineState_->SetInputLayout(inputLayoutDesc);
-	pipelineState_->SetShader(PipelineState::ShaderType::kVS, ShaderCompiler::GetInstance()->Get(ShaderCompiler::FileName::kBasic, ShaderCompiler::ShaderType::kVS));
+	pipelineState_->SetShader(PipelineState::ShaderType::kVS, ShaderCompiler::GetInstance()->Get(ShaderCompiler::FileName::kSkinning, ShaderCompiler::ShaderType::kVS));
 	pipelineState_->SetShader(PipelineState::ShaderType::kPS, ShaderCompiler::GetInstance()->Get(ShaderCompiler::FileName::kBasic, ShaderCompiler::ShaderType::kPS));
 	pipelineState_->SetBlendState(blendDesc);
 	pipelineState_->SetRasterizerState(rasterizerDesc);
@@ -189,9 +189,10 @@ void Model::Draw(const WorldTransform& worldTransform/*, const Camera& camera*/)
 
 	// 頂点バッファの設定
 	D3D12_VERTEX_BUFFER_VIEW vbvs[2] = {
-		vertexBufferView_,
-		skinCluster_.influenceBufferView
+		vertexBufferView_,               // VertexDataのVBV
+		skinCluster_.influenceBufferView // InfluenceのVBV
 	};
+	// 配列を渡す(開始Slot番号、使用Slot数、VBV配列へのポインタである)
 	commandList_->IASetVertexBuffers(0, 2, vbvs);
 	//commandList_->IASetVertexBuffers(0, 1, &vertexBufferView_);
 
@@ -204,17 +205,14 @@ void Model::Draw(const WorldTransform& worldTransform/*, const Camera& camera*/)
 	// CBVをセット(ビュープロジェクション行列)
 	commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(RootBindings::kViewProjection), camera_->GetConstBuff()->GetGPUVirtualAddress());
 	commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(RootBindings::kRootNode), nodeResource_->GetGPUVirtualAddress());
-	//commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(RootBindings::kViewProjection), camera.GetConstBuff()->GetGPUVirtualAddress());
 	commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(RootBindings::kMaterial), materialResource_->GetGPUVirtualAddress());
 
-	// CBVをセット(ビュープロジェクション行列)
+	// CBVをセット
 	commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(RootBindings::kLight), directionalLightResource_->GetGPUVirtualAddress());
 
 	commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(RootBindings::kCamera), camera_->GetCameraForGPU()->GetGPUVirtualAddress());
 
 	commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(RootBindings::kPointLight), pointLightResource_->GetGPUVirtualAddress());
-
-	//commandList_->SetGraphicsRootDescriptorTable(static_cast<UINT>(RootBindings::kMatrixPalette), );
 
 	// SRVをセット
 	if (textureHandle_ != TextureManager::Load(modelData_.material.textureFilePath)) {
@@ -222,8 +220,10 @@ void Model::Draw(const WorldTransform& worldTransform/*, const Camera& camera*/)
 	}
 	TextureManager::GetInstance()->SetGraphicsRootDescriptorTable(commandList_, static_cast<UINT>(RootBindings::kTexture), textureHandle_);
 
+	commandList_->SetGraphicsRootDescriptorTable(static_cast<UINT>(RootBindings::kMatrixPalette), skinCluster_.paletteSrvHandle.second);
+
 	//commandList_->DrawInstanced(UINT(modelData_.vertices.size()), 1, 0, 0);
-	commandList_->DrawIndexedInstanced(modelData_.indices.size(), 1, 0, 0, 0);
+	commandList_->DrawIndexedInstanced(modelData_.indices.size(), UINT(skeleton_.joints.size()), 0, 0, 0);
 }
 
 void Model::SetPointLight(const PointLight& pointLight)
@@ -267,7 +267,9 @@ void Model::SkeletonUpdate()
 
 void Model::ApplyAnimation()
 {
+	// アニメーションの時間を進める(設定)
 	animationTime_ += 1.0f / 60.0f;
+	animationTime_ = std::fmod(animationTime_, animation_.duration);
 	for (Joint& joint : skeleton_.joints) {
 		// 対象のJointのAnimationがあれば、値の適用を行う。下記のif文はC++17から可能になった初期化付きif文
 		if (auto it = animation_.nodeAnimations.find(joint.name); it != animation_.nodeAnimations.end()) {
@@ -278,8 +280,9 @@ void Model::ApplyAnimation()
 			joint.transform.scale = Vector3(1.0f, 1.0f, 1.0f);
 		}
 	}
-
+	// 現在の骨ごとのLocal情報を基にSkeletonSpaceの情報を更新
 	SkeletonUpdate();
+	// SkeletonSpaceの情報を基に、SkinClusterのMatrixPaletteを更新する
 	SkinClusterUpdate();
 }
 
@@ -387,6 +390,7 @@ void Model::InitializeNode()
 	*nodeData_ = modelData_.rootNode.localMatrix;
 	
 }
+
 
 ID3D12Resource* Model::CreateBufferResource(size_t sizeInBytes)
 {

@@ -15,7 +15,7 @@ void ClearScene::Initialize()
 	model0_->SetCamera(camera_.get());
 	model0_->PlayAnimation();
 	worldTransform0_.Initialize();
-	worldTransform0_.scale_ = Vector3(100.0f, 100.0f, 100.0f);
+	worldTransform0_.scale_ = Vector3(10.0f, 10.0f, 10.0f);
 	//worldTransform0_.rotation_.y = 210.5f;
 }
 

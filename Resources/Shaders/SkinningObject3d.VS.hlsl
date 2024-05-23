@@ -35,7 +35,7 @@ struct Skinned
 
 struct VertexShaderInput
 {
-    float32_t4 position : POSITIONT0;
+    float32_t4 position : POSITION0;
     float32_t2 texcoord : TEXCOORD0;
     float32_t3 normal : NORMAL0;
     float32_t4 weight : WEIGHT0;
@@ -64,12 +64,14 @@ VertexShaderOutput main(VertexShaderInput input)
 {
     VertexShaderOutput output;
     Skinned skinned = Skinning(input); // まずSkinning計算を行って、Skinning後の頂点情報を手に入れる。ここでの頂点もSkeletonSpace
-    float4x4 world = mul(gNode.localMatrix, gWorldTransform.world);
+    //float4x4 world = mul(gNode.localMatrix, gWorldTransform.world);
+    float4x4 wvp = mul(gWorldTransform.world, mul(gViewProjection.view, gViewProjection.projection));
     //output.position = mul(mul(input.position, gWorldTransform.world), mul(gViewProjection.view, gViewProjection.projection));
-    output.position = mul(mul(input.position, world), mul(gViewProjection.view, gViewProjection.projection));
+    //output.position = mul(mul(input.position, world), mul(gViewProjection.view, gViewProjection.projection));
+    output.position = mul(skinned.postion, wvp);
     output.worldPosition = mul(skinned.postion, gWorldTransform.world).xyz;
     //output.normal = normalize(mul(input.normal, (float3x3)gWorldTransform.world));
-    output.normal = normalize(mul(input.normal, (float3x3) gWorldTransform.worldInverseTranspose));
+    output.normal = normalize(mul(skinned.normal, (float3x3) gWorldTransform.worldInverseTranspose));
     output.texcoord = input.texcoord;
     //output.worldPosition = mul(input.position, gWorldTransform.world).xyz;
     return output;

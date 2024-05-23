@@ -248,6 +248,7 @@ private:
 
 	Microsoft::WRL::ComPtr<ID3D12Resource> nodeResource_;
 	Matrix4x4* nodeData_;
+
 	float animationTime_ = 0.0f;
 	bool isAnimation_ = false;
 };
