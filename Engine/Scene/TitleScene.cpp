@@ -1,6 +1,7 @@
 #include "TitleScene.h"
 
 #include "SceneManager.h"
+#include "ModelManager.h"
 
 void TitleScene::Initialize()
 {
@@ -11,7 +12,7 @@ void TitleScene::Initialize()
 	sprite_.reset(Sprite::Create(TextureManager::GetInstance()->Load("uvChecker.png"), { 0.0f, 0.0f }));
 
 	model_ = std::make_unique<Model>();
-	model_.reset(Model::Create("terrain", "obj"));
+	model_.reset(ModelManager::GetInstance()->CreateModel(obj, false, "terrain"));
 	model_->SetCamera(camera_.get());
 	model_->SetLighting(false);
 }

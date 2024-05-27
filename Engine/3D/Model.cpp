@@ -39,14 +39,6 @@ void Model::PostDraw()
 	commandList_ = nullptr;
 }
 
-Model* Model::Create(const std::string& fileName, const std::string format)
-{
-	Model* model = new Model();
-	//model->SetModelData(fileName, format);
-	////model->Initialize();
-	return model;
-}
-
 void Model::InitializeGraphicsPipeline()
 {
 	rootSignature_ = new RootSignature(device_, static_cast<int>(RootBindings::kCount), 1);
@@ -344,7 +336,7 @@ void Model::CreateIndex()
 	indexResource_ = CreateBufferResource(sizeof(uint32_t) * modelData_.indices.size());
 
 	indexBufferView_.BufferLocation = indexResource_->GetGPUVirtualAddress();
-	indexBufferView_.SizeInBytes = sizeof(uint32_t) * modelData_.indices.size();
+	indexBufferView_.SizeInBytes = UINT(sizeof(uint32_t) * modelData_.indices.size());
 	indexBufferView_.Format = DXGI_FORMAT_R32_UINT;
 
 	indexResource_->Map(0, nullptr, reinterpret_cast<void**>(&mappedIndex_));

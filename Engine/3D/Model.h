@@ -138,12 +138,6 @@ public:
 	static void PostDraw();
 
 	/// <summary>
-	/// 3Dモデル生成
-	/// </summary>
-	/// <returns></returns>
-	static Model* Create(const std::string& fileName, const std::string format);
-
-	/// <summary>
 	/// グラフィックスパイプライン生成
 	/// </summary>
 	static void InitializeGraphicsPipeline();

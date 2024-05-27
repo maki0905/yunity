@@ -1,12 +1,13 @@
 #include "Player.h"
 
 #include "ImGuiManager.h"
+#include "ModelManager.h"
 
 void Player::Initialize(Camera* camera)
 {
 	worldTransfrom_.Initialize();
 
-	model_.reset(Model::Create("startBox", "obj"));
+	model_.reset(ModelManager::GetInstance()->CreateModel(obj, false, "startBox"));
 	model_->SetCamera(camera);
 	camera_ = camera;
 
