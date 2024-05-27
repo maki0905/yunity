@@ -16,7 +16,7 @@ PipelineState* RenderTexture::pipelineState_ = nullptr;
 
 void RenderTexture::InitializeGraphicsPipeline()
 {
-	rootSignature_ = new RootSignature(Device::GetInstance()->GetDevice(), static_cast<int>(RootBindings::kCount), 1);
+	rootSignature_ = new RootSignature(Device::GetInstance()->GetDevice(), static_cast<int>(RootBindings::kCount), 2);
 
 	D3D12_STATIC_SAMPLER_DESC staticSamplers[2];
 	staticSamplers[0].Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;
