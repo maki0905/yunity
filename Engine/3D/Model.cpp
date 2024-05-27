@@ -135,6 +135,7 @@ void Model::Initialize(const ModelData& modelData, const Animation& animation)
 	skeleton_ = CreateSkelton(modelData_.rootNode);
 	SkeletonUpdate();
 	skinCluster_ = CreateSkinCluster();
+	SkinClusterUpdate();
 	animation_ = animation;
 	CreateMesh();
 	CreateIndex();

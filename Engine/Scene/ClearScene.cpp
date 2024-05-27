@@ -13,7 +13,7 @@ void ClearScene::Initialize()
 	//model0_.reset(Model::Create("plane", "gltf"));
 	model0_.reset(ModelManager::GetInstance()->CreateModel(gltf, true, "human", "sneakWalk"));
 	model0_->SetCamera(camera_.get());
-	model0_->PlayAnimation();
+	//model0_->PlayAnimation();
 	worldTransform0_.Initialize();
 	worldTransform0_.scale_ = Vector3(10.0f, 10.0f, 10.0f);
 	//worldTransform0_.rotation_.y = 210.5f;
