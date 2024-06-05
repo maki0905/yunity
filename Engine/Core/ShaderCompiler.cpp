@@ -173,6 +173,9 @@ void ShaderCompiler::ShaderCompile()
 	psblob_["DepthBasedOutline"] = CompileShader(L"Resources/Shaders/DepthBasedOutline.PS.hlsl", L"ps_6_0");
 	assert(psblob_["DepthBasedOutline"]);
 
+	psblob_["RadialBlur"] = CompileShader(L"Resources/Shaders/RadialBlur.PS.hlsl", L"ps_6_0");
+	assert(psblob_["DepthBasedOutline"]);
+
 
 }
 
