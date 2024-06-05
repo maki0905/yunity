@@ -23,7 +23,7 @@ public:
 
 	void Run();
 private:
-	CameraManager* cameraManager_;
+	std::unique_ptr<CameraManager> cameraManager_;
 	
 };
 

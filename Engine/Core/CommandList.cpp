@@ -70,6 +70,12 @@ void CommandList::OMSetRenderTargets(const D3D12_CPU_DESCRIPTOR_HANDLE* cpuDescH
 	}
 }
 
+void CommandList::OMSetRenderTargets(const D3D12_CPU_DESCRIPTOR_HANDLE* cpuDescHandleRTV, D3D12_CPU_DESCRIPTOR_HANDLE* dsvHandle)
+{
+	// レンダーターゲットをセット
+	commandList_->OMSetRenderTargets(1, cpuDescHandleRTV, false, dsvHandle);
+}
+
 void CommandList::ClearRenderTargetView(const Vector4 clearColorValue, const D3D12_CPU_DESCRIPTOR_HANDLE cpuDescHandleRTV)
 {
 	// 全画面クリア        Red   Green Blue  Alpha

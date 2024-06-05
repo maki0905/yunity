@@ -40,6 +40,7 @@ public:
 	void CommandClear();
 
 	void OMSetRenderTargets(const D3D12_CPU_DESCRIPTOR_HANDLE* cpuDescHandleRTV, ID3D12DescriptorHeap* dsvHeap = nullptr);
+	void OMSetRenderTargets(const D3D12_CPU_DESCRIPTOR_HANDLE* cpuDescHandleRTV, D3D12_CPU_DESCRIPTOR_HANDLE* dsvHandle);
 	void ClearRenderTargetView(const Vector4 clearColorValue, const D3D12_CPU_DESCRIPTOR_HANDLE cpuDescHandleRTV);
 	void ClearDepthStencilView(ID3D12DescriptorHeap* dsvHeap);
 

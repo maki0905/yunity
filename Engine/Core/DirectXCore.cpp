@@ -54,8 +54,8 @@ void DirectXCore::Initialize()
 	descriptorHeaps_[static_cast<int>(HeapType::kDSV)]->Create(D3D12_DESCRIPTOR_HEAP_TYPE_DSV, 1, false);
 
 	// バッファ
-	depthBuffer_ = new DepthBuffer(device_->GetDevice(), commandList_->GetCommandList());
-	depthBuffer_->Create();
+	/*depthBuffer_ = new DepthBuffer();
+	depthBuffer_->Create();*/
 
 	backBuffer_ = new BackBuffer(device_->GetDevice(), commandList_->GetCommandList(), swapChain_->GetSwapChain());
 	backBuffer_->Create();
@@ -66,6 +66,7 @@ void DirectXCore::Initialize()
 
 	renderTexture_ = RenderTexture::GetInstance();
 	renderTexture_->InitializeGraphicsPipeline();
+	renderTexture_->Initalize();
 	renderTexture_->Create();
 }
 
@@ -73,9 +74,10 @@ void DirectXCore::PreDrawRenderTexture()
 {
 	//commandList_->BarrierChange(swapChain_->GetSwapChain(), D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
 	
-	commandList_->OMSetRenderTargets(renderTexture_->GetCpuDescHandleRTV(), depthBuffer_->GetDescriptorHeap());
+	//commandList_->OMSetRenderTargets(renderTexture_->GetCpuDescHandleRTV(), depthBuffer_->GetDescriptorHeap());
+	commandList_->OMSetRenderTargets(renderTexture_->GetCpuDescHandleRTV(), renderTexture_->GetDepthBuffer()->GetDescriptorHeap());
 	commandList_->ClearRenderTargetView(renderTexture_->GetRenderTargetClearValue(), *renderTexture_->GetCpuDescHandleRTV());
-	commandList_->ClearDepthStencilView(depthBuffer_->GetDescriptorHeap());
+	commandList_->ClearDepthStencilView(/*depthBuffer_->GetDescriptorHeap()*/renderTexture_->GetDepthBuffer()->GetDescriptorHeap());
 	commandList_->RSSetViewports(float(windowWidth_), float(windowHeight_));
 	commandList_->RSSetScissorRects(windowWidth_, windowHeight_);
 }

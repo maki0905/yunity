@@ -4,7 +4,8 @@
 
 void TitleScene::Initialize()
 {
-	camera_.reset(CameraManager::GetInstance()->GetCamera());
+	//camera_.reset(CameraManager::GetInstance()->GetCamera());
+	camera_ = CameraManager::GetInstance()->GetCamera();
 	worldTransform_.Initialize();
 
 	sprite_ = std::make_unique<Sprite>();
@@ -12,7 +13,7 @@ void TitleScene::Initialize()
 
 	model_ = std::make_unique<Model>();
 	model_.reset(Model::Create("terrain"));
-	model_->SetCamera(camera_.get());
+	model_->SetCamera(camera_/*camera_.get()*/);
 	model_->SetLighting(false);
 }
 

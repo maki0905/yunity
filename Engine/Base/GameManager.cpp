@@ -18,8 +18,9 @@ GameManager::~GameManager()
 
 void GameManager::Initialize()
 {
-	cameraManager_ = CameraManager::GetInstance();
-	cameraManager_->Initialize();
+	CameraManager::GetInstance()->Initialize();
+	/*cameraManager_.reset(CameraManager::GetInstance());
+	cameraManager_->Initialize();*/
 }
 
 void GameManager::Finalize()
@@ -28,7 +29,8 @@ void GameManager::Finalize()
 
 void GameManager::Update()
 {
-	cameraManager_->Update();
+	CameraManager::GetInstance()->Update();
+	//cameraManager_->Update();
 }
 
 void GameManager::Draw()
