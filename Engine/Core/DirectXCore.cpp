@@ -64,7 +64,8 @@ void DirectXCore::Initialize()
 	shaderCompiler_ = ShaderCompiler::GetInstance();
 	shaderCompiler_->Initialize();
 
-	
+	graphicsPipelineManager_ = GraphicsPipelineManager::GetInstance();
+	graphicsPipelineManager_->Initialize();
 
 }
 

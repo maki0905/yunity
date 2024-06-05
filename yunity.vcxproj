@@ -123,6 +123,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Engine\Collider.cpp" />
     <ClCompile Include="Engine\CollisionManager.cpp" />
     <ClCompile Include="Engine\Base\Framework.cpp" />
+    <ClCompile Include="Engine\Core\GraphicsCommon.cpp" />
+    <ClCompile Include="Engine\Core\GraphicsPipelineManager.cpp" />
     <ClCompile Include="Engine\Format.cpp" />
     <ClCompile Include="Engine\Physics\World.cpp" />
     <ClCompile Include="Engine\Scene\ClearScene.cpp" />
@@ -187,6 +189,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\CollisionConfig.h" />
     <ClInclude Include="Engine\CollisionManager.h" />
     <ClInclude Include="Engine\Base\Framework.h" />
+    <ClInclude Include="Engine\Core\GraphicsCommon.h" />
+    <ClInclude Include="Engine\Core\GraphicsPipelineManager.h" />
     <ClInclude Include="Engine\Format.h" />
     <ClInclude Include="Engine\Keyframe.h" />
     <ClInclude Include="Engine\Math\AABB.h" />

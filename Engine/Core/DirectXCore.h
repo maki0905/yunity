@@ -11,7 +11,7 @@
 #include "CommandList.h"
 #include "ImGuiManager.h"
 #include "BackBuffer.h"
-
+#include "GraphicsPipelineManager.h"
 
 class SwapChain;
 class CommandList;
@@ -72,6 +72,7 @@ private:
 	std::chrono::steady_clock::time_point reference_;
 
 	ImGuiManager* imguiManager_ = nullptr;
+	GraphicsPipelineManager* graphicsPipelineManager_;
 	
 };
 

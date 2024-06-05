@@ -10,6 +10,7 @@
 #include "PipelineState.h"
 #include "ShaderCompiler.h"
 #include "ModelManager.h"
+#include "GraphicsPipelineManager.h"
 
 ID3D12Device* Model::device_ = nullptr;
 ID3D12GraphicsCommandList* Model::commandList_ = nullptr;
@@ -176,9 +177,11 @@ void Model::Draw(const WorldTransform& worldTransform/*, const Camera& camera*/)
 	assert(commandList_);
 	assert(worldTransform.constBuff_.Get());
 
-	commandList_->SetGraphicsRootSignature(rootSignature_->GetSignature());
+	GraphicsPipelineManager::GetInstance()->SetCommandList(commandList_, PipelineType::kSkinning, BlendModeType::kBlendModeNormal);
+
+	/*commandList_->SetGraphicsRootSignature(rootSignature_->GetSignature());
 	commandList_->SetPipelineState(pipelineState_->GetPipelineStateObject());
-	commandList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	commandList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);*/
 
 	// 頂点バッファの設定
 	D3D12_VERTEX_BUFFER_VIEW vbvs[2] = {
