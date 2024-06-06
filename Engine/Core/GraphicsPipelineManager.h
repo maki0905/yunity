@@ -44,14 +44,23 @@ public:
 	static GraphicsPipelineManager* GetInstance();
 	void Initialize();
 	void SetCommandList(ID3D12GraphicsCommandList* commandList, PipelineType pipelineType, BlendModeType blendModeType);
+
+private:
+	void CreateObject3d();
+	void CreateTexture();
+	void CreateParticle();
+	void CreatePrimitive();
+	void CreateSkinning();
+
 private:
 	GraphicsPipelineManager() = default;
 	~GraphicsPipelineManager() = default;
 	GraphicsPipelineManager(const GraphicsPipelineManager&) = delete;
 	GraphicsPipelineManager& operator=(const GraphicsPipelineManager&) = delete;
 private:
+	ID3D12Device* device_;
 	std::unique_ptr<GraphicsCommon> graphicsCommon_;
-	//std::unordered_map<PipelineType, GraphicsPipeline*> graphicsPipelines_;
 	GraphicsPipeline* graphicsPipelines_[PipelineType::kCount];
-	//std::unordered_map<PipelineType, RootSignature*> rootSignatures_;
+	D3D12_BLEND_DESC blendDesc_[BlendModeType::kBlendCount];
+
 };

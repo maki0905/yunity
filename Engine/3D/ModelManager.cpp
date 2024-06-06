@@ -33,7 +33,7 @@ void ModelManager::Update()
 	}
 }
 
-Model* ModelManager::CreateModel(Format format, bool have, const std::string& folderName, const std::string& fileName)
+Model* ModelManager::CreateModel(Format format, const std::string& folderName, const std::string& fileName, ModelType modelType)
 {
 	Model* model = new Model();
 	//LoadInternal(fileName, format);
@@ -41,11 +41,11 @@ Model* ModelManager::CreateModel(Format format, bool have, const std::string& fo
 	auto itr = dataStorage_.find(path);
 	if (itr == dataStorage_.end()) {
 		dataStorage_[path].modelData = LoadModelFile(format, folderName, fileName);
+		if (modelType == kKeyframe || modelType == kSkin) {
+			dataStorage_[path].animation = LoadAnimationFile(format, folderName, fileName);
+		}
 	}
-	if (have) {
-		dataStorage_[path].animation = LoadAnimationFile(format, folderName, fileName);
-	}
-	model->Initialize(dataStorage_[path].modelData, dataStorage_[path].animation);
+	model->Initialize(modelType, dataStorage_[path].modelData, dataStorage_[path].animation);
 	models_.emplace_back(model);
 	return model;
 }
@@ -138,6 +138,7 @@ Model* ModelManager::CreateModel(Format format, bool have, const std::string& fo
 //		}
 //}
 
+
 Model::ModelData ModelManager::LoadModelFile(Format format, const std::string& folderName, const std::string& fileName)
 {
 	Model::ModelData modelData;
@@ -222,7 +223,7 @@ Model::ModelData ModelManager::LoadModelFile(Format format, const std::string& f
 			aiVector3D translate;
 			bindPoseMatrixAssimp.Decompose(scale, rotate, translate); // 成分を抽出
 			// 左手系のBindPoseMatrixを作る
-			Matrix4x4 bindPoseMatrix = MakeAffineMatrix(Vector3(scale.x, scale.y, scale.z ),  Quaternion(rotate.x, -rotate.y, rotate.z, rotate.w ), Vector3( -translate.x, translate.y, translate.z )); // 
+			Matrix4x4 bindPoseMatrix = MakeAffineMatrix(Vector3(scale.x, scale.y, scale.z ),  Quaternion(rotate.x, -rotate.y, -rotate.z, rotate.w ), Vector3( -translate.x, translate.y, translate.z )); // 
 			// InverseBindPoseMatrixにする
 			jointWeightData.inverseBindPoseMatrix = Inverse(bindPoseMatrix);
 

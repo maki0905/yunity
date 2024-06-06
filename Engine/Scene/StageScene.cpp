@@ -22,14 +22,14 @@ void StageScene::Initialize()
 	blockManager_->Initialize(camera_.get(), world_.get());
 
 	start_ = std::make_unique<Model>();
-	start_.reset(ModelManager::GetInstance()->CreateModel(obj, false, "startBox"));
+	start_.reset(ModelManager::GetInstance()->CreateModel(obj, "startBox"));
 	start_->SetCamera(camera_.get());
 	worldTransform_start_.Initialize();
 	worldTransform_start_.translation_ = { -20.0f, 5.0f, 0.0f };
 	worldTransform_start_.UpdateMatrix(RotationType::Euler);
 
 	end_ = std::make_unique<Model>();
-	start_.reset(ModelManager::GetInstance()->CreateModel(obj, false, "startBox"));
+	start_.reset(ModelManager::GetInstance()->CreateModel(obj, "startBox"));
 	end_->SetCamera(camera_.get());
 	worldTransform_end_.Initialize();
 	worldTransform_end_.translation_ = { 50.0f, 3.0f, 0.0f };
