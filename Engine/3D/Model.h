@@ -14,9 +14,17 @@
 #include "MathFunction.h"
 #include "PointLight.h"
 #include "Animation.h"
+#include "GraphicsPipelineManager.h"
 
 class PipelineState;
 class RootSignature;
+
+enum ModelType{
+	kRigid,    // リジッドメッシュ
+	kKeyframe, // リジッドメッシュ(キーフレームアニメーション)
+	kSkin, // スキンメッシュ(スキンアニメーション)
+};
+
 
 class Model
 {
@@ -137,16 +145,11 @@ public:
 	/// </summary>
 	static void PostDraw();
 
-	/// <summary>
-	/// グラフィックスパイプライン生成
-	/// </summary>
-	static void InitializeGraphicsPipeline();
-
 public:
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Initialize(const ModelData& modelData, const Animation& animation);
+	void Initialize(const ModelType& modelType, const ModelData& modelData, const Animation& animation);
 
 	/// <summary>
 	/// 描画
@@ -162,6 +165,7 @@ public:
 	void SetCamera(Camera* camera) { camera_ = camera; }
 	void SetPointLight(const PointLight& pointLight);
 	void SetLighting(bool flag) { materialData_->enableLighting = flag; }
+	void SetBlendModeType(const BlendModeType& blendModeType) { blendModeType_ = blendModeType; }
 
 	//void SetModelData(const std::string& fileName, const std::string format);
 
@@ -207,6 +211,8 @@ private:
 	static PipelineState* pipelineState_;
 
 private:
+	ModelType modelType_ = ModelType::kRigid;
+	BlendModeType blendModeType_ = BlendModeType::kBlendModeNormal;
 	Camera* camera_ = nullptr;
 
 	ModelData modelData_;

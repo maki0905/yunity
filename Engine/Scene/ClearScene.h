@@ -26,5 +26,9 @@ private:
 
 	std::unique_ptr<Model> model0_;
 	WorldTransform worldTransform0_;
+	std::unique_ptr<Model> model1_;
+	WorldTransform worldTransform1_;
+	std::unique_ptr<Model> model2_;
+	WorldTransform worldTransform2_;
 };
 

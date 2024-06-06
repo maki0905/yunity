@@ -31,7 +31,7 @@ public:
 
 	void Update();
 
-	Model* CreateModel(Format format, bool have, const std::string& folderName, const std::string& fileName = "");
+	Model* CreateModel(Format format, const std::string& folderName, const std::string& fileName = "", ModelType modelType = kRigid);
 
 private:
 	ModelManager() = default;

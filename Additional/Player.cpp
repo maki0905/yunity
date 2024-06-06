@@ -7,7 +7,7 @@ void Player::Initialize(Camera* camera)
 {
 	worldTransfrom_.Initialize();
 
-	model_.reset(ModelManager::GetInstance()->CreateModel(obj, false, "startBox"));
+	model_.reset(ModelManager::GetInstance()->CreateModel(obj, "startBox"));
 	model_->SetCamera(camera);
 	camera_ = camera;
 

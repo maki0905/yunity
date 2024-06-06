@@ -12,7 +12,7 @@ void TitleScene::Initialize()
 	sprite_.reset(Sprite::Create(TextureManager::GetInstance()->Load("uvChecker.png"), { 0.0f, 0.0f }));
 
 	model_ = std::make_unique<Model>();
-	model_.reset(ModelManager::GetInstance()->CreateModel(obj, false, "terrain"));
+	model_.reset(ModelManager::GetInstance()->CreateModel(obj, "terrain"));
 	model_->SetCamera(camera_.get());
 	model_->SetLighting(false);
 }

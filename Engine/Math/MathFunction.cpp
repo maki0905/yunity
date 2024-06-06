@@ -182,6 +182,16 @@ Matrix4x4 Multiply(const Matrix4x4& m1, const Matrix4x4& m2) {
 				m1.m[line][2] * m2.m[2][column] + m1.m[line][3] * m2.m[3][column];
 		}
 	}
+
+	/*for (int32_t i = 0; i < 4; i++) {
+		for (int32_t j = 0; j < 4; j++) {
+			for (int32_t k = 0; k < 4; k++) {
+				result.m[i][j] += m1.m[i][k] * m2.m[k][j];
+			}
+		}
+	}*/
+
+
 	return result;
 }
 

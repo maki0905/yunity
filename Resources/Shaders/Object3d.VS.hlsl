@@ -33,14 +33,15 @@ struct VertexShaderInput
 
 VertexShaderOutput main(VertexShaderInput input) {
 	VertexShaderOutput output;
-    float4x4 world = mul(gNode.localMatrix, gWorldTransform.world);
-    //output.position = mul(mul(input.position, gWorldTransform.world), mul(gViewProjection.view, gViewProjection.projection));
-    output.position = mul(mul(input.position,world), mul(gViewProjection.view, gViewProjection.projection));
+    //float4x4 world = mul(gNode.localMatrix, gWorldTransform.world);
+    //output.position = mul(gWorldTransform.world, mul(gViewProjection.view, gViewProjection.projection));
+    output.position = mul(mul(input.position, gWorldTransform.world), mul(gViewProjection.view, gViewProjection.projection));
+    //output.position = mul(mul(input.position,world), mul(gViewProjection.view, gViewProjection.projection));
     //output.normal = normalize(mul(input.normal, (float3x3)gWorldTransform.world));
     output.normal = normalize(mul(input.normal, (float3x3) gWorldTransform.worldInverseTranspose));
     output.texcoord = input.texcoord;
-    //output.worldPosition = mul(input.position, gWorldTransform.world).xyz;
-    output.worldPosition = mul(input.position, world).xyz;
+    output.worldPosition = mul(input.position, gWorldTransform.world).xyz;
+    //output.worldPosition = mul(input.position, world).xyz;
 	return output;
 }
 
