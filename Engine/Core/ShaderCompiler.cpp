@@ -86,51 +86,6 @@ ID3DBlob* ShaderCompiler::Get(std::string shaderName, ShaderType shaderType)
 
 void ShaderCompiler::ShaderCompile()
 {
-	/*basicVS_ = CompileShader(L"Resources/Shaders/Object3d.VS.hlsl", L"vs_6_0");
-	assert(basicVS_ != nullptr);
-	basicPS_ = CompileShader(L"Resources/Shaders/Object3d.PS.hlsl", L"ps_6_0");
-	assert(basicPS_ != nullptr);*/
-
-	/*vsblob_[static_cast<size_t>(FileName::kBasic)] = CompileShader(L"Resources/Shaders/Object3d.VS.hlsl", L"vs_6_0");
-	assert(vsblob_[static_cast<size_t>(FileName::kBasic)]);
-	psblob_[static_cast<size_t>(FileName::kBasic)] = CompileShader(L"Resources/Shaders/Object3d.PS.hlsl", L"ps_6_0");
-	assert(psblob_[static_cast<size_t>(FileName::kBasic)]);
-
-	vsblob_[static_cast<size_t>(FileName::kSprite)] = CompileShader(L"Resources/Shaders/SpriteVS.hlsl", L"vs_6_0");
-	assert(vsblob_[static_cast<size_t>(FileName::kSprite)]);
-	psblob_[static_cast<size_t>(FileName::kSprite)] = CompileShader(L"Resources/Shaders/SpritePS.hlsl", L"ps_6_0");
-	assert(psblob_[static_cast<size_t>(FileName::kSprite)]);
-
-	vsblob_[static_cast<size_t>(FileName::kLine)] = CompileShader(L"Resources/Shaders/LineVS.hlsl", L"vs_6_0");
-	assert(vsblob_[static_cast<size_t>(FileName::kLine)]);
-	psblob_[static_cast<size_t>(FileName::kLine)] = CompileShader(L"Resources/Shaders/LinePS.hlsl", L"ps_6_0");
-	assert(psblob_[static_cast<size_t>(FileName::kLine)]);
-
-	vsblob_[static_cast<size_t>(FileName::kParticle)] = CompileShader(L"Resources/Shaders/ParticleVS.hlsl", L"vs_6_0");
-	assert(vsblob_[static_cast<size_t>(FileName::kParticle)]);
-	psblob_[static_cast<size_t>(FileName::kParticle)] = CompileShader(L"Resources/Shaders/ParticlePS.hlsl", L"ps_6_0");
-	assert(psblob_[static_cast<size_t>(FileName::kParticle)]);
-
-	vsblob_[static_cast<size_t>(FileName::kFullscreen)] = CompileShader(L"Resources/Shaders/Fullscreen.VS.hlsl", L"vs_6_0");
-	assert(vsblob_[static_cast<size_t>(FileName::kFullscreen)]);
-	
-	psblob_[static_cast<size_t>(FileName::kGrayscale)] = CompileShader(L"Resources/Shaders/Grayscale.PS.hlsl", L"ps_6_0");
-	assert(psblob_[static_cast<size_t>(FileName::kGrayscale)]);
-
-	psblob_[static_cast<size_t>(FileName::kVignette)] = CompileShader(L"Resources/Shaders/Vignette.PS.hlsl", L"ps_6_0");
-	assert(psblob_[static_cast<size_t>(FileName::kVignette)]);
-
-	psblob_[static_cast<size_t>(FileName::kBoxFilter)] = CompileShader(L"Resources/Shaders/BoxFilter.PS.hlsl", L"ps_6_0");
-	assert(psblob_[static_cast<size_t>(FileName::kBoxFilter)]);
-
-	psblob_[static_cast<size_t>(FileName::kGaussianFilter)] = CompileShader(L"Resources/Shaders/GaussianFilter.PS.hlsl", L"ps_6_0");
-	assert(psblob_[static_cast<size_t>(FileName::kGaussianFilter)]);
-
-	psblob_[static_cast<size_t>(FileName::kLuminanceBasedOutline)] = CompileShader(L"Resources/Shaders/LuminanceBasedOutline.PS.hlsl", L"ps_6_0");
-	assert(psblob_[static_cast<size_t>(FileName::kLuminanceBasedOutline)]);
-
-	psblob_[static_cast<size_t>(FileName::kDepthBasedOutline)] = CompileShader(L"Resources/Shaders/DepthBasedOutline.PS.hlsl", L"ps_6_0");
-	assert(psblob_[static_cast<size_t>(FileName::kDepthBasedOutline)]);*/
 
 	vsblob_["Object3d"] = CompileShader(L"Resources/Shaders/Object3d.VS.hlsl", L"vs_6_0");
 	assert(vsblob_["Object3d"]);
@@ -175,6 +130,9 @@ void ShaderCompiler::ShaderCompile()
 
 	psblob_["RadialBlur"] = CompileShader(L"Resources/Shaders/RadialBlur.PS.hlsl", L"ps_6_0");
 	assert(psblob_["DepthBasedOutline"]);
+
+	vsblob_["Skinning"] = CompileShader(L"Resources/Shaders/SkinningObject3d.VS.hlsl", L"vs_6_0");
+	assert(vsblob_["Line"]);
 
 
 }

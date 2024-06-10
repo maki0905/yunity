@@ -72,8 +72,8 @@ void GraphicsPipelineManager::CreateObject3d()
 	for (uint32_t blendModeType = 0; blendModeType < BlendModeType::kBlendCount; blendModeType++) {
 		graphicsPipelines_[PipelineType::kObject3d]->pso_[blendModeType] = new PipelineState(device_, graphicsPipelines_[PipelineType::kObject3d]->rooSignature_);
 		graphicsPipelines_[PipelineType::kObject3d]->pso_[blendModeType]->SetInputLayout(inputLayoutDesc);
-		graphicsPipelines_[PipelineType::kObject3d]->pso_[blendModeType]->SetShader(PipelineState::ShaderType::kVS, ShaderCompiler::GetInstance()->Get(ShaderCompiler::FileName::kBasic, ShaderCompiler::ShaderType::kVS));
-		graphicsPipelines_[PipelineType::kObject3d]->pso_[blendModeType]->SetShader(PipelineState::ShaderType::kPS, ShaderCompiler::GetInstance()->Get(ShaderCompiler::FileName::kBasic, ShaderCompiler::ShaderType::kPS));
+		graphicsPipelines_[PipelineType::kObject3d]->pso_[blendModeType]->SetShader(PipelineState::ShaderType::kVS, ShaderCompiler::GetInstance()->Get("Object3d", ShaderCompiler::ShaderType::kVS));
+		graphicsPipelines_[PipelineType::kObject3d]->pso_[blendModeType]->SetShader(PipelineState::ShaderType::kPS, ShaderCompiler::GetInstance()->Get("Object3d", ShaderCompiler::ShaderType::kPS));
 		graphicsPipelines_[PipelineType::kObject3d]->pso_[blendModeType]->SetBlendState(blendDesc_[blendModeType]);
 		graphicsPipelines_[PipelineType::kObject3d]->pso_[blendModeType]->SetRasterizerState(rasterizerDesc);
 		graphicsPipelines_[PipelineType::kObject3d]->pso_[blendModeType]->SetDepthStencilState(depthStencilDesc);
@@ -136,8 +136,8 @@ void GraphicsPipelineManager::CreateSkinning()
 	for (uint32_t blendModeType = 0; blendModeType < BlendModeType::kBlendCount; blendModeType++) {
 		graphicsPipelines_[PipelineType::kSkinning]->pso_[blendModeType] = new PipelineState(device_, graphicsPipelines_[PipelineType::kSkinning]->rooSignature_);
 		graphicsPipelines_[PipelineType::kSkinning]->pso_[blendModeType]->SetInputLayout(inputLayoutDesc);
-		graphicsPipelines_[PipelineType::kSkinning]->pso_[blendModeType]->SetShader(PipelineState::ShaderType::kVS, ShaderCompiler::GetInstance()->Get(ShaderCompiler::FileName::kSkinning, ShaderCompiler::ShaderType::kVS));
-		graphicsPipelines_[PipelineType::kSkinning]->pso_[blendModeType]->SetShader(PipelineState::ShaderType::kPS, ShaderCompiler::GetInstance()->Get(ShaderCompiler::FileName::kBasic, ShaderCompiler::ShaderType::kPS));
+		graphicsPipelines_[PipelineType::kSkinning]->pso_[blendModeType]->SetShader(PipelineState::ShaderType::kVS, ShaderCompiler::GetInstance()->Get("Skinning", ShaderCompiler::ShaderType::kVS));
+		graphicsPipelines_[PipelineType::kSkinning]->pso_[blendModeType]->SetShader(PipelineState::ShaderType::kPS, ShaderCompiler::GetInstance()->Get("Object3d", ShaderCompiler::ShaderType::kPS));
 		graphicsPipelines_[PipelineType::kSkinning]->pso_[blendModeType]->SetBlendState(blendDesc_[blendModeType]);
 		graphicsPipelines_[PipelineType::kSkinning]->pso_[blendModeType]->SetRasterizerState(rasterizerDesc);
 		graphicsPipelines_[PipelineType::kSkinning]->pso_[blendModeType]->SetDepthStencilState(depthStencilDesc);
