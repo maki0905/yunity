@@ -1,6 +1,7 @@
 #include "RootSignature.h"
 
 #include "RootParameter.h"
+#include "Logger.h"
 
 #include <cassert>
 
@@ -75,6 +76,8 @@ void RootSignature::Finalize(D3D12_ROOT_SIGNATURE_FLAGS flags)
 	result_ = D3D12SerializeRootSignature(&rootDesc, D3D_ROOT_SIGNATURE_VERSION_1, &signatureBlob, &errorBlob);
 
 	if (FAILED(result_)) {
+		OutputDebugStringA((char*)errorBlob->GetBufferPointer());
+
 		assert(false);
 	}
 

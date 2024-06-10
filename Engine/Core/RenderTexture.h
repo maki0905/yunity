@@ -6,6 +6,7 @@
 #include <cmath>
 
 #include "MathFunction.h"
+#include "DepthBuffer.h"
 
 class PipelineState;
 class RootSignature;
@@ -29,6 +30,8 @@ public:
 	static void InitializeGraphicsPipeline();
 	static RenderTexture* GetInstance();
 public:
+	void Initalize();
+
 	/// <summary>
 	/// 生成
 	/// </summary>
@@ -36,15 +39,16 @@ public:
 
 	void Copy();
 
-	void OMSetREnderTargets(ID3D12DescriptorHeap* dsvHeap_);
+	//void OMSetREnderTargets(ID3D12DescriptorHeap* dsvHeap_);
 	void ClearRenderTargetView();
 
 	Vector4 GetRenderTargetClearValue() { return kRenderTargetClearValue; }
 
 	D3D12_CPU_DESCRIPTOR_HANDLE* GetCpuDescHandleRTV() { return &cpuDescHandleRTV_; }
+	D3D12_CPU_DESCRIPTOR_HANDLE* GetDepthCpuDescHandleRTV() { return &depthTextureCpuDescHandleSRV_; }
 
-	ID3D12Resource* GetResource() { return renderTextureResource.Get(); }
-
+	ID3D12Resource* GetResource() { return renderTextureResource_.Get(); }
+	DepthBuffer* GetDepthBuffer() { return depthBuffe_.get(); }
 
 
 private:
@@ -74,8 +78,8 @@ private:
 
 private:
 	const Vector4 kRenderTargetClearValue{ 1.0f, 0.0f, 0.0f, 1.0f };
-	Microsoft::WRL::ComPtr<ID3D12Resource> renderTextureResource;
-	Microsoft::WRL::ComPtr<ID3D12Resource> depthTextureResource;
+	Microsoft::WRL::ComPtr<ID3D12Resource> renderTextureResource_;
+	Microsoft::WRL::ComPtr<ID3D12Resource> depthStencilResource_;
 	Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> commandList_;
 	D3D12_CPU_DESCRIPTOR_HANDLE cpuDescHandleRTV_;
 	// シェーダリソースビューのハンドル(CPU)
@@ -90,5 +94,8 @@ private:
 	// マテリアル
 	Microsoft::WRL::ComPtr<ID3D12Resource> materialResource_;
 	Material* materialData_;
+
+	// 深度バッファクラス
+	std::unique_ptr<DepthBuffer> depthBuffe_;
 
 };

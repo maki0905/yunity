@@ -8,6 +8,7 @@
 #include <vector>
 #include <string>
 #include <memory>
+#include <unordered_map>
 
 class ShaderCompiler
 {
@@ -19,6 +20,13 @@ public:
 		kSprite,
 		kLine,
 		kParticle,
+		kFullscreen,
+		kGrayscale,
+		kVignette,
+		kBoxFilter,
+		kGaussianFilter,
+		kLuminanceBasedOutline,
+		kDepthBasedOutline,
 		kSkinning,
 		kCount
 
@@ -35,8 +43,8 @@ public:
 	void Initialize();
 	//void DXCInitialize();
 
-	ID3DBlob* Get(FileName name, ShaderType shaderType);
-	
+	//ID3DBlob* Get(FileName name, ShaderType shaderType);
+	ID3DBlob* Get(std::string shaderName, ShaderType shaderType);
 
 private:
 	void ShaderCompile();
@@ -58,8 +66,11 @@ private:
 	Microsoft::WRL::ComPtr<IDxcCompiler3> dxcCompiler_ = nullptr;
 	Microsoft::WRL::ComPtr<IDxcIncludeHandler> includeHandler_ = nullptr;
 
-	ID3DBlob* vsblob_[static_cast<size_t>(FileName::kCount)];
-	ID3DBlob* psblob_[static_cast<size_t>(FileName::kCount)];
+	std::unordered_map<std::string, ID3DBlob*> vsblob_;
+	std::unordered_map<std::string, ID3DBlob*> psblob_;
+
+	/*ID3DBlob* vsblob_[static_cast<size_t>(FileName::kCount)];
+	ID3DBlob* psblob_[static_cast<size_t>(FileName::kCount)];*/
 
 	/*ID3DBlob* basicVS_ = nullptr;
 	ID3DBlob* basicPS_ = nullptr;*/

@@ -3,8 +3,10 @@
 #include <memory>
 
 #include "IScene.h"
+#include "CameraManager.h"
 #include "Sprite.h"
 #include "Model.h"
+
 class TitleScene : public IScene
 {
 public:
@@ -15,7 +17,7 @@ public:
 	void DrawFront() override;
 
 private:
-	std::unique_ptr<Camera> camera_;
+	/*std::unique_ptr<Camera>*/ Camera* camera_;
 
 	WorldTransform worldTransform_;
 

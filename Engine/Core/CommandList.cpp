@@ -36,6 +36,18 @@ void CommandList::BarrierChange(IDXGISwapChain4* swapChain, D3D12_RESOURCE_STATE
 
 }
 
+void CommandList::BarrierChange(ID3D12Resource* resource, D3D12_RESOURCE_STATES before, D3D12_RESOURCE_STATES after)
+{
+	HRESULT result = S_FALSE;
+
+	// リソースバリアを変更
+	D3D12_RESOURCE_BARRIER barrier{};
+	barrier.Transition.pResource = resource;
+	barrier.Transition.StateBefore = before;
+	barrier.Transition.StateAfter = after;
+	commandList_->ResourceBarrier(1, &barrier);
+}
+
 void CommandList::CommandClear()
 {
 	commandAllocator_->Reset();
@@ -43,8 +55,46 @@ void CommandList::CommandClear()
 
 }
 
+void CommandList::OMSetRenderTargets(const D3D12_CPU_DESCRIPTOR_HANDLE* cpuDescHandleRTV, ID3D12DescriptorHeap* dsvHeap)
+{
+	if (dsvHeap) {
+		// 深度ステンシルビュー用デスクリプタヒープのハンドルを取得
+		D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle =
+			D3D12_CPU_DESCRIPTOR_HANDLE(dsvHeap->GetCPUDescriptorHandleForHeapStart());
+		// レンダーターゲットをセット
+		commandList_->OMSetRenderTargets(1, cpuDescHandleRTV, false, &dsvHandle);
+	}
+	else {
+		// レンダーターゲットをセット
+		commandList_->OMSetRenderTargets(1, cpuDescHandleRTV, false, nullptr);
+	}
+}
 
-void CommandList::SetViewport(float width, float height)
+void CommandList::OMSetRenderTargets(const D3D12_CPU_DESCRIPTOR_HANDLE* cpuDescHandleRTV, D3D12_CPU_DESCRIPTOR_HANDLE* dsvHandle)
+{
+	// レンダーターゲットをセット
+	commandList_->OMSetRenderTargets(1, cpuDescHandleRTV, false, dsvHandle);
+}
+
+void CommandList::ClearRenderTargetView(const Vector4 clearColorValue, const D3D12_CPU_DESCRIPTOR_HANDLE cpuDescHandleRTV)
+{
+	// 全画面クリア        Red   Green Blue  Alpha
+	//float clearColor[] = { 0.1f, 0.25f, 0.5f, 0.0f }; // 青っぽい色
+	float clearColor[] = { clearColorValue.x, clearColorValue.y, clearColorValue.z, clearColorValue.w };
+	commandList_->ClearRenderTargetView(cpuDescHandleRTV, clearColor, 0, nullptr);
+}
+
+void CommandList::ClearDepthStencilView(ID3D12DescriptorHeap* dsvHeap)
+{
+	// 深度ステンシルビュー用デスクリプタヒープのハンドルを取得
+	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle =
+		D3D12_CPU_DESCRIPTOR_HANDLE(dsvHeap->GetCPUDescriptorHandleForHeapStart());
+	// 深度バッファのクリア
+	commandList_->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
+}
+
+
+void CommandList::RSSetViewports(float width, float height)
 {
 	D3D12_VIEWPORT viewport =
 		D3D12_VIEWPORT(0.0f, 0.0f, width, height, D3D12_MIN_DEPTH, D3D12_MAX_DEPTH);
@@ -52,7 +102,7 @@ void CommandList::SetViewport(float width, float height)
 
 }
 
-void CommandList::SetRect(UINT width, UINT height)
+void CommandList::RSSetScissorRects(UINT width, UINT height)
 {
 	D3D12_RECT rect = D3D12_RECT(0, 0, width, height);
 	commandList_->RSSetScissorRects(1, &rect);

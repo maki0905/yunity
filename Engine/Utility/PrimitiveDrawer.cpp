@@ -115,8 +115,8 @@ void PrimitiveDrawer::InitializeGraphicsPipeline()
 	depthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
 
 	pipelineState_->SetInputLayout(inputLayoutDesc);
-	pipelineState_->SetShader(PipelineState::ShaderType::kVS, ShaderCompiler::GetInstance()->Get(ShaderCompiler::FileName::kLine, ShaderCompiler::ShaderType::kVS));
-	pipelineState_->SetShader(PipelineState::ShaderType::kPS, ShaderCompiler::GetInstance()->Get(ShaderCompiler::FileName::kLine, ShaderCompiler::ShaderType::kPS));
+	pipelineState_->SetShader(PipelineState::ShaderType::kVS, ShaderCompiler::GetInstance()->Get("Line", ShaderCompiler::ShaderType::kVS));
+	pipelineState_->SetShader(PipelineState::ShaderType::kPS, ShaderCompiler::GetInstance()->Get("Line", ShaderCompiler::ShaderType::kPS));
 	pipelineState_->SetBlendState(blendDesc);
 	pipelineState_->SetRasterizerState(rasterizerDesc);
 	pipelineState_->SetDepthStencilState(depthStencilDesc);

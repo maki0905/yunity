@@ -49,13 +49,13 @@ void DirectXCore::Initialize()
 		descriptorHeaps_[i] = std::make_unique<DescriptorHeap>();
 	}
 
-	descriptorHeaps_[static_cast<int>(HeapType::kRTV)]->Create(D3D12_DESCRIPTOR_HEAP_TYPE_RTV, 2, false);
+	descriptorHeaps_[static_cast<int>(HeapType::kRTV)]->Create(D3D12_DESCRIPTOR_HEAP_TYPE_RTV, 3, false);
 	descriptorHeaps_[static_cast<int>(HeapType::kSRV)]->Create(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, 128, true);
 	descriptorHeaps_[static_cast<int>(HeapType::kDSV)]->Create(D3D12_DESCRIPTOR_HEAP_TYPE_DSV, 1, false);
 
 	// バッファ
-	depthBuffer_ = new DepthBuffer(device_->GetDevice(), commandList_->GetCommandList());
-	depthBuffer_->Create();
+	/*depthBuffer_ = new DepthBuffer();
+	depthBuffer_->Create();*/
 
 	backBuffer_ = new BackBuffer(device_->GetDevice(), commandList_->GetCommandList(), swapChain_->GetSwapChain());
 	backBuffer_->Create();
@@ -64,23 +64,50 @@ void DirectXCore::Initialize()
 	shaderCompiler_ = ShaderCompiler::GetInstance();
 	shaderCompiler_->Initialize();
 
+	renderTexture_ = RenderTexture::GetInstance();
+	renderTexture_->InitializeGraphicsPipeline();
+	renderTexture_->Initalize();
+	renderTexture_->Create();
+
 	graphicsPipelineManager_ = GraphicsPipelineManager::GetInstance();
 	graphicsPipelineManager_->Initialize();
-
 }
 
-void DirectXCore::PreDraw()
+void DirectXCore::PreDrawRenderTexture()
+{
+	//commandList_->BarrierChange(swapChain_->GetSwapChain(), D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
+	
+	//commandList_->OMSetRenderTargets(renderTexture_->GetCpuDescHandleRTV(), depthBuffer_->GetDescriptorHeap());
+	commandList_->OMSetRenderTargets(renderTexture_->GetCpuDescHandleRTV(), renderTexture_->GetDepthBuffer()->GetDescriptorHeap());
+	commandList_->ClearRenderTargetView(renderTexture_->GetRenderTargetClearValue(), *renderTexture_->GetCpuDescHandleRTV());
+	commandList_->ClearDepthStencilView(/*depthBuffer_->GetDescriptorHeap()*/renderTexture_->GetDepthBuffer()->GetDescriptorHeap());
+	commandList_->RSSetViewports(float(windowWidth_), float(windowHeight_));
+	commandList_->RSSetScissorRects(windowWidth_, windowHeight_);
+}
+
+void DirectXCore::PostDrawRenderTexture()
+{
+	
+	commandList_->BarrierChange(renderTexture_->GetResource(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+	PreDrawSwapchain();
+	renderTexture_->Copy();
+	commandList_->BarrierChange(renderTexture_->GetResource(), D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_RENDER_TARGET);
+}
+
+void DirectXCore::PreDrawSwapchain()
 {
 	commandList_->BarrierChange(swapChain_->GetSwapChain(), D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
-	backBuffer_->SetRenderTarget(swapChain_->GetSwapChain(), depthBuffer_->GetDescriptorHeap());
-	backBuffer_->ClearRenderTarget(swapChain_->GetSwapChain());
-	depthBuffer_->ClearDepthView();
-
-	commandList_->SetViewport(float(windowWidth_), float(windowHeight_));
-	commandList_->SetRect(windowWidth_, windowHeight_);
+	
+	commandList_->OMSetRenderTargets(&backBuffer_->GetCpuDescHandleRTV()[swapChain_->GetSwapChain()->GetCurrentBackBufferIndex()]);
+	commandList_->ClearRenderTargetView(Vector4(0.1f, 0.25f, 0.5f, 0.0f), backBuffer_->GetCpuDescHandleRTV()[swapChain_->GetSwapChain()->GetCurrentBackBufferIndex()]);
+	commandList_->RSSetViewports(float(windowWidth_), float(windowHeight_));
+	commandList_->RSSetScissorRects(windowWidth_, windowHeight_);
+	//backBuffer_->SetRenderTarget(swapChain_->GetSwapChain(), depthBuffer_->GetDescriptorHeap());
+	//backBuffer_->ClearRenderTarget(swapChain_->GetSwapChain());
+	//depthBuffer_->ClearDepthView();
 }
 
-void DirectXCore::PostDraw()
+void DirectXCore::PostDrawSwapchain()
 {
 	HRESULT result = S_FALSE;
 	commandList_->BarrierChange(swapChain_->GetSwapChain(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
@@ -111,8 +138,9 @@ void DirectXCore::PostDraw()
 	// FPS固定
 	UpdateFixFPS();
 	commandList_->CommandClear();
-
 }
+
+
 
 void DirectXCore::InitializeFixFPS()
 {

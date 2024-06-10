@@ -8,16 +8,16 @@
 
 #pragma comment(lib, "d3d12.lib")
 
-DepthBuffer::DepthBuffer(ID3D12Device* device, ID3D12GraphicsCommandList* commandList)
+DepthBuffer::DepthBuffer()
 {
-	device_ = device;
-	commandList_ = commandList;
+	device_ = Device::GetInstance()->GetDevice();
+	commandList_ = DirectXCore::GetInstance()->GetCommandList();
 }
 
 void DepthBuffer::Create()
 {
 	// DepthStemcilTextureをウィンドウのサイズで作成
-	depthBuffer_ = CreateDepthStencilTextureResource();
+	depthStencilResource_ = CreateDepthStencilTextureResource();
 
 	// 深度ビュー用デスクリプタヒープ作成。DSV用のヒープでディスクリプタの数は1。
 	//dsvHeap_ = CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_DSV, 1, false);
@@ -29,7 +29,7 @@ void DepthBuffer::Create()
 	dsvDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT; // Format。基本的にはResourceに合わせる
 	dsvDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D; // 2dTexture
 	// DSVHeapの先頭にDSVをつくる
-	device_->CreateDepthStencilView(depthBuffer_.Get(), &dsvDesc, /*dsvHeap_->GetHeapPointer()->GetCPUDescriptorHandleForHeapStart()*/dsvHeap_->Alloc().GetCPUHandle());
+	device_->CreateDepthStencilView(depthStencilResource_.Get(), &dsvDesc, /*dsvHeap_->GetHeapPointer()->GetCPUDescriptorHandleForHeapStart()*/dsvHeap_->Alloc().GetCPUHandle());
 }
 
 void DepthBuffer::ClearDepthView()

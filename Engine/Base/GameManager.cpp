@@ -18,6 +18,9 @@ GameManager::~GameManager()
 
 void GameManager::Initialize()
 {
+	CameraManager::GetInstance()->Initialize();
+	/*cameraManager_.reset(CameraManager::GetInstance());
+	cameraManager_->Initialize();*/
 }
 
 void GameManager::Finalize()
@@ -26,11 +29,13 @@ void GameManager::Finalize()
 
 void GameManager::Update()
 {
+	CameraManager::GetInstance()->Update();
+	//cameraManager_->Update();
 }
 
 void GameManager::Draw()
 {
-	directXCore_->PreDraw();
+	directXCore_->PreDrawRenderTexture();
 #pragma region 背景描画
 	sprite_->PreDraw(directXCore_->GetCommandList());
 	//sceneArr_[currentSceneNo_]->DrawBack();
@@ -59,12 +64,14 @@ void GameManager::Draw()
 	SceneManager::GetInstance()->DrawFront();
 	sprite_->PostDraw();
 
+	directXCore_->PostDrawRenderTexture();
 #pragma endregion
+	//directXCore_->PreDrawSwapchain();
 
 	// ImGui描画
 	imguiManager_->Draw();
 
-	directXCore_->PostDraw();
+	directXCore_->PostDrawSwapchain();
 }
 
 void GameManager::Run()
@@ -76,6 +83,7 @@ void GameManager::Run()
 		}
 
 		Framework::Update();
+		Update();
 		Draw();
 		
 	}

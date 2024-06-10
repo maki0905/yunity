@@ -19,6 +19,7 @@ void RenderTexture::InitializeGraphicsPipeline()
 	rootSignature_ = new RootSignature(Device::GetInstance()->GetDevice(), static_cast<int>(RootBindings::kCount), 2);
 
 	D3D12_STATIC_SAMPLER_DESC staticSamplers[2];
+	staticSamplers[0] = {};
 	staticSamplers[0].Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;
 	staticSamplers[0].AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP; //0~1の範囲外をリピート
 	staticSamplers[0].AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
@@ -28,6 +29,7 @@ void RenderTexture::InitializeGraphicsPipeline()
 	staticSamplers[0].ShaderRegister = 0; //レジスタ番号0を使う
 	staticSamplers[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL; //PixelShaderを使う
 
+	staticSamplers[1] = {};
 	staticSamplers[1].Filter = D3D12_FILTER_MIN_MAG_MIP_POINT; // ポイントフィルタ
 	staticSamplers[1].AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP; //0~1の範囲外をリピート
 	staticSamplers[1].AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
@@ -44,7 +46,7 @@ void RenderTexture::InitializeGraphicsPipeline()
 
 	rootSignature_->GetParameter(static_cast<size_t>(RootBindings::kTexture)).InitializeAsDescriptorRange(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 0, 1, D3D12_SHADER_VISIBILITY_PIXEL);
 
-	rootSignature_->GetParameter(static_cast<size_t>(RootBindings::kDepthTexture)).InitializeAsDescriptorRange(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 0, 1, D3D12_SHADER_VISIBILITY_PIXEL);
+	rootSignature_->GetParameter(static_cast<size_t>(RootBindings::kDepthTexture)).InitializeAsDescriptorRange(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 1, D3D12_SHADER_VISIBILITY_PIXEL);
 
 	rootSignature_->GetParameter(static_cast<size_t>(RootBindings::kMaterial)).InitializeAsConstantBuffer(0, D3D12_SHADER_VISIBILITY_PIXEL);
 
@@ -83,7 +85,7 @@ void RenderTexture::InitializeGraphicsPipeline()
 
 	pipelineState_->SetInputLayout(inputLayoutDesc);
 	pipelineState_->SetShader(PipelineState::ShaderType::kVS, ShaderCompiler::GetInstance()->Get("Fullscreen", ShaderCompiler::ShaderType::kVS));
-	pipelineState_->SetShader(PipelineState::ShaderType::kPS, ShaderCompiler::GetInstance()->Get("DepthBasedOutline", ShaderCompiler::ShaderType::kPS));
+	pipelineState_->SetShader(PipelineState::ShaderType::kPS, ShaderCompiler::GetInstance()->Get("RadialBlur", ShaderCompiler::ShaderType::kPS));
 	pipelineState_->SetBlendState(blendDesc);
 	pipelineState_->SetRasterizerState(rasterizerDesc);
 	pipelineState_->SetDepthStencilState(depthStencilDesc);
@@ -100,11 +102,18 @@ RenderTexture* RenderTexture::GetInstance()
 	return &instance;
 }
 
+void RenderTexture::Initalize()
+{
+	depthBuffe_ = std::make_unique<DepthBuffer>();
+	depthBuffe_->Create();
+}
+
 void RenderTexture::Create()
 {
 	CreateResorce();
 	CreateRTV();
 	CreateSRV();
+	InitializeMaterial();
 	commandList_ = DirectXCore::GetInstance()->GetCommandList();
 }
 
@@ -114,20 +123,21 @@ void RenderTexture::Copy()
 
 	commandList_->SetGraphicsRootSignature(rootSignature_->GetSignature());
 	commandList_->SetPipelineState(pipelineState_->GetPipelineStateObject());
-	commandList_->SetGraphicsRootDescriptorTable(static_cast<size_t>(RootBindings::kTexture), gpuDescHandleSRV_);
-	commandList_->SetGraphicsRootDescriptorTable(static_cast<size_t>(RootBindings::kDepthTexture), depthTextureGpuDescHandleSRV_);
-	//TextureManager::GetInstance()->SetGraphicsRootDescriptorTable(commandList_.Get(), static_cast<size_t>(RootBindings::kTexture), 0);
+	commandList_->SetGraphicsRootDescriptorTable(static_cast<UINT>(RootBindings::kTexture), gpuDescHandleSRV_);
+	commandList_->SetGraphicsRootDescriptorTable(static_cast<UINT>(RootBindings::kDepthTexture), depthTextureGpuDescHandleSRV_);
+	commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(RootBindings::kMaterial), materialResource_->GetGPUVirtualAddress());
+	//TextureManager::GetInstance()->SetGraphicsRootDescriptorTable(commandList_.Get(), static_cast<UINT>(RootBindings::kTexture), 0);
 	commandList_->DrawInstanced(3, 1, 0, 0);
 }
 
-void RenderTexture::OMSetREnderTargets(ID3D12DescriptorHeap* dsvHeap_)
-{
-	// 深度ステンシルビュー用デスクリプタヒープのハンドルを取得
-	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle =
-		D3D12_CPU_DESCRIPTOR_HANDLE(dsvHeap_->GetCPUDescriptorHandleForHeapStart());
-	// レンダーターゲットをセット
-	commandList_->OMSetRenderTargets(1, &cpuDescHandleRTV_, false, &dsvHandle);
-}
+//void RenderTexture::OMSetREnderTargets(ID3D12DescriptorHeap* dsvHeap_)
+//{
+//	// 深度ステンシルビュー用デスクリプタヒープのハンドルを取得
+//	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle =
+//		D3D12_CPU_DESCRIPTOR_HANDLE(dsvHeap_->GetCPUDescriptorHandleForHeapStart());
+//	// レンダーターゲットをセット
+//	commandList_->OMSetRenderTargets(1, &depthTextureCpuDescHandleSRV_, false, &dsvHandle);
+//}
 
 void RenderTexture::ClearRenderTargetView()
 {
@@ -137,8 +147,37 @@ void RenderTexture::ClearRenderTargetView()
 
 void RenderTexture::CreateResorce()
 {
-	renderTextureResource = CreateRenderTextureResource(WindowsAPI::kWindowWidth, WindowsAPI::kWindowHeight, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, kRenderTargetClearValue);
-	depthTextureResource = CreateRenderTextureResource(WindowsAPI::kWindowWidth, WindowsAPI::kWindowHeight, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, kRenderTargetClearValue);
+	renderTextureResource_ = CreateRenderTextureResource(WindowsAPI::kWindowWidth, WindowsAPI::kWindowHeight, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, kRenderTargetClearValue);
+
+	HRESULT hr = S_FALSE;
+
+	// ヒーププロパティ
+	D3D12_HEAP_PROPERTIES heapProps{};
+	heapProps.Type = D3D12_HEAP_TYPE_DEFAULT;
+
+	D3D12_RESOURCE_DESC depthResourceDesc{};
+	depthResourceDesc.Width = WindowsAPI::GetInstance()->kWindowWidth;
+	depthResourceDesc.Height = WindowsAPI::GetInstance()->kWindowHeight;
+	depthResourceDesc.MipLevels = 1;
+	depthResourceDesc.DepthOrArraySize = 1;
+	depthResourceDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	depthResourceDesc.SampleDesc.Count = 1;
+	depthResourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D; // 2次元
+	depthResourceDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL; // DepthStencilとして使う通知
+
+	D3D12_CLEAR_VALUE depthClearValue;
+	depthClearValue.DepthStencil.Depth = 1.0f; // 1.0f(最大値)でクリア
+	depthClearValue.Format = DXGI_FORMAT_D24_UNORM_S8_UINT; // フォーマット。Resourceと合わせる
+
+	hr = Device::GetInstance()->GetDevice()->CreateCommittedResource(
+		&heapProps, // Heapの設定
+		D3D12_HEAP_FLAG_NONE, // Heapの特殊な設定
+		&depthResourceDesc, // Resourceの設定
+		D3D12_RESOURCE_STATE_DEPTH_WRITE, // 深度値を書き込む状態にしておく
+		&depthClearValue, // Clear最適値
+		IID_PPV_ARGS(&depthStencilResource_)
+	);
+	assert(SUCCEEDED(hr));
 }
 
 void RenderTexture::CreateRTV()
@@ -153,7 +192,7 @@ void RenderTexture::CreateRTV()
 	// ディスクリプタヒープのハンドルを取得
 	cpuDescHandleRTV_ = rtvDescriptorHeap_->Alloc().GetCPUHandle();
 
-	Device::GetInstance()->GetDevice()->CreateRenderTargetView(renderTextureResource.Get(), &renderTargetViewDesc, cpuDescHandleRTV_);
+	Device::GetInstance()->GetDevice()->CreateRenderTargetView(renderTextureResource_.Get(), &renderTargetViewDesc, cpuDescHandleRTV_);
 }
 
 void RenderTexture::CreateSRV()
@@ -168,7 +207,7 @@ void RenderTexture::CreateSRV()
 	DescriptorHandle descriptorHandleSRV_ = srvDescriptorHeap_->Alloc();
 	cpuDescHandleSRV_ = descriptorHandleSRV_.GetCPUHandle();
 	gpuDescHandleSRV_ = descriptorHandleSRV_.GetGPUHandle();
-	Device::GetInstance()->GetDevice()->CreateShaderResourceView(renderTextureResource.Get(), &renderTextureSrvDesc, cpuDescHandleSRV_);
+	Device::GetInstance()->GetDevice()->CreateShaderResourceView(renderTextureResource_.Get(), &renderTextureSrvDesc, cpuDescHandleSRV_);
 
 	// DepthTexture用のSRV
 	D3D12_SHADER_RESOURCE_VIEW_DESC depthTextureSrvDesc{};
@@ -181,7 +220,7 @@ void RenderTexture::CreateSRV()
 	DescriptorHandle depthTextureDescriptorHandleSRV_ = depthTextureSrvDescriptorHeap_->Alloc();
 	depthTextureCpuDescHandleSRV_ = depthTextureDescriptorHandleSRV_.GetCPUHandle();
 	depthTextureGpuDescHandleSRV_ = depthTextureDescriptorHandleSRV_.GetGPUHandle();
-	Device::GetInstance()->GetDevice()->CreateShaderResourceView(renderTextureResource.Get(), &depthTextureSrvDesc, depthTextureCpuDescHandleSRV_);
+	Device::GetInstance()->GetDevice()->CreateShaderResourceView(depthBuffe_->GetDepthStencil(), &depthTextureSrvDesc, depthTextureCpuDescHandleSRV_);
 
 }
 
