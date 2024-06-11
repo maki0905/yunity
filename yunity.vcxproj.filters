@@ -306,10 +306,13 @@
     <ClCompile Include="Engine\Core\GraphicsCommon.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-     <ClCompile Include="Engine\Core\RenderTexture.cpp">
+    <ClCompile Include="Engine\Core\RenderTexture.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Engine\3D\CameraManager.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\LevelEditor.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -560,6 +563,12 @@
     <ClInclude Include="Engine\3D\CameraManager.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\LevelEditor.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\LevelData.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\Shaders\BasicPS.hlsl">
@@ -594,7 +603,7 @@
     <FxCompile Include="Resources\Shaders\LuminanceBasedOutline.PS.hlsl" />
     <FxCompile Include="Resources\Shaders\DepthBasedOutline.PS.hlsl" />
     <FxCompile Include="Resources\Shaders\RadialBlur.PS.hlsl" />
-     <FxCompile Include="Resources\Shaders\SkinningObject3d.VS.hlsl" />
+    <FxCompile Include="Resources\Shaders\SkinningObject3d.VS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\Object3d.hlsli">
