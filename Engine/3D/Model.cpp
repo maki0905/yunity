@@ -11,6 +11,7 @@
 #include "ShaderCompiler.h"
 #include "ModelManager.h"
 #include "GraphicsPipelineManager.h"
+#include "RootBindingsCommon.h"
 
 ID3D12Device* Model::device_ = nullptr;
 ID3D12GraphicsCommandList* Model::commandList_ = nullptr;
@@ -36,7 +37,7 @@ void Model::PostDraw()
 	commandList_ = nullptr;
 }
 
-void Model::Initialize(const ModelType& modelType, const ModelData& modelData, const Animation& animation)
+void Model::Initialize(const ModelType& modelType, const ModelData& modelData)
 {
 	// 共通
 	modelType_ = modelType;
@@ -45,7 +46,8 @@ void Model::Initialize(const ModelType& modelType, const ModelData& modelData, c
 	CreateIndex();
 	InitializeDirectionalLight();
 	InitializeMaterial();
-	animation_ = animation;
+	animationNames_.clear();
+	animations_.clear();
 	switch (modelType_)
 	{
 	case kRigid:
@@ -64,29 +66,29 @@ void Model::Initialize(const ModelType& modelType, const ModelData& modelData, c
 
 void Model::Draw(const WorldTransform& worldTransform, uint32_t textureHandle)
 {
-	assert(device_);
-	assert(commandList_);
-	assert(worldTransform.constBuff_.Get());
+	//assert(device_);
+	//assert(commandList_);
+	//assert(worldTransform.constBuff_.Get());
 
-	commandList_->SetGraphicsRootSignature(rootSignature_->GetSignature());
-	commandList_->SetPipelineState(pipelineState_->GetPipelineStateObject());
-	commandList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	//commandList_->SetGraphicsRootSignature(rootSignature_->GetSignature());
+	//commandList_->SetPipelineState(pipelineState_->GetPipelineStateObject());
+	//commandList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	// 頂点バッファの設定
-	commandList_->IASetVertexBuffers(0, 1, &vertexBufferView_);
+	//// 頂点バッファの設定
+	//commandList_->IASetVertexBuffers(0, 1, &vertexBufferView_);
 
-	// CBVをセット(ワールド行列)
-	commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(RootBindings::kWorldTransform), worldTransform.constBuff_->GetGPUVirtualAddress());
-	commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(RootBindings::kViewProjection), camera_->GetConstBuff()->GetGPUVirtualAddress());
-	commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(RootBindings::kMaterial), materialResource_->GetGPUVirtualAddress());
-	commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(RootBindings::kLight), directionalLightResource_->GetGPUVirtualAddress());
-	commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(RootBindings::kCamera), camera_->GetCameraForGPU()->GetGPUVirtualAddress());
-	commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(RootBindings::kPointLight), pointLightResource_->GetGPUVirtualAddress());
+	//// CBVをセット(ワールド行列)
+	//commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(RootBindings::kWorldTransform), worldTransform.constBuff_->GetGPUVirtualAddress());
+	//commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(RootBindings::kViewProjection), camera_->GetConstBuff()->GetGPUVirtualAddress());
+	//commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(RootBindings::kMaterial), materialResource_->GetGPUVirtualAddress());
+	//commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(RootBindings::kLight), directionalLightResource_->GetGPUVirtualAddress());
+	//commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(RootBindings::kCamera), camera_->GetCameraForGPU()->GetGPUVirtualAddress());
+	//commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(RootBindings::kPointLight), pointLightResource_->GetGPUVirtualAddress());
 
-	// SRVをセット
-	TextureManager::GetInstance()->SetGraphicsRootDescriptorTable(commandList_, static_cast<UINT>(RootBindings::kTexture), textureHandle);
+	//// SRVをセット
+	//TextureManager::GetInstance()->SetGraphicsRootDescriptorTable(commandList_, static_cast<UINT>(RootBindings::kTexture), textureHandle);
 
-	commandList_->DrawInstanced(UINT(modelData_.vertices.size()), 1, 0, 0);
+	//commandList_->DrawInstanced(UINT(modelData_.vertices.size()), 1, 0, 0);
 }
 
 void Model::Draw(const WorldTransform& worldTransform/*, const Camera& camera*/)
@@ -108,7 +110,7 @@ void Model::Draw(const WorldTransform& worldTransform/*, const Camera& camera*/)
 		// デスクリプタヒープの配列をセットするコマンド
 		ID3D12DescriptorHeap* ppHeaps[] = { DirectXCore::GetInstance()->GetDescriptorHeap(DirectXCore::HeapType::kSRV)->GetHeapPointer() };
 		commandList_->SetDescriptorHeaps(_countof(ppHeaps), ppHeaps);
-		commandList_->SetGraphicsRootDescriptorTable(static_cast<UINT>(RootBindings::kMatrixPalette), skinCluster_.paletteSrvHandle.second);
+		commandList_->SetGraphicsRootDescriptorTable(static_cast<UINT>(SkinningRootBindings::kMatrixPalette), skinCluster_.paletteSrvHandle.second);
 	}
 	else {
 		GraphicsPipelineManager::GetInstance()->SetCommandList(commandList_, PipelineType::kObject3d,blendModeType_);
@@ -119,18 +121,18 @@ void Model::Draw(const WorldTransform& worldTransform/*, const Camera& camera*/)
 	//インデックスバッファの設定
 	commandList_->IASetIndexBuffer(&indexBufferView_);
 
-	commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(RootBindings::kWorldTransform), worldTransform.constBuff_->GetGPUVirtualAddress());
-	commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(RootBindings::kViewProjection), camera_->GetConstBuff()->GetGPUVirtualAddress());
-	commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(RootBindings::kMaterial), materialResource_->GetGPUVirtualAddress());
-	commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(RootBindings::kLight), directionalLightResource_->GetGPUVirtualAddress());
-	commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(RootBindings::kCamera), camera_->GetCameraForGPU()->GetGPUVirtualAddress());
-	commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(RootBindings::kPointLight), pointLightResource_->GetGPUVirtualAddress());
+	commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(Object3dRootBindings::kWorldTransform), worldTransform.constBuff_->GetGPUVirtualAddress());
+	commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(Object3dRootBindings::kViewProjection), camera_->GetConstBuff()->GetGPUVirtualAddress());
+	commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(Object3dRootBindings::kMaterial), materialResource_->GetGPUVirtualAddress());
+	commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(Object3dRootBindings::kLight), directionalLightResource_->GetGPUVirtualAddress());
+	commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(Object3dRootBindings::kCamera), camera_->GetCameraForGPU()->GetGPUVirtualAddress());
+	commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(Object3dRootBindings::kPointLight), pointLightResource_->GetGPUVirtualAddress());
 
 	// SRVをセット
 	if (textureHandle_ != TextureManager::Load(modelData_.material.textureFilePath)) {
 		textureHandle_ = TextureManager::Load(modelData_.material.textureFilePath);
 	}
-	TextureManager::GetInstance()->SetGraphicsRootDescriptorTable(commandList_, static_cast<UINT>(RootBindings::kTexture), textureHandle_);
+	TextureManager::GetInstance()->SetGraphicsRootDescriptorTable(commandList_, static_cast<UINT>(Object3dRootBindings::kTexture), textureHandle_);
 
 	if (modelType_ == ModelType::kSkin) {
 		commandList_->DrawIndexedInstanced(modelData_.indices.size(), UINT(skeleton_.joints.size()), 0, 0, 0);
@@ -153,17 +155,34 @@ void Model::SetPointLight(const PointLight& pointLight)
 //	modelData_ = *ModelManager::GetInstance()->Load(fileName, format);
 //}
 
+void Model::SetAnimation(std::string name, const Animation& animation, AnimationCommon::AnimationMode mode)
+{
+	std::string path = name;
+	auto itr = animations_.find(path);
+	if (itr == animations_.end()) {
+		animationNames_.emplace_back(name);
+		animations_[path].animation = animation;
+		animations_[path].animationCommon.state = mode;
+	}
+}
+
+void Model::PlayAnimation(std::string name, AnimationCommon::AnimationMode mode)
+{
+	isAnimation_ = true;
+	animations_[name].animationCommon.state = mode;
+}
+
 void Model::PlayingAnimation()
 {
-	animationTime_ += 1.0f / 60.0f;
-	animationTime_ = std::fmod(animationTime_, animation_.duration);
-	NodeAnimation& rootNodeAnimation = animation_.nodeAnimations[modelData_.rootNode.name];
-	Vector3 translate = CalculateValue(rootNodeAnimation.translate, animationTime_);
-	Quaternion rotate = CalculateQuaternion(rootNodeAnimation.rotate, animationTime_);
-	//Vector3 scale = CalculateValue(rootNodeAnimation.scale, animationTime_);
-	Vector3 scale = Vector3(1.0f, 1.0f, 1.0f);
-	Matrix4x4 localMatrix = MakeAffineMatrix(scale, rotate, translate);
-	*nodeData_ = localMatrix;
+	//animationTime_ += 1.0f / 60.0f;
+	//animationTime_ = std::fmod(animationTime_, animation_.duration);
+	//NodeAnimation& rootNodeAnimation = animation_.nodeAnimations[modelData_.rootNode.name];
+	//Vector3 translate = CalculateValue(rootNodeAnimation.translate, animationTime_);
+	//Quaternion rotate = CalculateQuaternion(rootNodeAnimation.rotate, animationTime_);
+	////Vector3 scale = CalculateValue(rootNodeAnimation.scale, animationTime_);
+	//Vector3 scale = Vector3(1.0f, 1.0f, 1.0f);
+	//Matrix4x4 localMatrix = MakeAffineMatrix(scale, rotate, translate);
+	//*nodeData_ = localMatrix;
 }
 
 void Model::SkeletonUpdate()
@@ -182,23 +201,70 @@ void Model::SkeletonUpdate()
 
 void Model::ApplyAnimation()
 {
-	// アニメーションの時間を進める(設定)
-	animationTime_ += 1.0f / 60.0f;
-	animationTime_ = std::fmod(animationTime_, animation_.duration);
-	for (Joint& joint : skeleton_.joints) {
-		// 対象のJointのAnimationがあれば、値の適用を行う。下記のif文はC++17から可能になった初期化付きif文
-		if (auto it = animation_.nodeAnimations.find(joint.name); it != animation_.nodeAnimations.end()) {
-			const NodeAnimation& rootNodeAnimation = (*it).second;
-			joint.transform.translate = CalculateValue(rootNodeAnimation.translate, animationTime_);
-			joint.transform.rotate = CalculateQuaternion(rootNodeAnimation.rotate, animationTime_);
-			//joint.transform.scale = CalculateValue(rootNodeAnimation.scale, animationTime_);
-			joint.transform.scale = Vector3(1.0f, 1.0f, 1.0f);
+	for (auto& name : animationNames_) {
+		if (animations_[name].animationCommon.state == AnimationCommon::kStopped) {
+			continue;
 		}
+
+		animations_[name].animationCommon.time += 1.0f / 60.0f;
+
+		if (animations_[name].animationCommon.state == AnimationCommon::kLooping) {
+			animations_[name].animationCommon.time = std::fmod(animations_[name].animationCommon.time, animations_[name].animation.duration);
+
+		}
+		else if (animations_[name].animationCommon.time > animations_[name].animation.duration) {
+			animations_[name].animationCommon.state = AnimationCommon::kStopped;
+			animations_[name].animationCommon.time = 0.0f;
+		}
+
+		for (Joint& joint : skeleton_.joints) {
+			// 対象のJointのAnimationがあれば、値の適用を行う。下記のif文はC++17から可能になった初期化付きif文
+			if (auto it = animations_[name].animation.nodeAnimations.find(joint.name); it != animations_[name].animation.nodeAnimations.end()) {
+				const NodeAnimation& rootNodeAnimation = (*it).second;
+				joint.transform.translate = CalculateValue(rootNodeAnimation.translate, animations_[name].animationCommon.time);
+				joint.transform.rotate = CalculateQuaternion(rootNodeAnimation.rotate, animations_[name].animationCommon.time);
+				if (rootNodeAnimation.scale.size() == 0) {
+					joint.transform.scale = Vector3(1.0f, 1.0f, 1.0f);
+				}
+				else {
+					joint.transform.scale = CalculateValue(rootNodeAnimation.scale, animations_[name].animationCommon.time);
+				}
+			}
+		}
+
+		// 現在の骨ごとのLocal情報を基にSkeletonSpaceの情報を更新
+		SkeletonUpdate();
+		// SkeletonSpaceの情報を基に、SkinClusterのMatrixPaletteを更新する
+		SkinClusterUpdate();
+
+
 	}
-	// 現在の骨ごとのLocal情報を基にSkeletonSpaceの情報を更新
-	SkeletonUpdate();
-	// SkeletonSpaceの情報を基に、SkinClusterのMatrixPaletteを更新する
-	SkinClusterUpdate();
+
+
+
+
+
+	//// アニメーションの時間を進める(設定)
+	//animationTime_ += 1.0f / 60.0f;
+	//animationTime_ = std::fmod(animationTime_, animation_.duration);
+	//for (Joint& joint : skeleton_.joints) {
+	//	// 対象のJointのAnimationがあれば、値の適用を行う。下記のif文はC++17から可能になった初期化付きif文
+	//	if (auto it = animation_.nodeAnimations.find(joint.name); it != animation_.nodeAnimations.end()) {
+	//		const NodeAnimation& rootNodeAnimation = (*it).second;
+	//		joint.transform.translate = CalculateValue(rootNodeAnimation.translate, animationTime_);
+	//		joint.transform.rotate = CalculateQuaternion(rootNodeAnimation.rotate, animationTime_);
+	//		if (rootNodeAnimation.scale.size() == 0) {
+	//			joint.transform.scale = Vector3(1.0f, 1.0f, 1.0f);
+	//		}
+	//		else {
+	//			joint.transform.scale = CalculateValue(rootNodeAnimation.scale, animationTime_);
+	//		}
+	//	}
+	//}
+	//// 現在の骨ごとのLocal情報を基にSkeletonSpaceの情報を更新
+	//SkeletonUpdate();
+	//// SkeletonSpaceの情報を基に、SkinClusterのMatrixPaletteを更新する
+	//SkinClusterUpdate();
 }
 
 void Model::SkinClusterUpdate()

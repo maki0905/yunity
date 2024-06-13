@@ -25,7 +25,7 @@ enum BlendModeType {
 
 enum PipelineType {
 	kObject3d,
-	kTexture,
+	kSprite,
 	kParticle,
 	kPrimitive,
 	kSkinning,
@@ -47,7 +47,7 @@ public:
 
 private:
 	void CreateObject3d();
-	void CreateTexture();
+	void CreateSprite();
 	void CreateParticle();
 	void CreatePrimitive();
 	void CreateSkinning();

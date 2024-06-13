@@ -2,6 +2,7 @@
 
 #include "Device.h"
 #include "ShaderCompiler.h"
+#include "RootBindingsCommon.h"
 
 void GraphicsPipelineManager::Initialize()
 {
@@ -21,7 +22,7 @@ void GraphicsPipelineManager::Initialize()
 	blendDesc_[5] = graphicsCommon_->ScreenBlend;
 
 	CreateObject3d();
-	CreateTexture();
+	CreateSprite();
 	CreateParticle();
 	CreatePrimitive();
 	CreateSkinning();
@@ -37,20 +38,20 @@ void GraphicsPipelineManager::SetCommandList(ID3D12GraphicsCommandList* commandL
 
 void GraphicsPipelineManager::CreateObject3d()
 {
-	graphicsPipelines_[PipelineType::kObject3d]->rooSignature_ = new RootSignature(device_, 8, 1);
+	graphicsPipelines_[PipelineType::kObject3d]->rooSignature_ = new RootSignature(device_, static_cast<UINT>(Object3dRootBindings::kCount), 1);
 	D3D12_STATIC_SAMPLER_DESC staticSamplers = graphicsCommon_->StaticSampler;
 	staticSamplers.ShaderRegister = 0;
 	staticSamplers.ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
 	graphicsPipelines_[PipelineType::kObject3d]->rooSignature_->InitializeStaticSampler(0, staticSamplers, D3D12_SHADER_VISIBILITY_PIXEL);
 
-	graphicsPipelines_[PipelineType::kObject3d]->rooSignature_->GetParameter(0).InitializeAsConstantBuffer(0, D3D12_SHADER_VISIBILITY_VERTEX);
-	graphicsPipelines_[PipelineType::kObject3d]->rooSignature_->GetParameter(1).InitializeAsConstantBuffer(1, D3D12_SHADER_VISIBILITY_VERTEX);
-	graphicsPipelines_[PipelineType::kObject3d]->rooSignature_->GetParameter(2).InitializeAsConstantBuffer(2, D3D12_SHADER_VISIBILITY_VERTEX);
-	graphicsPipelines_[PipelineType::kObject3d]->rooSignature_->GetParameter(3).InitializeAsDescriptorRange(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 0, 1, D3D12_SHADER_VISIBILITY_PIXEL);
-	graphicsPipelines_[PipelineType::kObject3d]->rooSignature_->GetParameter(4).InitializeAsConstantBuffer(0, D3D12_SHADER_VISIBILITY_PIXEL);
-	graphicsPipelines_[PipelineType::kObject3d]->rooSignature_->GetParameter(5).InitializeAsConstantBuffer(1, D3D12_SHADER_VISIBILITY_PIXEL);
-	graphicsPipelines_[PipelineType::kObject3d]->rooSignature_->GetParameter(6).InitializeAsConstantBuffer(2, D3D12_SHADER_VISIBILITY_PIXEL);
-	graphicsPipelines_[PipelineType::kObject3d]->rooSignature_->GetParameter(7).InitializeAsConstantBuffer(3, D3D12_SHADER_VISIBILITY_PIXEL);
+	graphicsPipelines_[PipelineType::kObject3d]->rooSignature_->GetParameter(static_cast<UINT>(Object3dRootBindings::kWorldTransform)).InitializeAsConstantBuffer(0, D3D12_SHADER_VISIBILITY_VERTEX);
+	graphicsPipelines_[PipelineType::kObject3d]->rooSignature_->GetParameter(static_cast<UINT>(Object3dRootBindings::kViewProjection)).InitializeAsConstantBuffer(1, D3D12_SHADER_VISIBILITY_VERTEX);
+	graphicsPipelines_[PipelineType::kObject3d]->rooSignature_->GetParameter(static_cast<UINT>(Object3dRootBindings::kRootNode)).InitializeAsConstantBuffer(2, D3D12_SHADER_VISIBILITY_VERTEX);
+	graphicsPipelines_[PipelineType::kObject3d]->rooSignature_->GetParameter(static_cast<UINT>(Object3dRootBindings::kTexture)).InitializeAsDescriptorRange(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 0, 1, D3D12_SHADER_VISIBILITY_PIXEL);
+	graphicsPipelines_[PipelineType::kObject3d]->rooSignature_->GetParameter(static_cast<UINT>(Object3dRootBindings::kMaterial)).InitializeAsConstantBuffer(0, D3D12_SHADER_VISIBILITY_PIXEL);
+	graphicsPipelines_[PipelineType::kObject3d]->rooSignature_->GetParameter(static_cast<UINT>(Object3dRootBindings::kLight)).InitializeAsConstantBuffer(1, D3D12_SHADER_VISIBILITY_PIXEL);
+	graphicsPipelines_[PipelineType::kObject3d]->rooSignature_->GetParameter(static_cast<UINT>(Object3dRootBindings::kCamera)).InitializeAsConstantBuffer(2, D3D12_SHADER_VISIBILITY_PIXEL);
+	graphicsPipelines_[PipelineType::kObject3d]->rooSignature_->GetParameter(static_cast<UINT>(Object3dRootBindings::kPointLight)).InitializeAsConstantBuffer(3, D3D12_SHADER_VISIBILITY_PIXEL);
 	graphicsPipelines_[PipelineType::kObject3d]->rooSignature_->Finalize(D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
 
 	// InputLayout
@@ -84,35 +85,119 @@ void GraphicsPipelineManager::CreateObject3d()
 	}
 }
 
-void GraphicsPipelineManager::CreateTexture()
+void GraphicsPipelineManager::CreateSprite()
 {
 }
 
 void GraphicsPipelineManager::CreateParticle()
 {
+	graphicsPipelines_[PipelineType::kParticle]->rooSignature_ = new RootSignature(device_, static_cast<int>(ParticleRootBindings::kCount), 1);
+
+	D3D12_STATIC_SAMPLER_DESC staticSamplers = graphicsCommon_->StaticSampler;
+	staticSamplers.ShaderRegister = 0;
+	staticSamplers.ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+	graphicsPipelines_[PipelineType::kParticle]->rooSignature_->InitializeStaticSampler(0, staticSamplers, D3D12_SHADER_VISIBILITY_PIXEL);
+
+	//rootSignature_->GetParameter(static_cast<size_t>(RootBindings::kWorldTransform)).InitializeAsConstantBuffer(0, D3D12_SHADER_VISIBILITY_VERTEX);
+	graphicsPipelines_[PipelineType::kParticle]->rooSignature_->GetParameter(static_cast<size_t>(ParticleRootBindings::kWorldTransform)).InitializeAsDescriptorRange(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 0, 1, D3D12_SHADER_VISIBILITY_VERTEX);
+	graphicsPipelines_[PipelineType::kParticle]->rooSignature_->GetParameter(static_cast<size_t>(ParticleRootBindings::kViewProjection)).InitializeAsConstantBuffer(1, D3D12_SHADER_VISIBILITY_VERTEX);
+	graphicsPipelines_[PipelineType::kParticle]->rooSignature_->GetParameter(static_cast<size_t>(ParticleRootBindings::kTexture)).InitializeAsDescriptorRange(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 0, 1, D3D12_SHADER_VISIBILITY_PIXEL);
+	graphicsPipelines_[PipelineType::kParticle]->rooSignature_->GetParameter(static_cast<size_t>(ParticleRootBindings::kMaterial)).InitializeAsConstantBuffer(0, D3D12_SHADER_VISIBILITY_PIXEL);
+
+	graphicsPipelines_[PipelineType::kParticle]->rooSignature_->Finalize(D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
+
+	// InputLayout
+	D3D12_INPUT_ELEMENT_DESC inputElementDescs[] = {
+		{.SemanticName = "POSITION", .SemanticIndex = 0, .Format = DXGI_FORMAT_R32G32B32A32_FLOAT, .AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT},
+		{.SemanticName = "TEXCOORD", .SemanticIndex = 0, .Format = DXGI_FORMAT_R32G32_FLOAT, .AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT},
+		{.SemanticName = "NORMAL", .SemanticIndex = 0, .Format = DXGI_FORMAT_R32G32B32_FLOAT, .AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT}
+	};
+	D3D12_INPUT_LAYOUT_DESC inputLayoutDesc{};
+	inputLayoutDesc.pInputElementDescs = inputElementDescs;
+	inputLayoutDesc.NumElements = _countof(inputElementDescs);
+
+	//RasiterzerStateの設定
+	D3D12_RASTERIZER_DESC rasterizerDesc = GraphicsPipelineManager::graphicsCommon_->RasterizerDefault;
+
+	// DepthStencilStateの設定
+	D3D12_DEPTH_STENCIL_DESC depthStencilDesc = GraphicsPipelineManager::graphicsCommon_->DepthStateReadWrite;
+
+	for (uint32_t blendModeType = 0; blendModeType < BlendModeType::kBlendCount; blendModeType++) {
+		graphicsPipelines_[PipelineType::kParticle]->pso_[blendModeType] = new PipelineState(device_, graphicsPipelines_[PipelineType::kParticle]->rooSignature_);
+		graphicsPipelines_[PipelineType::kParticle]->pso_[blendModeType]->SetInputLayout(inputLayoutDesc);
+		graphicsPipelines_[PipelineType::kParticle]->pso_[blendModeType]->SetShader(PipelineState::ShaderType::kVS, ShaderCompiler::GetInstance()->Get("Particle", ShaderCompiler::ShaderType::kVS));
+		graphicsPipelines_[PipelineType::kParticle]->pso_[blendModeType]->SetShader(PipelineState::ShaderType::kPS, ShaderCompiler::GetInstance()->Get("Particle", ShaderCompiler::ShaderType::kPS));
+		graphicsPipelines_[PipelineType::kParticle]->pso_[blendModeType]->SetBlendState(blendDesc_[blendModeType]);
+		graphicsPipelines_[PipelineType::kParticle]->pso_[blendModeType]->SetRasterizerState(rasterizerDesc);
+		graphicsPipelines_[PipelineType::kParticle]->pso_[blendModeType]->SetDepthStencilState(depthStencilDesc);
+		graphicsPipelines_[PipelineType::kParticle]->pso_[blendModeType]->SetRenderTargetFormat(DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, DXGI_FORMAT_D24_UNORM_S8_UINT);
+		graphicsPipelines_[PipelineType::kParticle]->pso_[blendModeType]->SetPrimitiveTopologyType(D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE);
+		graphicsPipelines_[PipelineType::kParticle]->pso_[blendModeType]->SetSampleMask(D3D12_DEFAULT_SAMPLE_MASK);
+		graphicsPipelines_[PipelineType::kParticle]->pso_[blendModeType]->Finalize();
+	}
 }
 
 void GraphicsPipelineManager::CreatePrimitive()
 {
+	graphicsPipelines_[PipelineType::kPrimitive]->rooSignature_ = new RootSignature(device_, static_cast<int>(PrimitiveRootBindings::kCount), 1);
+
+	D3D12_STATIC_SAMPLER_DESC staticSamplers = graphicsCommon_->StaticSampler;
+	staticSamplers.ShaderRegister = 0;
+	staticSamplers.ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+	graphicsPipelines_[PipelineType::kPrimitive]->rooSignature_->InitializeStaticSampler(0, staticSamplers, D3D12_SHADER_VISIBILITY_PIXEL);
+
+	//rootSignature_->GetParameter(static_cast<size_t>(RootBindings::kWorldTransform)).InitializeAsConstantBuffer(0, D3D12_SHADER_VISIBILITY_VERTEX);
+	graphicsPipelines_[PipelineType::kPrimitive]->rooSignature_->GetParameter(static_cast<size_t>(PrimitiveRootBindings::kWorldTransform)).InitializeAsConstantBuffer(static_cast<int>(PrimitiveRootBindings::kWorldTransform));
+	graphicsPipelines_[PipelineType::kPrimitive]->rooSignature_->GetParameter(static_cast<size_t>(PrimitiveRootBindings::kViewProjection)).InitializeAsConstantBuffer(static_cast<int>(PrimitiveRootBindings::kViewProjection));
+
+	graphicsPipelines_[PipelineType::kPrimitive]->rooSignature_->Finalize(D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
+
+	// InputLayout
+	D3D12_INPUT_ELEMENT_DESC inputElementDescs[] = {
+		{.SemanticName = "POSITION", .SemanticIndex = 0, .Format = DXGI_FORMAT_R32G32B32A32_FLOAT, .AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT},
+		{.SemanticName = "COLOR", .SemanticIndex = 0, .Format = DXGI_FORMAT_R32G32B32A32_FLOAT, .AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT}
+	};
+	D3D12_INPUT_LAYOUT_DESC inputLayoutDesc{};
+	inputLayoutDesc.pInputElementDescs = inputElementDescs;
+	inputLayoutDesc.NumElements = _countof(inputElementDescs);
+
+	//RasiterzerStateの設定
+	D3D12_RASTERIZER_DESC rasterizerDesc = graphicsCommon_->RasterizerDefault;
+
+	// DepthStencilStateの設定
+	D3D12_DEPTH_STENCIL_DESC depthStencilDesc = graphicsCommon_->DepthStateReadWrite;
+
+	graphicsPipelines_[PipelineType::kPrimitive]->pso_[0] = new PipelineState(device_, graphicsPipelines_[PipelineType::kPrimitive]->rooSignature_);
+	graphicsPipelines_[PipelineType::kPrimitive]->pso_[0]->SetInputLayout(inputLayoutDesc);
+	graphicsPipelines_[PipelineType::kPrimitive]->pso_[0]->SetShader(PipelineState::ShaderType::kVS, ShaderCompiler::GetInstance()->Get("Line", ShaderCompiler::ShaderType::kVS));
+	graphicsPipelines_[PipelineType::kPrimitive]->pso_[0]->SetShader(PipelineState::ShaderType::kPS, ShaderCompiler::GetInstance()->Get("Line", ShaderCompiler::ShaderType::kPS));
+	graphicsPipelines_[PipelineType::kPrimitive]->pso_[0]->SetBlendState(blendDesc_[1]);
+	graphicsPipelines_[PipelineType::kPrimitive]->pso_[0]->SetRasterizerState(rasterizerDesc);
+	graphicsPipelines_[PipelineType::kPrimitive]->pso_[0]->SetDepthStencilState(depthStencilDesc);
+	graphicsPipelines_[PipelineType::kPrimitive]->pso_[0]->SetRenderTargetFormat(DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, DXGI_FORMAT_D24_UNORM_S8_UINT);
+	graphicsPipelines_[PipelineType::kPrimitive]->pso_[0]->SetPrimitiveTopologyType(D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE);
+	graphicsPipelines_[PipelineType::kPrimitive]->pso_[0]->SetSampleMask(D3D12_DEFAULT_SAMPLE_MASK);
+	graphicsPipelines_[PipelineType::kPrimitive]->pso_[0]->Finalize();
+
 }
 
 void GraphicsPipelineManager::CreateSkinning()
 {
-	graphicsPipelines_[PipelineType::kSkinning]->rooSignature_ = new RootSignature(device_, 9, 1);
+	graphicsPipelines_[PipelineType::kSkinning]->rooSignature_ = new RootSignature(device_, static_cast<UINT>(SkinningRootBindings::kCount), 1);
 	D3D12_STATIC_SAMPLER_DESC staticSamplers = graphicsCommon_->StaticSampler;
 	staticSamplers.ShaderRegister = 0;
 	staticSamplers.ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
 	graphicsPipelines_[PipelineType::kSkinning]->rooSignature_->InitializeStaticSampler(0, staticSamplers, D3D12_SHADER_VISIBILITY_PIXEL);
 
-	graphicsPipelines_[PipelineType::kSkinning]->rooSignature_->GetParameter(0).InitializeAsConstantBuffer(0, D3D12_SHADER_VISIBILITY_VERTEX);
-	graphicsPipelines_[PipelineType::kSkinning]->rooSignature_->GetParameter(1).InitializeAsConstantBuffer(1, D3D12_SHADER_VISIBILITY_VERTEX);
-	graphicsPipelines_[PipelineType::kSkinning]->rooSignature_->GetParameter(2).InitializeAsConstantBuffer(2, D3D12_SHADER_VISIBILITY_VERTEX);
-	graphicsPipelines_[PipelineType::kSkinning]->rooSignature_->GetParameter(3).InitializeAsDescriptorRange(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 0, 1, D3D12_SHADER_VISIBILITY_PIXEL);
-	graphicsPipelines_[PipelineType::kSkinning]->rooSignature_->GetParameter(4).InitializeAsConstantBuffer(0, D3D12_SHADER_VISIBILITY_PIXEL);
-	graphicsPipelines_[PipelineType::kSkinning]->rooSignature_->GetParameter(5).InitializeAsConstantBuffer(1, D3D12_SHADER_VISIBILITY_PIXEL);
-	graphicsPipelines_[PipelineType::kSkinning]->rooSignature_->GetParameter(6).InitializeAsConstantBuffer(2, D3D12_SHADER_VISIBILITY_PIXEL);
-	graphicsPipelines_[PipelineType::kSkinning]->rooSignature_->GetParameter(7).InitializeAsConstantBuffer(3, D3D12_SHADER_VISIBILITY_PIXEL);
-	graphicsPipelines_[PipelineType::kSkinning]->rooSignature_->GetParameter(8).InitializeAsDescriptorRange(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 0, 1, D3D12_SHADER_VISIBILITY_VERTEX);
+	graphicsPipelines_[PipelineType::kSkinning]->rooSignature_->GetParameter(static_cast<UINT>(SkinningRootBindings::kWorldTransform)).InitializeAsConstantBuffer(0, D3D12_SHADER_VISIBILITY_VERTEX);
+	graphicsPipelines_[PipelineType::kSkinning]->rooSignature_->GetParameter(static_cast<UINT>(SkinningRootBindings::kViewProjection)).InitializeAsConstantBuffer(1, D3D12_SHADER_VISIBILITY_VERTEX);
+	graphicsPipelines_[PipelineType::kSkinning]->rooSignature_->GetParameter(static_cast<UINT>(SkinningRootBindings::kRootNode)).InitializeAsConstantBuffer(2, D3D12_SHADER_VISIBILITY_VERTEX);
+	graphicsPipelines_[PipelineType::kSkinning]->rooSignature_->GetParameter(static_cast<UINT>(SkinningRootBindings::kTexture)).InitializeAsDescriptorRange(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 0, 1, D3D12_SHADER_VISIBILITY_PIXEL);
+	graphicsPipelines_[PipelineType::kSkinning]->rooSignature_->GetParameter(static_cast<UINT>(SkinningRootBindings::kMaterial)).InitializeAsConstantBuffer(0, D3D12_SHADER_VISIBILITY_PIXEL);
+	graphicsPipelines_[PipelineType::kSkinning]->rooSignature_->GetParameter(static_cast<UINT>(SkinningRootBindings::kLight)).InitializeAsConstantBuffer(1, D3D12_SHADER_VISIBILITY_PIXEL);
+	graphicsPipelines_[PipelineType::kSkinning]->rooSignature_->GetParameter(static_cast<UINT>(SkinningRootBindings::kCamera)).InitializeAsConstantBuffer(2, D3D12_SHADER_VISIBILITY_PIXEL);
+	graphicsPipelines_[PipelineType::kSkinning]->rooSignature_->GetParameter(static_cast<UINT>(SkinningRootBindings::kPointLight)).InitializeAsConstantBuffer(3, D3D12_SHADER_VISIBILITY_PIXEL);
+	graphicsPipelines_[PipelineType::kSkinning]->rooSignature_->GetParameter(static_cast<UINT>(SkinningRootBindings::kMatrixPalette)).InitializeAsDescriptorRange(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 0, 1, D3D12_SHADER_VISIBILITY_VERTEX);
 	graphicsPipelines_[PipelineType::kSkinning]->rooSignature_->Finalize(D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
 
 	// InputLayout

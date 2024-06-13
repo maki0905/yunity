@@ -33,6 +33,8 @@ public:
 
 	Model* CreateModel(Format format, const std::string& folderName, const std::string& fileName = "", ModelType modelType = kRigid);
 
+	Animation GetAnimation(Format format, const std::string& folderName, const std::string& fileName = "");
+
 private:
 	ModelManager() = default;
 	~ModelManager() = default;
@@ -46,6 +48,7 @@ private:
 	Model::MaterialData LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& filename);
 private:
 	//std::unordered_map<std::string, Model::ModelData> models_;
-	std::unordered_map<std::string, Data> dataStorage_;
+	std::unordered_map<std::string, Model::ModelData> modelDataStorage_;
+	std::unordered_map<std::string, Animation> animationDataStorage_;
 	std::vector<Model*> models_;
 };

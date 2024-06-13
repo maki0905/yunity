@@ -19,6 +19,9 @@ void ClearScene::Initialize()
 	worldTransform0_.translation_ = { 10.0f, 0.0f, 0.0f };
 	worldTransform0_.quaternion_ = { 0.0f, 1.0f, 0.0f, 0.0f };
 
+	model0_->SetAnimation("walk", ModelManager::GetInstance()->GetAnimation(gltf, "human", "walk"), AnimationCommon::kLooping);
+	model0_->SetAnimation("sneakWalk", ModelManager::GetInstance()->GetAnimation(gltf, "human", "sneakWalk"), AnimationCommon::kLooping);
+
 	model1_ = std::make_unique<Model>();
 	model1_.reset(ModelManager::GetInstance()->CreateModel(gltf, "human", "walk", ModelType::kSkin));
 	model1_->SetCamera(camera_.get());
@@ -46,10 +49,10 @@ void ClearScene::Update()
 	worldTransform2_.UpdateMatrix(RotationType::Euler);
 
 	if (Input::GetInstance()->TriggerKey(DIK_1)) {
-		model0_->PlayAnimation();
+		model0_->PlayAnimation("walk", AnimationCommon::kLooping);
 	}
 	if (Input::GetInstance()->TriggerKey(DIK_2)) {
-		model1_->PlayAnimation();
+		model0_->PlayAnimation("sneakWalk", AnimationCommon::kLooping);
 	}
 
 

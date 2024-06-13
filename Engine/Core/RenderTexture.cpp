@@ -85,7 +85,7 @@ void RenderTexture::InitializeGraphicsPipeline()
 
 	pipelineState_->SetInputLayout(inputLayoutDesc);
 	pipelineState_->SetShader(PipelineState::ShaderType::kVS, ShaderCompiler::GetInstance()->Get("Fullscreen", ShaderCompiler::ShaderType::kVS));
-	pipelineState_->SetShader(PipelineState::ShaderType::kPS, ShaderCompiler::GetInstance()->Get("DepthBasedOutline", ShaderCompiler::ShaderType::kPS));
+	pipelineState_->SetShader(PipelineState::ShaderType::kPS, ShaderCompiler::GetInstance()->Get("CopyImage", ShaderCompiler::ShaderType::kPS));
 	pipelineState_->SetBlendState(blendDesc);
 	pipelineState_->SetRasterizerState(rasterizerDesc);
 	pipelineState_->SetDepthStencilState(depthStencilDesc);

@@ -28,22 +28,6 @@ enum ModelType{
 
 class Model
 {
-	/// <summary>
-	/// ルートパラメータ番号
-	/// </summary>
-	enum class RootBindings {
-		kWorldTransform, // ワールド変換行列
-		kViewProjection, // ビュープロジェクション変換行列
-		kRootNode,       // ルートノード
-		kTexture,        // テクスチャ
-		kMaterial,       // マテリアル
-		kLight,          // ライティング
-		kCamera,         // カメラ
-		kPointLight,
-		kMatrixPalette,
-		kCount,          // 最大数
-	};
-
 public:
 	// 頂点データ構造体
 	struct VertexData {
@@ -149,7 +133,7 @@ public:
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Initialize(const ModelType& modelType, const ModelData& modelData, const Animation& animation);
+	void Initialize(const ModelType& modelType, const ModelData& modelData);
 
 	/// <summary>
 	/// 描画
@@ -169,8 +153,11 @@ public:
 
 	//void SetModelData(const std::string& fileName, const std::string format);
 
+	void SetAnimation(std::string name, const Animation& animation,AnimationCommon::AnimationMode mode = AnimationCommon::AnimationMode::kStopped);
+
 	bool IsAnimation() { return isAnimation_; }
 	void PlayAnimation() { isAnimation_ = true; }
+	void PlayAnimation(std::string name, AnimationCommon::AnimationMode mode = AnimationCommon::AnimationMode::kPlaying);
 	void StopAnimation() { isAnimation_ = false; }
 	void PlayingAnimation();
 
@@ -218,7 +205,8 @@ private:
 	ModelData modelData_;
 	Skeleton skeleton_;
 	SkinCluster skinCluster_;
-	Animation animation_;
+	std::vector<std::string> animationNames_;
+	std::unordered_map<std::string, AnimationData> animations_;
 	// 頂点バッファ
 	Microsoft::WRL::ComPtr<ID3D12Resource> vertexResource_;
 	// 頂点データ

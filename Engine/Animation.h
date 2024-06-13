@@ -28,10 +28,25 @@ struct AnimationCurve {
 //	AnimationCurve<Vector3> scale;
 //};
 
+
+
 struct Animation {
 	float duration; // アニメーション全体の尺(単位は秒)
 	// NodeAnimationの集合。Node名でひけるようにしておく
 	std::map<std::string, NodeAnimation> nodeAnimations;
+};
+
+struct AnimationCommon {
+	enum AnimationMode{kStopped, kPlaying, kLooping};
+	AnimationMode state;
+	float time;
+	AnimationCommon() : state(kStopped), time(0.0f){}
+};
+
+struct AnimationData {
+	Animation animation;
+	AnimationCommon animationCommon;
+
 };
 
 // Animation解析

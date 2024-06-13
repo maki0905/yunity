@@ -48,6 +48,7 @@ void LevelEditor::LoadFile(const std::string& fileName)
 	// レベルデータ格納用インスタンスを生成
 	LevelData* levelData = new LevelData();
 
+	LoadObjectRecursive(levelData, deserialized);
 
 	// ファイルを閉じる
 	file.close();

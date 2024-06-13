@@ -110,6 +110,9 @@ void ShaderCompiler::ShaderCompile()
 	vsblob_["Fullscreen"] = CompileShader(L"Resources/Shaders/Fullscreen.VS.hlsl", L"vs_6_0");
 	assert(vsblob_["Fullscreen"]);
 
+	psblob_["CopyImage"] = CompileShader(L"Resources/Shaders/CopyImage.PS.hlsl", L"ps_6_0");
+	assert(psblob_["CopyImage"]);
+
 	psblob_["Grayscale"] = CompileShader(L"Resources/Shaders/Grayscale.PS.hlsl", L"ps_6_0");
 	assert(psblob_["Grayscale"]);
 
@@ -129,10 +132,10 @@ void ShaderCompiler::ShaderCompile()
 	assert(psblob_["DepthBasedOutline"]);
 
 	psblob_["RadialBlur"] = CompileShader(L"Resources/Shaders/RadialBlur.PS.hlsl", L"ps_6_0");
-	assert(psblob_["DepthBasedOutline"]);
+	assert(psblob_["RadialBlur"]);
 
 	vsblob_["Skinning"] = CompileShader(L"Resources/Shaders/SkinningObject3d.VS.hlsl", L"vs_6_0");
-	assert(vsblob_["Line"]);
+	assert(vsblob_["Skinning"]);
 
 
 }
