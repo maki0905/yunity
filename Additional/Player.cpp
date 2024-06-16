@@ -5,48 +5,92 @@
 
 void Player::Initialize(Camera* camera)
 {
-	worldTransfrom_.Initialize();
+	worldTransform_.Initialize();
+	worldTransform_.scale_ = { 10.0f, 10.0f, 10.0f };
+	worldTransform_.quaternion_ = { 0.0f, 1.0f, 0.0f, 1.0f };
 
-	model_.reset(ModelManager::GetInstance()->CreateModel(obj, "startBox"));
+	model_.reset(ModelManager::GetInstance()->CreateModel(gltf, "human", "sneakWalk", ModelType::kSkin));
 	model_->SetCamera(camera);
+	model_->SetAnimation("walk", ModelManager::GetInstance()->GetAnimation(gltf, "human", "walk"));
+	model_->SetAnimation("sneakWalk", ModelManager::GetInstance()->GetAnimation(gltf, "human", "sneakWalk"));
 	camera_ = camera;
 
-
-	Create(&worldTransfrom_, Type::kAABB, RotationType::Euler, camera);
-	Collider::SetMass(1.0f);
-
-	// 衝突属性を設定
-	SetCollisionAttribute(kCollisionAttributePlayer);
-	// 衝突対象を自分の属性以外に設定
-	SetCollisionMask(~kCollisionAttributePlayer);
+	isCrouching_ = false;
 
 }
 
 void Player::Update()
 {
-	float x = worldTransfrom_.translation_.x;
-	camera_->SetTranslate(Vector3(x, camera_->GetTranslate().y, camera_->GetTranslate().z));
-	if (Input::GetInstance()->PushKey(DIK_A)) {
-		worldTransfrom_.translation_.x -= 0.1f;
-		//SetVelocity(Vector3{ -0.1f, 0.0f, 0.0f });
-	}
-	if (Input::GetInstance()->PushKey(DIK_D)) {
-		worldTransfrom_.translation_.x += 0.1f;
-		//SetVelocity(Vector3{ 0.1f, 0.0f, 0.0f });
-	}
-	if (Input::GetInstance()->TriggerKey(DIK_W)) {
-		//worldTransfrom_.translation_.x += 0.1f;
-		SetVelocity(Vector3{ 0.0f, 10.0f, 0.0f });
+	Vector3 move = { 0.0f, 0.0f, 0.0f };
+	Quaternion moveQuaternion = worldTransform_.quaternion_;
+	// ジョイスティック状態取得
+	if (Input::GetInstance()->IsControllerConnected()) {
+		if (Input::GetInstance()->GetJoystickState(0, pad_)) {
+
+			const float threshold = 0.7f;
+			bool isMoving = false;
+
+			// 速さ
+			const float speed = 0.3f;
+
+			// 移動量
+			move = { (float)pad_.Gamepad.sThumbLX, 0,0};
+
+			if (Length(move) > threshold) {
+				isMoving = true;
+			}
+
+			if (isMoving) {
+
+				move = Normalize(move);
+				Vector3 cross = Normalize(Cross({ 0.0f, 0.0f, 1.0f }, move));
+				float dot = Dot({ 0.0f, 0.0f, 1.0f }, move);
+				moveQuaternion = MakeRotateAxisAngleQuaternion(cross, std::acos(dot));
+
+				// 移動量に速さを反映
+				move = Multiply(speed, move);
+			}
+
+			if ((pad_.Gamepad.wButtons & XINPUT_GAMEPAD_A) && !(prePad_.Gamepad.wButtons & XINPUT_GAMEPAD_A)) {
+				isCrouching_ ^= true;
+			}
+
+			if (move.x != 0.0f) {
+				if (isCrouching_) {
+					model_->PlayAnimation("sneakWalk", AnimationCommon::kLooping);
+					model_->StopAnimation("walk");
+				}
+				else {
+					model_->PlayAnimation("walk", AnimationCommon::kLooping);
+					model_->StopAnimation("sneakWalk");
+				}
+			}
+			else {
+				model_->StopAnimation();
+			}
+
+		}
 	}
 
-	ImGui::Begin("Player");
-	ImGui::SliderFloat3("pos", &worldTransfrom_.translation_.x, -100.0f, 100.9f);
-	ImGui::End();
+
+
 	
+	worldTransform_.translation_ = Add(worldTransform_.translation_, move);
+	worldTransform_.quaternion_ = Slerp(worldTransform_.quaternion_, moveQuaternion, 1.0f);
+	worldTransform_.quaternion_ = Normalize(worldTransform_.quaternion_);
+
+	worldTransform_.UpdateMatrix(RotationType::Quaternion);
+
+	Vector3 cameraTranslation = camera_->GetTranslate();
+	cameraTranslation = Add(cameraTranslation, move);
+	camera_->SetTranslate(cameraTranslation);
+
+	prePad_ = pad_;
+
 }
 
 void Player::Draw()
 {
-	model_->Draw(worldTransfrom_, TextureManager::GetInstance()->Load("Black1x1.png"));
-	Collider::HitBox();
+	model_->Draw(worldTransform_);
+	//Collider::HitBox();
 }

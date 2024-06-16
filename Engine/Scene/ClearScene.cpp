@@ -44,7 +44,9 @@ void ClearScene::Initialize()
 	skybox_->SetCamera(camera_.get());
 	skybox_->SetTexture("rostock_laage_airport_4k.dds");
 
-	
+	player_ = std::make_unique<Player>();
+	player_->Initialize(camera_.get());
+
 }
 
 void ClearScene::Update()
@@ -64,6 +66,8 @@ void ClearScene::Update()
 	if (Input::GetInstance()->TriggerKey(DIK_2)) {
 		model0_->PlayAnimation("sneakWalk", AnimationCommon::kLooping);
 	}
+
+	player_->Update();
 
 
 	if (Input::GetInstance()->TriggerKey(DIK_LSHIFT)) {
@@ -86,9 +90,11 @@ void ClearScene::DrawBack()
 void ClearScene::Draw3D()
 {
 	skybox_->Draw(worldTransform2_);
-	model0_->Draw(worldTransform0_);
-	model1_->Draw(worldTransform1_);
+	/*model0_->Draw(worldTransform0_);
+	model1_->Draw(worldTransform1_);*/
 	//model2_->Draw(worldTransform2_);
+
+	player_->Draw();
 
 }
 

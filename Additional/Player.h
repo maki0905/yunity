@@ -2,11 +2,11 @@
 
 #include <memory>
 
-#include "Input.h"
+#include "Camera.h"
 #include "Collider.h"
+#include "Input.h"
 #include "Model.h"
 #include "WorldTransform.h"
-#include "Camera.h"
 
 
 class Player : public Collider
@@ -18,9 +18,6 @@ public:
 
 	void Draw();
 
-	Vector3 GetTranslation() { return worldTransfrom_.translation_; }
-
-	void SetTranslation(const Vector3 translation) { worldTransfrom_.translation_ = translation; }
 
 
 
@@ -29,12 +26,11 @@ private:
 	XINPUT_STATE prePad_;
 
 	std::unique_ptr<Model> model_;
-
-	WorldTransform worldTransfrom_;
+	WorldTransform worldTransform_;
 
 	Camera* camera_;
 	
-
+	bool isCrouching_;
 
 };
 

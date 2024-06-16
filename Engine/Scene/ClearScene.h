@@ -7,6 +7,7 @@
 #include "Model.h"
 #include "World.h"
 #include "SkyBox.h"
+#include "Player.h"
 
 
 class ClearScene : public IScene
@@ -31,5 +32,7 @@ private:
 	std::unique_ptr<Model> model2_;
 	WorldTransform worldTransform2_;
 	std::unique_ptr<SkyBox> skybox_;
+	std::unique_ptr<Player> player_;
+
 };
 

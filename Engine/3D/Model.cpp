@@ -172,6 +172,47 @@ void Model::PlayAnimation(std::string name, AnimationCommon::AnimationMode mode)
 	animations_[name].animationCommon.state = mode;
 }
 
+void Model::StopAnimation()
+{
+	isAnimation_ = false;
+
+	for (auto& name : animationNames_) {
+		if (animations_[name].animationCommon.state == AnimationCommon::kStopped) {
+			continue;
+		}
+
+		animations_[name].animationCommon.time = 0.0f;
+
+		for (Joint& joint : skeleton_.joints) {
+			// 対象のJointのAnimationがあれば、値の適用を行う。下記のif文はC++17から可能になった初期化付きif文
+			if (auto it = animations_[name].animation.nodeAnimations.find(joint.name); it != animations_[name].animation.nodeAnimations.end()) {
+				const NodeAnimation& rootNodeAnimation = (*it).second;
+				joint.transform.translate = CalculateValue(rootNodeAnimation.translate, animations_[name].animationCommon.time);
+				joint.transform.rotate = CalculateQuaternion(rootNodeAnimation.rotate, animations_[name].animationCommon.time);
+				if (rootNodeAnimation.scale.size() == 0) {
+					joint.transform.scale = Vector3(1.0f, 1.0f, 1.0f);
+				}
+				else {
+					joint.transform.scale = CalculateValue(rootNodeAnimation.scale, animations_[name].animationCommon.time);
+				}
+			}
+		}
+
+		// 現在の骨ごとのLocal情報を基にSkeletonSpaceの情報を更新
+		SkeletonUpdate();
+		// SkeletonSpaceの情報を基に、SkinClusterのMatrixPaletteを更新する
+		SkinClusterUpdate();
+
+
+	}
+}
+
+void Model::StopAnimation(std::string name)
+{
+	isAnimation_ = true;
+	animations_[name].animationCommon.state = AnimationCommon::kStopped;
+}
+
 void Model::PlayingAnimation()
 {
 	//animationTime_ += 1.0f / 60.0f;

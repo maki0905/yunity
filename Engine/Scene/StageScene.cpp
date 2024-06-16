@@ -37,7 +37,7 @@ void StageScene::Initialize()
 
 	world_->Add(player_.get());
 
-	player_->SetTranslation(worldTransform_start_.translation_);
+	//player_->SetTranslation(worldTransform_start_.translation_);
 
 	primitiveDrawer_.reset(PrimitiveDrawer::Create(PrimitiveDrawer::Type::kBox));
 	primitiveDrawer_->SetCamera(camera_.get());
@@ -48,9 +48,9 @@ void StageScene::Update()
 {
 	player_->Update();
 
-	if (player_->GetTranslation().x > worldTransform_end_.translation_.x) {
+	/*if (player_->GetTranslation().x > worldTransform_end_.translation_.x) {
 		player_->SetTranslation(worldTransform_start_.translation_);
-	}
+	}*/
 
 	blockManager_->Update(world_.get());
 

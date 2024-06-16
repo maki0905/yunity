@@ -158,7 +158,8 @@ public:
 	bool IsAnimation() { return isAnimation_; }
 	void PlayAnimation() { isAnimation_ = true; }
 	void PlayAnimation(std::string name, AnimationCommon::AnimationMode mode = AnimationCommon::AnimationMode::kPlaying);
-	void StopAnimation() { isAnimation_ = false; }
+	void StopAnimation();
+	void StopAnimation(std::string name);
 	void PlayingAnimation();
 
 	void SkeletonUpdate();
