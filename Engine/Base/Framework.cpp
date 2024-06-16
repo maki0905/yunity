@@ -56,6 +56,8 @@ void Framework::Initialize()
 	csv_ = CSV::GetInstance();
 	csv_->Initialize();
 
+	skybox_ = new SkyBox();
+	skybox_->StaticInitialize();
 
 
 #pragma endregion

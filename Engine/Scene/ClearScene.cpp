@@ -31,10 +31,19 @@ void ClearScene::Initialize()
 	worldTransform1_.quaternion_ = { 0.0f, 1.0f, 0.0f, 0.0f };
 
 	model2_ = std::make_unique<Model>();
-	model2_.reset(ModelManager::GetInstance()->CreateModel(obj, "terrain"));
+	model2_.reset(ModelManager::GetInstance()->CreateModel(obj, "needle_Body"));
 	model2_->SetCamera(camera_.get());
 	worldTransform2_.Initialize();
+	worldTransform2_.scale_ = { 100.0f, 100.0f, 100.0f };
+
+	uint32_t handle = TextureManager::GetInstance()->Load("rostock_laage_airport_4k.dds");
 	//worldTransform2_.scale_ = { 10.0f, 10.0f, 10.0f };
+
+	skybox_ = std::make_unique<SkyBox>();
+	skybox_.reset(SkyBox::Create());
+	skybox_->SetCamera(camera_.get());
+	skybox_->SetTexture("rostock_laage_airport_4k.dds");
+
 	
 }
 
@@ -46,6 +55,7 @@ void ClearScene::Update()
 	//worldTransform0_.UpdateMatrix(RotationType::Euler);
 	worldTransform0_.UpdateMatrix(RotationType::Quaternion);
 	worldTransform1_.UpdateMatrix(RotationType::Quaternion);
+	//worldTransform2_.rotation_.y += 1.0f;
 	worldTransform2_.UpdateMatrix(RotationType::Euler);
 
 	if (Input::GetInstance()->TriggerKey(DIK_1)) {
@@ -75,9 +85,11 @@ void ClearScene::DrawBack()
 
 void ClearScene::Draw3D()
 {
+	skybox_->Draw(worldTransform2_);
 	model0_->Draw(worldTransform0_);
 	model1_->Draw(worldTransform1_);
-	model2_->Draw(worldTransform2_);
+	//model2_->Draw(worldTransform2_);
+
 }
 
 void ClearScene::DrawFront()

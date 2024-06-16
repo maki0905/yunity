@@ -77,6 +77,8 @@ private:
 	TextureManager(const TextureManager&) = delete;
 	TextureManager& operator=(const TextureManager&) = delete;
 
+	ID3D12Resource* CreateBufferResource(ID3D12Device* device, size_t sizeInBytes);
+
 	// デバイス
 	ID3D12Device* device_;
 	// デスクリプタサイズ
@@ -89,6 +91,8 @@ private:
 	uint32_t indexNextDescriptorHeap_ = 0u;
 	// テクスチャコンテナ
 	std::array<Texture, kNumDescriptors> textures_;
+
+	std::vector<ID3D12Resource*> intermediateResources_;
 
 	/// <summary>
 	/// 読み込み

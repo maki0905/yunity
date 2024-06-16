@@ -44,10 +44,12 @@ void GameManager::Draw()
 #pragma endregion 
 
 #pragma region 3D描画
+	skybox_->PreDraw(directXCore_->GetCommandList());
 	model_->PreDraw(directXCore_->GetCommandList());
 	//sphere_->PreDraw(directXCore_->GetCommandList());
 	particle_->PreDraw(directXCore_->GetCommandList());
 	primitive_->PreDraw(directXCore_->GetCommandList());
+
 	// 描画
 	//sceneArr_[currentSceneNo_]->Draw3D();
 	SceneManager::GetInstance()->Draw3D();
@@ -55,6 +57,7 @@ void GameManager::Draw()
 	particle_->PostDraw();
 	//sphere_->PostDraw();
 	model_->PostDraw();
+	skybox_->PostDraw();
 #pragma endregion
 
 #pragma region 前景描画

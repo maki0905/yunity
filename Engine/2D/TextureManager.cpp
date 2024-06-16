@@ -23,6 +23,8 @@ void TextureManager::Initialize(ID3D12Device* device, std::string directoryPath)
 	device_ = device;
 	directoryPath_ = directoryPath;
 
+	intermediateResources_.clear();
+
 	// デスクリプタサイズを取得
 	sDescriptorHandleIncrementSize_ =
 		device_->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
@@ -78,6 +80,33 @@ void TextureManager::SetGraphicsRootDescriptorTable(
 		rootParamIndex, textures_[textureHandle].gpuDescHandleSRV);
 }
 
+ID3D12Resource* TextureManager::CreateBufferResource(ID3D12Device* device, size_t sizeInBytes)
+{
+	HRESULT hr;
+	// 頂点リソース用のヒープの設定
+	D3D12_HEAP_PROPERTIES uploadHeapProperties{};
+	uploadHeapProperties.Type = D3D12_HEAP_TYPE_UPLOAD; // uploadHeapを使う
+	// 頂点リソースの設定
+	D3D12_RESOURCE_DESC vertexResourceDesc{};
+	// バッファリソース。テクスチャの場合はまた別の設定をする
+	vertexResourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
+	vertexResourceDesc.Width = sizeInBytes; // リソースのサイズ。　今回はVector4を3頂点文
+	// バッファの場合はこれらは1にする決まり
+	vertexResourceDesc.Height = 1;
+	vertexResourceDesc.DepthOrArraySize = 1;
+	vertexResourceDesc.MipLevels = 1;
+	vertexResourceDesc.SampleDesc.Count = 1;
+	// バッファの場合はこれにする決まり
+	vertexResourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
+	// 実際に頂点リソースを作る
+	ID3D12Resource* result = nullptr;
+	hr = device->CreateCommittedResource(&uploadHeapProperties, D3D12_HEAP_FLAG_NONE,
+		&vertexResourceDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr,
+		IID_PPV_ARGS(&result));
+	assert(SUCCEEDED(hr));
+	return result;
+}
+
 uint32_t TextureManager::LoadInternal(const std::string& fileName) {
 
 	assert(indexNextDescriptorHeap_ < kNumDescriptors);
@@ -113,20 +142,34 @@ uint32_t TextureManager::LoadInternal(const std::string& fileName) {
 	wchar_t wfilePath[256];
 	MultiByteToWideChar(CP_ACP, 0, fullPath.c_str(), -1, wfilePath, _countof(wfilePath));
 
+	std::string filePathW = fileName;
 	HRESULT result;
 
 	TexMetadata metadata{};
 	ScratchImage scratchImg{};
 
-	// WICテクスチャのロード
-	result = LoadFromWICFile(wfilePath, WIC_FLAGS_NONE, &metadata, scratchImg);
+	if (filePathW.ends_with(".dds")) { // .ddsで終わっていたらddsとみなす。
+		// DDSテクスチャのロード
+		result = LoadFromDDSFile(wfilePath, DDS_FLAGS_NONE, nullptr, scratchImg);
+	}
+	else {
+		// WICテクスチャのロード
+		result = LoadFromWICFile(wfilePath, WIC_FLAGS_FORCE_SRGB, &metadata, scratchImg);
+	}
+
 	assert(SUCCEEDED(result));
 
 	ScratchImage mipChain{};
-	// ミップマップ生成
-	result = GenerateMipMaps(
-		scratchImg.GetImages(), scratchImg.GetImageCount(), scratchImg.GetMetadata(),
-		TEX_FILTER_DEFAULT, 0, mipChain);
+
+	if (IsCompressed(scratchImg.GetMetadata().format)) { // 圧縮フォーマットかどうかを調べる
+		mipChain = std::move(scratchImg); // 圧縮フォーマットならそのまま使うのでmoveする
+	}
+	else {
+		// ミップマップ生成
+		result = GenerateMipMaps(
+			scratchImg.GetImages(), scratchImg.GetImageCount(), scratchImg.GetMetadata(),
+			TEX_FILTER_DEFAULT, 0, mipChain);
+	}
 	if (SUCCEEDED(result)) {
 		scratchImg = std::move(mipChain);
 		metadata = scratchImg.GetMetadata();
@@ -148,35 +191,45 @@ uint32_t TextureManager::LoadInternal(const std::string& fileName) {
 	texresDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
 
 	// ヒーププロパティ
-	D3D12_HEAP_PROPERTIES heapProps{};
+	/*D3D12_HEAP_PROPERTIES heapProps{};
 	heapProps.Type = D3D12_HEAP_TYPE_CUSTOM;
 	heapProps.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_WRITE_BACK;
 	heapProps.MemoryPoolPreference = D3D12_MEMORY_POOL_L0;
 	heapProps.CreationNodeMask = 1;
-	heapProps.VisibleNodeMask = 1;
+	heapProps.VisibleNodeMask = 1;*/
+	D3D12_HEAP_PROPERTIES heapProps{};
+	heapProps.Type = D3D12_HEAP_TYPE_DEFAULT;
 
 	// テクスチャ用バッファの生成
+	//result = device_->CreateCommittedResource(
+	//	&heapProps, 
+	//	D3D12_HEAP_FLAG_NONE, 
+	//	&texresDesc,
+	//	D3D12_RESOURCE_STATE_COPY_DEST, // テクスチャ用指定
+	//	nullptr, 
+	//	IID_PPV_ARGS(&texture.resource));
+	//assert(SUCCEEDED(result));
 	result = device_->CreateCommittedResource(
-		&heapProps, 
-		D3D12_HEAP_FLAG_NONE, 
-		&texresDesc,
+		&heapProps, // Heapの設定
+		D3D12_HEAP_FLAG_NONE, // Heapの特殊な設定。特になし。
+		&texresDesc, // Resourceの設定
 		D3D12_RESOURCE_STATE_COPY_DEST, // テクスチャ用指定
-		nullptr, 
-		IID_PPV_ARGS(&texture.resource));
+		nullptr,  // Clear最適値。使わないでnullptr
+		IID_PPV_ARGS(&texture.resource)); // 作成するResourceポインタへのポインタ
 	assert(SUCCEEDED(result));
 
 	// テクスチャバッファにデータ転送
-	for (size_t i = 0; i < metadata.mipLevels; i++) {
-		const Image* img = scratchImg.GetImage(i, 0, 0); // 生データ抽出
-		result = texture.resource->WriteToSubresource(
-			(UINT)i,
-			nullptr,              // 全領域へコピー
-			img->pixels,          // 元データアドレス
-			(UINT)img->rowPitch,  // 1ラインサイズ
-			(UINT)img->slicePitch // 1枚サイズ
-		);
-		assert(SUCCEEDED(result));
-	}
+	//for (size_t i = 0; i < metadata.mipLevels; i++) {
+	//	const Image* img = scratchImg.GetImage(i, 0, 0); // 生データ抽出
+	//	result = texture.resource->WriteToSubresource(
+	//		(UINT)i,
+	//		nullptr,              // 全領域へコピー
+	//		img->pixels,          // 元データアドレス
+	//		(UINT)img->rowPitch,  // 1ラインサイズ
+	//		(UINT)img->slicePitch // 1枚サイズ
+	//	);
+	//	assert(SUCCEEDED(result));
+	//}
 
 	DescriptorHandle srvHandle = srvHeap_->Alloc();
 
@@ -193,8 +246,17 @@ uint32_t TextureManager::LoadInternal(const std::string& fileName) {
 
 	srvDesc.Format = resDesc.Format;
 	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D; // 2Dテクスチャ
-	srvDesc.Texture2D.MipLevels = (UINT)metadata.mipLevels;
+
+	if (metadata.IsCubemap()) {
+		srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURECUBE;
+		srvDesc.TextureCube.MostDetailedMip = 0; // 
+		srvDesc.TextureCube.MipLevels = UINT_MAX;
+		srvDesc.TextureCube.ResourceMinLODClamp = 0.0f;
+	}
+	else {
+		srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D; // 2Dテクスチャ
+		srvDesc.Texture2D.MipLevels = (UINT)metadata.mipLevels;
+	}
 
 	device_->CreateShaderResourceView(
 		texture.resource.Get(), //ビューと関連付けるバッファ
@@ -203,5 +265,24 @@ uint32_t TextureManager::LoadInternal(const std::string& fileName) {
 
 	indexNextDescriptorHeap_++;
 
+	std::vector<D3D12_SUBRESOURCE_DATA> subresources;
+	DirectX::PrepareUpload(device_, scratchImg.GetImages(), scratchImg.GetImageCount(), scratchImg.GetMetadata(), subresources);
+	uint64_t intermediateSize = GetRequiredIntermediateSize(texture.resource.Get(), 0, UINT(subresources.size()));
+	ID3D12Resource* intermediateResource = CreateBufferResource(device_, intermediateSize);
+	UpdateSubresources(DirectXCore::GetInstance()->GetCommandList(), texture.resource.Get(), intermediateResource, 0, 0, UINT(subresources.size()), subresources.data());
+	// Tetureへの転送後は利用できるよう、D3D12_RESOURCE_STATE_COPY_DESTからD3D12_RESOURCE_STATE_GENRIC_READへResourceStateを変更する
+	D3D12_RESOURCE_BARRIER barrier{};
+	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+	barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+	barrier.Transition.pResource = texture.resource.Get();
+	barrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+	barrier.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_DEST;
+	barrier.Transition.StateAfter = D3D12_RESOURCE_STATE_GENERIC_READ;
+	DirectXCore::GetInstance()->GetCommandList()->ResourceBarrier(1, &barrier);
+
+	intermediateResources_.emplace_back(intermediateResource);
+
 	return handle;
 }
+
+

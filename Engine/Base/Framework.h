@@ -23,6 +23,7 @@
 #include "SceneManager.h"
 #include "ModelManager.h"
 #include "CSV.h"
+#include "SkyBox.h"
 
 class Framework {
 public:
@@ -53,4 +54,5 @@ protected:
 	SceneManager* sceneManager_ = nullptr;
 	ModelManager* modelManager_ = nullptr;
 	CSV* csv_ = nullptr;
+	SkyBox* skybox_ = nullptr;
 };

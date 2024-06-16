@@ -6,7 +6,7 @@
 #include "DebugCamera.h"
 #include "Model.h"
 #include "World.h"
-
+#include "SkyBox.h"
 
 
 class ClearScene : public IScene
@@ -30,5 +30,6 @@ private:
 	WorldTransform worldTransform1_;
 	std::unique_ptr<Model> model2_;
 	WorldTransform worldTransform2_;
+	std::unique_ptr<SkyBox> skybox_;
 };
 

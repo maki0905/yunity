@@ -137,6 +137,11 @@ void ShaderCompiler::ShaderCompile()
 	vsblob_["Skinning"] = CompileShader(L"Resources/Shaders/SkinningObject3d.VS.hlsl", L"vs_6_0");
 	assert(vsblob_["Skinning"]);
 
+	vsblob_["Skybox"] = CompileShader(L"Resources/Shaders/Skybox.VS.hlsl", L"vs_6_0");
+	assert(vsblob_["Skybox"]);
+	psblob_["Skybox"] = CompileShader(L"Resources/Shaders/Skybox.PS.hlsl", L"ps_6_0");
+	assert(psblob_["Skybox"]);
+
 
 }
 
