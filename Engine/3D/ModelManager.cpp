@@ -43,9 +43,17 @@ Model* ModelManager::CreateModel(Format format, const std::string& folderName, c
 	if (itr == modelDataStorage_.end()) {
 		modelDataStorage_[path] = LoadModelFile(format, folderName, fileName);
 	}
-	model->Initialize(modelType, modelDataStorage_[path]);
+	model->Initialize(path, modelType, modelDataStorage_[path]);
 	models_.emplace_back(model);
 	return model;
+}
+
+Model::ModelData& ModelManager::GetModelData(const std::string& modelName)
+{
+	Model::ModelData modelData;
+	std::string path = modelName;
+	modelData = modelDataStorage_[path];
+	return modelData;
 }
 
 Animation ModelManager::GetAnimation(Format format, const std::string& folderName, const std::string& fileName)

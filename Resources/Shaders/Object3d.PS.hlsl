@@ -2,15 +2,15 @@
 
 struct Material
 {
-    float4 color;
+    float32_t4 color;
     int enableLighting;
     float shininees;
 };
 
 struct DirectionalLight
 {
-    float4 color; // ライトの色
-    float3 direction; // ライトの向き
+    float32_t4 color; // ライトの色
+    float32_t3 direction; // ライトの向き
     float intensity; // 輝度
 };
 
@@ -21,16 +21,17 @@ struct Camera
 
 struct PointLight
 {
-    float4 color; // 
-    float3 position; //
-    float intensity; // 
-    float radius; //
-    float decay; // 
+    float32_t4 color; // ライトの色
+    float32_t3 position; // ライトの位置
+    float intensity; // 輝度
+    float radius; // 半径
+    float decay; // 減衰率
 };
 
 //ConstantBuffer<Material> gMaterial : register(b0);
     
-Texture2D<float4> gTexture : register(t0);
+Texture2D<float32_t> gTexture : register(t0);
+TextureCube<float32_t4> gEnvironmentTexture : register(t1);
 SamplerState gSampler : register(s0);
 ConstantBuffer<Material> gMaterial : register(b0);
 ConstantBuffer<DirectionalLight> gDirectionalLight : register(b1);
@@ -68,8 +69,8 @@ PixelShaderOutput main(VertexShaderOutput input)
     
     PixelShaderOutput output;
         
-    float4 textureColor = gTexture.Sample(gSampler, input.texcoord);
-    float3 toEye = normalize(gCamera.worldPosition - input.worldPosition);
+    float32_t4 textureColor = gTexture.Sample(gSampler, input.texcoord);
+    float32_t3 toEye = normalize(gCamera.worldPosition - input.worldPosition);
     
     float distance = length(gPointLight.position - input.worldPosition);
     //float d2 = distance * distance;
@@ -90,8 +91,8 @@ PixelShaderOutput main(VertexShaderOutput input)
     float factor = pow(saturate(-distance / gPointLight.radius + 1.0f), gPointLight.decay);
     
     
-    float3 pointLightdirection = normalize(input.worldPosition - gPointLight.position);
-    float4 pointLightColor = gPointLight.color;
+    float32_t3 pointLightdirection = normalize(input.worldPosition - gPointLight.position);
+    float32_t4 pointLightColor = gPointLight.color;
     pointLightColor.rgb = gPointLight.color.rgb * gPointLight.intensity * factor;
         
     // Phong Reflection
@@ -100,7 +101,7 @@ PixelShaderOutput main(VertexShaderOutput input)
     //float specularPow = pow(saturate(RdotE), gMaterial.shininees);
     
     // Blinn-Phong Reflection
-    float3 halfVector = normalize(-gDirectionalLight.direction + toEye);
+    float32_t3 halfVector = normalize(-gDirectionalLight.direction + toEye);
     float NDotH = dot(normalize(input.normal), halfVector);
     float specularPow = pow(saturate(NDotH), gMaterial.shininees);
     
@@ -136,7 +137,11 @@ PixelShaderOutput main(VertexShaderOutput input)
         output.color = gMaterial.color * textureColor;
     }
     
+    float32_t3 cameraToPosition = normalize(input.worldPosition - gCamera.worldPosition);
+    float32_t3 reflectedVector = reflect(cameraToPosition, normalize(input.normal));
+    float32_t4 environamentColor = gEnvironmentTexture.Sample(gSampler, reflectedVector);
     
+    output.color.rgb += environamentColor.rgb;
     
     return output;
 }

@@ -9,6 +9,7 @@ enum class Object3dRootBindings {
 	kLight,          // ライティング
 	kCamera,         // カメラ
 	kPointLight,
+	kEnvironmentMap, // 環境マップ
 	kCount,          // 最大数
 };
 
@@ -22,6 +23,7 @@ enum class  SkinningRootBindings {
 	kCamera,         // カメラ
 	kPointLight,
 	kMatrixPalette,
+	kEnvironmentMap, // 環境マップ
 	kCount,          // 最大数
 };
 

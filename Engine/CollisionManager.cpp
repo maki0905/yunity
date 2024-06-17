@@ -28,6 +28,9 @@ void CollisionManager::CheckAllCollision() {
 }
 
 void CollisionManager::CheckCollisionPair(Collider* colliderA, Collider* colliderB) {
+
+#ifdef _DEBUG
+
 	ImGui::Begin("HitCheck");
 
 	/*if (colliderA->GetMass() == 0 && colliderB->GetMass() == 0) {
@@ -37,7 +40,7 @@ void CollisionManager::CheckCollisionPair(Collider* colliderA, Collider* collide
 	switch (colliderB->GetType())
 	{
 	case Collider::kSphere:
-		
+
 		break;
 	case Collider::kPlane:
 		break;
@@ -68,6 +71,10 @@ void CollisionManager::CheckCollisionPair(Collider* colliderA, Collider* collide
 	}
 
 	ImGui::End();
+
+
+#endif // _DEBUG
+	
 
 
 	// 衝突フィルタリング

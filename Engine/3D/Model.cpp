@@ -37,9 +37,10 @@ void Model::PostDraw()
 	commandList_ = nullptr;
 }
 
-void Model::Initialize(const ModelType& modelType, const ModelData& modelData)
+void Model::Initialize(const std::string& name, const ModelType& modelType, const ModelData& modelData)
 {
 	// 共通
+	modelName_ = name;
 	modelType_ = modelType;
 	modelData_ = modelData;
 	CreateMesh();
@@ -111,11 +112,15 @@ void Model::Draw(const WorldTransform& worldTransform/*, const Camera& camera*/)
 		ID3D12DescriptorHeap* ppHeaps[] = { DirectXCore::GetInstance()->GetDescriptorHeap(DirectXCore::HeapType::kSRV)->GetHeapPointer() };
 		commandList_->SetDescriptorHeaps(_countof(ppHeaps), ppHeaps);
 		commandList_->SetGraphicsRootDescriptorTable(static_cast<UINT>(SkinningRootBindings::kMatrixPalette), skinCluster_.paletteSrvHandle.second);
+		uint32_t textureCubeHandle_ = TextureManager::Load("rostock_laage_airport_4k.dds");
+		TextureManager::GetInstance()->SetGraphicsRootDescriptorTable(commandList_, static_cast<UINT>(SkinningRootBindings::kEnvironmentMap), textureCubeHandle_);
 	}
 	else {
 		GraphicsPipelineManager::GetInstance()->SetCommandList(commandList_, PipelineType::kObject3d,blendModeType_);
 		// 頂点バッファの設定
 		commandList_->IASetVertexBuffers(0, 1, &vertexBufferView_);
+		uint32_t textureCubeHandle_ = TextureManager::Load("rostock_laage_airport_4k.dds");
+		TextureManager::GetInstance()->SetGraphicsRootDescriptorTable(commandList_, static_cast<UINT>(Object3dRootBindings::kEnvironmentMap), textureCubeHandle_);
 	}
 
 	//インデックスバッファの設定
@@ -169,42 +174,69 @@ void Model::SetAnimation(std::string name, const Animation& animation, Animation
 void Model::PlayAnimation(std::string name, AnimationCommon::AnimationMode mode)
 {
 	isAnimation_ = true;
-	animations_[name].animationCommon.state = mode;
+	if (animations_[name].animationCommon.state == AnimationCommon::kStopped) {
+		animations_[name].animationCommon.state = mode;
+	}
 }
 
 void Model::StopAnimation()
 {
 	isAnimation_ = false;
 
+	//for (auto& name : animationNames_) {
+	//	if (animations_[name].animationCommon.state == AnimationCommon::kStopped) {
+	//		continue;
+	//	}
+
+	//	animations_[name].animationCommon.time = 0.5f;
+
+	//	if (animations_[name].animationCommon.state == AnimationCommon::kLooping) {
+	//		animations_[name].animationCommon.time = std::fmod(animations_[name].animationCommon.time, animations_[name].animation.duration);
+
+	//	}
+	//	else if (animations_[name].animationCommon.time > animations_[name].animation.duration) {
+	//		animations_[name].animationCommon.state = AnimationCommon::kStopped;
+	//		animations_[name].animationCommon.time = 0.0f;
+	//	}
+
+	//	for (Joint& joint : skeleton_.joints) {
+	//		// 対象のJointのAnimationがあれば、値の適用を行う。下記のif文はC++17から可能になった初期化付きif文
+	//		if (auto it = animations_[name].animation.nodeAnimations.find(joint.name); it != animations_[name].animation.nodeAnimations.end()) {
+	//			const NodeAnimation& rootNodeAnimation = (*it).second;
+	//			joint.transform.translate = CalculateValue(rootNodeAnimation.translate, animations_[name].animationCommon.time);
+	//			joint.transform.rotate = CalculateQuaternion(rootNodeAnimation.rotate, animations_[name].animationCommon.time);
+	//			if (rootNodeAnimation.scale.size() == 0) {
+	//				joint.transform.scale = Vector3(1.0f, 1.0f, 1.0f);
+	//			}
+	//			else {
+	//				joint.transform.scale = CalculateValue(rootNodeAnimation.scale, animations_[name].animationCommon.time);
+	//			}
+	//		}
+	//	}
+
+	//	// 現在の骨ごとのLocal情報を基にSkeletonSpaceの情報を更新
+	//	SkeletonUpdate();
+	//	// SkeletonSpaceの情報を基に、SkinClusterのMatrixPaletteを更新する
+	//	SkinClusterUpdate();
+
+
+	//}
+
 	for (auto& name : animationNames_) {
 		if (animations_[name].animationCommon.state == AnimationCommon::kStopped) {
 			continue;
 		}
-
-		animations_[name].animationCommon.time = 0.0f;
-
-		for (Joint& joint : skeleton_.joints) {
-			// 対象のJointのAnimationがあれば、値の適用を行う。下記のif文はC++17から可能になった初期化付きif文
-			if (auto it = animations_[name].animation.nodeAnimations.find(joint.name); it != animations_[name].animation.nodeAnimations.end()) {
-				const NodeAnimation& rootNodeAnimation = (*it).second;
-				joint.transform.translate = CalculateValue(rootNodeAnimation.translate, animations_[name].animationCommon.time);
-				joint.transform.rotate = CalculateQuaternion(rootNodeAnimation.rotate, animations_[name].animationCommon.time);
-				if (rootNodeAnimation.scale.size() == 0) {
-					joint.transform.scale = Vector3(1.0f, 1.0f, 1.0f);
-				}
-				else {
-					joint.transform.scale = CalculateValue(rootNodeAnimation.scale, animations_[name].animationCommon.time);
-				}
-			}
-		}
-
-		// 現在の骨ごとのLocal情報を基にSkeletonSpaceの情報を更新
-		SkeletonUpdate();
-		// SkeletonSpaceの情報を基に、SkinClusterのMatrixPaletteを更新する
-		SkinClusterUpdate();
-
-
+		animations_[name].animationCommon.state = AnimationCommon::kStopped;
 	}
+
+
+	//Node rootNode = ModelManager::GetInstance()->GetModelData(modelName_).rootNode;
+	//Skeleton skeleton = CreateSkelton(rootNode);
+	//skeleton_ = skeleton;
+	//// 現在の骨ごとのLocal情報を基にSkeletonSpaceの情報を更新
+	//SkeletonUpdate();
+	//// SkeletonSpaceの情報を基に、SkinClusterのMatrixPaletteを更新する
+	//SkinClusterUpdate();
 }
 
 void Model::StopAnimation(std::string name)

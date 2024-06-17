@@ -133,7 +133,7 @@ public:
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Initialize(const ModelType& modelType, const ModelData& modelData);
+	void Initialize(const std::string& name, const ModelType& modelType, const ModelData& modelData);
 
 	/// <summary>
 	/// 描画
@@ -240,5 +240,7 @@ private:
 
 	float animationTime_ = 0.0f;
 	bool isAnimation_ = false;
+
+	std::string modelName_;
 };
 

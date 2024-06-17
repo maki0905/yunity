@@ -32,7 +32,7 @@ public:
 	void Update();
 
 	Model* CreateModel(Format format, const std::string& folderName, const std::string& fileName = "", ModelType modelType = kRigid);
-
+	Model::ModelData& GetModelData(const std::string& modelName);
 	Animation GetAnimation(Format format, const std::string& folderName, const std::string& fileName = "");
 
 private:

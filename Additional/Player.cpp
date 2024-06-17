@@ -23,6 +23,39 @@ void Player::Update()
 {
 	Vector3 move = { 0.0f, 0.0f, 0.0f };
 	Quaternion moveQuaternion = worldTransform_.quaternion_;
+
+	if (Input::GetInstance()->PushKey(DIK_A)) {
+		move.x = -1.0f;
+	}
+	if (Input::GetInstance()->PushKey(DIK_D)) {
+		move.x = 1.0f;
+	}
+
+	move = Normalize(move);
+
+	if (move.x != 0.0f) {
+		Vector3 cross = Normalize(Cross({ 0.0f, 0.0f, 1.0f }, move));
+		float dot = Dot({ 0.0f, 0.0f, 1.0f }, move);
+		moveQuaternion = MakeRotateAxisAngleQuaternion(cross, std::acos(dot));
+	}
+
+	if (move.x != 0.0f) {
+		if (isCrouching_) {
+			model_->PlayAnimation("sneakWalk", AnimationCommon::kLooping);
+			model_->StopAnimation("walk");
+		}
+		else {
+			model_->PlayAnimation("walk", AnimationCommon::kLooping);
+			model_->StopAnimation("sneakWalk");
+		}
+	}
+	else {
+		model_->StopAnimation();
+	}
+
+	// 移動量に速さを反映
+	move = Multiply(0.3f, move);
+
 	// ジョイスティック状態取得
 	if (Input::GetInstance()->IsControllerConnected()) {
 		if (Input::GetInstance()->GetJoystickState(0, pad_)) {

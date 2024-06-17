@@ -133,10 +133,15 @@ void Collider::Solve()
 	case Collider::kAABB:
 		aabb_->min = Subtract(Vector3(worldTransform_->matWorld_.m[3][0], worldTransform_->matWorld_.m[3][1], worldTransform_->matWorld_.m[3][2]), Multiply(1.25f, worldTransform_->scale_));
 		aabb_->max = Add(Vector3(worldTransform_->matWorld_.m[3][0], worldTransform_->matWorld_.m[3][1], worldTransform_->matWorld_.m[3][2]), Multiply(1.25f, worldTransform_->scale_));
+
+#ifdef _DEBUG
 		ImGui::Begin("AABB");
 		ImGui::SliderFloat3("min", &aabb_->min.x, -100.0f, 100.0f);
 		ImGui::SliderFloat3("max", &aabb_->max.x, -100.0f, 100.0f);
 		ImGui::End();
+
+#endif // _DEBUG
+		
 		break;
 	case Collider::kCapsule:
 		break;

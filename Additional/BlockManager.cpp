@@ -80,6 +80,10 @@ void BlockManager::Initialize(Camera* camera, World* world)
 void BlockManager::Update(World* world)
 {
 	uint32_t count = 0;
+
+	std::vector<int> num;
+
+#ifdef _DEBUG
 	ImGui::Begin("Blocks");
 
 	//for (std::list<Block*>::iterator blockIterator = blocks_.begin(); blockIterator != blocks_.end();) {
@@ -113,8 +117,6 @@ void BlockManager::Update(World* world)
 	//	++blockIterator;
 	//}
 
-	std::vector<int> num;
-
 	for (auto& block : blocks_) {
 		if (ImGui::TreeNode((std::to_string(count)).c_str())) {
 			EulerTransform transform{};
@@ -142,7 +144,7 @@ void BlockManager::Update(World* world)
 
 	if (ImGui::Button("Add")) {
 		Add(world);
-		
+
 	}
 	if (ImGui::Button("Save")) {
 		Save();
@@ -153,6 +155,9 @@ void BlockManager::Update(World* world)
 		blocks_.erase(blocks_.begin() + n);
 		Save();
 	}
+	
+#endif // _DEBUG
+	
 	
 
 }
