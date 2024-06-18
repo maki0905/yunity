@@ -14,6 +14,7 @@
 #include "RenderTexture.h"
 
 #include "GraphicsPipelineManager.h"
+#include "GraphicsCommon.h"
 
 class SwapChain;
 class CommandList;

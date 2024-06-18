@@ -13,16 +13,6 @@
 //class RootSignature;
 //class GraphicsCommon;
 
-enum BlendModeType {
-	kBlendModeNone, //!< ブレンドなし
-	kBlendModeNormal, //!< 通常αブレンド
-	kBlendModeAdd, //!< 加算
-	kBlendModeSubtract, //!< 減算
-	kBlendModeMultily, //!< 乗算
-	kBlendModeScreen, //!< スクリーン
-	kBlendCount, // 最大数
-};
-
 enum PipelineType {
 	kObject3d,
 	kSprite,
@@ -59,8 +49,7 @@ private:
 	GraphicsPipelineManager& operator=(const GraphicsPipelineManager&) = delete;
 private:
 	ID3D12Device* device_;
-	std::unique_ptr<GraphicsCommon> graphicsCommon_;
+	GraphicsCommon* graphicsCommon_;
 	GraphicsPipeline* graphicsPipelines_[PipelineType::kCount];
-	D3D12_BLEND_DESC blendDesc_[BlendModeType::kBlendCount];
 
 };

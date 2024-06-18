@@ -2,8 +2,19 @@
 
 #include <d3d12.h>
 
+enum BlendModeType {
+    kNone, //!< ブレンドなし
+    kNormal, //!< 通常αブレンド
+    kAdd, //!< 加算
+    kSubtract, //!< 減算
+    kMultily, //!< 乗算
+    kScreen, //!< スクリーン
+    kBlendCount, // 最大数
+};
+
 class GraphicsCommon {
 public:
+    static GraphicsCommon* GetInstance();
     void Initialize();
 
     // StaticSampler
@@ -27,6 +38,8 @@ public:
     D3D12_BLEND_DESC SubtractBlend; // 減算ブレンド
     D3D12_BLEND_DESC MultilyBlend;  // 乗算ブレンド
     D3D12_BLEND_DESC ScreenBlend;   // スクリーンブレンド
+    D3D12_BLEND_DESC blendDescs[BlendModeType::kBlendCount];
+
 
     // DepthState
     D3D12_DEPTH_STENCIL_DESC DepthStateDisabled;         // 無効
@@ -34,4 +47,12 @@ public:
     D3D12_DEPTH_STENCIL_DESC DepthStateReadOnly;         // 読み取り専用
     D3D12_DEPTH_STENCIL_DESC DepthStateReadOnlyReversed; // 読み取り専用(逆順)
     D3D12_DEPTH_STENCIL_DESC DepthStateTestEqual;        // 等しい場合のみ
+
+private:
+    GraphicsCommon() = default;
+    ~GraphicsCommon() = default;
+    GraphicsCommon(const GraphicsCommon&) = delete;
+    GraphicsCommon& operator=(const GraphicsCommon&) = delete;
+
+
 };

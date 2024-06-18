@@ -2,6 +2,13 @@
 
 
 
+GraphicsCommon* GraphicsCommon::GetInstance()
+{
+    static GraphicsCommon instance;
+
+    return &instance;
+}
+
 void GraphicsCommon::Initialize()
 {
     D3D12_STATIC_SAMPLER_DESC staticSamplerDesc;
@@ -91,6 +98,12 @@ void GraphicsCommon::Initialize()
     ScreenBlend.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;
     ScreenBlend.RenderTarget[0].DestBlend = D3D12_BLEND_ONE;
 
+    blendDescs[BlendModeType::kNone] = NoneBlend;
+    blendDescs[BlendModeType::kNormal] = NormalBlend;
+    blendDescs[BlendModeType::kAdd] = AddBlend;
+    blendDescs[BlendModeType::kSubtract] = SubtractBlend;
+    blendDescs[BlendModeType::kMultily] = MultilyBlend;
+    blendDescs[BlendModeType::kScreen] = ScreenBlend;
 
     DepthStateDisabled.DepthEnable = FALSE;
     DepthStateDisabled.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ZERO;

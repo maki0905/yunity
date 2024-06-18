@@ -69,6 +69,9 @@ void DirectXCore::Initialize()
 	renderTexture_->Initalize();
 	renderTexture_->Create();
 
+	
+	GraphicsCommon::GetInstance()->Initialize();
+
 	graphicsPipelineManager_ = GraphicsPipelineManager::GetInstance();
 	graphicsPipelineManager_->Initialize();
 }

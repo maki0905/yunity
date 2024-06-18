@@ -200,7 +200,7 @@ private:
 
 private:
 	ModelType modelType_ = ModelType::kRigid;
-	BlendModeType blendModeType_ = BlendModeType::kBlendModeNormal;
+	BlendModeType blendModeType_ = BlendModeType::kNormal;
 	Camera* camera_ = nullptr;
 
 	ModelData modelData_;

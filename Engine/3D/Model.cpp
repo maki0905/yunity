@@ -22,8 +22,6 @@ PipelineState* Model::pipelineState_ = nullptr;
 void Model::StaticInitialize()
 {
 	device_ = Device::GetInstance()->GetDevice();
-
-	//InitializeGraphicsPipeline();
 }
 
 void Model::PreDraw(ID3D12GraphicsCommandList* commandList)
@@ -36,6 +34,8 @@ void Model::PostDraw()
 {
 	commandList_ = nullptr;
 }
+
+
 
 void Model::Initialize(const std::string& name, const ModelType& modelType, const ModelData& modelData)
 {

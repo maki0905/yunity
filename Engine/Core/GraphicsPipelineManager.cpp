@@ -7,19 +7,11 @@
 void GraphicsPipelineManager::Initialize()
 {
 	device_ = Device::GetInstance()->GetDevice();
-	graphicsCommon_ = std::make_unique<GraphicsCommon>();
-	graphicsCommon_->Initialize();
+	graphicsCommon_ = GraphicsCommon::GetInstance();
 
 	for (uint32_t pipelineType = 0; pipelineType < PipelineType::kCount; pipelineType++) {
 		graphicsPipelines_[pipelineType] = new GraphicsPipeline();
 	}
-	D3D12_BLEND_DESC blendDesc[BlendModeType::kBlendCount];
-	blendDesc_[0] = graphicsCommon_->NoneBlend;
-	blendDesc_[1] = graphicsCommon_->NormalBlend;
-	blendDesc_[2] = graphicsCommon_->AddBlend;
-	blendDesc_[3] = graphicsCommon_->SubtractBlend;
-	blendDesc_[4] = graphicsCommon_->MultilyBlend;
-	blendDesc_[5] = graphicsCommon_->ScreenBlend;
 
 	CreateObject3d();
 	CreateSprite();
@@ -76,7 +68,7 @@ void GraphicsPipelineManager::CreateObject3d()
 		graphicsPipelines_[PipelineType::kObject3d]->pso_[blendModeType]->SetInputLayout(inputLayoutDesc);
 		graphicsPipelines_[PipelineType::kObject3d]->pso_[blendModeType]->SetShader(PipelineState::ShaderType::kVS, ShaderCompiler::GetInstance()->Get("Object3d", ShaderCompiler::ShaderType::kVS));
 		graphicsPipelines_[PipelineType::kObject3d]->pso_[blendModeType]->SetShader(PipelineState::ShaderType::kPS, ShaderCompiler::GetInstance()->Get("Object3d", ShaderCompiler::ShaderType::kPS));
-		graphicsPipelines_[PipelineType::kObject3d]->pso_[blendModeType]->SetBlendState(blendDesc_[blendModeType]);
+		graphicsPipelines_[PipelineType::kObject3d]->pso_[blendModeType]->SetBlendState(graphicsCommon_->blendDescs[blendModeType]);
 		graphicsPipelines_[PipelineType::kObject3d]->pso_[blendModeType]->SetRasterizerState(rasterizerDesc);
 		graphicsPipelines_[PipelineType::kObject3d]->pso_[blendModeType]->SetDepthStencilState(depthStencilDesc);
 		graphicsPipelines_[PipelineType::kObject3d]->pso_[blendModeType]->SetRenderTargetFormat(DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, DXGI_FORMAT_D24_UNORM_S8_UINT);
@@ -128,7 +120,7 @@ void GraphicsPipelineManager::CreateParticle()
 		graphicsPipelines_[PipelineType::kParticle]->pso_[blendModeType]->SetInputLayout(inputLayoutDesc);
 		graphicsPipelines_[PipelineType::kParticle]->pso_[blendModeType]->SetShader(PipelineState::ShaderType::kVS, ShaderCompiler::GetInstance()->Get("Particle", ShaderCompiler::ShaderType::kVS));
 		graphicsPipelines_[PipelineType::kParticle]->pso_[blendModeType]->SetShader(PipelineState::ShaderType::kPS, ShaderCompiler::GetInstance()->Get("Particle", ShaderCompiler::ShaderType::kPS));
-		graphicsPipelines_[PipelineType::kParticle]->pso_[blendModeType]->SetBlendState(blendDesc_[blendModeType]);
+		graphicsPipelines_[PipelineType::kParticle]->pso_[blendModeType]->SetBlendState(graphicsCommon_->blendDescs[blendModeType]);
 		graphicsPipelines_[PipelineType::kParticle]->pso_[blendModeType]->SetRasterizerState(rasterizerDesc);
 		graphicsPipelines_[PipelineType::kParticle]->pso_[blendModeType]->SetDepthStencilState(depthStencilDesc);
 		graphicsPipelines_[PipelineType::kParticle]->pso_[blendModeType]->SetRenderTargetFormat(DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, DXGI_FORMAT_D24_UNORM_S8_UINT);
@@ -172,7 +164,7 @@ void GraphicsPipelineManager::CreatePrimitive()
 	graphicsPipelines_[PipelineType::kPrimitive]->pso_[0]->SetInputLayout(inputLayoutDesc);
 	graphicsPipelines_[PipelineType::kPrimitive]->pso_[0]->SetShader(PipelineState::ShaderType::kVS, ShaderCompiler::GetInstance()->Get("Line", ShaderCompiler::ShaderType::kVS));
 	graphicsPipelines_[PipelineType::kPrimitive]->pso_[0]->SetShader(PipelineState::ShaderType::kPS, ShaderCompiler::GetInstance()->Get("Line", ShaderCompiler::ShaderType::kPS));
-	graphicsPipelines_[PipelineType::kPrimitive]->pso_[0]->SetBlendState(blendDesc_[1]);
+	graphicsPipelines_[PipelineType::kPrimitive]->pso_[0]->SetBlendState(graphicsCommon_->blendDescs[1]);
 	graphicsPipelines_[PipelineType::kPrimitive]->pso_[0]->SetRasterizerState(rasterizerDesc);
 	graphicsPipelines_[PipelineType::kPrimitive]->pso_[0]->SetDepthStencilState(depthStencilDesc);
 	graphicsPipelines_[PipelineType::kPrimitive]->pso_[0]->SetRenderTargetFormat(DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, DXGI_FORMAT_D24_UNORM_S8_UINT);
@@ -225,7 +217,7 @@ void GraphicsPipelineManager::CreateSkinning()
 		graphicsPipelines_[PipelineType::kSkinning]->pso_[blendModeType]->SetInputLayout(inputLayoutDesc);
 		graphicsPipelines_[PipelineType::kSkinning]->pso_[blendModeType]->SetShader(PipelineState::ShaderType::kVS, ShaderCompiler::GetInstance()->Get("Skinning", ShaderCompiler::ShaderType::kVS));
 		graphicsPipelines_[PipelineType::kSkinning]->pso_[blendModeType]->SetShader(PipelineState::ShaderType::kPS, ShaderCompiler::GetInstance()->Get("Object3d", ShaderCompiler::ShaderType::kPS));
-		graphicsPipelines_[PipelineType::kSkinning]->pso_[blendModeType]->SetBlendState(blendDesc_[blendModeType]);
+		graphicsPipelines_[PipelineType::kSkinning]->pso_[blendModeType]->SetBlendState(graphicsCommon_->blendDescs[blendModeType]);
 		graphicsPipelines_[PipelineType::kSkinning]->pso_[blendModeType]->SetRasterizerState(rasterizerDesc);
 		graphicsPipelines_[PipelineType::kSkinning]->pso_[blendModeType]->SetDepthStencilState(depthStencilDesc);
 		graphicsPipelines_[PipelineType::kSkinning]->pso_[blendModeType]->SetRenderTargetFormat(DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, DXGI_FORMAT_D24_UNORM_S8_UINT);
