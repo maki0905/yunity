@@ -16,7 +16,7 @@ void Player::Initialize(Camera* camera)
 	camera_ = camera;
 
 	isCrouching_ = false;
-
+	model_->PlayAnimation("walk", AnimationCommon::kLooping);
 }
 
 void Player::Update()
@@ -31,6 +31,18 @@ void Player::Update()
 		move.x = 1.0f;
 	}
 
+	if (Input::GetInstance()->TriggerKey(DIK_P)) {
+		if (!isCrouching_) {
+			model_->TransitionAnimation("walk", "sneakWalk", 0.5f);
+			model_->PlayAnimation("sneakWalk", AnimationCommon::kLooping);
+		}
+		else {
+			model_->TransitionAnimation("sneakWalk", "walk", 0.5f);
+			model_->PlayAnimation("walk", AnimationCommon::kLooping);
+		}
+		isCrouching_ ^= true;
+	}
+
 	move = Normalize(move);
 
 	if (move.x != 0.0f) {
@@ -39,7 +51,7 @@ void Player::Update()
 		moveQuaternion = MakeRotateAxisAngleQuaternion(cross, std::acos(dot));
 	}
 
-	if (move.x != 0.0f) {
+	/*if (move.x != 0.0f) {
 		if (isCrouching_) {
 			model_->PlayAnimation("sneakWalk", AnimationCommon::kLooping);
 			model_->StopAnimation("walk");
@@ -51,7 +63,7 @@ void Player::Update()
 	}
 	else {
 		model_->StopAnimation();
-	}
+	}*/
 
 	// 移動量に速さを反映
 	move = Multiply(0.3f, move);

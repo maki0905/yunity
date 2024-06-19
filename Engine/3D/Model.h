@@ -160,6 +160,7 @@ public:
 	void PlayAnimation(std::string name, AnimationCommon::AnimationMode mode = AnimationCommon::AnimationMode::kPlaying);
 	void StopAnimation();
 	void StopAnimation(std::string name);
+	void TransitionAnimation(const std::string& from, const std::string& to, float time);
 	void PlayingAnimation();
 
 	void SkeletonUpdate();
@@ -240,6 +241,12 @@ private:
 
 	float animationTime_ = 0.0f;
 	bool isAnimation_ = false;
+	bool isTransition_ = false;
+	std::string presentAnimation_;
+	std::string from_;
+	std::string to_;
+	float transitionTime_;
+	float transitionSecound_;
 
 	std::string modelName_;
 };

@@ -245,6 +245,15 @@ void Model::StopAnimation(std::string name)
 	animations_[name].animationCommon.state = AnimationCommon::kStopped;
 }
 
+void Model::TransitionAnimation(const std::string& from, const std::string& to, float time)
+{
+	isTransition_ = true;
+	from_ = from;
+	to_ = to;
+	transitionSecound_ = 1.0f / (60.0f * time);
+	transitionTime_ = 0.0f;
+}
+
 void Model::PlayingAnimation()
 {
 	//animationTime_ += 1.0f / 60.0f;
@@ -274,33 +283,38 @@ void Model::SkeletonUpdate()
 
 void Model::ApplyAnimation()
 {
-	for (auto& name : animationNames_) {
-		if (animations_[name].animationCommon.state == AnimationCommon::kStopped) {
-			continue;
-		}
-
-		animations_[name].animationCommon.time += 1.0f / 60.0f;
-
-		if (animations_[name].animationCommon.state == AnimationCommon::kLooping) {
-			animations_[name].animationCommon.time = std::fmod(animations_[name].animationCommon.time, animations_[name].animation.duration);
-
-		}
-		else if (animations_[name].animationCommon.time > animations_[name].animation.duration) {
-			animations_[name].animationCommon.state = AnimationCommon::kStopped;
-			animations_[name].animationCommon.time = 0.0f;
-		}
-
+	if (isTransition_) {
+		animations_[from_].animationCommon.time += 1.0f / 60.0f;
+		animations_[from_].animationCommon.time = std::fmod(animations_[from_].animationCommon.time, animations_[from_].animation.duration);
+		animations_[to_].animationCommon.time += 1.0f / 60.0f;
+		animations_[to_].animationCommon.time = std::fmod(animations_[to_].animationCommon.time, animations_[to_].animation.duration);
 		for (Joint& joint : skeleton_.joints) {
 			// 対象のJointのAnimationがあれば、値の適用を行う。下記のif文はC++17から可能になった初期化付きif文
-			if (auto it = animations_[name].animation.nodeAnimations.find(joint.name); it != animations_[name].animation.nodeAnimations.end()) {
-				const NodeAnimation& rootNodeAnimation = (*it).second;
-				joint.transform.translate = CalculateValue(rootNodeAnimation.translate, animations_[name].animationCommon.time);
-				joint.transform.rotate = CalculateQuaternion(rootNodeAnimation.rotate, animations_[name].animationCommon.time);
-				if (rootNodeAnimation.scale.size() == 0) {
-					joint.transform.scale = Vector3(1.0f, 1.0f, 1.0f);
-				}
-				else {
-					joint.transform.scale = CalculateValue(rootNodeAnimation.scale, animations_[name].animationCommon.time);
+			if (auto itA = animations_[from_].animation.nodeAnimations.find(joint.name); itA != animations_[from_].animation.nodeAnimations.end()) {
+				if (auto itB = animations_[to_].animation.nodeAnimations.find(joint.name); itB != animations_[to_].animation.nodeAnimations.end()) {
+					const NodeAnimation& rootNodeAnimationA = (*itA).second;
+					Vector3 translateA = CalculateValue(rootNodeAnimationA.translate, animations_[from_].animationCommon.time);
+					Quaternion rotateA = CalculateQuaternion(rootNodeAnimationA.rotate, animations_[from_].animationCommon.time);
+					Vector3 scaleA = Vector3(1.0f, 1.0f, 1.0f);
+					if (rootNodeAnimationA.scale.size() != 0) {
+						scaleA = CalculateValue(rootNodeAnimationA.scale, animations_[from_].animationCommon.time);
+					}
+
+					const NodeAnimation& rootNodeAnimationB = (*itB).second;
+					Vector3 translateB = CalculateValue(rootNodeAnimationB.translate, animations_[to_].animationCommon.time);
+					Quaternion rotateB = CalculateQuaternion(rootNodeAnimationB.rotate, animations_[to_].animationCommon.time);
+					Vector3 scaleB = Vector3(1.0f, 1.0f, 1.0f);
+					if (rootNodeAnimationB.scale.size() != 0) {
+						scaleB = CalculateValue(rootNodeAnimationB.scale, animations_[to_].animationCommon.time);
+					}
+
+
+					joint.transform.translate = Lerp(translateA, translateB, transitionTime_);
+					joint.transform.rotate = Slerp(rotateA, rotateB, transitionTime_);
+					joint.transform.scale = { 1.0f, 1.0f, 1.0f };
+					if (rootNodeAnimationA.scale.size() != 0 || rootNodeAnimationB.scale.size() != 0) {
+						joint.transform.scale = Lerp(scaleA, scaleB, transitionTime_);
+					}
 				}
 			}
 		}
@@ -310,12 +324,57 @@ void Model::ApplyAnimation()
 		// SkeletonSpaceの情報を基に、SkinClusterのMatrixPaletteを更新する
 		SkinClusterUpdate();
 
+		transitionTime_ += transitionSecound_;
+
+		if (transitionTime_ > 1.0f) {
+			animations_[from_].animationCommon.state = AnimationCommon::kStopped;
+			animations_[to_].animationCommon.state = AnimationCommon::kLooping;
+			isTransition_ = false;
+		}
+
 
 	}
+	else {
+		for (auto& name : animationNames_) {
+			if (animations_[name].animationCommon.state == AnimationCommon::kStopped) {
+				continue;
+			}
+
+			presentAnimation_ = name;
+
+			animations_[name].animationCommon.time += 1.0f / 60.0f;
+
+			if (animations_[name].animationCommon.state == AnimationCommon::kLooping) {
+				animations_[name].animationCommon.time = std::fmod(animations_[name].animationCommon.time, animations_[name].animation.duration);
+
+			}
+			else if (animations_[name].animationCommon.time > animations_[name].animation.duration) {
+				animations_[name].animationCommon.state = AnimationCommon::kStopped;
+				animations_[name].animationCommon.time = 0.0f;
+			}
+
+			for (Joint& joint : skeleton_.joints) {
+				// 対象のJointのAnimationがあれば、値の適用を行う。下記のif文はC++17から可能になった初期化付きif文
+				if (auto it = animations_[name].animation.nodeAnimations.find(joint.name); it != animations_[name].animation.nodeAnimations.end()) {
+					const NodeAnimation& rootNodeAnimation = (*it).second;
+					joint.transform.translate = CalculateValue(rootNodeAnimation.translate, animations_[name].animationCommon.time);
+					joint.transform.rotate = CalculateQuaternion(rootNodeAnimation.rotate, animations_[name].animationCommon.time);
+					joint.transform.scale = { 1.0f, 1.0f, 1.0f };
+					if (rootNodeAnimation.scale.size() != 0) {
+						joint.transform.scale = CalculateValue(rootNodeAnimation.scale, animations_[name].animationCommon.time);
+					}
+				}
+			}
+
+			// 現在の骨ごとのLocal情報を基にSkeletonSpaceの情報を更新
+			SkeletonUpdate();
+			// SkeletonSpaceの情報を基に、SkinClusterのMatrixPaletteを更新する
+			SkinClusterUpdate();
 
 
+		}
 
-
+	}
 
 	//// アニメーションの時間を進める(設定)
 	//animationTime_ += 1.0f / 60.0f;
