@@ -189,12 +189,12 @@ void PrimitiveDrawer::CreateSphere()
 	
 
 	// 経度分割1つ分の角度 φ
-	const float kLonEvery = float(M_PI) * 2.0f / float(kSubdivision);
+	const float kLonEvery = float(std::numbers::pi) * 2.0f / float(kSubdivision);
 	// 緯度分割1つ分の角度 θ
-	const float kLatEvery = float(M_PI) / float(kSubdivision);
+	const float kLatEvery = float(std::numbers::pi) / float(kSubdivision);
 	// 緯度の方向に分割
 	for (uint32_t latIndex = 0; latIndex < kSubdivision; ++latIndex) {
-		float lat = -float(M_PI) / 2.0f + kLatEvery * latIndex;// θ
+		float lat = -float(std::numbers::pi) / 2.0f + kLatEvery * latIndex;// θ
 		// 経度の方向に分割しながら線を描く
 		for (uint32_t lonIndex = 0; lonIndex < kSubdivision; ++lonIndex) {
 			uint32_t start = (latIndex * kSubdivision + lonIndex) * 4;

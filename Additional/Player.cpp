@@ -3,11 +3,11 @@
 #include "ImGuiManager.h"
 #include "ModelManager.h"
 
-void Player::Initialize(Camera* camera)
+void Player::Initialize(Camera* camera, World* world)
 {
-	worldTransform_.Initialize();
+	worldTransform_.Initialize(RotationType::Quaternion);
 	worldTransform_.scale_ = { 10.0f, 10.0f, 10.0f };
-	worldTransform_.quaternion_ = { 0.0f, 1.0f, 0.0f, 1.0f };
+	worldTransform_.quaternion_ = { 0.0f, 0.0f, 0.0f, 1.0f };
 
 	model_.reset(ModelManager::GetInstance()->CreateModel(gltf, "human", "sneakWalk", ModelType::kSkin));
 	model_->SetCamera(camera);
@@ -17,6 +17,15 @@ void Player::Initialize(Camera* camera)
 
 	isCrouching_ = false;
 	model_->PlayAnimation("walk", AnimationCommon::kLooping);
+
+	body_ = std::make_unique<Body>();
+	body_->CreateBody(world, &worldTransform_, 1.0f);
+	world->Add(body_.get());
+
+	stiffness_ = 1.0f;
+	dampar_ = 0.1f;
+	mass_ = 1.0f;
+	limitLength_ = 10.0f;
 }
 
 void Player::Update()
@@ -120,17 +129,32 @@ void Player::Update()
 
 
 	
-	worldTransform_.translation_ = Add(worldTransform_.translation_, move);
+	/*worldTransform_.translation_ = Add(worldTransform_.translation_, move);
 	worldTransform_.quaternion_ = Slerp(worldTransform_.quaternion_, moveQuaternion, 1.0f);
-	worldTransform_.quaternion_ = Normalize(worldTransform_.quaternion_);
+	worldTransform_.quaternion_ = Normalize(worldTransform_.quaternion_);*/
 
-	worldTransform_.UpdateMatrix(RotationType::Quaternion);
+	//worldTransform_.UpdateMatrix();
 
 	Vector3 cameraTranslation = camera_->GetTranslate();
 	cameraTranslation = Add(cameraTranslation, move);
 	camera_->SetTranslate(cameraTranslation);
 
 	prePad_ = pad_;
+	/*Vector3 move = { 0.0f, 0.0f, 0.0f };
+	Quaternion moveQuaternion = worldTransform_.quaternion_;
+	Vector3 cross = Normalize(Cross({ 0.0f, 0.0f, 1.0f }, move));
+	float dot = Dot({ 0.0f, 0.0f, 1.0f }, move);
+	moveQuaternion = MakeRotateAxisAngleQuaternion(cross, std::acos(dot));*/
+	//worldTransform_.quaternion_ = Slerp(worldTransform_.quaternion_, moveQuaternion, 1.0f);
+	body_->SetMass(mass_);
+	body_->AddForce(body_->RubberMovement(worldTransform_.translation_, { 0.0f, 0.0f, 0.0f }, limitLength_, stiffness_, dampar_), 0);
+
+	ImGui::Begin("Player");
+	ImGui::DragFloat3("translate", &worldTransform_.translation_.x);
+	ImGui::DragFloat("mass", &mass_);
+	ImGui::DragFloat("stiffness", &stiffness_);
+	ImGui::DragFloat("damping", &dampar_);
+	ImGui::End();
 
 }
 

@@ -13,7 +13,7 @@ LevelEditor* LevelEditor::GetInstance()
 	return &instance;
 }
 
-void LevelEditor::LoadFile(const std::string& fileName)
+LevelData* LevelEditor::LoadFile(const std::string& fileName)
 {
 	// 読み込むJSONファイルのフルパスを合成
 	std::string filePath = kDirectoryPath + fileName + ".json";
@@ -50,8 +50,12 @@ void LevelEditor::LoadFile(const std::string& fileName)
 
 	LoadObjectRecursive(levelData, deserialized);
 
+	levelData_[fileName] = levelData;
+
 	// ファイルを閉じる
 	file.close();
+
+	return levelData_[fileName];
 
 }
 
@@ -83,12 +87,12 @@ void LevelEditor::LoadObjectRecursive(LevelData* levelData, nlohmann::json deser
 			objectData.translation.z = (float)transform["translation"][1];
 			// 回転角
 			objectData.rotation.x = -(float)transform["rotation"][0];
-			objectData.rotation.x = -(float)transform["rotation"][2];
-			objectData.rotation.x = -(float)transform["rotation"][1];
+			objectData.rotation.y = -(float)transform["rotation"][2];
+			objectData.rotation.z = -(float)transform["rotation"][1];
 			// スケーリング
-			objectData.rotation.x = (float)transform["scaling"][0];
-			objectData.rotation.x = (float)transform["scaling"][2];
-			objectData.rotation.x = (float)transform["scaling"][1];
+			objectData.scaling.x = (float)transform["scaling"][0];
+			objectData.scaling.y = (float)transform["scaling"][2];
+			objectData.scaling.z = (float)transform["scaling"][1];
 		}
 
 		// 再帰

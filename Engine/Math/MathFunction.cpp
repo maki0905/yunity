@@ -30,6 +30,19 @@ Vector2 Multiply(float k, const Vector2& v)
 	return result;
 }
 
+Vector2 Normalize(const Vector2& v)
+{
+	Vector2 result;
+	float len = std::sqrtf(v.x * v.x + v.y * v.y);
+	if (len == 0) {
+		result = { 0.0f, 0.0f };
+	}
+	else {
+		result = { v.x / len, v.y / len };
+	}
+	return result;
+}
+
 //Vector2 Multiply(const myTransform& t, const Vector2& v)
 //{
 //	float x = (t.q.c * v.x - t.q.s * v.y) + t.p.x;
@@ -52,6 +65,12 @@ inline float DistanceSquared(const Vector2& a, const Vector2& b)
 	result = Dot(c, c);
 	return result;
 
+}
+
+float Cross(const Vector2& v1, const Vector2& v2)
+{
+	float result = v1.x * v2.y - v1.y * v2.x;
+	return result;
 }
 
 // ベクトルの加法

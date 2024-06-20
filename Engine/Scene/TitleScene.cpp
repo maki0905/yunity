@@ -25,7 +25,7 @@ void TitleScene::Update()
 		SceneManager::GetInstance()->ChangeScene("GAMESTAGE");
 	}
 
-	worldTransform_.UpdateMatrix(RotationType::Euler);
+	worldTransform_.UpdateMatrix();
 }
 
 void TitleScene::DrawBack()

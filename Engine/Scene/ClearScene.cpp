@@ -1,12 +1,13 @@
 #include "ClearScene.h"
 
 #include "ModelManager.h"
+#include "LevelEditor.h"
 
 void ClearScene::Initialize()
 {
 	camera_ = std::make_unique<Camera>();
 	debugCamera_ = std::make_unique<DebugCamera>();
-	bool isDebug_ = false;
+	isDebug_ = false;
 
 	model0_ = std::make_unique<Model>();
 	//model0_.reset(Model::Create("terrain", "obj"));
@@ -44,8 +45,32 @@ void ClearScene::Initialize()
 	skybox_->SetCamera(camera_.get());
 	skybox_->SetTexture("rostock_laage_airport_4k.dds");
 
+	world_ = std::make_unique<World>();
+	world_->Initialize();
+
+
 	player_ = std::make_unique<Player>();
-	player_->Initialize(camera_.get());
+	player_->Initialize(camera_.get(), world_.get());
+
+	objects_.clear();
+	LevelData* levelData = LevelEditor::GetInstance()->LoadFile("stage");
+	
+	// レベルデータからオブジェクトを生成、配置
+	for (auto& objectData : levelData->objects) {
+		// ファイル名から登録済みモデルを検索
+		Model* model = nullptr;
+		model = ModelManager::GetInstance()->CreateModel(obj, objectData.fileName);
+		model->SetCamera(camera_.get());
+
+		Object3D* newObject = new Object3D();
+		newObject->Create(model);
+		newObject->SetPosition(objectData.translation);
+		newObject->SetRotation(objectData.rotation);
+		newObject->SetScale(objectData.scaling);
+
+		objects_.push_back(newObject);
+	}
+
 
 }
 
@@ -55,10 +80,10 @@ void ClearScene::Update()
 	//worldTransform0_.quaternion_.y += 0.01f;
 	//worldTransform0_.rotation_.y += 0.05f;
 	//worldTransform0_.UpdateMatrix(RotationType::Euler);
-	worldTransform0_.UpdateMatrix(RotationType::Quaternion);
-	worldTransform1_.UpdateMatrix(RotationType::Quaternion);
+	worldTransform0_.UpdateMatrix();
+	worldTransform1_.UpdateMatrix();
 	//worldTransform2_.rotation_.y += 1.0f;
-	worldTransform2_.UpdateMatrix(RotationType::Euler);
+	worldTransform2_.UpdateMatrix();
 
 	if (Input::GetInstance()->TriggerKey(DIK_1)) {
 		model0_->PlayAnimation("walk", AnimationCommon::kLooping);
@@ -69,6 +94,11 @@ void ClearScene::Update()
 
 	player_->Update();
 
+	world_->Solve();
+
+	for (auto& object : objects_) {
+		object->Update();
+	}
 
 	if (Input::GetInstance()->TriggerKey(DIK_LSHIFT)) {
 		isDebug_ ^= true;
@@ -90,11 +120,14 @@ void ClearScene::DrawBack()
 void ClearScene::Draw3D()
 {
 	skybox_->Draw(worldTransform2_);
+	for (auto& object : objects_) {
+		object->Draw();
+	}
 	/*model0_->Draw(worldTransform0_);
 	model1_->Draw(worldTransform1_);*/
 	//model2_->Draw(worldTransform2_);
 
-	player_->Draw();
+	//player_->Draw();
 
 }
 

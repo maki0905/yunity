@@ -128,6 +128,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Engine\Core\GraphicsPipelineManager.cpp" />
     <ClCompile Include="Engine\Format.cpp" />
     <ClCompile Include="Engine\LevelEditor.cpp" />
+    <ClCompile Include="Engine\Object3D.cpp" />
+    <ClCompile Include="Engine\Physics\Body.cpp" />
     <ClCompile Include="Engine\Physics\World.cpp" />
     <ClCompile Include="Engine\Core\RenderTexture.cpp" />
     <ClCompile Include="Engine\Scene\ClearScene.cpp" />
@@ -203,6 +205,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\Math\AABB.h" />
     <ClInclude Include="Engine\Core\BackBuffer.h" />
     <ClInclude Include="Engine\Math\Capsule.h" />
+    <ClInclude Include="Engine\Object3D.h" />
+    <ClInclude Include="Engine\Physics\Body.h" />
     <ClInclude Include="Engine\RootBindingsCommon.h" />
     <ClInclude Include="Engine\Physics\World.h" />
     <ClInclude Include="Engine\Core\RenderTexture.h" />

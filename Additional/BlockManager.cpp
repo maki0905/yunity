@@ -4,7 +4,7 @@
 
 void BlockManager::Initialize(Camera* camera, World* world)
 {
-	blocks_.clear();
+	/*blocks_.clear();
 	camera_ = camera;
 	file_ = CSV::GetInstance()->LoadCSV("Block");
 	world_ = world;
@@ -73,7 +73,7 @@ void BlockManager::Initialize(Camera* camera, World* world)
 
 	for (auto b : blocks_) {
 		world->Add(b);
-	}
+	}*/
 
 }
 
@@ -171,10 +171,10 @@ void BlockManager::Draw()
 
 void BlockManager::Add(World* world)
 {
-	Block* block = new Block();
+	/*Block* block = new Block();
 	block->Initialize(camera_);
 	world->Add(block);
-	blocks_.push_back(block);
+	blocks_.push_back(block);*/
 
 }
 

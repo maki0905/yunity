@@ -39,10 +39,13 @@ struct WorldTransform {
 	// ワールドの逆転置行列
 	Matrix4x4 matWorldInverseTranspose_;
 
+	RotationType rotateType_;
+
+
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Initialize();
+	void Initialize(RotationType rotateType = RotationType::Euler);
 	/// <summary>
 	/// 定数バッファ生成
 	/// </summary>
@@ -54,7 +57,7 @@ struct WorldTransform {
 	/// <summary>
 	/// 行列を更新する
 	/// </summary>
-	void UpdateMatrix(RotationType type);
+	void UpdateMatrix();
 	/// <summary>
 	/// 定数バッファに転送する
 	/// </summary>

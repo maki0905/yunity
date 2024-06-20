@@ -29,7 +29,7 @@ public:
 	/// ファイルから読み込む
 	/// </summary>
 	/// <param name="GroupName">グループ</param>
-	void LoadFile(const std::string& fileName);
+	LevelData* LoadFile(const std::string& fileName);
 
 private:
 	void LoadObjectRecursive(LevelData* levelData, nlohmann::json deserialized);
@@ -40,16 +40,18 @@ private:
 	LevelEditor& operator=(const LevelEditor& src) = default;
 private:
 
-	// 項目
-	using Item = std::variant<int32_t, float, Vector3>;
+	//// 項目
+	//using Item = std::variant<int32_t, float, Vector3>;
 
-	// グループ
-	using Group = std::map<std::string, Item>;
+	//// グループ
+	//using Group = std::map<std::string, Item>;
 
-	// 全データ
-	std::map<std::string, Group> datas_;
+	//// 全データ
+	//std::map<std::string, Group> datas_;
+
+	std::map<std::string, LevelData*> levelData_;
 
 	// グローバル変数の保存先ファイルパス
-	const std::string kDirectoryPath = "Resources/LevelEditor/";
+	const std::string kDirectoryPath = "Resources/Level/";
 
 };

@@ -3,13 +3,15 @@
 
 #include "Device.h"
 
-void WorldTransform::Initialize() {
+void WorldTransform::Initialize(RotationType rotateType)
+{
     CreateConstBuffer();
     Map();
     matWorld_ = MakeIdentity4x4();
     matWorldInverseTranspose_ = Transpose(Inverse(matWorld_));
     TransferMatrix();
     quaternion_ = IndentityQuaternion();
+    rotateType_ = rotateType;
 }
 
 void WorldTransform::CreateConstBuffer() {
@@ -43,9 +45,9 @@ void WorldTransform::Map() {
     assert(SUCCEEDED(result));
 }
 
-void WorldTransform::UpdateMatrix(RotationType type)
+void WorldTransform::UpdateMatrix()
 {
-    switch (type)
+    switch (rotateType_)
     {
     case RotationType::Euler:
         // スケール、回転、平行移動を合成して行列を計算する

@@ -12,7 +12,6 @@ SceneManager* SceneManager::GetInstance()
 void SceneManager::Initialize()
 {
 	sceneFactory_ = new SceneFactory();
-
 }
 
 void SceneManager::Update()

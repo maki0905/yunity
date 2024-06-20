@@ -25,7 +25,7 @@ bool ParticleEmitter::Update()
 	ImGui::End();
 #endif // _DEBUG
 
-	worldTransform_.UpdateMatrix(RotationType::Euler);
+	worldTransform_.UpdateMatrix();
 
 	frequencyTime_ += 1.0f / 60.0f; // 時間を進める
 	if (frequency_ <= frequencyTime_) { // 頻度より大きいなら発生

@@ -29,10 +29,12 @@ private:
 private:
 	// シーンファクトリー
 	SceneFactory* sceneFactory_ = nullptr;
-
 	// 今のシーン
 	std::unique_ptr<IScene> scene_ = nullptr;
 	//次のシーン
 	IScene* nextScene_ = nullptr;
+
+
+
 
 };

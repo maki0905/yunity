@@ -47,12 +47,12 @@ void CollisionManager::CheckCollisionPair(Collider* colliderA, Collider* collide
 	case Collider::kAABB:
 		if (IsCollision(*colliderA->GetAABB(), *colliderB->GetAABB())) {
 			colliderA->OnCollision();
-			if (colliderA->GetMass() != 0) {
+			/*if (colliderA->GetMass() != 0) {
 				colliderA->resolveCollision(*colliderB->GetAABB());
 			}
 			else {
 				colliderB->resolveCollision(*colliderA->GetAABB());
-			}
+			}*/
 			//colliderA->resolveCollision(*colliderB->GetAABB());
 			colliderB->OnCollision();
 			ImGui::Text("TURE");

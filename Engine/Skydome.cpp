@@ -5,10 +5,10 @@ void Skydome::Initialize(Model* model, Camera* camera)
 	model_ = model;
 
 	worldTransform_.Initialize();
-	worldTransform_.UpdateMatrix(RotationType::Euler);
+	worldTransform_.UpdateMatrix();
 
 	collider_ = new Collider();
-	collider_->Create(&worldTransform_, Collider::Type::kSphere, RotationType::Euler, camera);
+	collider_->CreateCollider(&worldTransform_, Collider::Type::kSphere, RotationType::Euler, camera);
 }
 
 void Skydome::Update()
