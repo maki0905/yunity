@@ -2,15 +2,16 @@
 
 #include <memory>
 
-#include "IScene.h"
 
+#include "IScene.h"
 #include "Camera.h"
 #include "DebugCamera.h"
-#include "Player.h"
-#include "BlockManager.h"
-#include "Block.h"
-
+#include "Model.h"
 #include "World.h"
+#include "SkyBox.h"
+#include "Player.h"
+#include "World.h"
+#include "ObjectManager.h"
 
 
 
@@ -23,7 +24,7 @@ public:
 	void Draw3D() override;
 	void DrawFront() override;
 private:
-	bool isDebug_ = false;
+	/*bool isDebug_ = false;
 
 	std::unique_ptr<Camera> camera_;
 	std::unique_ptr<DebugCamera> debugCamera_;
@@ -38,7 +39,19 @@ private:
 	WorldTransform worldTransform_end_;
 
 	std::unique_ptr<World> world_;
-	std::unique_ptr<PrimitiveDrawer> primitiveDrawer_;
+	std::unique_ptr<PrimitiveDrawer> primitiveDrawer_;*/
+	bool isDebug_ = false;
+
+	std::unique_ptr<Camera> camera_;
+	std::unique_ptr<DebugCamera> debugCamera_;
+
+	//std::vector<Object3D*> objects_;
+
+	std::unique_ptr<SkyBox> skybox_;
+	WorldTransform skyboxWorldTransform_;
+	std::unique_ptr<Player> player_;
+
+	std::unique_ptr<World> world_;
 
 };
 

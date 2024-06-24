@@ -56,20 +56,20 @@ void ClearScene::Initialize()
 	LevelData* levelData = LevelEditor::GetInstance()->LoadFile("stage");
 	
 	// レベルデータからオブジェクトを生成、配置
-	for (auto& objectData : levelData->objects) {
-		// ファイル名から登録済みモデルを検索
-		Model* model = nullptr;
-		model = ModelManager::GetInstance()->CreateModel(obj, objectData.fileName);
-		model->SetCamera(camera_.get());
+	//for (auto& objectData : levelData->objects) {
+	//	// ファイル名から登録済みモデルを検索
+	//	Model* model = nullptr;
+	//	model = ModelManager::GetInstance()->CreateModel(obj, objectData.fileName);
+	//	model->SetCamera(camera_.get());
 
-		Object3D* newObject = new Object3D();
-		newObject->Create(model);
-		newObject->SetPosition(objectData.translation);
-		newObject->SetRotation(objectData.rotation);
-		newObject->SetScale(objectData.scaling);
+	//	Object3D* newObject = new Object3D();
+	//	newObject->Create(model, world);
+	//	newObject->SetPosition(objectData.translation);
+	//	newObject->SetRotation(objectData.rotation);
+	//	newObject->SetScale(objectData.scaling);
 
-		objects_.push_back(newObject);
-	}
+	//	objects_.push_back(newObject);
+	//}
 
 
 }
@@ -120,14 +120,14 @@ void ClearScene::DrawBack()
 void ClearScene::Draw3D()
 {
 	skybox_->Draw(worldTransform2_);
-	for (auto& object : objects_) {
+	/*for (auto& object : objects_) {
 		object->Draw();
-	}
+	}*/
 	/*model0_->Draw(worldTransform0_);
 	model1_->Draw(worldTransform1_);*/
 	//model2_->Draw(worldTransform2_);
 
-	//player_->Draw();
+	player_->Draw();
 
 }
 

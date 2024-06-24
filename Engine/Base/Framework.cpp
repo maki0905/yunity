@@ -51,7 +51,7 @@ void Framework::Initialize()
 
 	sceneManager_ = SceneManager::GetInstance();
 	sceneManager_->Initialize();
-	sceneManager_->ChangeScene("CLEAR");
+	sceneManager_->ChangeScene("GAMESTAGE");
 
 	csv_ = CSV::GetInstance();
 	csv_->Initialize();
@@ -59,6 +59,8 @@ void Framework::Initialize()
 	skybox_ = new SkyBox();
 	skybox_->StaticInitialize();
 
+	objectManager_ = ObjectManager::GetInstance();
+	objectManager_->Initialize();
 
 #pragma endregion
 

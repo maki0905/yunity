@@ -129,6 +129,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Engine\Format.cpp" />
     <ClCompile Include="Engine\LevelEditor.cpp" />
     <ClCompile Include="Engine\Object3D.cpp" />
+    <ClCompile Include="Engine\ObjectManager.cpp" />
     <ClCompile Include="Engine\Physics\Body.cpp" />
     <ClCompile Include="Engine\Physics\World.cpp" />
     <ClCompile Include="Engine\Core\RenderTexture.cpp" />
@@ -206,6 +207,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\Core\BackBuffer.h" />
     <ClInclude Include="Engine\Math\Capsule.h" />
     <ClInclude Include="Engine\Object3D.h" />
+    <ClInclude Include="Engine\ObjectManager.h" />
     <ClInclude Include="Engine\Physics\Body.h" />
     <ClInclude Include="Engine\RootBindingsCommon.h" />
     <ClInclude Include="Engine\Physics\World.h" />

@@ -3,11 +3,12 @@
 #include "ImGuiManager.h"
 #include <algorithm>
 
-void Collider::CreateCollider(WorldTransform* worldTransform, Type type, RotationType rotationType, Camera* camera)
+void Collider::CreateCollider(WorldTransform* worldTransform, Type type, RotationType rotationType, Camera* camera, const Vector3& size)
 {
 	type_ = type;
 	rotationType_ = rotationType;
 	worldTransform_ = worldTransform;
+	size_ = size;
 	
 	switch (type_)
 	{
@@ -38,7 +39,7 @@ void Collider::CreateCollider(WorldTransform* worldTransform, Type type, Rotatio
 	HitBox_.reset(PrimitiveDrawer::Create(PrimitiveDrawer::Type::kBox));
 	HitBox_->SetCamera(camera);
 	worldTransform_HitBox_.Initialize();
-	
+	worldTransform_HitBox_.scale_ = size;
 
 }
 
@@ -158,7 +159,8 @@ void Collider::CreateCollider(WorldTransform* worldTransform, Type type, Rotatio
 
 void Collider::HitBox()
 {
-	worldTransform_HitBox_.scale_ = Multiply(2.5f, worldTransform_->scale_);
+	//worldTransform_HitBox_.scale_ = Multiply(2.5f, worldTransform_->scale_);
+	worldTransform_HitBox_.scale_ = Multiply(size_, worldTransform_->scale_);
 	worldTransform_HitBox_.rotation_ = worldTransform_->rotation_;
 	worldTransform_HitBox_.translation_ = worldTransform_->translation_;
 	worldTransform_HitBox_.UpdateMatrix();

@@ -3,6 +3,7 @@
 #include <vector>
 #include <string>
 #include "Vector3.h"
+#include "Collider.h"
 
 
 class LevelData {
@@ -12,6 +13,9 @@ public:
 		Vector3 rotation;
 		Vector3 translation;
 		std::string fileName;
+		Collider::Type ColliderType;
+		Vector3 size;
+		Vector3 center;
 	};
 
 public:

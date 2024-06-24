@@ -93,6 +93,32 @@ void LevelEditor::LoadObjectRecursive(LevelData* levelData, nlohmann::json deser
 			objectData.scaling.x = (float)transform["scaling"][0];
 			objectData.scaling.y = (float)transform["scaling"][2];
 			objectData.scaling.z = (float)transform["scaling"][1];
+
+			// 当たり判定の読み込み
+			if (object.contains("collider")) {
+				nlohmann::json& collider = object["collider"];
+				if (collider["type"] == "BOX") {
+					if (objectData.rotation.x == 0.0f && objectData.rotation.y == 0.0f && objectData.rotation.z == 0.0f) {
+						objectData.ColliderType = Collider::Type::kAABB;
+					}
+					else {
+						objectData.ColliderType = Collider::Type::kOBB;
+					}
+				}
+				else if (collider["type"] == "SPHERE") {
+
+				}
+
+				// サイズ
+				objectData.size.x = (float)collider["size"][0];
+				objectData.size.y = (float)collider["size"][2];
+				objectData.size.z = (float)collider["size"][1];
+				// 位置
+				objectData.center.x = (float)collider["center"][0];
+				objectData.center.y = (float)collider["center"][2];
+				objectData.center.z = (float)collider["center"][1];
+			}
+
 		}
 
 		// 再帰

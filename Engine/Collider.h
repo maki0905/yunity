@@ -29,7 +29,7 @@ public:
 
 public:
 
-	void CreateCollider(WorldTransform* worldTransform, Type type, RotationType rotationType, Camera* camera);
+	void CreateCollider(WorldTransform* worldTransform, Type type, RotationType rotationType, Camera* camera, const Vector3& size);
 
 	void HitBox();
 
@@ -48,7 +48,6 @@ public:
 	void SetCollisionMask(uint32_t collisionMask) { CollisionMask_ = collisionMask; }
 
 	Type GetType() { return type_; }
-
 	Sphere* GetSphere() { return sphere_.get(); }
 	Plane* GetPlane() { return plane_.get(); }
 	AABB* GetAABB() { return aabb_.get(); }
@@ -75,6 +74,7 @@ private:
 
 	// HitBoxタイプ
 	Type type_;
+	Vector3 size_;
 	WorldTransform worldTransform_HitBox_;
 	std::unique_ptr<PrimitiveDrawer> HitBox_;
 	

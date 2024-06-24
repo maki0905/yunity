@@ -154,6 +154,12 @@ void Player::Update()
 	ImGui::DragFloat("mass", &mass_);
 	ImGui::DragFloat("stiffness", &stiffness_);
 	ImGui::DragFloat("damping", &dampar_);
+	if (ImGui::Button("reset")) {
+		body_->Reset();
+		worldTransform_.translation_ = { 0.0f, 0.0f, 0.0f };
+
+	}
+
 	ImGui::End();
 
 }

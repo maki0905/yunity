@@ -63,3 +63,10 @@ void Body::AddForce(const Vector3& force, uint32_t mode)
 		velocity_ = Add(velocity_, Multiply(1.0f / mass_, force));
 	}
 }
+
+void Body::Reset()
+{
+	velocity_ = { 0.0f, 0.0f, 0.0f };
+	acceleration_ = { 0.0f, 0.0f, 0.0f };
+
+}

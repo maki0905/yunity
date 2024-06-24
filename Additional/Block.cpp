@@ -9,7 +9,7 @@ void Block::Initialize(Camera* camera)
 	model_->SetCamera(camera);
 	
 
-	CreateCollider(&worldTransfrom_, Type::kAABB, RotationType::Euler, camera);
+	//CreateCollider(&worldTransfrom_, Type::kAABB, RotationType::Euler, camera);
 
 	// 衝突属性を設定
 	SetCollisionAttribute(kCollisionAttributeEnemy);

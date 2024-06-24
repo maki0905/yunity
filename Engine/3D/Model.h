@@ -151,6 +151,8 @@ public:
 	void SetLighting(bool flag) { materialData_->enableLighting = flag; }
 	void SetBlendModeType(const BlendModeType& blendModeType) { blendModeType_ = blendModeType; }
 
+	Camera* GetCamera() { return camera_; }
+
 	//void SetModelData(const std::string& fileName, const std::string format);
 
 	void SetAnimation(std::string name, const Animation& animation,AnimationCommon::AnimationMode mode = AnimationCommon::AnimationMode::kStopped);

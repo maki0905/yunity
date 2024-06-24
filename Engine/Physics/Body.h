@@ -13,6 +13,8 @@ public:
 
 	void AddForce(const Vector3& force, uint32_t mode);
 
+	void Reset();
+
 	Vector3 GetVelocity() { return velocity_; }
 	void SetVelocity(const Vector3& velocity) { velocity_ = velocity; }
 

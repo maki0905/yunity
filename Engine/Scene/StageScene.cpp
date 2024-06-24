@@ -42,6 +42,28 @@ void StageScene::Initialize()
 	//primitiveDrawer_.reset(PrimitiveDrawer::Create(PrimitiveDrawer::Type::kBox));
 	//primitiveDrawer_->SetCamera(camera_.get());
 
+	/*---------------------------------------------------------*/
+
+	camera_ = std::make_unique<Camera>();
+	debugCamera_ = std::make_unique<DebugCamera>();
+	isDebug_ = false;
+
+	skyboxWorldTransform_.Initialize();
+	skyboxWorldTransform_.scale_ = { 100.0f, 100.0f, 100.0f };
+	skybox_ = std::make_unique<SkyBox>();
+	skybox_.reset(SkyBox::Create());
+	skybox_->SetCamera(camera_.get());
+	skybox_->SetTexture("rostock_laage_airport_4k.dds");
+
+	world_ = std::make_unique<World>();
+	world_->Initialize();
+
+
+	player_ = std::make_unique<Player>();
+	player_->Initialize(camera_.get(), world_.get());
+
+	ObjectManager::GetInstance()->Load("stage0", camera_.get(), world_.get());
+
 }
 
 void StageScene::Update()
@@ -67,6 +89,32 @@ void StageScene::Update()
 	//else {
 	//	camera_->Update();
 	//}
+
+	/*---------------------------------------------------------*/
+
+
+	player_->Update();
+
+	world_->Solve();
+
+	for (auto& object : ObjectManager::GetInstance()->GetObjects("stage0")) {
+		object->Update();
+	}
+
+	skyboxWorldTransform_.UpdateMatrix();
+
+	if (Input::GetInstance()->TriggerKey(DIK_LSHIFT)) {
+		isDebug_ ^= true;
+	}
+
+	if (isDebug_) {
+		debugCamera_->Update(camera_.get());
+		camera_->Update();
+	}
+	else {
+		camera_->Update();
+	}
+
 }
 
 void StageScene::DrawBack()
@@ -81,6 +129,15 @@ void StageScene::Draw3D()
 	start_->Draw(worldTransform_start_);
 	end_->Draw(worldTransform_end_);*/
 	//primitiveDrawer_->Draw(worldTransform_start_);
+
+	/*---------------------------------------------------------*/
+
+	skybox_->Draw(skyboxWorldTransform_);
+	for (auto& object : ObjectManager::GetInstance()->GetObjects("stage0")) {
+		object->Draw();
+	}
+
+	//player_->Draw();
 }
 
 void StageScene::DrawFront()
