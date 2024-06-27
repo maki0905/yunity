@@ -6,7 +6,7 @@
 
 class Body : public Collider {
 public:
-	void CreateBody(World* world, WorldTransform* worldTransform, float mass);
+	void CreateBody(World* world, WorldTransform* worldTransform, float mass = 0.0f);
 	void Solve();
 
 	Vector3 RubberMovement(const Vector3& start, const Vector3& end, float limitLength, float stiffness, float dampingCoefficient);
@@ -14,6 +14,11 @@ public:
 	void AddForce(const Vector3& force, uint32_t mode);
 
 	void Reset();
+
+	void OnCollisiont(Body* body);
+
+	// 衝突時に呼ばれる固有の処理
+	virtual void Event(Body* body = nullptr) = 0;
 
 	Vector3 GetVelocity() { return velocity_; }
 	void SetVelocity(const Vector3& velocity) { velocity_ = velocity; }
@@ -26,6 +31,7 @@ public:
 	void SetGravity(const Vector3& gravity) { gravityAcceleration_ = gravity; }
 
 	WorldTransform GetWorldTransform() { return *worldTransform_; };
+	Vector3 GetTranslation() { return worldTransform_->translation_; }
 
 private:
 

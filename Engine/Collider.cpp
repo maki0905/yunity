@@ -3,19 +3,19 @@
 #include "ImGuiManager.h"
 #include <algorithm>
 
-void Collider::CreateCollider(WorldTransform* worldTransform, Type type, RotationType rotationType, Camera* camera, const Vector3& size)
+void Collider::CreateCollider(WorldTransform* worldTransform, Shape shape, Camera* camera, const Vector3& size)
 {
-	type_ = type;
-	rotationType_ = rotationType;
+	shape_ = shape;
 	worldTransform_ = worldTransform;
 	size_ = size;
 	
-	switch (type_)
+	switch (shape_)
 	{
 	case Collider::kSphere:
 		sphere_ = std::make_unique<Sphere>();
 		sphere_->center = { worldTransform_->matWorld_.m[3][0], worldTransform_->matWorld_.m[3][1], worldTransform_->matWorld_.m[3][2] };
 		sphere_->radius = 1.0f;
+		HitBox_.reset(PrimitiveDrawer::Create(PrimitiveDrawer::Type::kSphere));
 		//sphere_. = { .center = {worldTransform_->matWorld_.m[3][0], worldTransform_->matWorld_.m[3][1], worldTransform_->matWorld_.m[3][2]}, .radius = {1.0f}};
 		//sphere_ = sphere
 		break;
@@ -23,8 +23,9 @@ void Collider::CreateCollider(WorldTransform* worldTransform, Type type, Rotatio
 		break;
 	case Collider::kAABB:
 		aabb_ = std::make_unique<AABB>();
-		aabb_->min = Subtract(worldTransform_->translation_, Multiply(1.25f, worldTransform_->scale_));
-		aabb_->max = Add(worldTransform_->translation_, Multiply(1.25f, worldTransform_->scale_));
+		aabb_->min = Subtract(worldTransform_->translation_, Multiply(size_, worldTransform_->scale_));
+		aabb_->max = Add(worldTransform_->translation_, Multiply(size_, worldTransform_->scale_));
+		HitBox_.reset(PrimitiveDrawer::Create(PrimitiveDrawer::Type::kBox));
 		//aabb_->min = 
 		break;
 	case Collider::kCapsule:
@@ -36,7 +37,6 @@ void Collider::CreateCollider(WorldTransform* worldTransform, Type type, Rotatio
 	}
 	//worldTransform_->UpdateMatrix(RotationType::Euler);
 
-	HitBox_.reset(PrimitiveDrawer::Create(PrimitiveDrawer::Type::kBox));
 	HitBox_->SetCamera(camera);
 	worldTransform_HitBox_.Initialize();
 	worldTransform_HitBox_.scale_ = size;
@@ -168,33 +168,28 @@ void Collider::HitBox()
 	HitBox_->Draw(worldTransform_HitBox_);
 }
 
-void Collider::OnCollision()
-{
-
-}
-
-//void Collider::resolveCollision(AABB& other)
+//void Collider::resolveCollision(AABB& b)
 //{
 //	// 各軸ごとに押し戻すベクトルを計算
 //	float pushX = 0.0f, pushY = 0.0f, pushZ = 0.0f;
 //
 //	// X軸方向の押し戻し
-//	if (aabb_->max.x > other.min.x && aabb_->min.x < other.min.x)
-//		pushX = other.min.x - aabb_->max.x;
-//	else if (aabb_->min.x < other.max.x && aabb_->max.x > other.max.x)
-//		pushX = other.max.x - aabb_->min.x;
+//	if (aabb_->max.x > b.min.x && aabb_->min.x < b.min.x)
+//		pushX = b.min.x - aabb_->max.x;
+//	else if (aabb_->min.x < b.max.x && aabb_->max.x > b.max.x)
+//		pushX = b.max.x - aabb_->min.x;
 //
 //	// Y軸方向の押し戻し
-//	if (aabb_->max.y > other.min.y && aabb_->min.y < other.min.y)
-//		pushY = other.min.y - aabb_->max.y;
-//	else if (aabb_->min.y < other.max.y && aabb_->max.y > other.max.y)
-//		pushY = other.max.y - aabb_->min.y;
+//	if (aabb_->max.y > b.min.y && aabb_->min.y < b.min.y)
+//		pushY = b.min.y - aabb_->max.y;
+//	else if (aabb_->min.y < b.max.y && aabb_->max.y > b.max.y)
+//		pushY = b.max.y - aabb_->min.y;
 //
 //	// Z軸方向の押し戻し
-//	if (aabb_->max.z > other.min.z && aabb_->min.z < other.min.z)
-//		pushZ = other.min.z - aabb_->max.z;
-//	else if (aabb_->min.z < other.max.z && aabb_->max.z > other.max.z)
-//		pushZ = other.max.z - aabb_->min.z;
+//	if (aabb_->max.z > b.min.z && aabb_->min.z < b.min.z)
+//		pushZ = b.min.z - aabb_->max.z;
+//	else if (aabb_->min.z < b.max.z && aabb_->max.z > b.max.z)
+//		pushZ = b.max.z - aabb_->min.z;
 //
 //	// 押し戻しベクトルを使用して位置を調整
 //

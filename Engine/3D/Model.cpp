@@ -67,29 +67,53 @@ void Model::Initialize(const std::string& name, const ModelType& modelType, cons
 
 void Model::Draw(const WorldTransform& worldTransform, uint32_t textureHandle)
 {
-	//assert(device_);
-	//assert(commandList_);
-	//assert(worldTransform.constBuff_.Get());
+	assert(device_);
+	assert(commandList_);
+	assert(worldTransform.constBuff_.Get());
 
-	//commandList_->SetGraphicsRootSignature(rootSignature_->GetSignature());
-	//commandList_->SetPipelineState(pipelineState_->GetPipelineStateObject());
-	//commandList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	if (modelType_ == ModelType::kSkin) {
+		GraphicsPipelineManager::GetInstance()->SetCommandList(commandList_, PipelineType::kSkinning, blendModeType_);
+		// 頂点バッファの設定
+		D3D12_VERTEX_BUFFER_VIEW vbvs[2] = {
+			vertexBufferView_,               // VertexDataのVBV
+			skinCluster_.influenceBufferView // InfluenceのVBV
+		};
+		// 配列を渡す(開始Slot番号、使用Slot数、VBV配列へのポインタである)
+		commandList_->IASetVertexBuffers(0, 2, vbvs);
 
-	//// 頂点バッファの設定
-	//commandList_->IASetVertexBuffers(0, 1, &vertexBufferView_);
+		// デスクリプタヒープの配列をセットするコマンド
+		ID3D12DescriptorHeap* ppHeaps[] = { DirectXCore::GetInstance()->GetDescriptorHeap(DirectXCore::HeapType::kSRV)->GetHeapPointer() };
+		commandList_->SetDescriptorHeaps(_countof(ppHeaps), ppHeaps);
+		commandList_->SetGraphicsRootDescriptorTable(static_cast<UINT>(SkinningRootBindings::kMatrixPalette), skinCluster_.paletteSrvHandle.second);
+		uint32_t textureCubeHandle_ = TextureManager::Load("rostock_laage_airport_4k.dds");
+		TextureManager::GetInstance()->SetGraphicsRootDescriptorTable(commandList_, static_cast<UINT>(SkinningRootBindings::kEnvironmentMap), textureCubeHandle_);
+	}
+	else {
+		GraphicsPipelineManager::GetInstance()->SetCommandList(commandList_, PipelineType::kObject3d, blendModeType_);
+		// 頂点バッファの設定
+		commandList_->IASetVertexBuffers(0, 1, &vertexBufferView_);
+		uint32_t textureCubeHandle_ = TextureManager::Load("rostock_laage_airport_4k.dds");
+		//TextureManager::GetInstance()->SetGraphicsRootDescriptorTable(commandList_, static_cast<UINT>(Object3dRootBindings::kEnvironmentMap), textureCubeHandle_);
+	}
 
-	//// CBVをセット(ワールド行列)
-	//commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(RootBindings::kWorldTransform), worldTransform.constBuff_->GetGPUVirtualAddress());
-	//commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(RootBindings::kViewProjection), camera_->GetConstBuff()->GetGPUVirtualAddress());
-	//commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(RootBindings::kMaterial), materialResource_->GetGPUVirtualAddress());
-	//commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(RootBindings::kLight), directionalLightResource_->GetGPUVirtualAddress());
-	//commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(RootBindings::kCamera), camera_->GetCameraForGPU()->GetGPUVirtualAddress());
-	//commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(RootBindings::kPointLight), pointLightResource_->GetGPUVirtualAddress());
+	//インデックスバッファの設定
+	commandList_->IASetIndexBuffer(&indexBufferView_);
 
-	//// SRVをセット
-	//TextureManager::GetInstance()->SetGraphicsRootDescriptorTable(commandList_, static_cast<UINT>(RootBindings::kTexture), textureHandle);
+	commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(Object3dRootBindings::kWorldTransform), worldTransform.constBuff_->GetGPUVirtualAddress());
+	commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(Object3dRootBindings::kViewProjection), camera_->GetConstBuff()->GetGPUVirtualAddress());
+	commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(Object3dRootBindings::kMaterial), materialResource_->GetGPUVirtualAddress());
+	commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(Object3dRootBindings::kLight), directionalLightResource_->GetGPUVirtualAddress());
+	commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(Object3dRootBindings::kCamera), camera_->GetCameraForGPU()->GetGPUVirtualAddress());
+	commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(Object3dRootBindings::kPointLight), pointLightResource_->GetGPUVirtualAddress());
 
-	//commandList_->DrawInstanced(UINT(modelData_.vertices.size()), 1, 0, 0);
+	TextureManager::GetInstance()->SetGraphicsRootDescriptorTable(commandList_, static_cast<UINT>(Object3dRootBindings::kTexture), textureHandle);
+
+	if (modelType_ == ModelType::kSkin) {
+		commandList_->DrawIndexedInstanced(modelData_.indices.size(), UINT(skeleton_.joints.size()), 0, 0, 0);
+	}
+	else {
+		commandList_->DrawInstanced(UINT(modelData_.vertices.size()), 1, 0, 0);
+	}
 }
 
 void Model::Draw(const WorldTransform& worldTransform/*, const Camera& camera*/)
@@ -120,7 +144,7 @@ void Model::Draw(const WorldTransform& worldTransform/*, const Camera& camera*/)
 		// 頂点バッファの設定
 		commandList_->IASetVertexBuffers(0, 1, &vertexBufferView_);
 		uint32_t textureCubeHandle_ = TextureManager::Load("rostock_laage_airport_4k.dds");
-		TextureManager::GetInstance()->SetGraphicsRootDescriptorTable(commandList_, static_cast<UINT>(Object3dRootBindings::kEnvironmentMap), textureCubeHandle_);
+		//TextureManager::GetInstance()->SetGraphicsRootDescriptorTable(commandList_, static_cast<UINT>(Object3dRootBindings::kEnvironmentMap), textureCubeHandle_);
 	}
 
 	//インデックスバッファの設定

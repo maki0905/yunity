@@ -1,25 +1,25 @@
 ﻿#include "CollisionManager.h"
 
 #include "MathFunction.h"
-#include "Collider.h"
 #include "Collision.h"
 #include "CollisionConfig.h"
 #include "ImGuiManager.h"
+#include "Body.h"
 
 
 void CollisionManager::CheckAllCollision() {
 
 	// リスト内のペアを総当たり
-	std::list<Collider*>::iterator itrA = colliders_.begin();
+	std::list<Body*>::iterator itrA = colliders_.begin();
 	for (; itrA != colliders_.end(); ++itrA) {
-		Collider* colliderA = *itrA;
+		Body* colliderA = *itrA;
 
 		// イテレータBはイテレータAの次の要素から回す(重複判定を回避)
-		std::list<Collider*>::iterator itrB = itrA;
+		std::list<Body*>::iterator itrB = itrA;
 		itrB++;
 
 		for (; itrB != colliders_.end(); ++itrB) {
-			Collider* colliderB = *itrB;
+			Body* colliderB = *itrB;
 
 			// ペアの当たり判定
 			CheckCollisionPair(colliderA, colliderB);
@@ -27,53 +27,88 @@ void CollisionManager::CheckAllCollision() {
 	}
 }
 
-void CollisionManager::CheckCollisionPair(Collider* colliderA, Collider* colliderB) {
-
-#ifdef _DEBUG
-
-	ImGui::Begin("HitCheck");
+void CollisionManager::CheckCollisionPair(Body* colliderA, Body* colliderB) {
 
 	/*if (colliderA->GetMass() == 0 && colliderB->GetMass() == 0) {
 		return;
 	}*/
 
-	switch (colliderB->GetType())
+	switch (colliderA->GetShape())
 	{
-	case Collider::kSphere:
-
-		break;
-	case Collider::kPlane:
-		break;
-	case Collider::kAABB:
-		if (IsCollision(*colliderA->GetAABB(), *colliderB->GetAABB())) {
-			colliderA->OnCollision();
-			/*if (colliderA->GetMass() != 0) {
-				colliderA->resolveCollision(*colliderB->GetAABB());
-			}
-			else {
-				colliderB->resolveCollision(*colliderA->GetAABB());
+	case Collider::Shape::kSphere:
+		Sphere sphereA;
+		sphereA.center = colliderA->GetWorldTransform().translation_;
+		sphereA.radius = colliderA->GetHitBoxSize().x;
+		switch (colliderB->GetShape())
+		{
+		case Collider::Shape::kAABB:
+			/*if (IsCollision(
+				Sphere(colliderA->GetWorldTransform().translation_, colliderA->GetHitBoxSize().x),
+				AABB(Subtract(colliderB->GetWorldTransform().translation_, colliderB->GetHitBoxSize()), Add(colliderB->GetWorldTransform().translation_, colliderB->GetHitBoxSize())))) {
+				colliderA->OnCollision();
+				colliderB->OnCollision();
 			}*/
-			//colliderA->resolveCollision(*colliderB->GetAABB());
-			colliderB->OnCollision();
-			ImGui::Text("TURE");
 
-		}
-		else {
-			ImGui::Text("FALSE");
+			break;
+		default:
+			break;
 		}
 		break;
-	case Collider::kCapsule:
-		break;
-	case Collider::kOBB:
+	case Collider::Shape::kAABB:
+		switch (colliderB->GetShape())
+		{
+		case Collider::Shape::kAABB:
+			if (IsCollision(
+				AABB(Subtract(colliderA->GetWorldTransform().translation_, colliderA->GetHitBoxSize()), Add(colliderA->GetWorldTransform().translation_, colliderA->GetHitBoxSize())),
+				AABB(Subtract(colliderB->GetWorldTransform().translation_, colliderB->GetHitBoxSize()), Add(colliderB->GetWorldTransform().translation_, colliderB->GetHitBoxSize())))) {
+				colliderA->OnCollisiont(colliderB);
+				colliderB->OnCollisiont(colliderA);
+				colliderA->Event(colliderB);
+				colliderB->Event(colliderA);
+			}
+
+			break;
+		default:
+			break;
+		}
+
 		break;
 	default:
 		break;
 	}
 
-	ImGui::End();
+	//switch (colliderB->GetType())
+	//{
+	//case Collider::kSphere:
 
+	//	break;
+	//case Collider::kPlane:
+	//	break;
+	//case Collider::kAABB:
+	//	if (IsCollision(*colliderA->GetAABB(), *colliderB->GetAABB())) {
+	//		colliderA->OnCollision();
+	//		/*if (colliderA->GetMass() != 0) {
+	//			colliderA->resolveCollision(*colliderB->GetAABB());
+	//		}
+	//		else {
+	//			colliderB->resolveCollision(*colliderA->GetAABB());
+	//		}*/
+	//		//colliderA->resolveCollision(*colliderB->GetAABB());
+	//		colliderB->OnCollision();
+	//		ImGui::Text("TURE");
 
-#endif // _DEBUG
+	//	}
+	//	else {
+	//		ImGui::Text("FALSE");
+	//	}
+	//	break;
+	//case Collider::kCapsule:
+	//	break;
+	//case Collider::kOBB:
+	//	break;
+	//default:
+	//	break;
+	//}
 	
 
 
@@ -154,3 +189,17 @@ void CollisionManager::CheckCollisionPair(Collider* colliderA, Collider* collide
 	//	colliderB->OnCollision();
 	//}
 }
+
+//void CollisionManager::Discrimination(HitBoxData dataA, HitBoxData dataB)
+//{
+//	switch (dataA.shape)
+//	{
+//	case Collider::Shape::kAABB:
+//
+//
+//		break;
+//	default:
+//		break;
+//	}
+//
+//}

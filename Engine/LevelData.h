@@ -13,7 +13,7 @@ public:
 		Vector3 rotation;
 		Vector3 translation;
 		std::string fileName;
-		Collider::Type ColliderType;
+		Collider::Shape shape;
 		Vector3 size;
 		Vector3 center;
 	};

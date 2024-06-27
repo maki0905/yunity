@@ -14,6 +14,7 @@ public:
 	void Initialize();
 	void Load(const std::string& fileName, Camera* camera, World* world);
 	std::vector<Object3D*> GetObjects(const std::string& fileName);
+	std::vector<Object3D*> GetObj(const std::string& fileName, const std::string& modelName);
 
 private:
 	ObjectManager() = default;

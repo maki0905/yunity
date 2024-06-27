@@ -18,7 +18,7 @@
 class Collider {
 
 public:
-	enum Type
+	enum Shape
 	{
 		kSphere,
 		kPlane,
@@ -29,12 +29,12 @@ public:
 
 public:
 
-	void CreateCollider(WorldTransform* worldTransform, Type type, RotationType rotationType, Camera* camera, const Vector3& size);
+	void CreateCollider(WorldTransform* worldTransform, Shape shape, Camera* camera, const Vector3& size);
 
 	void HitBox();
 
-	// 衝突時に呼ばれる関数
-	void OnCollision();
+	WorldTransform GetWorldTransform() { return *worldTransform_; }
+	Vector3 GetColliderSize() { return size_; }
 
 	// 衝突属性(自分)を取得
 	uint32_t GetCollisionAttribute() { return collisionAttribute_; }
@@ -47,7 +47,9 @@ public:
 	// 衝突属性(自分)を設定
 	void SetCollisionMask(uint32_t collisionMask) { CollisionMask_ = collisionMask; }
 
-	Type GetType() { return type_; }
+	Shape GetShape() { return shape_; }
+	Vector3 GetHitBoxSize() { return Multiply(Multiply(0.5f, size_), worldTransform_->scale_); }
+
 	Sphere* GetSphere() { return sphere_.get(); }
 	Plane* GetPlane() { return plane_.get(); }
 	AABB* GetAABB() { return aabb_.get(); }
@@ -73,7 +75,7 @@ private:
 	RotationType rotationType_;
 
 	// HitBoxタイプ
-	Type type_;
+	Shape shape_;
 	Vector3 size_;
 	WorldTransform worldTransform_HitBox_;
 	std::unique_ptr<PrimitiveDrawer> HitBox_;

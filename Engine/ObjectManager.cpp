@@ -30,9 +30,8 @@ void ObjectManager::Load(const std::string& fileName, Camera* camera, World* wor
 		newObject->SetScale(object.scaling);
 		newObject->SetSize(object.size);
 		newObject->SetCenter(object.center);
-		newObject->Create(model, world, object.ColliderType);
-		
-
+		newObject->Create(model, world, object.shape);
+		world->Add(newObject);
 		objects_[fileName].push_back(newObject);
 	}
 }
@@ -40,4 +39,15 @@ void ObjectManager::Load(const std::string& fileName, Camera* camera, World* wor
 std::vector<Object3D*> ObjectManager::GetObjects(const std::string& fileName)
 {
 	return objects_[fileName];
+}
+
+std::vector<Object3D*> ObjectManager::GetObj(const std::string& fileName, const std::string& modelName)
+{
+	std::vector<Object3D*> result;
+	for (auto& obj : objects_[fileName]) {
+		if (obj->GetModel()->GetModelName() == modelName) {
+			result.push_back(obj);
+		}
+	}
+	return result;
 }

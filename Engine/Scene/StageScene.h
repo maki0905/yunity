@@ -53,5 +53,14 @@ private:
 
 	std::unique_ptr<World> world_;
 
+	std::unique_ptr<Model> start_;
+	WorldTransform startWT_;
+	std::unique_ptr<Model> end_;
+	WorldTransform endWT_;
+
+	std::vector<Object3D*> floors_;
+	std::vector<Object3D*> trampolines_;
+
+
 };
 

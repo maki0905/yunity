@@ -38,7 +38,11 @@ Model* ModelManager::CreateModel(Format format, const std::string& folderName, c
 {
 	Model* model = new Model();
 	//LoadInternal(fileName, format);
-	std::string path = folderName + "/" + fileName;
+	//std::string path = folderName + "/" + fileName;
+	std::string path = folderName;
+	if (fileName.size() != 0) {
+		path = path + "/" + fileName;
+	}
 	auto itr = modelDataStorage_.find(path);
 	if (itr == modelDataStorage_.end()) {
 		modelDataStorage_[path] = LoadModelFile(format, folderName, fileName);

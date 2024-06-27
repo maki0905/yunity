@@ -44,7 +44,7 @@ void GraphicsPipelineManager::CreateObject3d()
 	graphicsPipelines_[PipelineType::kObject3d]->rooSignature_->GetParameter(static_cast<UINT>(Object3dRootBindings::kLight)).InitializeAsConstantBuffer(1, D3D12_SHADER_VISIBILITY_PIXEL);
 	graphicsPipelines_[PipelineType::kObject3d]->rooSignature_->GetParameter(static_cast<UINT>(Object3dRootBindings::kCamera)).InitializeAsConstantBuffer(2, D3D12_SHADER_VISIBILITY_PIXEL);
 	graphicsPipelines_[PipelineType::kObject3d]->rooSignature_->GetParameter(static_cast<UINT>(Object3dRootBindings::kPointLight)).InitializeAsConstantBuffer(3, D3D12_SHADER_VISIBILITY_PIXEL);
-	graphicsPipelines_[PipelineType::kObject3d]->rooSignature_->GetParameter(static_cast<UINT>(Object3dRootBindings::kEnvironmentMap)).InitializeAsDescriptorRange(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 1, D3D12_SHADER_VISIBILITY_PIXEL);
+	//graphicsPipelines_[PipelineType::kObject3d]->rooSignature_->GetParameter(static_cast<UINT>(Object3dRootBindings::kEnvironmentMap)).InitializeAsDescriptorRange(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 1, D3D12_SHADER_VISIBILITY_PIXEL);
 	graphicsPipelines_[PipelineType::kObject3d]->rooSignature_->Finalize(D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
 
 	// InputLayout

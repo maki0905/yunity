@@ -11,7 +11,7 @@
 
 
 
-class Player : public Collider
+class Player : public Body
 {
 public:
 	void Initialize(Camera* camera, World* world);
@@ -20,8 +20,11 @@ public:
 
 	void Draw();
 
+	void Event(Body* body = nullptr) override;
 
+	void ResetPos(const Vector3& pos);
 
+	bool GetActive() { return isActive_; }
 
 private:
 	XINPUT_STATE pad_;
@@ -32,14 +35,14 @@ private:
 
 	Camera* camera_;
 
-	std::unique_ptr<Body> body_;
-
 	float stiffness_;
 	float dampar_;
 	float mass_;
 	float limitLength_;
 	
 	bool isCrouching_;
+	bool isHit_;
+	bool isActive_;
 
 };
 

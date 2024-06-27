@@ -99,10 +99,10 @@ void LevelEditor::LoadObjectRecursive(LevelData* levelData, nlohmann::json deser
 				nlohmann::json& collider = object["collider"];
 				if (collider["type"] == "BOX") {
 					if (objectData.rotation.x == 0.0f && objectData.rotation.y == 0.0f && objectData.rotation.z == 0.0f) {
-						objectData.ColliderType = Collider::Type::kAABB;
+						objectData.shape = Collider::Shape::kAABB;
 					}
 					else {
-						objectData.ColliderType = Collider::Type::kOBB;
+						objectData.shape = Collider::Shape::kOBB;
 					}
 				}
 				else if (collider["type"] == "SPHERE") {

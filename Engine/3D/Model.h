@@ -153,6 +153,8 @@ public:
 
 	Camera* GetCamera() { return camera_; }
 
+	std::string GetModelName() { return modelName_; }
+
 	//void SetModelData(const std::string& fileName, const std::string format);
 
 	void SetAnimation(std::string name, const Animation& animation,AnimationCommon::AnimationMode mode = AnimationCommon::AnimationMode::kStopped);

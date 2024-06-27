@@ -11,16 +11,16 @@ void World::Initialize(const Vector3& gravity)
 
 void World::Solve()
 {
+	for (auto& obj : allocator_) {
+		obj->Solve();
+	}
+
 	collisionManager_->ClearCollider();
 	for (auto& collider : allocator_) {
 		collisionManager_->SetCollider(collider);
 	}
 
 	collisionManager_->CheckAllCollision();
-
-	for (auto& obj : allocator_) {
-		obj->Solve();
-	}
 
 
 }

@@ -56,13 +56,27 @@ void StageScene::Initialize()
 	skybox_->SetTexture("rostock_laage_airport_4k.dds");
 
 	world_ = std::make_unique<World>();
-	world_->Initialize();
-
+	world_->Initialize({0.0f, -9.8f, 0.0f});
 
 	player_ = std::make_unique<Player>();
 	player_->Initialize(camera_.get(), world_.get());
 
 	ObjectManager::GetInstance()->Load("stage0", camera_.get(), world_.get());
+
+	/*trampolines_ = ObjectManager::GetInstance()->GetObjects("stage0", "Trampoline");*/
+
+	start_ = std::make_unique<Model>();
+	//start_.reset(ModelManager::GetInstance()->CreateModel(obj, "startBox"));
+	start_.reset(ModelManager::GetInstance()->CreateModel(obj, "Cube"));
+	start_->SetCamera(camera_.get());
+	startWT_.Initialize();
+	startWT_.translation_.y = 3.0f;
+	end_ = std::make_unique<Model>();
+	end_.reset(ModelManager::GetInstance()->CreateModel(obj, "endBox"));
+	end_->SetCamera(camera_.get());
+	endWT_.Initialize();
+	endWT_.translation_ = { 10.0f, 3.0f, 0.0f };
+	player_->ResetPos(startWT_.translation_);
 
 }
 
@@ -94,12 +108,11 @@ void StageScene::Update()
 
 
 	player_->Update();
-
-	world_->Solve();
-
 	for (auto& object : ObjectManager::GetInstance()->GetObjects("stage0")) {
 		object->Update();
 	}
+
+	world_->Solve();
 
 	skyboxWorldTransform_.UpdateMatrix();
 
@@ -114,6 +127,17 @@ void StageScene::Update()
 	else {
 		camera_->Update();
 	}
+
+	startWT_.UpdateMatrix();
+	endWT_.UpdateMatrix();
+
+	if (!player_->GetActive()) {
+		player_->ResetPos(startWT_.translation_);
+	}
+
+	ImGui::Begin("end");
+	ImGui::DragFloat3("translation", &endWT_.translation_.x);
+	ImGui::End();
 
 }
 
@@ -133,9 +157,13 @@ void StageScene::Draw3D()
 	/*---------------------------------------------------------*/
 
 	skybox_->Draw(skyboxWorldTransform_);
+	start_->Draw(startWT_, TextureManager::GetInstance()->Load("uvChecker.png"));
+	end_->Draw(endWT_);
 	for (auto& object : ObjectManager::GetInstance()->GetObjects("stage0")) {
 		object->Draw();
 	}
+
+	player_->Draw();
 
 	//player_->Draw();
 }
