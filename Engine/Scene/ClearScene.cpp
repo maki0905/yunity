@@ -46,7 +46,7 @@ void ClearScene::DrawBack()
 
 void ClearScene::Draw3D()
 {
-	model0_->Draw(worldTransform0_);
+	model0_->Draw(worldTransform0_, TextureManager::GetInstance()->Load("uvChecker.png"));
 }
 
 void ClearScene::DrawFront()

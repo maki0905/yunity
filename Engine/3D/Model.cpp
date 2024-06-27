@@ -155,17 +155,26 @@ void Model::Draw(const WorldTransform& worldTransform, uint32_t textureHandle)
 	commandList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	// 頂点バッファの設定
-	commandList_->IASetVertexBuffers(0, 1, &vertexBufferView_);
+	D3D12_VERTEX_BUFFER_VIEW vbvs[2] = {
+		vertexBufferView_,               // VertexDataのVBV
+		skinCluster_.influenceBufferView // InfluenceのVBV
+	};
+	// 配列を渡す(開始Slot番号、使用Slot数、VBV配列へのポインタである)
+	commandList_->IASetVertexBuffers(0, 2, vbvs);
+	//commandList_->IASetVertexBuffers(0, 1, &vertexBufferView_);
+
+	//インデックスバッファの設定
+	commandList_->IASetIndexBuffer(&indexBufferView_);
 
 	// CBVをセット(ワールド行列)
 	commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(RootBindings::kWorldTransform), worldTransform.constBuff_->GetGPUVirtualAddress());
 
 	// CBVをセット(ビュープロジェクション行列)
 	commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(RootBindings::kViewProjection), camera_->GetConstBuff()->GetGPUVirtualAddress());
-	//commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(RootBindings::kViewProjection), camera.GetConstBuff()->GetGPUVirtualAddress());
+	commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(RootBindings::kRootNode), nodeResource_->GetGPUVirtualAddress());
 	commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(RootBindings::kMaterial), materialResource_->GetGPUVirtualAddress());
 
-	// CBVをセット(ビュープロジェクション行列)
+	// CBVをセット
 	commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(RootBindings::kLight), directionalLightResource_->GetGPUVirtualAddress());
 
 	commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(RootBindings::kCamera), camera_->GetCameraForGPU()->GetGPUVirtualAddress());
@@ -173,9 +182,13 @@ void Model::Draw(const WorldTransform& worldTransform, uint32_t textureHandle)
 	commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(RootBindings::kPointLight), pointLightResource_->GetGPUVirtualAddress());
 
 	// SRVをセット
+
 	TextureManager::GetInstance()->SetGraphicsRootDescriptorTable(commandList_, static_cast<UINT>(RootBindings::kTexture), textureHandle);
 
-	commandList_->DrawInstanced(UINT(modelData_.vertices.size()), 1, 0, 0);
+	commandList_->SetGraphicsRootDescriptorTable(static_cast<UINT>(RootBindings::kMatrixPalette), skinCluster_.paletteSrvHandle.second);
+
+	//commandList_->DrawInstanced(UINT(modelData_.vertices.size()), 1, 0, 0);
+	commandList_->DrawIndexedInstanced(modelData_.indices.size(), UINT(skeleton_.joints.size()), 0, 0, 0);
 }
 
 void Model::Draw(const WorldTransform& worldTransform/*, const Camera& camera*/)
