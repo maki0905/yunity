@@ -72,7 +72,7 @@ void StageScene::Initialize()
 	startWT_.Initialize();
 	startWT_.translation_.y = 3.0f;
 	end_ = std::make_unique<Model>();
-	end_.reset(ModelManager::GetInstance()->CreateModel(obj, "endBox"));
+	end_.reset(ModelManager::GetInstance()->CreateModel(obj, "Cube"));
 	end_->SetCamera(camera_.get());
 	endWT_.Initialize();
 	endWT_.translation_ = { 10.0f, 3.0f, 0.0f };
@@ -157,7 +157,8 @@ void StageScene::Draw3D()
 	/*---------------------------------------------------------*/
 
 	skybox_->Draw(skyboxWorldTransform_);
-	start_->Draw(startWT_, TextureManager::GetInstance()->Load("uvChecker.png"));
+	//start_->Draw(startWT_, TextureManager::GetInstance()->Load("uvChecker.png"));
+	start_->Draw(startWT_);
 	end_->Draw(endWT_);
 	for (auto& object : ObjectManager::GetInstance()->GetObjects("stage0")) {
 		object->Draw();
