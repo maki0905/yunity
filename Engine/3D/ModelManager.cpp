@@ -105,11 +105,9 @@ Model::ModelData ModelManager::LoadModelFile(Format format, const std::string& f
 		for (uint32_t faceIndex = 0; faceIndex < mesh->mNumFaces; ++faceIndex) {
 			aiFace& face = mesh->mFaces[faceIndex];
 			assert(face.mNumIndices == 3);
-
-			for (uint32_t element = 0; element < face.mNumIndices; ++element) {
-				uint32_t vertexIndex = face.mIndices[element];
-				modelData.indices.push_back(vertexIndex);
-			}
+			modelData.indices.push_back(face.mIndices[0]);
+			modelData.indices.push_back(face.mIndices[2]);
+			modelData.indices.push_back(face.mIndices[1]);
 		}
 		// SkinCluster構築用データ取得
 		for (uint32_t boneIndex = 0; boneIndex < mesh->mNumBones; ++boneIndex) {
@@ -123,7 +121,7 @@ Model::ModelData ModelManager::LoadModelFile(Format format, const std::string& f
 			aiVector3D translate;
 			bindPoseMatrixAssimp.Decompose(scale, rotate, translate); // 成分を抽出
 			// 左手系のBindPoseMatrixを作る
-			Matrix4x4 bindPoseMatrix = MakeAffineMatrix(Vector3(scale.x, scale.y, scale.z ),  Quaternion(rotate.x, -rotate.y, -rotate.z, rotate.w ), Vector3( -translate.x, translate.y, translate.z )); // 
+			Matrix4x4 bindPoseMatrix = MakeAffineMatrix(Vector3(scale.x, scale.y, scale.z), Quaternion(rotate.x, -rotate.y, -rotate.z, rotate.w), Vector3(-translate.x, translate.y, translate.z)); // 
 			// InverseBindPoseMatrixにする
 			jointWeightData.inverseBindPoseMatrix = Inverse(bindPoseMatrix);
 
@@ -141,7 +139,7 @@ Model::ModelData ModelManager::LoadModelFile(Format format, const std::string& f
 			aiString textureFilePath;
 			material->GetTexture(aiTextureType_DIFFUSE, 0, &textureFilePath);
 			modelData.material.textureFilePath = "Models/" + folderName + "/" + textureFilePath.C_Str();
-			
+
 		}
 	}
 

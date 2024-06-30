@@ -6,8 +6,8 @@
             "name": "Cube",
             "transform": {
                 "translation": [
-                    0.0,
-                    0.0,
+                    -5.089565753936768,
+                    -5.103926658630371,
                     0.0
                 ],
                 "rotation": [
@@ -21,7 +21,7 @@
                     1.0
                 ]
             },
-            "file_name": "block"
+            "file_name": "Cube"
         },
         {
             "type": "LIGHT",
@@ -64,6 +64,50 @@
                     1.0
                 ]
             }
+        },
+        {
+            "type": "MESH",
+            "name": "モンキー",
+            "transform": {
+                "translation": [
+                    3.7146711349487305,
+                    -3.60867977142334,
+                    2.1745967864990234
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "monkey"
+        },
+        {
+            "type": "MESH",
+            "name": "トーラス",
+            "transform": {
+                "translation": [
+                    -1.6531522274017334,
+                    0.0,
+                    2.359544277191162
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "torus"
         }
     ]
 }

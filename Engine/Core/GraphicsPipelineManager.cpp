@@ -63,12 +63,25 @@ void GraphicsPipelineManager::CreateObject3d()
 	// DepthStencilStateの設定
 	D3D12_DEPTH_STENCIL_DESC depthStencilDesc = GraphicsPipelineManager::graphicsCommon_->DepthStateReadWrite;
 
+	//// BlendState
+	//D3D12_BLEND_DESC blendDesc{};
+	//// すべての色要素を書き込む
+	//blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
+	//blendDesc.RenderTarget[0].BlendEnable = TRUE;
+	//blendDesc.RenderTarget[0].SrcBlend = D3D12_BLEND_SRC_ALPHA;
+	//blendDesc.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;
+	//blendDesc.RenderTarget[0].DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
+	//blendDesc.RenderTarget[0].SrcBlendAlpha = D3D12_BLEND_ONE;
+	//blendDesc.RenderTarget[0].BlendOpAlpha = D3D12_BLEND_OP_ADD;
+	//blendDesc.RenderTarget[0].DestBlendAlpha = D3D12_BLEND_ZERO;
+
 	for (uint32_t blendModeType = 0; blendModeType < BlendModeType::kBlendCount; blendModeType++) {
 		graphicsPipelines_[PipelineType::kObject3d]->pso_[blendModeType] = new PipelineState(device_, graphicsPipelines_[PipelineType::kObject3d]->rooSignature_);
 		graphicsPipelines_[PipelineType::kObject3d]->pso_[blendModeType]->SetInputLayout(inputLayoutDesc);
 		graphicsPipelines_[PipelineType::kObject3d]->pso_[blendModeType]->SetShader(PipelineState::ShaderType::kVS, ShaderCompiler::GetInstance()->Get("Object3d", ShaderCompiler::ShaderType::kVS));
 		graphicsPipelines_[PipelineType::kObject3d]->pso_[blendModeType]->SetShader(PipelineState::ShaderType::kPS, ShaderCompiler::GetInstance()->Get("Object3d", ShaderCompiler::ShaderType::kPS));
 		graphicsPipelines_[PipelineType::kObject3d]->pso_[blendModeType]->SetBlendState(graphicsCommon_->blendDescs[blendModeType]);
+		//graphicsPipelines_[PipelineType::kObject3d]->pso_[blendModeType]->SetBlendState(blendDesc);
 		graphicsPipelines_[PipelineType::kObject3d]->pso_[blendModeType]->SetRasterizerState(rasterizerDesc);
 		graphicsPipelines_[PipelineType::kObject3d]->pso_[blendModeType]->SetDepthStencilState(depthStencilDesc);
 		graphicsPipelines_[PipelineType::kObject3d]->pso_[blendModeType]->SetRenderTargetFormat(DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, DXGI_FORMAT_D24_UNORM_S8_UINT);

@@ -112,7 +112,7 @@ void Model::Draw(const WorldTransform& worldTransform, uint32_t textureHandle)
 		commandList_->DrawIndexedInstanced(modelData_.indices.size(), UINT(skeleton_.joints.size()), 0, 0, 0);
 	}
 	else {
-		commandList_->DrawInstanced(UINT(modelData_.vertices.size()), 1, 0, 0);
+		commandList_->DrawIndexedInstanced(modelData_.indices.size(), 1, 0, 0, 0);
 	}
 }
 
@@ -167,7 +167,7 @@ void Model::Draw(const WorldTransform& worldTransform/*, const Camera& camera*/)
 		commandList_->DrawIndexedInstanced(modelData_.indices.size(), UINT(skeleton_.joints.size()), 0, 0, 0);
 	}
 	else {
-		commandList_->DrawInstanced(UINT(modelData_.vertices.size()), 1, 0, 0);
+		commandList_->DrawIndexedInstanced(modelData_.indices.size(), 1, 0, 0, 0);
 	}
 	
 }

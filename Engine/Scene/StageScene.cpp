@@ -61,22 +61,22 @@ void StageScene::Initialize()
 	player_ = std::make_unique<Player>();
 	player_->Initialize(camera_.get(), world_.get());
 
-	ObjectManager::GetInstance()->Load("stage0", camera_.get(), world_.get());
-
-	/*trampolines_ = ObjectManager::GetInstance()->GetObjects("stage0", "Trampoline");*/
-
 	start_ = std::make_unique<Model>();
 	//start_.reset(ModelManager::GetInstance()->CreateModel(obj, "startBox"));
 	start_.reset(ModelManager::GetInstance()->CreateModel(obj, "Cube"));
 	start_->SetCamera(camera_.get());
 	startWT_.Initialize();
-	startWT_.translation_.y = 3.0f;
+	startWT_.translation_.y = 6.0f;
 	end_ = std::make_unique<Model>();
-	end_.reset(ModelManager::GetInstance()->CreateModel(obj, "Cube"));
+	end_.reset(ModelManager::GetInstance()->CreateModel(obj, "endBox"));
 	end_->SetCamera(camera_.get());
 	endWT_.Initialize();
 	endWT_.translation_ = { 10.0f, 3.0f, 0.0f };
 	player_->ResetPos(startWT_.translation_);
+
+	ObjectManager::GetInstance()->Load("stage0", camera_.get(), world_.get());
+	//ObjectManager::GetInstance()->Load("TL1", camera_.get(), world_.get());
+	/*trampolines_ = ObjectManager::GetInstance()->GetObjects("stage0", "Trampoline");*/
 
 }
 
@@ -111,7 +111,9 @@ void StageScene::Update()
 	for (auto& object : ObjectManager::GetInstance()->GetObjects("stage0")) {
 		object->Update();
 	}
-
+	/*for (auto& object : ObjectManager::GetInstance()->GetObjects("TL1")) {
+		object->Update();
+	}*/
 	world_->Solve();
 
 	skyboxWorldTransform_.UpdateMatrix();
@@ -157,13 +159,15 @@ void StageScene::Draw3D()
 	/*---------------------------------------------------------*/
 
 	skybox_->Draw(skyboxWorldTransform_);
-	//start_->Draw(startWT_, TextureManager::GetInstance()->Load("uvChecker.png"));
-	start_->Draw(startWT_);
-	end_->Draw(endWT_);
+	//start_->Draw(startWT_);
+	/*start_->Draw(startWT_);
+	end_->Draw(endWT_);*/
 	for (auto& object : ObjectManager::GetInstance()->GetObjects("stage0")) {
 		object->Draw();
 	}
-
+	/*for (auto& object : ObjectManager::GetInstance()->GetObjects("TL1")) {
+		object->Draw();
+	}*/
 	player_->Draw();
 
 	//player_->Draw();
