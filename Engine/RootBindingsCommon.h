@@ -46,3 +46,8 @@ enum class  PrimitiveRootBindings {
 	kViewProjection, // ビュープロジェクション変換行列
 	kCount,          // 最大数
 };
+
+enum class LineRootBindings {
+	kViewProjection, // ビュープロジェクション変換行列
+	kCount,          // 最大数
+};

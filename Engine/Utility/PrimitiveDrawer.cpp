@@ -8,6 +8,7 @@
 #include "RootSignature.h"
 #include "PipelineState.h"
 #include "ShaderCompiler.h"
+#include <GraphicsPipelineManager.h>
 
 
 ID3D12Device* PrimitiveDrawer::device_ = nullptr;
@@ -46,6 +47,7 @@ PrimitiveDrawer* PrimitiveDrawer::Create(Type type)
 		primitiveDrawer->CreateSphere();
 		break;
 	default:
+		primitiveDrawer->CreateLine();
 		break;
 	}
 	primitiveDrawer->CreateMesh();
@@ -115,8 +117,8 @@ void PrimitiveDrawer::InitializeGraphicsPipeline()
 	depthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
 
 	pipelineState_->SetInputLayout(inputLayoutDesc);
-	pipelineState_->SetShader(PipelineState::ShaderType::kVS, ShaderCompiler::GetInstance()->Get("Line", ShaderCompiler::ShaderType::kVS));
-	pipelineState_->SetShader(PipelineState::ShaderType::kPS, ShaderCompiler::GetInstance()->Get("Line", ShaderCompiler::ShaderType::kPS));
+	pipelineState_->SetShader(PipelineState::ShaderType::kVS, ShaderCompiler::GetInstance()->Get("Primitive", ShaderCompiler::ShaderType::kVS));
+	pipelineState_->SetShader(PipelineState::ShaderType::kPS, ShaderCompiler::GetInstance()->Get("Primitive", ShaderCompiler::ShaderType::kPS));
 	pipelineState_->SetBlendState(blendDesc);
 	pipelineState_->SetRasterizerState(rasterizerDesc);
 	pipelineState_->SetDepthStencilState(depthStencilDesc);
@@ -156,6 +158,28 @@ void PrimitiveDrawer::Draw(const WorldTransform& worldTransform)
 	//commandList_->DrawIndexedInstanced(24, 1, 0, 0, 0);
 }
 
+void PrimitiveDrawer::Draw(const Vector3& start, const Vector3& end, const Vector4& color)
+{
+	assert(device_);
+	assert(commandList_);
+
+	GraphicsPipelineManager::GetInstance()->SetCommandList(commandList_, PipelineType::kLine, BlendModeType::kNone);
+	commandList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
+
+	vertexData_[0].position = { start.x, start.y, start.z, 1.0f };
+	vertexData_[0].color = color;
+	vertexData_[1].position = { end.x, end.y, end.z, 1.0f };
+	vertexData_[1].color = color;
+
+	// 頂点バッファの設定
+	commandList_->IASetVertexBuffers(0, 1, &vertexBufferView_);
+
+	// CBVをセット(ビュープロジェクション行列)
+	commandList_->SetGraphicsRootConstantBufferView(0, camera_->GetConstBuff()->GetGPUVirtualAddress());
+
+	commandList_->DrawInstanced(2, 1, 0, 0);
+}
+
 void PrimitiveDrawer::CreateMesh()
 {
 	// 頂点リソース
@@ -170,14 +194,16 @@ void PrimitiveDrawer::CreateMesh()
 	vertexResource_->Map(0, nullptr, (void**)&vertexData_/*vertexData_*/); // 書き込ためのアドレスを取得
 	std::memcpy(vertexData_, vertices_.data(), sizeof(VertexData) * vertices_.size());
 
-	indexBuff_ = CreateBufferResource(sizeof(uint32_t) * indices_.size()/** 16 * 16 * 6*/);
-	indexBufferView_.BufferLocation = indexBuff_->GetGPUVirtualAddress();
-	indexBufferView_.SizeInBytes = UINT(sizeof(uint32_t) * indices_.size()/** 16 * 16 * 6*/);
-	indexBufferView_.Format = DXGI_FORMAT_R32_UINT;
+	if (indices_.size() != 0) {
+		indexBuff_ = CreateBufferResource(sizeof(uint32_t) * indices_.size()/** 16 * 16 * 6*/);
+		indexBufferView_.BufferLocation = indexBuff_->GetGPUVirtualAddress();
+		indexBufferView_.SizeInBytes = UINT(sizeof(uint32_t) * indices_.size()/** 16 * 16 * 6*/);
+		indexBufferView_.Format = DXGI_FORMAT_R32_UINT;
 
-	//uint32_t* indexData = nullptr;
-	indexBuff_->Map(0, nullptr, (void**)&indexData_/*indexData_*/);
-	std::memcpy(indexData_, indices_.data(), sizeof(uint32_t) * indices_.size());
+		//uint32_t* indexData = nullptr;
+		indexBuff_->Map(0, nullptr, (void**)&indexData_/*indexData_*/);
+		std::memcpy(indexData_, indices_.data(), sizeof(uint32_t) * indices_.size());
+	}
 
 }
 
@@ -373,6 +399,17 @@ void PrimitiveDrawer::CreateBox()
 	indexData_[20] = 2; indexData_[21] = 6; 
 	indexData_[22] = 3; indexData_[23] = 7;*/
 
+}
+
+void PrimitiveDrawer::CreateLine()
+{
+	VertexData vertexData[2];
+	vertexData[0] = { Vector4(0.0f, 0.0f, 0.0f, 1.0f), Vector4(1.0f, 1.0f, 1.0f, 1.0f) };
+	vertexData[1] = { Vector4(1.0f, 1.0f, 1.0f, 1.0f), Vector4(1.0f, 0.0f, 0.0f, 1.0f) };
+
+	for (int32_t i = 0; i < 2; i++) {
+		vertices_.push_back(vertexData[i]);
+	}
 }
 
 ID3D12Resource* PrimitiveDrawer::CreateBufferResource(size_t sizeInBytes)

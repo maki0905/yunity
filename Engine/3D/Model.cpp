@@ -73,6 +73,7 @@ void Model::Draw(const WorldTransform& worldTransform, uint32_t textureHandle)
 
 	if (modelType_ == ModelType::kSkin) {
 		GraphicsPipelineManager::GetInstance()->SetCommandList(commandList_, PipelineType::kSkinning, blendModeType_);
+		commandList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		// 頂点バッファの設定
 		D3D12_VERTEX_BUFFER_VIEW vbvs[2] = {
 			vertexBufferView_,               // VertexDataのVBV
@@ -90,6 +91,7 @@ void Model::Draw(const WorldTransform& worldTransform, uint32_t textureHandle)
 	}
 	else {
 		GraphicsPipelineManager::GetInstance()->SetCommandList(commandList_, PipelineType::kObject3d, blendModeType_);
+		commandList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		// 頂点バッファの設定
 		commandList_->IASetVertexBuffers(0, 1, &vertexBufferView_);
 		uint32_t textureCubeHandle_ = TextureManager::Load("rostock_laage_airport_4k.dds");
@@ -124,6 +126,7 @@ void Model::Draw(const WorldTransform& worldTransform/*, const Camera& camera*/)
 
 	if (modelType_ == ModelType::kSkin) {
 		GraphicsPipelineManager::GetInstance()->SetCommandList(commandList_, PipelineType::kSkinning, blendModeType_);
+		commandList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		// 頂点バッファの設定
 		D3D12_VERTEX_BUFFER_VIEW vbvs[2] = {
 			vertexBufferView_,               // VertexDataのVBV
@@ -141,6 +144,7 @@ void Model::Draw(const WorldTransform& worldTransform/*, const Camera& camera*/)
 	}
 	else {
 		GraphicsPipelineManager::GetInstance()->SetCommandList(commandList_, PipelineType::kObject3d,blendModeType_);
+		commandList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		// 頂点バッファの設定
 		commandList_->IASetVertexBuffers(0, 1, &vertexBufferView_);
 		uint32_t textureCubeHandle_ = TextureManager::Load("rostock_laage_airport_4k.dds");

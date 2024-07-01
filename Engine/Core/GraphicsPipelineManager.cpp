@@ -16,6 +16,7 @@ void GraphicsPipelineManager::Initialize()
 	CreateObject3d();
 	CreateSprite();
 	CreateParticle();
+	CreateLine();
 	CreatePrimitive();
 	CreateSkinning();
 
@@ -25,7 +26,6 @@ void GraphicsPipelineManager::SetCommandList(ID3D12GraphicsCommandList* commandL
 {
 	commandList->SetGraphicsRootSignature(graphicsPipelines_[pipelineType]->rooSignature_->GetSignature());
 	commandList->SetPipelineState(graphicsPipelines_[pipelineType]->pso_[blendModeType]->GetPipelineStateObject());
-	commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }
 
 void GraphicsPipelineManager::CreateObject3d()
@@ -143,6 +143,48 @@ void GraphicsPipelineManager::CreateParticle()
 	}
 }
 
+void GraphicsPipelineManager::CreateLine()
+{
+	graphicsPipelines_[PipelineType::kLine]->rooSignature_ = new RootSignature(device_, static_cast<int>(LineRootBindings::kCount), 1);
+
+	D3D12_STATIC_SAMPLER_DESC staticSamplers = graphicsCommon_->StaticSampler;
+	staticSamplers.ShaderRegister = 0;
+	staticSamplers.ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+	graphicsPipelines_[PipelineType::kLine]->rooSignature_->InitializeStaticSampler(0, staticSamplers, D3D12_SHADER_VISIBILITY_PIXEL);
+
+	//rootSignature_->GetParameter(static_cast<size_t>(RootBindings::kWorldTransform)).InitializeAsConstantBuffer(0, D3D12_SHADER_VISIBILITY_VERTEX);
+	graphicsPipelines_[PipelineType::kLine]->rooSignature_->GetParameter(static_cast<size_t>(LineRootBindings::kViewProjection)).InitializeAsConstantBuffer(static_cast<int>(LineRootBindings::kViewProjection));
+
+	graphicsPipelines_[PipelineType::kLine]->rooSignature_->Finalize(D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
+
+	// InputLayout
+	D3D12_INPUT_ELEMENT_DESC inputElementDescs[] = {
+		{.SemanticName = "POSITION", .SemanticIndex = 0, .Format = DXGI_FORMAT_R32G32B32A32_FLOAT, .AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT},
+		{.SemanticName = "COLOR", .SemanticIndex = 0, .Format = DXGI_FORMAT_R32G32B32A32_FLOAT, .AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT}
+	};
+	D3D12_INPUT_LAYOUT_DESC inputLayoutDesc{};
+	inputLayoutDesc.pInputElementDescs = inputElementDescs;
+	inputLayoutDesc.NumElements = _countof(inputElementDescs);
+
+	//RasiterzerStateの設定
+	D3D12_RASTERIZER_DESC rasterizerDesc = graphicsCommon_->RasterizerDefault;
+
+	// DepthStencilStateの設定
+	D3D12_DEPTH_STENCIL_DESC depthStencilDesc = graphicsCommon_->DepthStateReadWrite;
+
+	graphicsPipelines_[PipelineType::kLine]->pso_[0] = new PipelineState(device_, graphicsPipelines_[PipelineType::kLine]->rooSignature_);
+	graphicsPipelines_[PipelineType::kLine]->pso_[0]->SetInputLayout(inputLayoutDesc);
+	graphicsPipelines_[PipelineType::kLine]->pso_[0]->SetShader(PipelineState::ShaderType::kVS, ShaderCompiler::GetInstance()->Get("Line", ShaderCompiler::ShaderType::kVS));
+	graphicsPipelines_[PipelineType::kLine]->pso_[0]->SetShader(PipelineState::ShaderType::kPS, ShaderCompiler::GetInstance()->Get("Line", ShaderCompiler::ShaderType::kPS));
+	graphicsPipelines_[PipelineType::kLine]->pso_[0]->SetBlendState(graphicsCommon_->blendDescs[1]);
+	graphicsPipelines_[PipelineType::kLine]->pso_[0]->SetRasterizerState(rasterizerDesc);
+	graphicsPipelines_[PipelineType::kLine]->pso_[0]->SetDepthStencilState(depthStencilDesc);
+	graphicsPipelines_[PipelineType::kLine]->pso_[0]->SetRenderTargetFormat(DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, DXGI_FORMAT_D24_UNORM_S8_UINT);
+	graphicsPipelines_[PipelineType::kLine]->pso_[0]->SetPrimitiveTopologyType(D3D12_PRIMITIVE_TOPOLOGY_TYPE_LINE);
+	graphicsPipelines_[PipelineType::kLine]->pso_[0]->SetSampleMask(D3D12_DEFAULT_SAMPLE_MASK);
+	graphicsPipelines_[PipelineType::kLine]->pso_[0]->Finalize();
+}
+
 void GraphicsPipelineManager::CreatePrimitive()
 {
 	graphicsPipelines_[PipelineType::kPrimitive]->rooSignature_ = new RootSignature(device_, static_cast<int>(PrimitiveRootBindings::kCount), 1);
@@ -175,13 +217,13 @@ void GraphicsPipelineManager::CreatePrimitive()
 
 	graphicsPipelines_[PipelineType::kPrimitive]->pso_[0] = new PipelineState(device_, graphicsPipelines_[PipelineType::kPrimitive]->rooSignature_);
 	graphicsPipelines_[PipelineType::kPrimitive]->pso_[0]->SetInputLayout(inputLayoutDesc);
-	graphicsPipelines_[PipelineType::kPrimitive]->pso_[0]->SetShader(PipelineState::ShaderType::kVS, ShaderCompiler::GetInstance()->Get("Line", ShaderCompiler::ShaderType::kVS));
-	graphicsPipelines_[PipelineType::kPrimitive]->pso_[0]->SetShader(PipelineState::ShaderType::kPS, ShaderCompiler::GetInstance()->Get("Line", ShaderCompiler::ShaderType::kPS));
+	graphicsPipelines_[PipelineType::kPrimitive]->pso_[0]->SetShader(PipelineState::ShaderType::kVS, ShaderCompiler::GetInstance()->Get("Primitive", ShaderCompiler::ShaderType::kVS));
+	graphicsPipelines_[PipelineType::kPrimitive]->pso_[0]->SetShader(PipelineState::ShaderType::kPS, ShaderCompiler::GetInstance()->Get("Primitive", ShaderCompiler::ShaderType::kPS));
 	graphicsPipelines_[PipelineType::kPrimitive]->pso_[0]->SetBlendState(graphicsCommon_->blendDescs[1]);
 	graphicsPipelines_[PipelineType::kPrimitive]->pso_[0]->SetRasterizerState(rasterizerDesc);
 	graphicsPipelines_[PipelineType::kPrimitive]->pso_[0]->SetDepthStencilState(depthStencilDesc);
 	graphicsPipelines_[PipelineType::kPrimitive]->pso_[0]->SetRenderTargetFormat(DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, DXGI_FORMAT_D24_UNORM_S8_UINT);
-	graphicsPipelines_[PipelineType::kPrimitive]->pso_[0]->SetPrimitiveTopologyType(D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE);
+	graphicsPipelines_[PipelineType::kPrimitive]->pso_[0]->SetPrimitiveTopologyType(D3D12_PRIMITIVE_TOPOLOGY_TYPE_LINE);
 	graphicsPipelines_[PipelineType::kPrimitive]->pso_[0]->SetSampleMask(D3D12_DEFAULT_SAMPLE_MASK);
 	graphicsPipelines_[PipelineType::kPrimitive]->pso_[0]->Finalize();
 

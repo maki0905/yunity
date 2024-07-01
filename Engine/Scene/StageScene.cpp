@@ -78,6 +78,10 @@ void StageScene::Initialize()
 	//ObjectManager::GetInstance()->Load("TL1", camera_.get(), world_.get());
 	/*trampolines_ = ObjectManager::GetInstance()->GetObjects("stage0", "Trampoline");*/
 
+	line_ = std::make_unique<PrimitiveDrawer>();
+	line_.reset(PrimitiveDrawer::Create());
+	line_->SetCamera(camera_.get());
+
 }
 
 void StageScene::Update()
@@ -169,6 +173,7 @@ void StageScene::Draw3D()
 		object->Draw();
 	}*/
 	player_->Draw();
+	
 
 	//player_->Draw();
 }

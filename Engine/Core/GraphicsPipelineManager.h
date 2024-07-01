@@ -17,6 +17,7 @@ enum PipelineType {
 	kObject3d,
 	kSprite,
 	kParticle,
+	kLine,
 	kPrimitive,
 	kSkinning,
 	kCount,
@@ -39,6 +40,7 @@ private:
 	void CreateObject3d();
 	void CreateSprite();
 	void CreateParticle();
+	void CreateLine();
 	void CreatePrimitive();
 	void CreateSkinning();
 

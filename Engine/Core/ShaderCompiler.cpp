@@ -97,10 +97,15 @@ void ShaderCompiler::ShaderCompile()
 	psblob_["Sprite"] = CompileShader(L"Resources/Shaders/SpritePS.hlsl", L"ps_6_0");
 	assert(psblob_["Sprite"]);
 
-	vsblob_["Line"] = CompileShader(L"Resources/Shaders/LineVS.hlsl", L"vs_6_0");
+	vsblob_["Line"] = CompileShader(L"Resources/Shaders/Line.VS.hlsl", L"vs_6_0");
 	assert(vsblob_["Line"]);
-	psblob_["Line"] = CompileShader(L"Resources/Shaders/LinePS.hlsl", L"ps_6_0");
+	psblob_["Line"] = CompileShader(L"Resources/Shaders/Line.PS.hlsl", L"ps_6_0");
 	assert(psblob_["Line"]);
+
+	vsblob_["Primitive"] = CompileShader(L"Resources/Shaders/Primitive.VS.hlsl", L"vs_6_0");
+	assert(vsblob_["Primitive"]);
+	psblob_["Primitive"] = CompileShader(L"Resources/Shaders/Primitive.PS.hlsl", L"ps_6_0");
+	assert(psblob_["Primitive"]);
 
 	vsblob_["Particle"] = CompileShader(L"Resources/Shaders/ParticleVS.hlsl", L"vs_6_0");
 	assert(vsblob_["Particle"]);

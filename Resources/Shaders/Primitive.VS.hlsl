@@ -1,4 +1,4 @@
-#include "Line.hlsli"
+#include "Primitive.hlsli"
 
 struct WorldTransform
 {

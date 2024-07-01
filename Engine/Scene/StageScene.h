@@ -61,6 +61,7 @@ private:
 	std::vector<Object3D*> floors_;
 	std::vector<Object3D*> trampolines_;
 
+	std::unique_ptr<PrimitiveDrawer> line_;
 
 };
 

@@ -619,10 +619,10 @@
     <FxCompile Include="Resources\Shaders\SpritePS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="Resources\Shaders\LineVS.hlsl">
+    <FxCompile Include="Resources\Shaders\Primitive.VS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="Resources\Shaders\LinePS.hlsl">
+    <FxCompile Include="Resources\Shaders\Primitive.PS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="Resources\Shaders\Fullscreen.VS.hlsl" />
@@ -637,15 +637,18 @@
     <FxCompile Include="Resources\Shaders\CopyImage.PS.hlsl" />
     <FxCompile Include="Resources\Shaders\Skybox.PS.hlsl" />
     <FxCompile Include="Resources\Shaders\Skybox.VS.hlsl" />
+    <FxCompile Include="Resources\Shaders\Line.VS.hlsl" />
+    <FxCompile Include="Resources\Shaders\Line.PS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\Object3d.hlsli">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Resources\Shaders\Line.hlsli">
+    <None Include="Resources\Shaders\Primitive.hlsli">
       <Filter>Shaders</Filter>
     </None>
     <None Include="Resources\Shaders\Fullscreen.hlsli" />
     <None Include="Resources\Shaders\Skybox.hlsli" />
+    <None Include="Resources\Shaders\Line.hlsli" />
   </ItemGroup>
 </Project>

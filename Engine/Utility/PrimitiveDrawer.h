@@ -29,6 +29,7 @@ class PrimitiveDrawer
 public:
 	// 図形
 	enum class Type {
+		kLine,
 		kBox,
 		kSphere,
 	};
@@ -61,7 +62,7 @@ public:
 	/// 3Dモデル生成
 	/// </summary>
 	/// <returns></returns>
-	static PrimitiveDrawer* Create(Type type);
+	static PrimitiveDrawer* Create(Type type = Type::kLine);
 
 	/// <summary>
 	/// グラフィックスパイプライン生成
@@ -79,6 +80,8 @@ public:
 	/// <param name="viewProjection">ビュープロジェクション</param>
 	void Draw(const WorldTransform& worldTransform);
 
+	void Draw(const Vector3& start, const Vector3& end, const Vector4& color = {1.0f, 1.0f, 1.0f, 1.0f});
+
 	void SetCamera(Camera* camera) { camera_ = camera; }
 
 private:
@@ -89,6 +92,8 @@ private:
 	void CreateSphere();
 
 	void CreateBox();
+
+	void CreateLine();
 
 	/// <summary>
 	/// 定数バッファ生成
