@@ -25,6 +25,7 @@ bool RayCast(const Vector3& origin, const Vector3& direction, RayCastHit* hitInf
 			aabb.min = Subtract(obj->GetWorldTransform().translation_, obj->GetHitBoxSize());
 			aabb.max = Add(obj->GetWorldTransform().translation_, obj->GetHitBoxSize());
 			if (IsCollision(ray, aabb)) {
+				hitInfo->collider = obj;
 				return true;
 			}
 			break;

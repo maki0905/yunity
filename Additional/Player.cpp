@@ -33,8 +33,23 @@ void Player::Initialize(Camera* camera, World* world)
 
 	CreateCollider(&worldTransform_, Collider::Shape::kAABB, camera_, { 2.5f, 2.5f, 2.5f });
 	isHit_ = false;
-	SetCollisionMask(kCollisionAttributePlayer);
+	SetCollisionAttribute(kCollisionAttributePlayer);
 	isActive_ = false;
+
+	line_ = std::make_unique<PrimitiveDrawer>();
+	line_.reset(PrimitiveDrawer::Create());
+	line_->SetCamera(camera_);
+
+	raticle_ = std::make_unique<Model>();
+	raticle_.reset(ModelManager::GetInstance()->CreateModel(obj, "Cube"));
+	raticle_->SetCamera(camera_);
+	raticleWorldTransform_.Initialize();
+	raticleWorldTransform_.translation_.x = 3.0f;
+	raticleWorldTransform_.parent_ = &worldTransform_;
+
+
+	isWire_ = false;
+
 }
 
 void Player::Update()
@@ -172,17 +187,35 @@ void Player::Update()
 		isActive_ = false;
 	}*/
 
-	if (Input::GetInstance()->PushKey(DIK_UP)) {
+	if (Input::GetInstance()->PushKey(DIK_W)) {
 		worldTransform_.translation_.y += 0.1f;
 	}
-	if (Input::GetInstance()->PushKey(DIK_DOWN)) {
+	if (Input::GetInstance()->PushKey(DIK_S)) {
 		worldTransform_.translation_.y -= 0.1f;
 	}
-	if (Input::GetInstance()->PushKey(DIK_RIGHT)) {
+	if (Input::GetInstance()->PushKey(DIK_D)) {
 		worldTransform_.translation_.x += 0.1f;
 	}
-	if (Input::GetInstance()->PushKey(DIK_LEFT)) {
+	if (Input::GetInstance()->PushKey(DIK_A)) {
 		worldTransform_.translation_.x -= 0.1f;
+	}
+
+	if (Input::GetInstance()->PushKey(DIK_UP)) {
+		raticleWorldTransform_.translation_.y += 0.1f;
+	}
+	if (Input::GetInstance()->PushKey(DIK_DOWN)) {
+		raticleWorldTransform_.translation_.y -= 0.1f;
+	}
+	if (Input::GetInstance()->PushKey(DIK_RIGHT)) {
+		raticleWorldTransform_.translation_.x += 0.1f;
+	}
+	if (Input::GetInstance()->PushKey(DIK_LEFT)) {
+		raticleWorldTransform_.translation_.x -= 0.1f;
+	}
+
+	if (Length(raticleWorldTransform_.translation_) > 10.0f) {
+		Vector3 dir = raticleWorldTransform_.translation_.Normalize();
+		raticleWorldTransform_.translation_ = Multiply(10.0f, dir);
 	}
 
 	//camera_->SetTranslate({worldTransform_.translation_.x, worldTransform_.translation_.y, camera_->GetTranslate().z});
@@ -202,18 +235,46 @@ void Player::Update()
 
 	isHit_ = false;
 
+	/*if (Input::GetInstance()->TriggerKey(DIK_SPACE)) {
+		isWire_ ^= true;
+		point_ = Add(worldTransform_.translation_, { 5.0f, 0.0f, 0.0f });
+	}*/
+
+	if (Input::GetInstance()->TriggerKey(DIK_R)) {
+		Vector3 direction = Subtract({ raticleWorldTransform_.matWorld_.m[3][0], raticleWorldTransform_.matWorld_.m[3][1], raticleWorldTransform_.matWorld_.m[3][2] }, worldTransform_.translation_);
+		direction.Normalize();
+		RayCastHit hit;
+		if (RayCast(worldTransform_.translation_, direction, &hit, 10.0f, GetWorld(), kCollisionAttributePlayer)) {
+			isWire_ = true;
+			point_ = hit.collider->GetTranslation();
+		}
+		else {
+			isWire_ = false;
+		}
+
+	}
+
+	if (!isWire_) {
+		point_ = worldTransform_.translation_;
+	}
+
+	raticleWorldTransform_.UpdateMatrix();
+
 }
 
 void Player::Draw()
 {
-	if (RayCast({ 0.0f, 0.0f, 0.0f }, { 1.0f, 0.0f, 0.0f }, nullptr, 5.0f, GetWorld())) {
+	/*if (RayCast({ 0.0f, 0.0f, 0.0f }, { 1.0f, 0.0f, 0.0f }, nullptr, 5.0f, GetWorld())) {
 		model_->Draw(worldTransform_, TextureManager::GetInstance()->Load("uvChecker.png"));
 	}
 	else {
 		model_->Draw(worldTransform_);
-	}
+	}*/
+	model_->Draw(worldTransform_);
+	raticle_->Draw(raticleWorldTransform_, TextureManager::GetInstance()->Load("uvChecker.png"));
 	//model_->Draw(worldTransform_, TextureManager::GetInstance()->Load("uvChecker.png"));
 	HitBox();
+	line_->Draw(worldTransform_.translation_, point_, { 0.0f, 0.0f, 0.0f, 1.0f });
 	//Collider::HitBox();
 }
 

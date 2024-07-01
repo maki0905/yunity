@@ -75,7 +75,7 @@ void StageScene::Initialize()
 	endWT_.translation_ = { 10.0f, 3.0f, 0.0f };
 	player_->ResetPos(startWT_.translation_);
 
-	//ObjectManager::GetInstance()->Load("stage0", camera_.get(), world_.get());
+	ObjectManager::GetInstance()->Load("stage0", camera_.get(), world_.get());
 	//ObjectManager::GetInstance()->Load("TL1", camera_.get(), world_.get());
 	/*trampolines_ = ObjectManager::GetInstance()->GetObjects("stage0", "Trampoline");*/
 
@@ -109,9 +109,9 @@ void StageScene::Update()
 
 
 	player_->Update();
-	/*for (auto& object : ObjectManager::GetInstance()->GetObjects("stage0")) {
+	for (auto& object : ObjectManager::GetInstance()->GetObjects("stage0")) {
 		object->Update();
-	}*/
+	}
 	/*for (auto& object : ObjectManager::GetInstance()->GetObjects("TL1")) {
 		object->Update();
 	}*/
@@ -163,9 +163,9 @@ void StageScene::Draw3D()
 	//start_->Draw(startWT_);
 	/*start_->Draw(startWT_);
 	end_->Draw(endWT_);*/
-	/*for (auto& object : ObjectManager::GetInstance()->GetObjects("stage0")) {
+	for (auto& object : ObjectManager::GetInstance()->GetObjects("stage0")) {
 		object->Draw();
-	}*/
+	}
 	/*for (auto& object : ObjectManager::GetInstance()->GetObjects("TL1")) {
 		object->Draw();
 	}*/

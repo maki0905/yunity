@@ -44,5 +44,11 @@ private:
 	bool isHit_;
 	bool isActive_;
 
+	std::unique_ptr<PrimitiveDrawer> line_;
+	Vector3 point_;
+	bool isWire_;
+
+	std::unique_ptr<Model> raticle_;
+	WorldTransform raticleWorldTransform_;
 };
 
