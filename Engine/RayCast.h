@@ -10,4 +10,4 @@ struct RayCastHit {
 	Vector3 point;
 };
 
-bool RayCast(const Vector3& origin, const Vector3& direction, RayCastHit* hitInfo, float maxDistance, World* world);
+bool RayCast(const Vector3& origin, const Vector3& direction, RayCastHit* hitInfo, float maxDistance, World* world, uint32_t mask = 0);

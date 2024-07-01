@@ -1,15 +1,20 @@
 #include "RayCast.h"
 
 #include "Collision.h"
+#include "CollisionConfig.h"
 #include "Body.h"
 
-bool RayCast(const Vector3& origin, const Vector3& direction, RayCastHit* hitInfo, float maxDistance, World* world)
+bool RayCast(const Vector3& origin, const Vector3& direction, RayCastHit* hitInfo, float maxDistance, World* world, uint32_t mask)
 {
 	Segment ray;
 	ray.origin = origin;
 	ray.diff = Multiply(maxDistance, direction);
 
 	for (auto& obj : world->GetAllocator()) {
+		if ((mask ^ obj->GetCollisionAttribute()) == 0) {
+			continue;
+		}
+
 		switch (obj->GetShape())
 		{
 		case Collider::Shape::kSphere:
