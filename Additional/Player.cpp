@@ -2,6 +2,7 @@
 
 #include "ImGuiManager.h"
 #include "ModelManager.h"
+#include "RayCast.h"
 
 void Player::Initialize(Camera* camera, World* world)
 {
@@ -156,7 +157,7 @@ void Player::Update()
 	//worldTransform_.quaternion_ = Slerp(worldTransform_.quaternion_, moveQuaternion, 1.0f);
 	//body_->AddForce(body_->RubberMovement(worldTransform_.translation_, { 0.0f, 0.0f, 0.0f }, limitLength_, stiffness_, dampar_), 0);
 
-	if (Input::GetInstance()->TriggerKey(DIK_UP)) {
+	/*if (Input::GetInstance()->TriggerKey(DIK_UP)) {
 		AddForce({ 0.0f, 15.0f, 0.0f }, 1);
 		
 	}
@@ -169,6 +170,19 @@ void Player::Update()
 
 	if (worldTransform_.translation_.y < -2.0f) {
 		isActive_ = false;
+	}*/
+
+	if (Input::GetInstance()->PushKey(DIK_UP)) {
+		worldTransform_.translation_.y += 0.1f;
+	}
+	if (Input::GetInstance()->PushKey(DIK_DOWN)) {
+		worldTransform_.translation_.y -= 0.1f;
+	}
+	if (Input::GetInstance()->PushKey(DIK_RIGHT)) {
+		worldTransform_.translation_.x += 0.1f;
+	}
+	if (Input::GetInstance()->PushKey(DIK_LEFT)) {
+		worldTransform_.translation_.x -= 0.1f;
 	}
 
 	//camera_->SetTranslate({worldTransform_.translation_.x, worldTransform_.translation_.y, camera_->GetTranslate().z});
@@ -192,8 +206,12 @@ void Player::Update()
 
 void Player::Draw()
 {
-	
-	model_->Draw(worldTransform_);
+	if (RayCast({ 0.0f, 0.0f, 0.0f }, { 1.0f, 0.0f, 0.0f }, nullptr, 5.0f, GetWorld())) {
+		model_->Draw(worldTransform_, TextureManager::GetInstance()->Load("uvChecker.png"));
+	}
+	else {
+		model_->Draw(worldTransform_);
+	}
 	//model_->Draw(worldTransform_, TextureManager::GetInstance()->Load("uvChecker.png"));
 	HitBox();
 	//Collider::HitBox();

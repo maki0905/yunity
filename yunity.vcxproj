@@ -133,6 +133,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Engine\Physics\Body.cpp" />
     <ClCompile Include="Engine\Physics\World.cpp" />
     <ClCompile Include="Engine\Core\RenderTexture.cpp" />
+    <ClCompile Include="Engine\RayCast.cpp" />
     <ClCompile Include="Engine\Scene\ClearScene.cpp" />
     <ClCompile Include="Engine\Core\CommandList.cpp" />
     <ClCompile Include="Engine\Core\CommandQueue.cpp" />
@@ -210,6 +211,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\Object3D.h" />
     <ClInclude Include="Engine\ObjectManager.h" />
     <ClInclude Include="Engine\Physics\Body.h" />
+    <ClInclude Include="Engine\RayCast.h" />
     <ClInclude Include="Engine\RootBindingsCommon.h" />
     <ClInclude Include="Engine\Physics\World.h" />
     <ClInclude Include="Engine\Core\RenderTexture.h" />

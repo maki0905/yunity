@@ -20,6 +20,8 @@ public:
 	// 衝突時に呼ばれる固有の処理
 	virtual void Event(Body* body = nullptr) = 0;
 
+	World* GetWorld() { return world_; }
+
 	Vector3 GetVelocity() { return velocity_; }
 	void SetVelocity(const Vector3& velocity) { velocity_ = velocity; }
 

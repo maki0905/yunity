@@ -20,6 +20,8 @@ public:
 
 	void Add(Body* collider) { allocator_.push_back(collider); };
 
+	std::list<Body*> GetAllocator() { return allocator_; }
+
 	void SetGravity(const Vector3& gravity) { gravity_ = gravity; };
 	Vector3 GetGravity() { return gravity_; };
 	// デルタタイム

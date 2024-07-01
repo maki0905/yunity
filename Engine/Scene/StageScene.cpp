@@ -56,7 +56,8 @@ void StageScene::Initialize()
 	skybox_->SetTexture("rostock_laage_airport_4k.dds");
 
 	world_ = std::make_unique<World>();
-	world_->Initialize({0.0f, -9.8f, 0.0f});
+	//world_->Initialize({0.0f, -9.8f, 0.0f});
+	world_->Initialize();
 
 	player_ = std::make_unique<Player>();
 	player_->Initialize(camera_.get(), world_.get());
@@ -74,13 +75,9 @@ void StageScene::Initialize()
 	endWT_.translation_ = { 10.0f, 3.0f, 0.0f };
 	player_->ResetPos(startWT_.translation_);
 
-	ObjectManager::GetInstance()->Load("stage0", camera_.get(), world_.get());
+	//ObjectManager::GetInstance()->Load("stage0", camera_.get(), world_.get());
 	//ObjectManager::GetInstance()->Load("TL1", camera_.get(), world_.get());
 	/*trampolines_ = ObjectManager::GetInstance()->GetObjects("stage0", "Trampoline");*/
-
-	line_ = std::make_unique<PrimitiveDrawer>();
-	line_.reset(PrimitiveDrawer::Create());
-	line_->SetCamera(camera_.get());
 
 }
 
@@ -112,9 +109,9 @@ void StageScene::Update()
 
 
 	player_->Update();
-	for (auto& object : ObjectManager::GetInstance()->GetObjects("stage0")) {
+	/*for (auto& object : ObjectManager::GetInstance()->GetObjects("stage0")) {
 		object->Update();
-	}
+	}*/
 	/*for (auto& object : ObjectManager::GetInstance()->GetObjects("TL1")) {
 		object->Update();
 	}*/
@@ -166,9 +163,9 @@ void StageScene::Draw3D()
 	//start_->Draw(startWT_);
 	/*start_->Draw(startWT_);
 	end_->Draw(endWT_);*/
-	for (auto& object : ObjectManager::GetInstance()->GetObjects("stage0")) {
+	/*for (auto& object : ObjectManager::GetInstance()->GetObjects("stage0")) {
 		object->Draw();
-	}
+	}*/
 	/*for (auto& object : ObjectManager::GetInstance()->GetObjects("TL1")) {
 		object->Draw();
 	}*/
