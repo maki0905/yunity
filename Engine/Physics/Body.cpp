@@ -63,21 +63,21 @@ void Body::Solve()
 
 Vector3 Body::RubberMovement(const Vector3& start, const Vector3& end, float limitLength, float stiffness, float dampingCoefficient)
 {
-	//Vector3 diff = Subtract(start, end);
-	//float length = Length(diff);
-	////length = 100f;
-	//if (length != 0.0f)
-	//{
-	//	if (length > limitLength) {
-	//		length - limitLength;
-	//	}
-	//	Vector3 direction = Normalize(diff);
-	//	Vector3 displacement = Multiply(length, Subtract(start, end));
-	//	Vector3 restoringForce = Multiply(-stiffness, displacement);
-	//	Vector3 dampingForce = Multiply(-dampingCoefficient, velocity_);
-	//	Vector3 force = Add(restoringForce, dampingForce);
-	//	return force;
-	//}
+	Vector3 diff = Subtract(start, end);
+	float length = Length(diff);
+	//length = 100f;
+	if (length != 0.0f)
+	{
+		if (length > limitLength) {
+			length - limitLength;
+		}
+		Vector3 direction = Normalize(diff);
+		Vector3 displacement = Multiply(length, Subtract(start, end));
+		Vector3 restoringForce = Multiply(-stiffness, displacement);
+		Vector3 dampingForce = Multiply(-dampingCoefficient, velocity_);
+		Vector3 force = Add(restoringForce, dampingForce);
+		return force;
+	}
 	return { 0.0f, 0.0f, 0.0f };
 }
 

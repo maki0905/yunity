@@ -40,12 +40,24 @@ void Player::Initialize(Camera* camera, World* world)
 	line_.reset(PrimitiveDrawer::Create());
 	line_->SetCamera(camera_);
 
-	raticle_ = std::make_unique<Model>();
-	raticle_.reset(ModelManager::GetInstance()->CreateModel(obj, "Cube"));
-	raticle_->SetCamera(camera_);
-	raticleWorldTransform_.Initialize();
-	raticleWorldTransform_.translation_.x = 3.0f;
-	raticleWorldTransform_.parent_ = &worldTransform_;
+	reticle3D_ = std::make_unique<Model>();
+	reticle3D_.reset(ModelManager::GetInstance()->CreateModel(obj, "apex"));
+	reticle3D_->SetCamera(camera_);
+
+	onReticle_ = TextureManager::GetInstance()->Load("onReticle.png");
+	offReticle_ = TextureManager::GetInstance()->Load("offReticle.png");
+	reticle_ = std::make_unique<Sprite>();
+	reticle_.reset(Sprite::Create(offReticle_, { 0.0f, 0.0f }, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
+
+	reticleWorldTransform_.Initialize();
+	reticleWorldTransform_.translation_.x = 3.0f;
+	reticleWorldTransform_.parent_ = &worldTransform_;
+
+	apex_ = std::make_unique<Model>();
+	apex_.reset(ModelManager::GetInstance()->CreateModel(obj, "apex"));
+	apex_->SetCamera(camera_);
+	apexWorldTransform_.Initialize();
+
 
 
 	isWire_ = false;
@@ -201,21 +213,21 @@ void Player::Update()
 	}
 
 	if (Input::GetInstance()->PushKey(DIK_UP)) {
-		raticleWorldTransform_.translation_.y += 0.1f;
+		reticleWorldTransform_.translation_.y += 0.1f;
 	}
 	if (Input::GetInstance()->PushKey(DIK_DOWN)) {
-		raticleWorldTransform_.translation_.y -= 0.1f;
+		reticleWorldTransform_.translation_.y -= 0.1f;
 	}
 	if (Input::GetInstance()->PushKey(DIK_RIGHT)) {
-		raticleWorldTransform_.translation_.x += 0.1f;
+		reticleWorldTransform_.translation_.x += 0.1f;
 	}
 	if (Input::GetInstance()->PushKey(DIK_LEFT)) {
-		raticleWorldTransform_.translation_.x -= 0.1f;
+		reticleWorldTransform_.translation_.x -= 0.1f;
 	}
 
-	if (Length(raticleWorldTransform_.translation_) > 10.0f) {
-		Vector3 dir = raticleWorldTransform_.translation_.Normalize();
-		raticleWorldTransform_.translation_ = Multiply(10.0f, dir);
+	if (Length(reticleWorldTransform_.translation_) > 10.0f) {
+		Vector3 dir = reticleWorldTransform_.translation_.Normalize();
+		reticleWorldTransform_.translation_ = Multiply(10.0f, dir);
 	}
 
 	//camera_->SetTranslate({worldTransform_.translation_.x, worldTransform_.translation_.y, camera_->GetTranslate().z});
@@ -241,12 +253,14 @@ void Player::Update()
 	}*/
 
 	if (Input::GetInstance()->TriggerKey(DIK_R)) {
-		Vector3 direction = Subtract({ raticleWorldTransform_.matWorld_.m[3][0], raticleWorldTransform_.matWorld_.m[3][1], raticleWorldTransform_.matWorld_.m[3][2] }, worldTransform_.translation_);
+		Vector3 direction = Subtract({ reticleWorldTransform_.matWorld_.m[3][0], reticleWorldTransform_.matWorld_.m[3][1], reticleWorldTransform_.matWorld_.m[3][2] }, worldTransform_.translation_);
 		direction.Normalize();
 		RayCastHit hit;
 		if (RayCast(worldTransform_.translation_, direction, &hit, 10.0f, GetWorld(), kCollisionAttributePlayer)) {
 			isWire_ = true;
-			point_ = hit.collider->GetTranslation();
+			//point_ = hit.collider->GetTranslation();
+			point_ = hit.point;
+			apexWorldTransform_.translation_ = point_;
 		}
 		else {
 			isWire_ = false;
@@ -257,8 +271,15 @@ void Player::Update()
 	if (!isWire_) {
 		point_ = worldTransform_.translation_;
 	}
+	else {
+		AddForce(RubberMovement(worldTransform_.translation_, point_, 10.0f, 1.0f, 0.1f), 0);
+	}
 
-	raticleWorldTransform_.UpdateMatrix();
+	reticleWorldTransform_.UpdateMatrix();
+	apexWorldTransform_.UpdateMatrix();
+
+	Vector2 pos = WorldToScreen({ reticleWorldTransform_.matWorld_.m[3][0], reticleWorldTransform_.matWorld_.m[3][1], reticleWorldTransform_.matWorld_.m[3][2] }, camera_->GetViewMatrix(), camera_->GetProjectionMatrix(), 1280.0f, 720.0f);
+	reticle_->SetPosition(pos);
 
 }
 
@@ -271,11 +292,21 @@ void Player::Draw()
 		model_->Draw(worldTransform_);
 	}*/
 	model_->Draw(worldTransform_);
-	raticle_->Draw(raticleWorldTransform_, TextureManager::GetInstance()->Load("uvChecker.png"));
+	//raticle_->Draw(reticleWorldTransform_, TextureManager::GetInstance()->Load("uvChecker.png"));
 	//model_->Draw(worldTransform_, TextureManager::GetInstance()->Load("uvChecker.png"));
 	HitBox();
 	line_->Draw(worldTransform_.translation_, point_, { 0.0f, 0.0f, 0.0f, 1.0f });
+	reticle3D_->Draw(reticleWorldTransform_);
+	if (isWire_) {
+		apex_->Draw(apexWorldTransform_);
+	}
+	//reticle_->Draw();
 	//Collider::HitBox();
+}
+
+void Player::DrawUI()
+{
+	//reticle_->Draw();
 }
 
 void Player::Event(Body* body)

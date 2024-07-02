@@ -106,8 +106,8 @@ Model::ModelData ModelManager::LoadModelFile(Format format, const std::string& f
 			aiFace& face = mesh->mFaces[faceIndex];
 			assert(face.mNumIndices == 3);
 			modelData.indices.push_back(face.mIndices[0]);
-			modelData.indices.push_back(face.mIndices[2]);
 			modelData.indices.push_back(face.mIndices[1]);
+			modelData.indices.push_back(face.mIndices[2]);
 		}
 		// SkinCluster構築用データ取得
 		for (uint32_t boneIndex = 0; boneIndex < mesh->mNumBones; ++boneIndex) {

@@ -8,6 +8,7 @@
 #include "Model.h"
 #include "WorldTransform.h"
 #include "Body.h"
+#include "Sprite.h"
 
 
 
@@ -19,6 +20,8 @@ public:
 	void Update();
 
 	void Draw();
+
+	void DrawUI();
 
 	void Event(Body* body = nullptr) override;
 
@@ -48,7 +51,17 @@ private:
 	Vector3 point_;
 	bool isWire_;
 
-	std::unique_ptr<Model> raticle_;
-	WorldTransform raticleWorldTransform_;
+
+	std::unique_ptr<Model> reticle3D_;
+	//WorldTransform reticle3DWorldTransform_;
+	std::unique_ptr<Model> apex_;
+	WorldTransform apexWorldTransform_;
+
+
+	std::unique_ptr<Sprite> reticle_;
+	WorldTransform reticleWorldTransform_;
+	uint32_t onReticle_;
+	uint32_t offReticle_;
+
 };
 

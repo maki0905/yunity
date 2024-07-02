@@ -649,6 +649,21 @@ Vector3 MapWorldToScreen(const Vector3& worldPosition, const Matrix4x4& matView,
 	return result;
 }
 
+Vector2 WorldToScreen(const Vector3& worldPosition, const Matrix4x4& matView, const Matrix4x4& matProjection, float width, float height)
+{
+	Vector2 result{};
+	// ビューポート行列
+	Matrix4x4 matViewport = MakeViewportMatrix(0, 0, width, height, 0, 1);
+
+	// ビュー行列とプロジェクション行列、ビューポート行列を合成する
+	Matrix4x4 matViewProjectionViewport = Multiply(Multiply(matView, matProjection), matViewport);
+
+	// ワールド->スクリーン座標変換
+	result.x = TransformVector3(worldPosition, matViewProjectionViewport).x;
+	result.y = TransformVector3(worldPosition, matViewProjectionViewport).y;
+	return result;
+}
+
 
 
 Matrix4x4 DirectionToDirection(const Vector3& from, const Vector3& to)

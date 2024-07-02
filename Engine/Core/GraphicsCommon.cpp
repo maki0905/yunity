@@ -26,9 +26,10 @@ void GraphicsCommon::Initialize()
     StaticSampler.Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;
 
     // Default rasterizer states
+    RasterizerDefault = {};
     RasterizerDefault.FillMode = D3D12_FILL_MODE_SOLID;
     RasterizerDefault.CullMode = D3D12_CULL_MODE_BACK;
-    RasterizerDefault.FrontCounterClockwise = TRUE;
+   /* RasterizerDefault.FrontCounterClockwise = TRUE;
     RasterizerDefault.DepthBias = D3D12_DEFAULT_DEPTH_BIAS;
     RasterizerDefault.DepthBiasClamp = D3D12_DEFAULT_DEPTH_BIAS_CLAMP;
     RasterizerDefault.SlopeScaledDepthBias = D3D12_DEFAULT_SLOPE_SCALED_DEPTH_BIAS;
@@ -36,7 +37,7 @@ void GraphicsCommon::Initialize()
     RasterizerDefault.MultisampleEnable = FALSE;
     RasterizerDefault.AntialiasedLineEnable = FALSE;
     RasterizerDefault.ForcedSampleCount = 0;
-    RasterizerDefault.ConservativeRaster = D3D12_CONSERVATIVE_RASTERIZATION_MODE_OFF;
+    RasterizerDefault.ConservativeRaster = D3D12_CONSERVATIVE_RASTERIZATION_MODE_OFF;*/
 
     RasterizerDefaultMsaa = RasterizerDefault;
     RasterizerDefaultMsaa.MultisampleEnable = TRUE;
@@ -117,7 +118,7 @@ void GraphicsCommon::Initialize()
     DepthStateDisabled.FrontFace.StencilDepthFailOp = D3D12_STENCIL_OP_KEEP;
     DepthStateDisabled.BackFace = DepthStateDisabled.FrontFace;
 
-    DepthStateReadWrite = DepthStateDisabled;
+    DepthStateReadWrite =  DepthStateDisabled;
     DepthStateReadWrite.DepthEnable = TRUE;
     DepthStateReadWrite.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
     DepthStateReadWrite.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;

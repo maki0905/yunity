@@ -40,6 +40,10 @@ bool IsCollision(const AABB& aabb, const Segment& segment);
 
 bool IsCollision(const Segment& segment, const AABB& aabb);
 
+bool IsCollision(const AABB& aabb, const Ray& ray);
+
+bool IsCollision(const Ray& ray, const AABB& aabb);
+
 bool IsCollision(const OBB& obb, const Sphere& sphere);
 
 bool IsCollision(const Sphere& sphere, const OBB& obb);

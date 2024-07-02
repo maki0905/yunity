@@ -325,6 +325,9 @@ bool IsCollision(const Segment& segment, const AABB& aabb)
 	// AABBとの衝突点(貫通点)のtが大きい方
 	float tmax = std::min(std::min(tFarX, tFarY), tFarZ);
 	//float segmentLength = Length(Subtract(segment.diff, segment.origin));
+	/*if (tmin <= tmax) {
+		return true;
+	}*/
 	if (tmin < tmax && tmin < 1.0f && tmax > 0.0f) {
 
 
@@ -338,6 +341,46 @@ bool IsCollision(const Segment& segment, const AABB& aabb)
 			}
 		}
 	}
+	return false;
+}
+
+bool IsCollision(const AABB& aabb, const Ray& ray)
+{
+	float tNearX = std::min((aabb.min.x - ray.origin.x) / ray.diff.x, (aabb.max.x - ray.origin.x) / ray.diff.x);
+	float tNearY = std::min((aabb.min.y - ray.origin.y) / ray.diff.y, (aabb.max.y - ray.origin.y) / ray.diff.y);
+	float tNearZ = std::min((aabb.min.z - ray.origin.z) / ray.diff.z, (aabb.max.z - ray.origin.z) / ray.diff.z);
+	float tFarX = std::max((aabb.min.x - ray.origin.x) / ray.diff.x, (aabb.max.x - ray.origin.x) / ray.diff.x);
+	float tFarY = std::max((aabb.min.y - ray.origin.y) / ray.diff.y, (aabb.max.y - ray.origin.y) / ray.diff.y);
+	float tFarZ = std::max((aabb.min.z - ray.origin.z) / ray.diff.z, (aabb.max.z - ray.origin.z) / ray.diff.z);
+	// AABBとの衝突点(貫通点)のtが小さい方
+	float tmin = std::max(std::max(tNearX, tNearY), tNearZ);
+	// AABBとの衝突点(貫通点)のtが大きい方
+	float tmax = std::min(std::min(tFarX, tFarY), tFarZ);
+	//float segmentLength = Length(Subtract(segment.diff, segment.origin));
+	if (tmin <= tmax) {
+		return true;
+	}
+	
+	return false;
+}
+
+bool IsCollision(const Ray& ray, const AABB& aabb)
+{
+	float tNearX = std::min((aabb.min.x - ray.origin.x) / ray.diff.x, (aabb.max.x - ray.origin.x) / ray.diff.x);
+	float tNearY = std::min((aabb.min.y - ray.origin.y) / ray.diff.y, (aabb.max.y - ray.origin.y) / ray.diff.y);
+	float tNearZ = std::min((aabb.min.z - ray.origin.z) / ray.diff.z, (aabb.max.z - ray.origin.z) / ray.diff.z);
+	float tFarX = std::max((aabb.min.x - ray.origin.x) / ray.diff.x, (aabb.max.x - ray.origin.x) / ray.diff.x);
+	float tFarY = std::max((aabb.min.y - ray.origin.y) / ray.diff.y, (aabb.max.y - ray.origin.y) / ray.diff.y);
+	float tFarZ = std::max((aabb.min.z - ray.origin.z) / ray.diff.z, (aabb.max.z - ray.origin.z) / ray.diff.z);
+	// AABBとの衝突点(貫通点)のtが小さい方
+	float tmin = std::max(std::max(tNearX, tNearY), tNearZ);
+	// AABBとの衝突点(貫通点)のtが大きい方
+	float tmax = std::min(std::min(tFarX, tFarY), tFarZ);
+	//float segmentLength = Length(Subtract(segment.diff, segment.origin));
+	if (tmin <= tmax) {
+		return true;
+	}
+	
 	return false;
 }
 

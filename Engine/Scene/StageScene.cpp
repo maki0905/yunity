@@ -159,7 +159,7 @@ void StageScene::Draw3D()
 
 	/*---------------------------------------------------------*/
 
-	skybox_->Draw(skyboxWorldTransform_);
+	//skybox_->Draw(skyboxWorldTransform_);
 	//start_->Draw(startWT_);
 	/*start_->Draw(startWT_);
 	end_->Draw(endWT_);*/
@@ -177,5 +177,5 @@ void StageScene::Draw3D()
 
 void StageScene::DrawFront()
 {
-	
+	player_->DrawUI();
 }

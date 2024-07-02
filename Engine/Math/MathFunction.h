@@ -2,6 +2,8 @@
 
 #include <cmath>
 #include <numbers>
+#include <iostream>
+#include <algorithm>
 
 #include "Vecter2.h"
 #include "Vector3.h"
@@ -129,6 +131,8 @@ Matrix4x4 MakeViewMatrix(const Vector3& rotate, const Vector3& translate);
 Matrix4x4 MakeViewMatrix(const Quaternion& quaternion, const Vector3& translate);
 
 Vector3 MapWorldToScreen(const Vector3& worldPosition,const Matrix4x4& matView, const Matrix4x4& matProjection ,float width, float height );
+
+Vector2 WorldToScreen(const Vector3& worldPosition, const Matrix4x4& matView, const Matrix4x4& matProjection, float width, float height);
 
 Matrix4x4 DirectionToDirection(const Vector3& from, const Vector3& to);
 

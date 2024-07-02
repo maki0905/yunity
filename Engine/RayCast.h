@@ -11,3 +11,6 @@ struct RayCastHit {
 };
 
 bool RayCast(const Vector3& origin, const Vector3& direction, RayCastHit* hitInfo, float maxDistance, World* world, uint32_t mask = 0);
+
+Vector3 RayIntersection(Segment segment, AABB aabb);
+Vector3 RayIntersection(Ray ray, AABB aabb);
