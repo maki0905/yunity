@@ -51,6 +51,7 @@ private:
 	Vector3 point_;
 	bool isWire_;
 
+	bool isJunp_;
 
 	std::unique_ptr<Model> reticle3D_;
 	//WorldTransform reticle3DWorldTransform_;

@@ -61,6 +61,7 @@ void Player::Initialize(Camera* camera, World* world)
 
 
 	isWire_ = false;
+	isJunp_ = false;
 
 }
 
@@ -199,7 +200,7 @@ void Player::Update()
 		isActive_ = false;
 	}*/
 
-	if (Input::GetInstance()->PushKey(DIK_W)) {
+	/*if (Input::GetInstance()->PushKey(DIK_W)) {
 		worldTransform_.translation_.y += 0.1f;
 	}
 	if (Input::GetInstance()->PushKey(DIK_S)) {
@@ -223,6 +224,71 @@ void Player::Update()
 	}
 	if (Input::GetInstance()->PushKey(DIK_LEFT)) {
 		reticleWorldTransform_.translation_.x -= 0.1f;
+	}*/
+
+	Vector3 move = { 0.0f, 0.0f, 0.0f };
+	Vector3 reticleMove = { 0.0f, 0.0f, 0.0f };
+	// ジョイスティック状態取得
+	if (Input::GetInstance()->IsControllerConnected()) {
+		if (Input::GetInstance()->GetJoystickState(0, pad_)) {
+
+			// プレイヤーの動き
+			const float threshold = 0.7f; 
+			bool isMoving = false;
+			// 速さ
+			const float speed = 0.3f;
+
+			// 移動量
+			move = { (float)pad_.Gamepad.sThumbLX, 0,0};
+
+			if (Length(move) > threshold) {
+				isMoving = true;
+			}
+
+			if (isMoving) {
+
+				move.Normalize();
+				// 移動量に速さを反映
+				move = Multiply(speed, move);
+
+				AddForce(move, 1);
+			}
+
+			if ((pad_.Gamepad.wButtons & XINPUT_GAMEPAD_A) && !(prePad_.Gamepad.wButtons & XINPUT_GAMEPAD_A)) {
+				if (!isJunp_) {
+					isJunp_ = true;
+					AddForce({ 0.0f, 15.0f, 0.0f }, 1);
+				}
+			}
+
+			// レティクルの動き
+			reticleMove = { (float)pad_.Gamepad.sThumbRX, (float)pad_.Gamepad.sThumbRY, 0.0f };
+			reticleMove = Multiply(0.5f, reticleMove.Normalize());
+			reticleWorldTransform_.translation_ = Add(reticleWorldTransform_.translation_, reticleMove);
+
+			// ワイヤー
+			if ((pad_.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) && !(prePad_.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER)) {
+				if (!isWire_) {
+					Vector3 direction = Subtract({ reticleWorldTransform_.matWorld_.m[3][0], reticleWorldTransform_.matWorld_.m[3][1], reticleWorldTransform_.matWorld_.m[3][2] }, worldTransform_.translation_);
+					direction.Normalize();
+					RayCastHit hit;
+					if (RayCast(worldTransform_.translation_, direction, &hit, 10.0f, GetWorld(), kCollisionAttributePlayer)) {
+						isWire_ = true;
+						//point_ = hit.collider->GetTranslation();
+						point_ = hit.point;
+						apexWorldTransform_.translation_ = point_;
+					}
+					else {
+						isWire_ = false;
+					}
+				}
+				else {
+					isWire_ = false;
+				}
+			}
+
+
+		}
 	}
 
 	if (Length(reticleWorldTransform_.translation_) > 10.0f) {
@@ -325,6 +391,10 @@ void Player::Event(Body* body)
 			}*/
 
 		}
+	}
+
+	if (GetVelocity().y < 0.0f) {
+		isJunp_ = false;
 	}
 
 	ImGui::Begin("Player");
