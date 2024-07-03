@@ -33,6 +33,10 @@ void CollisionManager::CheckCollisionPair(Body* colliderA, Body* colliderB) {
 		return;
 	}*/
 
+	if (colliderA->GetCollisionAttribute() == colliderB->GetCollisionAttribute()) {
+		return;
+	}
+
 	switch (colliderA->GetShape())
 	{
 	case Collider::Shape::kSphere:

@@ -351,7 +351,7 @@ void Player::Update()
 	Vector2 pos = WorldToScreen({ reticleWorldTransform_.matWorld_.m[3][0], reticleWorldTransform_.matWorld_.m[3][1], reticleWorldTransform_.matWorld_.m[3][2] }, camera_->GetViewMatrix(), camera_->GetProjectionMatrix(), 1280.0f, 720.0f);
 	reticle_->SetPosition(pos);
 
-	if (worldTransform_.translation_.y < -2.0f) {
+	if (worldTransform_.translation_.y < -6.0f) {
 		isActive_ = false;
 	}
 
