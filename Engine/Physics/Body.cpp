@@ -113,9 +113,13 @@ void Body::OnCollisiont(Body* body)
 		Vector3 pushBack = GetPushback(a, b);
 		worldTransform_->translation_ = Add(pushBack, worldTransform_->translation_);
 		worldTransform_->UpdateMatrix();
+		if (pushBack.x != 0.0f) {
+			velocity_.x = 0.0f;
+		}
 		if (pushBack.y != 0.0f) {
 			velocity_.y = 0.0f;
 		}
+		vertical_ = pushBack;
 	}
 }
 

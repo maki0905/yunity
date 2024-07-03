@@ -8,12 +8,12 @@
 
 bool RayCast(const Vector3& origin, const Vector3& direction, RayCastHit* hitInfo, float maxDistance, World* world, uint32_t mask)
 {
-	//Segment ray;
-	//ray.origin = origin;
-	//ray.diff = /*direction*/Multiply(maxDistance, direction);
-	Ray ray;
+	Segment ray;
 	ray.origin = origin;
-	ray.diff = direction;
+	ray.diff = /*direction*/Multiply(maxDistance, direction);
+	/*Ray ray;
+	ray.origin = origin;
+	ray.diff = direction;*/
 
 	for (auto& obj : world->GetAllocator()) {
 		if ((mask ^ obj->GetCollisionAttribute()) == 0) {
@@ -45,6 +45,42 @@ bool RayCast(const Vector3& origin, const Vector3& direction, RayCastHit* hitInf
     return false;
 }
 
+bool RayCast(const Vector3& origin, const Vector3& direction, RayCastHit* hitInfo, World* world, uint32_t mask)
+{
+	Ray ray;
+	ray.origin = origin;
+	ray.diff = direction;
+
+	for (auto& obj : world->GetAllocator()) {
+		if ((mask ^ obj->GetCollisionAttribute()) == 0) {
+			continue;
+		}
+
+		switch (obj->GetShape())
+		{
+		case Collider::Shape::kSphere:
+
+			break;
+		case Collider::Shape::kAABB:
+			AABB aabb;
+			aabb.min = Subtract(obj->GetWorldTransform().translation_, obj->GetHitBoxSize());
+			aabb.max = Add(obj->GetWorldTransform().translation_, obj->GetHitBoxSize());
+			if (IsCollision(ray, aabb)) {
+				hitInfo->collider = obj;
+				hitInfo->point = RayIntersection(ray, aabb);
+				return true;
+			}
+			break;
+		case Collider::Shape::kOBB:
+
+			break;
+
+		}
+
+	}
+	return false;
+}
+
 Vector3 RayIntersection(Segment segment, AABB aabb)
 {
 	Vector3 result;
@@ -62,7 +98,7 @@ Vector3 RayIntersection(Segment segment, AABB aabb)
 	float tmax = min(min(tFarX, tFarY), tFarZ);
 	//float segmentLength = Length(Subtract(segment.diff, segment.origin));
 	
-	result = Multiply(tmin, segment.origin);
+	result = Add(segment.origin, Multiply(tmin, segment.diff));
 
 	return result;
 }

@@ -10,16 +10,26 @@ void TitleScene::Initialize()
 	worldTransform_.Initialize();
 
 	sprite_ = std::make_unique<Sprite>();
-	sprite_.reset(Sprite::Create(TextureManager::GetInstance()->Load("uvChecker.png"), { 0.0f, 0.0f }));
+	sprite_.reset(Sprite::Create(TextureManager::GetInstance()->Load("TITLE.png"), { 320.0f, 260.0f }));
 
-	model_ = std::make_unique<Model>();
-	model_.reset(ModelManager::GetInstance()->CreateModel(obj, "terrain"));
-	model_->SetCamera(camera_/*camera_.get()*/);
-	model_->SetLighting(false);
+	//model_ = std::make_unique<Model>();
+	//model_.reset(ModelManager::GetInstance()->CreateModel(obj, "terrain"));
+	//model_->SetCamera(camera_/*camera_.get()*/);
+	//model_->SetLighting(false);
 }
 
 void TitleScene::Update()
 {
+	prePad_ = pad_;
+	if (Input::GetInstance()->IsControllerConnected()) {
+		if (Input::GetInstance()->GetJoystickState(0, pad_)) {
+			if ((pad_.Gamepad.wButtons & XINPUT_GAMEPAD_A) && !(prePad_.Gamepad.wButtons & XINPUT_GAMEPAD_A)) {
+				SceneManager::GetInstance()->ChangeScene("SELECT");
+			}
+
+
+		}
+	}
 
 	if (Input::GetInstance()->TriggerKey(DIK_SPACE)) {
 		SceneManager::GetInstance()->ChangeScene("GAMESTAGE");
@@ -34,11 +44,11 @@ void TitleScene::DrawBack()
 
 void TitleScene::Draw3D()
 {
-	model_->Draw(worldTransform_);
+	//model_->Draw(worldTransform_);
 }
 
 void TitleScene::DrawFront()
 {
-	//sprite_->Draw();
+	sprite_->Draw();
 }
 

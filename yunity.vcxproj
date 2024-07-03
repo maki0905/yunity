@@ -147,6 +147,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Engine\Base\GameManager.cpp" />
     <ClCompile Include="Engine\Scene\SceneFactory.cpp" />
     <ClCompile Include="Engine\Scene\SceneManager.cpp" />
+    <ClCompile Include="Engine\Scene\SelectScene.cpp" />
     <ClCompile Include="Engine\SkyBox.cpp" />
     <ClCompile Include="Engine\Utility\CSV.cpp" />
     <ClCompile Include="Engine\Utility\GlobalVariables.cpp" />
@@ -230,6 +231,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\Base\GameManager.h" />
     <ClInclude Include="Engine\Scene\SceneFactory.h" />
     <ClInclude Include="Engine\Scene\SceneManager.h" />
+    <ClInclude Include="Engine\Scene\SelectScene.h" />
     <ClInclude Include="Engine\SkyBox.h" />
     <ClInclude Include="Engine\Utility\CSV.h" />
     <ClInclude Include="Engine\Utility\GlobalVariables.h" />

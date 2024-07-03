@@ -52,7 +52,7 @@ public:
 
 	Sphere* GetSphere() { return sphere_.get(); }
 	Plane* GetPlane() { return plane_.get(); }
-	AABB* GetAABB() { return aabb_.get(); }
+	AABB GetAABB();
 	Capsule* GetCapsule() { return capsule_.get(); }
 	OBB* GetOBB() { return obb_.get(); }
 

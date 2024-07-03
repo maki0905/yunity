@@ -168,6 +168,11 @@ void Collider::HitBox()
 	HitBox_->Draw(worldTransform_HitBox_);
 }
 
+AABB Collider::GetAABB()
+{
+	return AABB(Subtract(worldTransform_->translation_, GetHitBoxSize()), Add(worldTransform_->translation_, GetHitBoxSize()));
+}
+
 //void Collider::resolveCollision(AABB& b)
 //{
 //	// 各軸ごとに押し戻すベクトルを計算

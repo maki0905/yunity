@@ -35,6 +35,8 @@ public:
 	WorldTransform GetWorldTransform() { return *worldTransform_; };
 	Vector3 GetTranslation() { return worldTransform_->translation_; }
 
+	Vector3 GetVertical() { return vertical_; }
+
 private:
 
 	World* world_;
@@ -55,4 +57,6 @@ private:
 	Vector3 gravityAcceleration_;
 	// 摩擦係数
 	float miu_ = 0.5f;
+	// 垂直抗力
+	Vector3 vertical_;
 };

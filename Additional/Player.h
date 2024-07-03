@@ -38,6 +38,7 @@ private:
 
 	Camera* camera_;
 
+
 	float stiffness_;
 	float dampar_;
 	float mass_;
@@ -52,6 +53,8 @@ private:
 	bool isWire_;
 
 	bool isJunp_;
+
+	bool isFloot_;
 
 	std::unique_ptr<Model> reticle3D_;
 	//WorldTransform reticle3DWorldTransform_;

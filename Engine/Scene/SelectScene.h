@@ -7,7 +7,7 @@
 #include "Sprite.h"
 #include "Model.h"
 
-class TitleScene : public IScene
+class SelectScene : public IScene
 {
 public:
 	void Initialize() override;
@@ -26,4 +26,3 @@ private:
 	std::unique_ptr<Sprite> sprite_ = nullptr;
 	std::unique_ptr<Model> model_ = nullptr;
 };
-

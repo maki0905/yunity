@@ -1,21 +1,23 @@
 #include "Skydome.h"
 
-void Skydome::Initialize(Model* model, Camera* camera)
+#include "ModelManager.h"
+
+void Skydome::Initialize(Camera* camera, Vector3 size)
 {
-	model_ = model;
+	model_ = std::make_unique<Model>();
+	model_.reset(ModelManager::GetInstance()->CreateModel(obj, "skydome"));
+	model_->SetCamera(camera);
 
 	worldTransform_.Initialize();
+	worldTransform_.scale_ = size;
 	worldTransform_.UpdateMatrix();
-
-	/*collider_ = new Collider();
-	collider_->CreateCollider(&worldTransform_, Collider::Type::kSphere, RotationType::Euler, camera);*/
 }
 
 void Skydome::Update()
 {
 }
 
-void Skydome::Draw(const Camera& camera)
+void Skydome::Draw()
 {
 	model_->Draw(worldTransform_);
 }
