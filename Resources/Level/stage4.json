@@ -1,0 +1,149 @@
+{
+    "name": "scene",
+    "objects": [
+        {
+            "type": "MESH",
+            "name": "立方体",
+            "transform": {
+                "translation": [
+                    151.76808166503906,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    170.59124755859375,
+                    1.0,
+                    1.4355984926223755
+                ]
+            },
+            "file_name": "Cube",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    2.0,
+                    2.0,
+                    2.0
+                ],
+                "isTrigger": false
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "立方体.001",
+            "transform": {
+                "translation": [
+                    0.0,
+                    0.0,
+                    8.431127548217773
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "startBox",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    2.0,
+                    2.0,
+                    2.0
+                ],
+                "isTrigger": true
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "立方体.002",
+            "transform": {
+                "translation": [
+                    29.222408294677734,
+                    0.0,
+                    3.8819758892059326
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "endBox",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    2.0,
+                    2.0,
+                    2.0
+                ],
+                "isTrigger": false
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "立方体.003",
+            "transform": {
+                "translation": [
+                    14.061410903930664,
+                    0.0,
+                    9.43143081665039
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    7.872303485870361
+                ]
+            },
+            "file_name": "Cube",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    2.0,
+                    2.0,
+                    2.0
+                ],
+                "isTrigger": true
+            }
+        }
+    ]
+}

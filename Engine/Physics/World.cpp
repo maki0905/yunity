@@ -1,6 +1,6 @@
 #include "World.h"
 
-#include "Body.h"
+#include "Object3D.h"
 
 void World::Initialize(const Vector3& gravity)
 {

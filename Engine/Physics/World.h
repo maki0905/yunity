@@ -7,7 +7,7 @@
 //#include "Body.h"
 #include "CollisionManager.h"
 
-class Body;
+class Object3D;
 //class CollisionManager;
 
 class World {
@@ -18,9 +18,9 @@ public:
 
 	void Solve();
 
-	void Add(Body* collider) { allocator_.push_back(collider); };
+	void Add(Object3D* collider) { allocator_.push_back(collider); };
 
-	std::list<Body*> GetAllocator() { return allocator_; }
+	std::list<Object3D*> GetAllocator() { return allocator_; }
 
 	void SetGravity(const Vector3& gravity) { gravity_ = gravity; };
 	Vector3 GetGravity() { return gravity_; };
@@ -30,7 +30,7 @@ public:
 private:
 
 	std::unique_ptr<CollisionManager> collisionManager_;
-	std::list<Body*> allocator_;
+	std::list<Object3D*> allocator_;
 	Vector3 gravity_;
 
 };

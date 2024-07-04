@@ -117,6 +117,8 @@ void LevelEditor::LoadObjectRecursive(LevelData* levelData, nlohmann::json deser
 				objectData.center.x = (float)collider["center"][0];
 				objectData.center.y = (float)collider["center"][2];
 				objectData.center.z = (float)collider["center"][1];
+				// 衝突するかどうか
+				objectData.isTrigger = collider["isTrigger"];
 			}
 
 		}

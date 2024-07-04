@@ -7,7 +7,7 @@
 
 //class Collider;
 //class BaseObject;
-class Body;
+class Object3D;
 
 //struct HitBoxData {
 //	Collider::Shape shape;
@@ -22,20 +22,20 @@ public:
 	/// </summary>
 	void CheckAllCollision();
 	// コライダーを取得
-	void SetCollider(Body* collider) { colliders_.push_back(collider); }
+	void SetCollider(Object3D* collider) { colliders_.push_back(collider); }
 	// 衝突属性(自分)を設定
 	void ClearCollider() { colliders_.clear(); }
 
 private:
 
 	// コライダーリスト
-	std::list<Body*> colliders_;
+	std::list<Object3D*> colliders_;
 	/// <summary>
 	/// コライダー2つの衝突判定と応答
 	/// </summary>
 	/// <param name="colliderA">コライダーA</param>
 	/// <param name="colliderB">コライダーB</param>
-	void CheckCollisionPair(Body* colliderA, Body* colliderB);
+	void CheckCollisionPair(Object3D* colliderA, Object3D* colliderB);
 
 	//void Discrimination(HitBoxData dataA, HitBoxData dataB);
 

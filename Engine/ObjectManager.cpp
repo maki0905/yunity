@@ -30,7 +30,8 @@ void ObjectManager::Load(const std::string& fileName, Camera* camera, World* wor
 		newObject->SetScale(object.scaling);
 		newObject->SetSize(object.size);
 		newObject->SetCenter(object.center);
-		newObject->Create(model, world, object.shape);
+		newObject->SetIsTrigger(object.isTrigger);
+		newObject->Initialize(model, world, object.shape);
 		world->Add(newObject);
 		objects_[fileName].push_back(newObject);
 	}

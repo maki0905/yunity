@@ -7,23 +7,24 @@
 #include "Input.h"
 #include "Model.h"
 #include "WorldTransform.h"
-#include "Body.h"
+#include "Object3D.h"
 #include "Sprite.h"
 
 
 
-class Player : public Body
+class Player : public Object3D
 {
 public:
 	void Initialize(Camera* camera, World* world);
 
-	void Update();
+	void Update() override;
 
-	void Draw();
+	void Draw() override;
 
 	void DrawUI();
 
-	void Event(Body* body = nullptr) override;
+	//void OnCollisionEvent(Body* body = nullptr) override;
+	virtual void OnCollisionEvent(Body* body);
 
 	void ResetPos(const Vector3& pos);
 
@@ -33,10 +34,10 @@ private:
 	XINPUT_STATE pad_;
 	XINPUT_STATE prePad_;
 
-	std::unique_ptr<Model> model_;
-	WorldTransform worldTransform_;
+	//std::unique_ptr<Model> model_;
+	//WorldTransform worldTransform_;
 
-	Camera* camera_;
+	//Camera* camera_;
 
 
 	float stiffness_;

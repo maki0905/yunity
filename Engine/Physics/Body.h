@@ -15,10 +15,11 @@ public:
 
 	void Reset();
 
-	void OnCollisiont(Body* body);
+	void OnCollision(Body* body);
 
 	// 衝突時に呼ばれる固有の処理
-	virtual void Event(Body* body = nullptr) = 0;
+	/*virtual void OnCollisionEvent(Body* body = nullptr) = 0;
+	virtual void OnTriggerEvent(Body* body = nullptr) = 0;*/
 
 	World* GetWorld() { return world_; }
 
@@ -36,6 +37,10 @@ public:
 	Vector3 GetTranslation() { return worldTransform_->translation_; }
 
 	Vector3 GetVertical() { return vertical_; }
+
+	bool GetIsTrigger() { return isTrigger_; }
+	void SetIsTrigger(bool isTrigger) { isTrigger_ = isTrigger; }
+
 
 private:
 
@@ -59,4 +64,5 @@ private:
 	float miu_ = 0.5f;
 	// 垂直抗力
 	Vector3 vertical_;
+	bool isTrigger_;
 };

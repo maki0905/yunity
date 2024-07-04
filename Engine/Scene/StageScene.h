@@ -41,7 +41,8 @@ private:
 	std::unique_ptr<PrimitiveDrawer> primitiveDrawer_;*/
 	bool isDebug_ = false;
 
-	std::unique_ptr<Camera> camera_;
+	Camera* camera_;
+	//std::unique_ptr<Camera> camera_;
 	std::unique_ptr<DebugCamera> debugCamera_;
 
 	//std::vector<Object3D*> objects_;
@@ -53,13 +54,15 @@ private:
 
 	std::unique_ptr<World> world_;
 
-	std::unique_ptr<Model> start_;
+	/*std::unique_ptr<Model> start_;
 	WorldTransform startWT_;
 	std::unique_ptr<Model> end_;
-	WorldTransform endWT_;
+	WorldTransform endWT_;*/
 
 	std::vector<Object3D*> floors_;
 	std::vector<Object3D*> trampolines_;
+
+	std::string stageName_ = "stage4";
 
 };
 

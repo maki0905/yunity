@@ -6,11 +6,18 @@
 
 void Player::Initialize(Camera* camera, World* world)
 {
-	worldTransform_.Initialize(RotationType::Quaternion);
+	SetSize({ 2.5f, 2.5f, 2.5f });
+	Object3D::Initialize(world, Collider::Shape::kAABB);
+	worldTransform_.rotateType_ = RotationType::Quaternion;
 	worldTransform_.translation_.y = 3.0f;
+	SetMass(2.0f);
+	/*worldTransform_.Initialize(RotationType::Quaternion);
+	worldTransform_.translation_.y = 3.0f;*/
 
-	model_.reset(ModelManager::GetInstance()->CreateModel(obj, "startBox"));
-	model_->SetCamera(camera);
+	models_["player"] = ModelManager::GetInstance()->CreateModel(obj, "startBox");
+	models_["player"]->SetCamera(camera);
+	/*model_.reset(ModelManager::GetInstance()->CreateModel(obj, "startBox"));
+	model_->SetCamera(camera);*/
 	/*model_.reset(ModelManager::GetInstance()->CreateModel(gltf, "human", "sneakWalk", ModelType::kSkin));
 	model_->SetCamera(camera);*/
 	/*model_.reset(ModelManager::GetInstance()->CreateModel(gltf, "human", "sneakWalk", ModelType::kSkin));
@@ -27,11 +34,11 @@ void Player::Initialize(Camera* camera, World* world)
 	mass_ = 1.0f;
 	limitLength_ = 15.0f;
 
-	CreateBody(world, &worldTransform_, 2.0f);
+	/*CreateBody(world, &worldTransform_, 2.0f);*/
 
 	world->Add(this);
 
-	CreateCollider(&worldTransform_, Collider::Shape::kAABB, camera_, { 2.5f, 2.5f, 2.5f });
+	//CreateCollider(&worldTransform_, Collider::Shape::kAABB, camera_, { 2.5f, 2.5f, 2.5f });
 	isHit_ = false;
 	SetCollisionAttribute(kCollisionAttributePlayer);
 	isActive_ = false;
@@ -367,7 +374,8 @@ void Player::Draw()
 	else {
 		model_->Draw(worldTransform_);
 	}*/
-	model_->Draw(worldTransform_);
+	models_["player"]->Draw(worldTransform_);
+	//model_->Draw(worldTransform_);
 	//raticle_->Draw(reticleWorldTransform_, TextureManager::GetInstance()->Load("uvChecker.png"));
 	//model_->Draw(worldTransform_, TextureManager::GetInstance()->Load("uvChecker.png"));
 	HitBox();
@@ -385,7 +393,7 @@ void Player::DrawUI()
 	//reticle_->Draw();
 }
 
-void Player::Event(Body* body)
+void Player::OnCollisionEvent(Body* body)
 {
 	if (body->GetCollisionAttribute() == kCollisionAttributeTrampoline) {
 		AABB aabb = GetAABB();

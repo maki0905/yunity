@@ -5,7 +5,7 @@
 #include "World.h"
 
 struct RayCastHit {
-	Body* collider;
+	Object3D* collider;
 	float distance;
 	Vector3 point;
 };

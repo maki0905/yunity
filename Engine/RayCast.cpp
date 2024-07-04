@@ -2,7 +2,7 @@
 
 #include "Collision.h"
 #include "CollisionConfig.h"
-#include "Body.h"
+#include "Object3D.h"
 
 #include <algorithm>
 
@@ -86,16 +86,16 @@ Vector3 RayIntersection(Segment segment, AABB aabb)
 	Vector3 result;
 
 
-	float tNearX = min((aabb.min.x - segment.origin.x) / segment.diff.x, (aabb.max.x - segment.origin.x) / segment.diff.x);
-	float tNearY = min((aabb.min.y - segment.origin.y) / segment.diff.y, (aabb.max.y - segment.origin.y) / segment.diff.y);
-	float tNearZ = min((aabb.min.z - segment.origin.z) / segment.diff.z, (aabb.max.z - segment.origin.z) / segment.diff.z);
-	float tFarX = max((aabb.min.x - segment.origin.x) / segment.diff.x, (aabb.max.x - segment.origin.x) / segment.diff.x);
+	float tNearX = std::min((aabb.min.x - segment.origin.x) / segment.diff.x, (aabb.max.x - segment.origin.x) / segment.diff.x);
+	float tNearY = std::min((aabb.min.y - segment.origin.y) / segment.diff.y, (aabb.max.y - segment.origin.y) / segment.diff.y);
+	float tNearZ = std::min((aabb.min.z - segment.origin.z) / segment.diff.z, (aabb.max.z - segment.origin.z) / segment.diff.z);
+	/*float tFarX = max((aabb.min.x - segment.origin.x) / segment.diff.x, (aabb.max.x - segment.origin.x) / segment.diff.x);
 	float tFarY = max((aabb.min.y - segment.origin.y) / segment.diff.y, (aabb.max.y - segment.origin.y) / segment.diff.y);
-	float tFarZ = max((aabb.min.z - segment.origin.z) / segment.diff.z, (aabb.max.z - segment.origin.z) / segment.diff.z);
+	float tFarZ = max((aabb.min.z - segment.origin.z) / segment.diff.z, (aabb.max.z - segment.origin.z) / segment.diff.z);*/
 	// AABBとの衝突点(貫通点)のtが小さい方
 	float tmin = max(max(tNearX, tNearY), tNearZ);
 	// AABBとの衝突点(貫通点)のtが大きい方
-	float tmax = min(min(tFarX, tFarY), tFarZ);
+	//float tmax = min(min(tFarX, tFarY), tFarZ);
 	//float segmentLength = Length(Subtract(segment.diff, segment.origin));
 	
 	result = Add(segment.origin, Multiply(tmin, segment.diff));
@@ -107,16 +107,16 @@ Vector3 RayIntersection(Ray ray, AABB aabb)
 {
 	Vector3 result;
 
-	float tNearX = min((aabb.min.x - ray.origin.x) / ray.diff.x, (aabb.max.x - ray.origin.x) / ray.diff.x);
-	float tNearY = min((aabb.min.y - ray.origin.y) / ray.diff.y, (aabb.max.y - ray.origin.y) / ray.diff.y);
-	float tNearZ = min((aabb.min.z - ray.origin.z) / ray.diff.z, (aabb.max.z - ray.origin.z) / ray.diff.z);
-	float tFarX = max((aabb.min.x - ray.origin.x) / ray.diff.x, (aabb.max.x - ray.origin.x) / ray.diff.x);
+	float tNearX = std::min((aabb.min.x - ray.origin.x) / ray.diff.x, (aabb.max.x - ray.origin.x) / ray.diff.x);
+	float tNearY = std::min((aabb.min.y - ray.origin.y) / ray.diff.y, (aabb.max.y - ray.origin.y) / ray.diff.y);
+	float tNearZ = std::min((aabb.min.z - ray.origin.z) / ray.diff.z, (aabb.max.z - ray.origin.z) / ray.diff.z);
+	/*float tFarX = max((aabb.min.x - ray.origin.x) / ray.diff.x, (aabb.max.x - ray.origin.x) / ray.diff.x);
 	float tFarY = max((aabb.min.y - ray.origin.y) / ray.diff.y, (aabb.max.y - ray.origin.y) / ray.diff.y);
-	float tFarZ = max((aabb.min.z - ray.origin.z) / ray.diff.z, (aabb.max.z - ray.origin.z) / ray.diff.z);
+	float tFarZ = max((aabb.min.z - ray.origin.z) / ray.diff.z, (aabb.max.z - ray.origin.z) / ray.diff.z);*/
 	// AABBとの衝突点(貫通点)のtが小さい方
 	float tmin = max(max(tNearX, tNearY), tNearZ);
 	// AABBとの衝突点(貫通点)のtが大きい方
-	float tmax = min(min(tFarX, tFarY), tFarZ);
+	//float tmax = min(min(tFarX, tFarY), tFarZ);
 	//float segmentLength = Length(Subtract(segment.diff, segment.origin));
 
 	result = Add(ray.origin, Multiply(tmin, ray.diff));

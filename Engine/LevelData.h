@@ -16,6 +16,7 @@ public:
 		Collider::Shape shape;
 		Vector3 size;
 		Vector3 center;
+		bool isTrigger;
 	};
 
 public:

@@ -98,7 +98,7 @@ void Body::Reset()
 
 }
 
-void Body::OnCollisiont(Body* body)
+void Body::OnCollision(Body* body)
 {
 	if (mass_) {
 

@@ -16,7 +16,8 @@ PipelineState* RenderTexture::pipelineState_ = nullptr;
 
 void RenderTexture::InitializeGraphicsPipeline()
 {
-	rootSignature_ = new RootSignature(Device::GetInstance()->GetDevice(), static_cast<int>(RootBindings::kCount), 2);
+	//rootSignature_ = new RootSignature(Device::GetInstance()->GetDevice(), static_cast<int>(RootBindings::kCount), 2);
+	rootSignature_ = new RootSignature(Device::GetInstance()->GetDevice(), static_cast<int>(RootBindings::kCount), 1);
 
 	D3D12_STATIC_SAMPLER_DESC staticSamplers[2];
 	staticSamplers[0] = {};
@@ -42,7 +43,7 @@ void RenderTexture::InitializeGraphicsPipeline()
 
 	rootSignature_->InitializeStaticSampler(0, staticSamplers[0], D3D12_SHADER_VISIBILITY_PIXEL);
 
-	rootSignature_->InitializeStaticSampler(1, staticSamplers[1], D3D12_SHADER_VISIBILITY_PIXEL);
+	//rootSignature_->InitializeStaticSampler(1, staticSamplers[1], D3D12_SHADER_VISIBILITY_PIXEL);
 
 	rootSignature_->GetParameter(static_cast<size_t>(RootBindings::kTexture)).InitializeAsDescriptorRange(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 0, 1, D3D12_SHADER_VISIBILITY_PIXEL);
 
