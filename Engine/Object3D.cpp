@@ -51,11 +51,13 @@ void Object3D::Initialize(World* world, Collider::Shape shape)
 
 void Object3D::Update()
 {
+#ifdef _DEBUG
 	ImGui::Begin("Object3D");
 	ImGui::PushID(this);
 	ImGui::DragFloat3("translate", &worldTransform_.translation_.x);
 	ImGui::PopID();
 	ImGui::End();
+#endif
 	isHit_ = false;
 	worldTransform_.UpdateMatrix();
 }

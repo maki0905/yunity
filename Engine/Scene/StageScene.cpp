@@ -144,9 +144,6 @@ void StageScene::Update()
 		//player_->ResetPos(startWT_.translation_);
 	}
 
-	ImGui::Begin("end");
-	//ImGui::DragFloat3("translation", &endWT_.translation_.x);
-	ImGui::End();
 
 }
 

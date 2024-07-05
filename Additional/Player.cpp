@@ -309,6 +309,7 @@ void Player::Update()
 
 	camera_->SetTranslate({worldTransform_.translation_.x, worldTransform_.translation_.y, camera_->GetTranslate().z});
 
+#ifdef _DEBUG
 	ImGui::Begin("Player");
 	ImGui::DragFloat3("translate", &worldTransform_.translation_.x);
 	ImGui::DragFloat("mass", &mass_);
@@ -321,6 +322,8 @@ void Player::Update()
 	}
 
 	ImGui::End();
+	
+#endif
 
 	isHit_ = false;
 
@@ -411,9 +414,12 @@ void Player::OnCollisionEvent(Body* body)
 		isFloot_ = false;
 	}
 
+#ifdef _DEBUG
 	ImGui::Begin("Player");
 	ImGui::Text("Hit");
 	ImGui::End();
+	
+#endif
 	isHit_ = true;
 }
 
