@@ -37,6 +37,7 @@ public:
 	static DirectXCore* GetInstance();
 
 	void Initialize();
+	void Finalize();
 
 	void PreDrawRenderTexture();
 	void PostDrawRenderTexture();
@@ -61,14 +62,18 @@ private:
 	const DirectXCore& operator=(const DirectXCore&) = delete;
 private:
 
-	Device* device_ = nullptr;
-	
-	CommandList* commandList_ = nullptr;
-	CommandQueue* commandQueue_ = nullptr;
-	SwapChain* swapChain_ = nullptr;
-	BackBuffer* backBuffer_ = nullptr;
-	DepthBuffer* depthBuffer_ = nullptr;
-	ShaderCompiler* shaderCompiler_ = nullptr;
+	//Device* device_ = nullptr;
+	CommandList* commandList_;
+	//std::unique_ptr<CommandList> commandList_;
+	CommandQueue* commandQueue_;
+	//std::unique_ptr<CommandQueue> commandQueue_;
+	SwapChain* swapChain_;
+	//std::unique_ptr<SwapChain> swapChain_;
+	BackBuffer* backBuffer_;
+	//std::unique_ptr<BackBuffer> backBuffer_;
+	DepthBuffer* depthBuffer_;
+	//std::unique_ptr<DepthBuffer> depthBuffer_;
+	//ShaderCompiler* shaderCompiler_ = nullptr;
 
 	UINT windowWidth_;
 	UINT windowHeight_;
@@ -77,9 +82,9 @@ private:
 
 	std::chrono::steady_clock::time_point reference_;
 
-	ImGuiManager* imguiManager_ = nullptr;
-	RenderTexture* renderTexture_ = nullptr;
-	GraphicsPipelineManager* graphicsPipelineManager_;
+	//ImGuiManager* imguiManager_ = nullptr;
+	//RenderTexture* renderTexture_ = nullptr;
+	//GraphicsPipelineManager* graphicsPipelineManager_;
 	
 };
 

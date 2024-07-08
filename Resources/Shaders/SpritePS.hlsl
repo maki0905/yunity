@@ -17,5 +17,12 @@ SamplerState smp : register(s0); // 0番スロットに設定されたサンプ�
 
 float4 main(VSOutput input) : SV_Target
 {
-    return tex.Sample(smp, input.uv) * color;
+    float4 outputColor = tex.Sample(smp, input.uv) * color;
+    
+    if (outputColor.a == 0.0f)
+    {
+        discard;
+    }
+    return outputColor;
+
 }

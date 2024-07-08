@@ -64,8 +64,6 @@ public:
 private:
 	// 頂点数
 	static const int kVertNum = 4;
-	// デバイス
-	static ID3D12Device* device_;
 	// ディスクリプタサイズ
 	static UINT descriptorHandleIncrementSize_;
 	// コマンドリスト
@@ -92,6 +90,10 @@ public:
 	/// コンストラクタ
 	/// </summary>
 	Sprite(uint32_t textureHandle, Vector2 position, Vector2 size, Vector4 color, Vector2 anchorpoint, bool isFlipx, bool isFlipY);
+
+	
+
+	void Finalize();
 
 	/// <summary>
 	/// 初期化

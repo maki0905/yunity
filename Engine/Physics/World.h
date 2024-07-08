@@ -2,6 +2,7 @@
 
 #include <list>
 #include <memory>
+#include<chrono>
 
 #include "MathFunction.h"
 //#include "Body.h"
@@ -25,10 +26,11 @@ public:
 	void SetGravity(const Vector3& gravity) { gravity_ = gravity; };
 	Vector3 GetGravity() { return gravity_; };
 	// デルタタイム
-	float deltaTime_ = 1.0f / 60.0f;
+	//float deltaTime_ = 1.0f / 60.0f;
+	float deltaTime_;
 
 private:
-
+	std::chrono::steady_clock::time_point lastTime_;
 	std::unique_ptr<CollisionManager> collisionManager_;
 	std::list<Object3D*> allocator_;
 	Vector3 gravity_;

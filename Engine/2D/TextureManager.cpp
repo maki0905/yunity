@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "DirectXCore.h"
+#include "Device.h"
 
 using namespace DirectX;
 
@@ -17,17 +18,14 @@ TextureManager* TextureManager::GetInstance() {
 	return &instance;
 }
 
-void TextureManager::Initialize(ID3D12Device* device, std::string directoryPath) {
-	assert(device);
-
-	device_ = device;
+void TextureManager::Initialize(std::string directoryPath) {
 	directoryPath_ = directoryPath;
 
 	intermediateResources_.clear();
 
 	// デスクリプタサイズを取得
 	sDescriptorHandleIncrementSize_ =
-		device_->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+		Device::GetInstance()->GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 
 	// 全テクスチャリセット
 	ResetAll();
@@ -80,7 +78,7 @@ void TextureManager::SetGraphicsRootDescriptorTable(
 		rootParamIndex, textures_[textureHandle].gpuDescHandleSRV);
 }
 
-ID3D12Resource* TextureManager::CreateBufferResource(ID3D12Device* device, size_t sizeInBytes)
+Microsoft::WRL::ComPtr<ID3D12Resource> TextureManager::CreateBufferResource(ID3D12Device* device, size_t sizeInBytes)
 {
 	HRESULT hr;
 	// 頂点リソース用のヒープの設定
@@ -99,7 +97,7 @@ ID3D12Resource* TextureManager::CreateBufferResource(ID3D12Device* device, size_
 	// バッファの場合はこれにする決まり
 	vertexResourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
 	// 実際に頂点リソースを作る
-	ID3D12Resource* result = nullptr;
+	Microsoft::WRL::ComPtr<ID3D12Resource> result = nullptr;
 	hr = device->CreateCommittedResource(&uploadHeapProperties, D3D12_HEAP_FLAG_NONE,
 		&vertexResourceDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr,
 		IID_PPV_ARGS(&result));
@@ -209,7 +207,7 @@ uint32_t TextureManager::LoadInternal(const std::string& fileName) {
 	//	nullptr, 
 	//	IID_PPV_ARGS(&texture.resource));
 	//assert(SUCCEEDED(result));
-	result = device_->CreateCommittedResource(
+	result = Device::GetInstance()->GetDevice()->CreateCommittedResource(
 		&heapProps, // Heapの設定
 		D3D12_HEAP_FLAG_NONE, // Heapの特殊な設定。特になし。
 		&texresDesc, // Resourceの設定
@@ -234,7 +232,7 @@ uint32_t TextureManager::LoadInternal(const std::string& fileName) {
 	DescriptorHandle srvHandle = srvHeap_->Alloc();
 
 	// シェーダリソースビュー作成
-	auto size = device_->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+	auto size = Device::GetInstance()->GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 	/*texture.cpuDescHandleSRV =  descriptorHeap_->GetCPUDescriptorHandleForHeapStart();
 	texture.cpuDescHandleSRV.ptr += size * indexNextDescriptorHeap_;
 	texture.gpuDescHandleSRV = descriptorHeap_->GetGPUDescriptorHandleForHeapStart();
@@ -258,7 +256,7 @@ uint32_t TextureManager::LoadInternal(const std::string& fileName) {
 		srvDesc.Texture2D.MipLevels = (UINT)metadata.mipLevels;
 	}
 
-	device_->CreateShaderResourceView(
+	Device::GetInstance()->GetDevice()->CreateShaderResourceView(
 		texture.resource.Get(), //ビューと関連付けるバッファ
 		&srvDesc,               //テクスチャ設定情報
 		texture.cpuDescHandleSRV);
@@ -266,10 +264,10 @@ uint32_t TextureManager::LoadInternal(const std::string& fileName) {
 	indexNextDescriptorHeap_++;
 
 	std::vector<D3D12_SUBRESOURCE_DATA> subresources;
-	DirectX::PrepareUpload(device_, scratchImg.GetImages(), scratchImg.GetImageCount(), scratchImg.GetMetadata(), subresources);
+	DirectX::PrepareUpload(Device::GetInstance()->GetDevice(), scratchImg.GetImages(), scratchImg.GetImageCount(), scratchImg.GetMetadata(), subresources);
 	uint64_t intermediateSize = GetRequiredIntermediateSize(texture.resource.Get(), 0, UINT(subresources.size()));
-	ID3D12Resource* intermediateResource = CreateBufferResource(device_, intermediateSize);
-	UpdateSubresources(DirectXCore::GetInstance()->GetCommandList(), texture.resource.Get(), intermediateResource, 0, 0, UINT(subresources.size()), subresources.data());
+	Microsoft::WRL::ComPtr<ID3D12Resource> intermediateResource = CreateBufferResource(Device::GetInstance()->GetDevice(), intermediateSize);
+	UpdateSubresources(DirectXCore::GetInstance()->GetCommandList(), texture.resource.Get(), intermediateResource.Get(), 0, 0, UINT(subresources.size()), subresources.data());
 	// Tetureへの転送後は利用できるよう、D3D12_RESOURCE_STATE_COPY_DESTからD3D12_RESOURCE_STATE_GENRIC_READへResourceStateを変更する
 	D3D12_RESOURCE_BARRIER barrier{};
 	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;

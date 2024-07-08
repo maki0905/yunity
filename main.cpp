@@ -1,6 +1,7 @@
 ﻿#include <Windows.h>
 #include "GameManager.h"
 #include <dxgidebug.h>
+#include "RenderTexture.h"
 #pragma comment(lib, "dxguid.lib")
 
 struct ResourceLeakChecker {
@@ -21,6 +22,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	GameManager* gameManager = new GameManager();
     gameManager->Initialize();
 	gameManager->Run();
+    gameManager->Finalize();
 	delete gameManager;
+    RenderTexture::GetInstance()->Finalize();
 	return 0;
 }

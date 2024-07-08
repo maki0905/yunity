@@ -48,7 +48,7 @@ public:
 	/// システム初期化
 	/// </summary>
 	/// <param name="device">デバイス</param>
-	void Initialize(ID3D12Device* device, std::string directoryPath = "Resources/");
+	void Initialize(std::string directoryPath = "Resources/");
 
 	/// <summary>
 	/// 全テクスチャリセット
@@ -77,10 +77,8 @@ private:
 	TextureManager(const TextureManager&) = delete;
 	TextureManager& operator=(const TextureManager&) = delete;
 
-	ID3D12Resource* CreateBufferResource(ID3D12Device* device, size_t sizeInBytes);
+	Microsoft::WRL::ComPtr<ID3D12Resource> CreateBufferResource(ID3D12Device* device, size_t sizeInBytes);
 
-	// デバイス
-	ID3D12Device* device_;
 	// デスクリプタサイズ
 	UINT sDescriptorHandleIncrementSize_ = 0u;
 	// ディレクトリパス
@@ -92,7 +90,7 @@ private:
 	// テクスチャコンテナ
 	std::array<Texture, kNumDescriptors> textures_;
 
-	std::vector<ID3D12Resource*> intermediateResources_;
+	std::vector<Microsoft::WRL::ComPtr<ID3D12Resource>> intermediateResources_;
 
 	/// <summary>
 	/// 読み込み

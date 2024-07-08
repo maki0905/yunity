@@ -7,6 +7,7 @@
 
 #include "MathFunction.h"
 #include "DepthBuffer.h"
+#include "PostEffect.h"
 
 class PipelineState;
 class RootSignature;
@@ -31,6 +32,7 @@ public:
 	static RenderTexture* GetInstance();
 public:
 	void Initalize();
+	void Finalize();
 
 	/// <summary>
 	/// 生成
@@ -39,9 +41,13 @@ public:
 
 	void Copy();
 
+	void PreDraw();
+	void PostDraw();
+
 	//void OMSetREnderTargets(ID3D12DescriptorHeap* dsvHeap_);
 	void ClearRenderTargetView();
-
+	void OMSetRenderTargets();
+	void ClearDepthStencilView();
 	Vector4 GetRenderTargetClearValue() { return kRenderTargetClearValue; }
 
 	D3D12_CPU_DESCRIPTOR_HANDLE* GetCpuDescHandleRTV() { return &cpuDescHandleRTV_; }
@@ -50,6 +56,7 @@ public:
 	ID3D12Resource* GetResource() { return renderTextureResource_.Get(); }
 	DepthBuffer* GetDepthBuffer() { return depthBuffe_.get(); }
 
+	bool postEffectFlag_[static_cast<uint32_t>(PostEffects::kCount)];
 
 private:
 
@@ -66,7 +73,7 @@ private:
 	/// </summary>
 	/// <param name="sizeInBytes"></param>
 	/// <returns>サイズ</returns>
-	ID3D12Resource* CreateBufferResource(size_t sizeInBytes);
+	Microsoft::WRL::ComPtr<ID3D12Resource> CreateBufferResource(size_t sizeInBytes);
 private:
 	RenderTexture() = default;
 	~RenderTexture() = default;
@@ -97,5 +104,9 @@ private:
 
 	// 深度バッファクラス
 	std::unique_ptr<DepthBuffer> depthBuffe_;
+	std::unique_ptr<PostEffect> postEffect_;
+
+	bool selectedFlag_;
+
 
 };

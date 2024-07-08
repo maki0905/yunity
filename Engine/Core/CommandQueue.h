@@ -6,12 +6,8 @@
 class CommandQueue
 {
 public:
-	/// <summary>
-	/// コンストラクタ
-	/// </summary>
-	/// <param name="device">デバイス</param>
-	CommandQueue(ID3D12Device* device);
 
+	void Finalize();
 	/// <summary>
 	/// 生成
 	/// </summary>
@@ -28,7 +24,6 @@ public:
 	
 
 private:
-	Microsoft::WRL::ComPtr<ID3D12Device> device_ = nullptr;
 	Microsoft::WRL::ComPtr<ID3D12CommandQueue> commandQueue_ = nullptr;
 	Microsoft::WRL::ComPtr<ID3D12Fence>fence_;
 	UINT64 fenceVal_ = 0;

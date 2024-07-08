@@ -86,7 +86,7 @@ void RenderTexture::InitializeGraphicsPipeline()
 
 	pipelineState_->SetInputLayout(inputLayoutDesc);
 	pipelineState_->SetShader(PipelineState::ShaderType::kVS, ShaderCompiler::GetInstance()->Get("Fullscreen", ShaderCompiler::ShaderType::kVS));
-	pipelineState_->SetShader(PipelineState::ShaderType::kPS, ShaderCompiler::GetInstance()->Get("Grayscale", ShaderCompiler::ShaderType::kPS));
+	pipelineState_->SetShader(PipelineState::ShaderType::kPS, ShaderCompiler::GetInstance()->Get("CopyImage", ShaderCompiler::ShaderType::kPS));
 	pipelineState_->SetBlendState(blendDesc);
 	pipelineState_->SetRasterizerState(rasterizerDesc);
 	pipelineState_->SetDepthStencilState(depthStencilDesc);
@@ -107,6 +107,25 @@ void RenderTexture::Initalize()
 {
 	depthBuffe_ = std::make_unique<DepthBuffer>();
 	depthBuffe_->Create();
+	postEffect_ = std::make_unique<PostEffect>();
+	postEffect_->Initalize();
+	for (uint32_t index = 0; index < static_cast<uint32_t>(PostEffects::kCount); index++) {
+		postEffectFlag_[index] = false;
+	}
+}
+
+void RenderTexture::Finalize()
+{
+	/*postEffect_->Finalize();*/
+	if (rootSignature_) {
+		delete rootSignature_;
+		rootSignature_ = nullptr;
+	}
+
+	if (pipelineState_) {
+		delete pipelineState_;
+		pipelineState_ = nullptr;
+	}
 }
 
 void RenderTexture::Create()
@@ -131,6 +150,24 @@ void RenderTexture::Copy()
 	commandList_->DrawInstanced(3, 1, 0, 0);
 }
 
+void RenderTexture::PreDraw()
+{
+	selectedFlag_ = false;
+	for (auto& flag : postEffectFlag_) {
+		if (flag) {
+			selectedFlag_ = true;
+			break;
+		}
+	}
+
+
+
+}
+
+void RenderTexture::PostDraw()
+{
+}
+
 //void RenderTexture::OMSetREnderTargets(ID3D12DescriptorHeap* dsvHeap_)
 //{
 //	// 深度ステンシルビュー用デスクリプタヒープのハンドルを取得
@@ -142,9 +179,42 @@ void RenderTexture::Copy()
 
 void RenderTexture::ClearRenderTargetView()
 {
-	float clearColor[] = { kRenderTargetClearValue.x, kRenderTargetClearValue.y, kRenderTargetClearValue.z, kRenderTargetClearValue.w };
-	commandList_->ClearRenderTargetView(cpuDescHandleRTV_, clearColor, 0, nullptr);
+	if (postEffectFlag_[static_cast<uint32_t>(PostEffects::kOutline)]) {
+		postEffect_->ClearRenderTargetView();
+	}
+	else {
+		float clearColor[] = { kRenderTargetClearValue.x, kRenderTargetClearValue.y, kRenderTargetClearValue.z, kRenderTargetClearValue.w };
+		commandList_->ClearRenderTargetView(cpuDescHandleRTV_, clearColor, 0, nullptr);
+	}
 }
+
+void RenderTexture::OMSetRenderTargets()
+{
+	if (postEffectFlag_[static_cast<uint32_t>(PostEffects::kOutline)]) {
+		postEffect_->OMSetRenderTargets();
+	}
+	else {
+		D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle =
+			D3D12_CPU_DESCRIPTOR_HANDLE(depthBuffe_->GetDescriptorHeap()->GetCPUDescriptorHandleForHeapStart());
+		commandList_->OMSetRenderTargets(1, &cpuDescHandleRTV_, false, &dsvHandle);
+	}
+}
+
+void RenderTexture::ClearDepthStencilView()
+{
+	if (postEffectFlag_[static_cast<uint32_t>(PostEffects::kOutline)]) {
+		postEffect_->ClearDepthStencilView();
+	}
+	else {
+		// 深度ステンシルビュー用デスクリプタヒープのハンドルを取得
+		D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle =
+			D3D12_CPU_DESCRIPTOR_HANDLE(depthBuffe_->GetDescriptorHeap()->GetCPUDescriptorHandleForHeapStart());
+		// 深度バッファのクリア
+		commandList_->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
+	}
+}
+
+
 
 void RenderTexture::CreateResorce()
 {
@@ -274,7 +344,7 @@ Microsoft::WRL::ComPtr<ID3D12Resource> RenderTexture::CreateRenderTextureResourc
 	return resource;
 }
 
-ID3D12Resource* RenderTexture::CreateBufferResource(size_t sizeInBytes)
+Microsoft::WRL::ComPtr<ID3D12Resource> RenderTexture::CreateBufferResource(size_t sizeInBytes)
 {
 	HRESULT result = S_FALSE;
 	// リソース用のヒープの設定
@@ -291,7 +361,7 @@ ID3D12Resource* RenderTexture::CreateBufferResource(size_t sizeInBytes)
 	ResourceDesc.SampleDesc.Count = 1;
 	ResourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
 	// リソースを作る
-	ID3D12Resource* resource = nullptr;
+	Microsoft::WRL::ComPtr<ID3D12Resource> resource = nullptr;
 	result = Device::GetInstance()->GetDevice()->CreateCommittedResource(&uploadHeapProperties, D3D12_HEAP_FLAG_NONE,
 		&ResourceDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(&resource));
 	assert(SUCCEEDED(result));

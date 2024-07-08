@@ -99,13 +99,13 @@ void ImGuiManager::End()
 void ImGuiManager::Draw()
 {
 #ifdef _DEBUG
-	ID3D12GraphicsCommandList* commandList = directXCore_->GetCommandList();
+	//ID3D12GraphicsCommandList* commandList = directXCore_->GetCommandList();
 
 	// デスクリプタヒープの配列をセットするコマンド
 	ID3D12DescriptorHeap* ppHeaps[] = { /*srvHeap_.Get()*/ srvHeap_->GetHeapPointer()};
-	commandList->SetDescriptorHeaps(_countof(ppHeaps), ppHeaps);
+	directXCore_->GetCommandList()->SetDescriptorHeaps(_countof(ppHeaps), ppHeaps);
 	// 描画コマンドを発行
-	ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), commandList);
+	ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), directXCore_->GetCommandList());
 #endif
 
 }

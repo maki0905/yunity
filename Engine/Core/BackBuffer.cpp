@@ -8,19 +8,17 @@
 #pragma comment(lib, "d3d12.lib")
 #pragma comment(lib, "dxgi.lib")
 
-BackBuffer::BackBuffer(ID3D12Device* device, ID3D12GraphicsCommandList* commandList, IDXGISwapChain4* swapChain)
+void BackBuffer::Finalize()
 {
-	device_ = device;
-	commandList_ = commandList;
-	swapChain_ = swapChain;
+	backBuffers_.clear();
 }
 
-void BackBuffer::Create()
+void BackBuffer::Create(IDXGISwapChain4* swapChain)
 {
 	HRESULT result = S_FALSE;
 
 	DXGI_SWAP_CHAIN_DESC swapChainDesc = {};
-	result = swapChain_->GetDesc(&swapChainDesc);
+	result = swapChain->GetDesc(&swapChainDesc);
 	assert(SUCCEEDED(result));
 
 	backBufferCount_ = swapChainDesc.BufferCount;
@@ -41,7 +39,7 @@ void BackBuffer::Create()
 	D3D12_CPU_DESCRIPTOR_HANDLE handle = rtvDescriptorHeap_->Alloc(2).GetCPUHandle();
 	for (int i = 0; i < backBuffers_.size(); i++) {
 		// スワップチェーンからバッファを取得
-		result = swapChain_->GetBuffer(i, IID_PPV_ARGS(&backBuffers_[i]));
+		result = swapChain->GetBuffer(i, IID_PPV_ARGS(&backBuffers_[i]));
 		assert(SUCCEEDED(result));
 		/*rtvDescriptorHeap_->GetCPUDescriptorHandleForHeapStart()*/;
 		handle.ptr += (desriptorSizeRTV * i);
@@ -51,28 +49,28 @@ void BackBuffer::Create()
 		renderTargetViewDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
 		renderTargetViewDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;
 		// レンダーターゲットビューの生成
-		device_->CreateRenderTargetView(backBuffers_[i].Get(), &renderTargetViewDesc, handle);
+		Device::GetInstance()->GetDevice()->CreateRenderTargetView(backBuffers_[i].Get(), &renderTargetViewDesc, handle);
 	}
 
 	rtvHandles_[0] = rtvDescriptorHeap_->GetHeapPointer()->GetCPUDescriptorHandleForHeapStart()/*rtvDescriptorHeap_->GetCPUDescriptorHandleForHeapStart()*/;
-	rtvHandles_[1].ptr = rtvHandles_[0].ptr + device_->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
+	rtvHandles_[1].ptr = rtvHandles_[0].ptr + Device::GetInstance()->GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 
 }
 
-void BackBuffer::SetRenderTarget(IDXGISwapChain4* swapChain, ID3D12DescriptorHeap* dsvHeap_)
+void BackBuffer::SetRenderTarget(ID3D12GraphicsCommandList* commandList, IDXGISwapChain4* swapChain, ID3D12DescriptorHeap* dsvHeap_)
 {
 	UINT bbIndex = swapChain->GetCurrentBackBufferIndex();
 	// 深度ステンシルビュー用デスクリプタヒープのハンドルを取得
 	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle =
 		D3D12_CPU_DESCRIPTOR_HANDLE(dsvHeap_->GetCPUDescriptorHandleForHeapStart());
 	// レンダーターゲットをセット
-	commandList_->OMSetRenderTargets(1, &rtvHandles_[bbIndex], false, &dsvHandle);
+	commandList->OMSetRenderTargets(1, &rtvHandles_[bbIndex], false, &dsvHandle);
 }
 
-void BackBuffer::ClearRenderTarget(IDXGISwapChain4* swapChain)
+void BackBuffer::ClearRenderTarget(ID3D12GraphicsCommandList* commandList, IDXGISwapChain4* swapChain)
 {
 	UINT bbIndex = swapChain->GetCurrentBackBufferIndex();
 	// 全画面クリア        Red   Green Blue  Alpha
 	float clearColor[] = { 0.1f, 0.25f, 0.5f, 0.0f }; // 青っぽい色
-	commandList_->ClearRenderTargetView(rtvHandles_[bbIndex], clearColor, 0, nullptr);
+	commandList->ClearRenderTargetView(rtvHandles_[bbIndex], clearColor, 0, nullptr);
 }

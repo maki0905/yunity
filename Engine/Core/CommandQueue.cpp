@@ -2,11 +2,21 @@
 
 #include <cassert>
 
+#include "Device.h"
+
 #pragma comment(lib, "d3d12")
 
-CommandQueue::CommandQueue(ID3D12Device* device)
+void CommandQueue::Finalize()
 {
-	device_ = device;
+	if (commandQueue_) {
+		commandQueue_->Release();
+		commandQueue_ = nullptr;
+	}
+	if (fence_) {
+		fence_->Release();
+		fence_ = nullptr;
+	}
+
 }
 
 void CommandQueue::Create()
@@ -14,10 +24,10 @@ void CommandQueue::Create()
 	HRESULT result = S_FALSE;
 
 	D3D12_COMMAND_QUEUE_DESC commandQueueDesc{}; // 標準設定
-	result = device_->CreateCommandQueue(&commandQueueDesc, IID_PPV_ARGS(&commandQueue_));
+	result = Device::GetInstance()->GetDevice()->CreateCommandQueue(&commandQueueDesc, IID_PPV_ARGS(&commandQueue_));
 	assert(SUCCEEDED(result));
 
-	result = device_->CreateFence(fenceVal_, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fence_));
+	result = Device::GetInstance()->GetDevice()->CreateFence(fenceVal_, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fence_));
 }
 
 void CommandQueue::WaitForCommandsToFinish()

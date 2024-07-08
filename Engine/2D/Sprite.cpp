@@ -13,24 +13,18 @@
 /// <summary>
 /// 静的メンバ変数の実体
 /// </summary>
-ID3D12Device* Sprite::device_ = nullptr;
 UINT Sprite::descriptorHandleIncrementSize_;
 ID3D12GraphicsCommandList* Sprite::commandList_ = nullptr;
 RootSignature* Sprite::rootSignature_ = nullptr;
 PipelineState* Sprite::pipelineState_ = nullptr;
-//Microsoft::WRL::ComPtr<ID3D12RootSignature> Sprite::rootSignature_;
-//Microsoft::WRL::ComPtr<ID3D12PipelineState> Sprite::pipelineState_;
 Matrix4x4 Sprite::matProjection_;
 
 
 void Sprite::StaticInitialize()
 {
-	
-
-	device_ = Device::GetInstance()->GetDevice();
 
 	// デスクリプタサイズを取得
-	descriptorHandleIncrementSize_ = device_->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+	descriptorHandleIncrementSize_ = Device::GetInstance()->GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 
 	HRESULT result = S_FALSE;
 	Microsoft::WRL::ComPtr<ID3DBlob> vsBlob;    // 頂点シェーダーオブジェクト
@@ -80,8 +74,8 @@ void Sprite::StaticInitialize()
 		exit(1);
 	}
 
-	rootSignature_ = new RootSignature(device_, 2, 1);
-
+	rootSignature_ = new RootSignature(Device::GetInstance()->GetDevice(), 2, 1);
+	
 	// スタティックサンプラー
 	D3D12_STATIC_SAMPLER_DESC staticSamplers = {};
 	staticSamplers.Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;
@@ -99,8 +93,8 @@ void Sprite::StaticInitialize()
 
 	rootSignature_->Finalize(D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
 
-	pipelineState_ = new PipelineState(device_, rootSignature_);
-
+	pipelineState_ = new PipelineState(Device::GetInstance()->GetDevice(), rootSignature_);
+	
 	// 頂点レイアウト
 	D3D12_INPUT_ELEMENT_DESC inputLayout[] = {
 		// xy座標
@@ -183,7 +177,7 @@ void Sprite::PreDraw(ID3D12GraphicsCommandList* commandList)
 {
 	// PreDrawとPostDrawがペアで呼ばれていなければエラー
 	assert(Sprite::commandList_ == nullptr);
-
+	//assert(pipelineState_ == nullptr);
 	// コマンドリストをセット
 	commandList_ = commandList;
 
@@ -246,10 +240,20 @@ Sprite::Sprite(uint32_t textureHandle, Vector2 position, Vector2 size, Vector4 c
 	texSize_ = size;
 }
 
+void Sprite::Finalize()
+{
+	if (rootSignature_) {
+		delete rootSignature_;
+	}
+	if (pipelineState_) {
+		delete pipelineState_;
+	}
+}
+
+
 bool Sprite::Initialize()
 {
 	// nullptrチェック
-	assert(device_);
 	HRESULT result = S_FALSE;
 	resourceDesc_ = TextureManager::GetInstance()->GetResoureDesc(textureHandle_);
 
@@ -270,7 +274,7 @@ bool Sprite::Initialize()
 		// バッファの場合はこれにする決まり
 		vertexResourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
 		// 頂点バッファ生成
-		result = device_->CreateCommittedResource(&uploadHeapProperties, D3D12_HEAP_FLAG_NONE,
+		result = Device::GetInstance()->GetDevice()->CreateCommittedResource(&uploadHeapProperties, D3D12_HEAP_FLAG_NONE,
 			&vertexResourceDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr,
 			IID_PPV_ARGS(&vertBuff_));
 		assert(SUCCEEDED(result));
@@ -305,7 +309,7 @@ bool Sprite::Initialize()
 		// バッファの場合はこれにする決まり
 		resourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
 		// 定数バッファの生成
-		result = device_->CreateCommittedResource(&heapProperties, D3D12_HEAP_FLAG_NONE,
+		result = Device::GetInstance()->GetDevice()->CreateCommittedResource(&heapProperties, D3D12_HEAP_FLAG_NONE,
 			&resourceDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr,
 			IID_PPV_ARGS(&constBuff_));
 		assert(SUCCEEDED(result));

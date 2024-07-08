@@ -4,13 +4,21 @@
 
 #include "BackBuffer.h"
 #include "DepthBuffer.h"
+#include "Device.h"
 
 #pragma comment(lib, "d3d12")
 #pragma comment(lib, "dxgi.lib")
 
-CommandList::CommandList(ID3D12Device* device)
+void CommandList::Finalize()
 {
-	device_ = device;
+	if (commandList_) {
+		commandList_->Release();
+		commandList_ = nullptr;
+	}
+	if (commandAllocator_) {
+		commandAllocator_->Release();
+		commandAllocator_ = nullptr;
+	}
 }
 
 void CommandList::Create()
@@ -51,7 +59,8 @@ void CommandList::BarrierChange(ID3D12Resource* resource, D3D12_RESOURCE_STATES 
 void CommandList::CommandClear()
 {
 	commandAllocator_->Reset();
-	commandList_->Reset(commandAllocator_.Get(), nullptr);
+	//commandList_->Reset(commandAllocator_.Get(), nullptr);
+	commandList_->Reset(commandAllocator_, nullptr);
 
 }
 
@@ -109,16 +118,24 @@ void CommandList::RSSetScissorRects(UINT width, UINT height)
 
 }
 
+ID3D12CommandList* CommandList::GetCommandLists()
+{
+	//ID3D12CommandList* cmdLists[] = { commandList_.Get()};
+	ID3D12CommandList* cmdLists[] = { commandList_ };
+	return *cmdLists;
+}
+
 void CommandList::CreateAllocator()
 {
 	HRESULT result = S_FALSE;
-	result = device_->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&commandAllocator_));
+	result = Device::GetInstance()->GetDevice()->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&commandAllocator_));
 	assert(SUCCEEDED(result));
 }
 
 void CommandList::CreateList()
 {
 	HRESULT result = S_FALSE;
-	result = device_->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, commandAllocator_.Get(), nullptr, IID_PPV_ARGS(&commandList_));
+	//result = Device::GetInstance()->GetDevice()->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, commandAllocator_.Get(), nullptr, IID_PPV_ARGS(&commandList_));
+	result = Device::GetInstance()->GetDevice()->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, commandAllocator_, nullptr, IID_PPV_ARGS(&commandList_));
 	assert(SUCCEEDED(result));
 }

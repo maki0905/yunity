@@ -72,6 +72,7 @@ public:
 
 
 public:
+	void Finalize();
 
 	/// <summary>
 	/// 描画
@@ -103,7 +104,6 @@ private:
 	ID3D12Resource* CreateBufferResource(size_t sizeInBytes);
 
 private:
-	static ID3D12Device* device_;
 	static ID3D12GraphicsCommandList* commandList_;
 	static RootSignature* rootSignature_;
 	static PipelineState* pipelineState_;

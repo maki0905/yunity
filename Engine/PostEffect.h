@@ -11,6 +11,18 @@
 class PipelineState;
 class RootSignature;
 
+enum class PostEffects {
+	kGrayscale,
+	kVignetting,
+	kSmoothing,
+	kGaussianFilter,
+	kOutline,
+	kRadialBlur,
+	kDissolve,
+	kRandom,
+	kCount,
+};
+
 class PostEffect {
 	/// <summary>
 	/// ルートパラメータ番号
@@ -21,19 +33,8 @@ class PostEffect {
 		kMaterial,
 		kCount,          // 最大数
 	};
-
-	enum class PostEffects {
-		kGrayscale,
-		kVignetting,
-		kSmoothing,
-		kGaussianFilter,
-		kOutline,
-		kRadialBlur,
-		kDissolve,
-		kRandom,
-	};
-
 public:
+
 	struct Material {
 		Matrix4x4 projectionInverse;
 	};
@@ -41,7 +42,15 @@ public:
 	static void InitializeGraphicsPipeline();
 public:
 	void Initalize();
+	void ClearRenderTargetView();
+	void OMSetRenderTargets();
+	void ClearDepthStencilView();
 
+	//private:
+	//	PostEffect() = default;
+	//	~PostEffect() = default;
+	//	PostEffect(const PostEffect&) = delete;
+	//	PostEffect& operator=(const PostEffect&) = delete;
 private:
 
 	void CreateResorce();
@@ -50,6 +59,8 @@ private:
 
 	void InitializeMaterial();
 
+	void ClearRenderTargetView(uint32_t flag);
+
 	Microsoft::WRL::ComPtr<ID3D12Resource> CreateRenderTextureResource(uint32_t width, uint32_t hight, DXGI_FORMAT format, const Vector4& clearColor);
 
 	/// <summary>
@@ -57,30 +68,30 @@ private:
 	/// </summary>
 	/// <param name="sizeInBytes"></param>
 	/// <returns>サイズ</returns>
-	ID3D12Resource* CreateBufferResource(size_t sizeInBytes);
+	Microsoft::WRL::ComPtr<ID3D12Resource> CreateBufferResource(size_t sizeInBytes);
 private:
-	static RootSignature* rootSignature_;
-	static PipelineState* pipelineState_;
+	static RootSignature* rootSignature_[static_cast<uint32_t>(PostEffects::kCount)];
+	static PipelineState* pipelineState_[static_cast<uint32_t>(PostEffects::kCount)];
 
 private:
 	const Vector4 kRenderTargetClearValue{ 1.0f, 0.0f, 0.0f, 1.0f };
-	Microsoft::WRL::ComPtr<ID3D12Resource> renderTextureResource_;
+	Microsoft::WRL::ComPtr<ID3D12Resource> renderTextureResource_[static_cast<uint32_t>(PostEffects::kCount)];
 	Microsoft::WRL::ComPtr<ID3D12Resource> depthStencilResource_;
 	Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> commandList_;
-	D3D12_CPU_DESCRIPTOR_HANDLE cpuDescHandleRTV_;
+	D3D12_CPU_DESCRIPTOR_HANDLE cpuDescHandleRTV_[static_cast<uint32_t>(PostEffects::kCount)];
 	// シェーダリソースビューのハンドル(CPU)
-	D3D12_CPU_DESCRIPTOR_HANDLE cpuDescHandleSRV_;
+	D3D12_CPU_DESCRIPTOR_HANDLE cpuDescHandleSRV_[static_cast<uint32_t>(PostEffects::kCount)];
 	// シェーダリソースビューのハンドル(GPU)
-	D3D12_GPU_DESCRIPTOR_HANDLE gpuDescHandleSRV_;
+	D3D12_GPU_DESCRIPTOR_HANDLE gpuDescHandleSRV_[static_cast<uint32_t>(PostEffects::kCount)];
 	// DepthTexture用のシェーダリソースビューのハンドル(CPU)
 	D3D12_CPU_DESCRIPTOR_HANDLE depthTextureCpuDescHandleSRV_;
 	// DepthTexture用のシェーダリソースビューのハンドル(GPU)
 	D3D12_GPU_DESCRIPTOR_HANDLE depthTextureGpuDescHandleSRV_;
 
 	// マテリアル
-	Microsoft::WRL::ComPtr<ID3D12Resource> materialResource_;
-	Material* materialData_;
-
+	Microsoft::WRL::ComPtr<ID3D12Resource> materialResource_[static_cast<uint32_t>(PostEffects::kCount)];
+	Material* materialData_[static_cast<uint32_t>(PostEffects::kCount)];
+	//Material* materialData_;
 	// 深度バッファクラス
 	std::unique_ptr<DepthBuffer> depthBuffe_;
 };

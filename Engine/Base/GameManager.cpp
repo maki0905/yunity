@@ -12,7 +12,6 @@ GameManager::GameManager()
 
 GameManager::~GameManager()
 {
-	Framework::Finalize();
 	//Framework::Finalize();
 }
 
@@ -25,6 +24,8 @@ void GameManager::Initialize()
 
 void GameManager::Finalize()
 {
+	CameraManager::GetInstance()->Finalize();
+	Framework::Finalize();
 }
 
 void GameManager::Update()
@@ -47,14 +48,14 @@ void GameManager::Draw()
 	skybox_->PreDraw(directXCore_->GetCommandList());
 	model_->PreDraw(directXCore_->GetCommandList());
 	//sphere_->PreDraw(directXCore_->GetCommandList());
-	particle_->PreDraw(directXCore_->GetCommandList());
+	//particle_->PreDraw(directXCore_->GetCommandList());
 	primitive_->PreDraw(directXCore_->GetCommandList());
 
 	// 描画
 	//sceneArr_[currentSceneNo_]->Draw3D();
 	SceneManager::GetInstance()->Draw3D();
 	primitive_->PostDraw();
-	particle_->PostDraw();
+	//particle_->PostDraw();
 	//sphere_->PostDraw();
 	model_->PostDraw();
 	skybox_->PostDraw();

@@ -6,11 +6,11 @@
 
 void GraphicsPipelineManager::Initialize()
 {
-	device_ = Device::GetInstance()->GetDevice();
+	//device_ = Device::GetInstance()->GetDevice();
 	graphicsCommon_ = GraphicsCommon::GetInstance();
-
 	for (uint32_t pipelineType = 0; pipelineType < PipelineType::kCount; pipelineType++) {
-		graphicsPipelines_[pipelineType] = new GraphicsPipeline();
+		//graphicsPipelines_[pipelineType] = new GraphicsPipeline();
+		graphicsPipelines_[pipelineType] = std::make_unique<GraphicsPipeline>();
 	}
 
 	CreateObject3d();
@@ -30,7 +30,8 @@ void GraphicsPipelineManager::SetCommandList(ID3D12GraphicsCommandList* commandL
 
 void GraphicsPipelineManager::CreateObject3d()
 {
-	graphicsPipelines_[PipelineType::kObject3d]->rooSignature_ = new RootSignature(device_, static_cast<UINT>(Object3dRootBindings::kCount), 1);
+	//graphicsPipelines_[PipelineType::kObject3d]->rooSignature_ = new RootSignature(Device::GetInstance()->GetDevice(), static_cast<UINT>(Object3dRootBindings::kCount), 1);
+	graphicsPipelines_[PipelineType::kObject3d]->rooSignature_ = std::make_unique<RootSignature>(Device::GetInstance()->GetDevice(), static_cast<UINT>(Object3dRootBindings::kCount), 1);
 	D3D12_STATIC_SAMPLER_DESC staticSamplers = graphicsCommon_->StaticSampler;
 	staticSamplers.ShaderRegister = 0;
 	staticSamplers.ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
@@ -76,7 +77,8 @@ void GraphicsPipelineManager::CreateObject3d()
 	//blendDesc.RenderTarget[0].DestBlendAlpha = D3D12_BLEND_ZERO;
 
 	for (uint32_t blendModeType = 0; blendModeType < BlendModeType::kBlendCount; blendModeType++) {
-		graphicsPipelines_[PipelineType::kObject3d]->pso_[blendModeType] = new PipelineState(device_, graphicsPipelines_[PipelineType::kObject3d]->rooSignature_);
+		//graphicsPipelines_[PipelineType::kObject3d]->pso_[blendModeType] = new PipelineState(Device::GetInstance()->GetDevice(), graphicsPipelines_[PipelineType::kObject3d]->rooSignature_);
+		graphicsPipelines_[PipelineType::kObject3d]->pso_[blendModeType] = std::make_unique<PipelineState>(Device::GetInstance()->GetDevice(), graphicsPipelines_[PipelineType::kObject3d]->rooSignature_.get());
 		graphicsPipelines_[PipelineType::kObject3d]->pso_[blendModeType]->SetInputLayout(inputLayoutDesc);
 		graphicsPipelines_[PipelineType::kObject3d]->pso_[blendModeType]->SetShader(PipelineState::ShaderType::kVS, ShaderCompiler::GetInstance()->Get("Object3d", ShaderCompiler::ShaderType::kVS));
 		graphicsPipelines_[PipelineType::kObject3d]->pso_[blendModeType]->SetShader(PipelineState::ShaderType::kPS, ShaderCompiler::GetInstance()->Get("Object3d", ShaderCompiler::ShaderType::kPS));
@@ -97,7 +99,8 @@ void GraphicsPipelineManager::CreateSprite()
 
 void GraphicsPipelineManager::CreateParticle()
 {
-	graphicsPipelines_[PipelineType::kParticle]->rooSignature_ = new RootSignature(device_, static_cast<int>(ParticleRootBindings::kCount), 1);
+	//graphicsPipelines_[PipelineType::kParticle]->rooSignature_ = new RootSignature(Device::GetInstance()->GetDevice(), static_cast<int>(ParticleRootBindings::kCount), 1);
+	graphicsPipelines_[PipelineType::kParticle]->rooSignature_ = std::make_unique<RootSignature>(Device::GetInstance()->GetDevice(), static_cast<int>(ParticleRootBindings::kCount), 1);
 
 	D3D12_STATIC_SAMPLER_DESC staticSamplers = graphicsCommon_->StaticSampler;
 	staticSamplers.ShaderRegister = 0;
@@ -129,7 +132,8 @@ void GraphicsPipelineManager::CreateParticle()
 	D3D12_DEPTH_STENCIL_DESC depthStencilDesc = GraphicsPipelineManager::graphicsCommon_->DepthStateReadWrite;
 
 	for (uint32_t blendModeType = 0; blendModeType < BlendModeType::kBlendCount; blendModeType++) {
-		graphicsPipelines_[PipelineType::kParticle]->pso_[blendModeType] = new PipelineState(device_, graphicsPipelines_[PipelineType::kParticle]->rooSignature_);
+		//graphicsPipelines_[PipelineType::kParticle]->pso_[blendModeType] = new PipelineState(Device::GetInstance()->GetDevice(), graphicsPipelines_[PipelineType::kParticle]->rooSignature_);
+		graphicsPipelines_[PipelineType::kParticle]->pso_[blendModeType] = std::make_unique<PipelineState>(Device::GetInstance()->GetDevice(), graphicsPipelines_[PipelineType::kParticle]->rooSignature_.get());
 		graphicsPipelines_[PipelineType::kParticle]->pso_[blendModeType]->SetInputLayout(inputLayoutDesc);
 		graphicsPipelines_[PipelineType::kParticle]->pso_[blendModeType]->SetShader(PipelineState::ShaderType::kVS, ShaderCompiler::GetInstance()->Get("Particle", ShaderCompiler::ShaderType::kVS));
 		graphicsPipelines_[PipelineType::kParticle]->pso_[blendModeType]->SetShader(PipelineState::ShaderType::kPS, ShaderCompiler::GetInstance()->Get("Particle", ShaderCompiler::ShaderType::kPS));
@@ -145,8 +149,8 @@ void GraphicsPipelineManager::CreateParticle()
 
 void GraphicsPipelineManager::CreateLine()
 {
-	graphicsPipelines_[PipelineType::kLine]->rooSignature_ = new RootSignature(device_, static_cast<int>(LineRootBindings::kCount), 1);
-
+	/*graphicsPipelines_[PipelineType::kLine]->rooSignature_ = new RootSignature(Device::GetInstance()->GetDevice(), static_cast<int>(LineRootBindings::kCount), 1);*/
+	graphicsPipelines_[PipelineType::kLine]->rooSignature_ = std::make_unique<RootSignature>(Device::GetInstance()->GetDevice(), static_cast<int>(LineRootBindings::kCount), 1);
 	D3D12_STATIC_SAMPLER_DESC staticSamplers = graphicsCommon_->StaticSampler;
 	staticSamplers.ShaderRegister = 0;
 	staticSamplers.ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
@@ -172,7 +176,8 @@ void GraphicsPipelineManager::CreateLine()
 	// DepthStencilStateの設定
 	D3D12_DEPTH_STENCIL_DESC depthStencilDesc = graphicsCommon_->DepthStateReadWrite;
 
-	graphicsPipelines_[PipelineType::kLine]->pso_[0] = new PipelineState(device_, graphicsPipelines_[PipelineType::kLine]->rooSignature_);
+	//graphicsPipelines_[PipelineType::kLine]->pso_[0] = new PipelineState(Device::GetInstance()->GetDevice(), graphicsPipelines_[PipelineType::kLine]->rooSignature_);
+	graphicsPipelines_[PipelineType::kLine]->pso_[0] = std::make_unique<PipelineState>(Device::GetInstance()->GetDevice(), graphicsPipelines_[PipelineType::kLine]->rooSignature_.get());
 	graphicsPipelines_[PipelineType::kLine]->pso_[0]->SetInputLayout(inputLayoutDesc);
 	graphicsPipelines_[PipelineType::kLine]->pso_[0]->SetShader(PipelineState::ShaderType::kVS, ShaderCompiler::GetInstance()->Get("Line", ShaderCompiler::ShaderType::kVS));
 	graphicsPipelines_[PipelineType::kLine]->pso_[0]->SetShader(PipelineState::ShaderType::kPS, ShaderCompiler::GetInstance()->Get("Line", ShaderCompiler::ShaderType::kPS));
@@ -187,8 +192,8 @@ void GraphicsPipelineManager::CreateLine()
 
 void GraphicsPipelineManager::CreatePrimitive()
 {
-	graphicsPipelines_[PipelineType::kPrimitive]->rooSignature_ = new RootSignature(device_, static_cast<int>(PrimitiveRootBindings::kCount), 1);
-
+	//graphicsPipelines_[PipelineType::kPrimitive]->rooSignature_ = new RootSignature(Device::GetInstance()->GetDevice(), static_cast<int>(PrimitiveRootBindings::kCount), 1);
+	graphicsPipelines_[PipelineType::kPrimitive]->rooSignature_ = std::make_unique<RootSignature>(Device::GetInstance()->GetDevice(), static_cast<int>(PrimitiveRootBindings::kCount), 1);
 	D3D12_STATIC_SAMPLER_DESC staticSamplers = graphicsCommon_->StaticSampler;
 	staticSamplers.ShaderRegister = 0;
 	staticSamplers.ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
@@ -215,7 +220,8 @@ void GraphicsPipelineManager::CreatePrimitive()
 	// DepthStencilStateの設定
 	D3D12_DEPTH_STENCIL_DESC depthStencilDesc = graphicsCommon_->DepthStateReadWrite;
 
-	graphicsPipelines_[PipelineType::kPrimitive]->pso_[0] = new PipelineState(device_, graphicsPipelines_[PipelineType::kPrimitive]->rooSignature_);
+	//graphicsPipelines_[PipelineType::kPrimitive]->pso_[0] = new PipelineState(Device::GetInstance()->GetDevice(), graphicsPipelines_[PipelineType::kPrimitive]->rooSignature_);
+	graphicsPipelines_[PipelineType::kPrimitive]->pso_[0] = std::make_unique<PipelineState>(Device::GetInstance()->GetDevice(), graphicsPipelines_[PipelineType::kPrimitive]->rooSignature_.get());
 	graphicsPipelines_[PipelineType::kPrimitive]->pso_[0]->SetInputLayout(inputLayoutDesc);
 	graphicsPipelines_[PipelineType::kPrimitive]->pso_[0]->SetShader(PipelineState::ShaderType::kVS, ShaderCompiler::GetInstance()->Get("Primitive", ShaderCompiler::ShaderType::kVS));
 	graphicsPipelines_[PipelineType::kPrimitive]->pso_[0]->SetShader(PipelineState::ShaderType::kPS, ShaderCompiler::GetInstance()->Get("Primitive", ShaderCompiler::ShaderType::kPS));
@@ -231,7 +237,8 @@ void GraphicsPipelineManager::CreatePrimitive()
 
 void GraphicsPipelineManager::CreateSkinning()
 {
-	graphicsPipelines_[PipelineType::kSkinning]->rooSignature_ = new RootSignature(device_, static_cast<UINT>(SkinningRootBindings::kCount), 1);
+	//graphicsPipelines_[PipelineType::kSkinning]->rooSignature_ = new RootSignature(Device::GetInstance()->GetDevice(), static_cast<UINT>(SkinningRootBindings::kCount), 1);
+	graphicsPipelines_[PipelineType::kSkinning]->rooSignature_ = std::make_unique<RootSignature>(Device::GetInstance()->GetDevice(), static_cast<UINT>(SkinningRootBindings::kCount), 1);
 	D3D12_STATIC_SAMPLER_DESC staticSamplers = graphicsCommon_->StaticSampler;
 	staticSamplers.ShaderRegister = 0;
 	staticSamplers.ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
@@ -268,7 +275,8 @@ void GraphicsPipelineManager::CreateSkinning()
 	D3D12_DEPTH_STENCIL_DESC depthStencilDesc = GraphicsPipelineManager::graphicsCommon_->DepthStateReadWrite;
 
 	for (uint32_t blendModeType = 0; blendModeType < BlendModeType::kBlendCount; blendModeType++) {
-		graphicsPipelines_[PipelineType::kSkinning]->pso_[blendModeType] = new PipelineState(device_, graphicsPipelines_[PipelineType::kSkinning]->rooSignature_);
+		//graphicsPipelines_[PipelineType::kSkinning]->pso_[blendModeType] = new PipelineState(Device::GetInstance()->GetDevice(), graphicsPipelines_[PipelineType::kSkinning]->rooSignature_);
+		graphicsPipelines_[PipelineType::kSkinning]->pso_[blendModeType] = std::make_unique<PipelineState>(Device::GetInstance()->GetDevice(), graphicsPipelines_[PipelineType::kSkinning]->rooSignature_.get());
 		graphicsPipelines_[PipelineType::kSkinning]->pso_[blendModeType]->SetInputLayout(inputLayoutDesc);
 		graphicsPipelines_[PipelineType::kSkinning]->pso_[blendModeType]->SetShader(PipelineState::ShaderType::kVS, ShaderCompiler::GetInstance()->Get("Skinning", ShaderCompiler::ShaderType::kVS));
 		graphicsPipelines_[PipelineType::kSkinning]->pso_[blendModeType]->SetShader(PipelineState::ShaderType::kPS, ShaderCompiler::GetInstance()->Get("Object3d", ShaderCompiler::ShaderType::kPS));

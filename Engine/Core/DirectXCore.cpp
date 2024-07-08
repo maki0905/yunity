@@ -1,5 +1,6 @@
 #include "DirectXCore.h"
 
+#include <iostream>
 #include <cassert>
 #include <thread>
 
@@ -31,76 +32,122 @@ void DirectXCore::Initialize()
 	windowHeight_ = WindowsAPI::GetInstance()->kWindowHeight;
 
 	// デバイス
-	device_ = Device::GetInstance();
-	device_->Initialize();
+	/*device_ = Device::GetInstance();
+	device_->Initialize();*/
+	Device::GetInstance()->Initialize();
 
 	// コマンド関連
-	commandList_ = new CommandList(device_->GetDevice());
+	//commandList_ = std::make_unique<CommandList>();
+	commandList_ = new CommandList();
 	commandList_->Create();
-	commandQueue_ = new CommandQueue(device_->GetDevice());
+	//commandQueue_ = std::make_unique<CommandQueue>();
+	commandQueue_ = new CommandQueue();
 	commandQueue_->Create();
 
 	// スワップチェーン
-	swapChain_ = new SwapChain(commandQueue_->GetCommandQueue(), device_->GetDxgiFactory());
-	swapChain_->Create();
+	//swapChain_ = std::make_unique<SwapChain>();
+	swapChain_ = new SwapChain();
+	swapChain_->CreateSwapChain(commandQueue_->GetCommandQueue());
 
 	// 各種デスクリプタヒープ
 	for (int i = 0; i < static_cast<int>(HeapType::kCount); i++) {
 		descriptorHeaps_[i] = std::make_unique<DescriptorHeap>();
 	}
 
-	descriptorHeaps_[static_cast<int>(HeapType::kRTV)]->Create(D3D12_DESCRIPTOR_HEAP_TYPE_RTV, 3, false);
+	descriptorHeaps_[static_cast<int>(HeapType::kRTV)]->Create(D3D12_DESCRIPTOR_HEAP_TYPE_RTV, 11, false);
 	descriptorHeaps_[static_cast<int>(HeapType::kSRV)]->Create(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, 128, true);
-	descriptorHeaps_[static_cast<int>(HeapType::kDSV)]->Create(D3D12_DESCRIPTOR_HEAP_TYPE_DSV, 1, false);
+	descriptorHeaps_[static_cast<int>(HeapType::kDSV)]->Create(D3D12_DESCRIPTOR_HEAP_TYPE_DSV, 2, false);
 
-	// バッファ
-	/*depthBuffer_ = new DepthBuffer();
-	depthBuffer_->Create();*/
+	//// バッファ
+	///*depthBuffer_ = new DepthBuffer();
+	//depthBuffer_->Create();*/
 
-	backBuffer_ = new BackBuffer(device_->GetDevice(), commandList_->GetCommandList(), swapChain_->GetSwapChain());
-	backBuffer_->Create();
+	//backBuffer_ = std::make_unique<BackBuffer>();
+	backBuffer_ = new BackBuffer();
+	backBuffer_->Create(swapChain_->GetSwapChain());
 
 	// Shader
-	shaderCompiler_ = ShaderCompiler::GetInstance();
-	shaderCompiler_->Initialize();
+	ShaderCompiler::GetInstance()->Initialize();
 
-	renderTexture_ = RenderTexture::GetInstance();
-	renderTexture_->InitializeGraphicsPipeline();
-	renderTexture_->Initalize();
-	renderTexture_->Create();
+	RenderTexture::GetInstance()->InitializeGraphicsPipeline();
+	RenderTexture::GetInstance()->Initalize();
+	RenderTexture::GetInstance()->Create();
 
-	
+
 	GraphicsCommon::GetInstance()->Initialize();
 
-	graphicsPipelineManager_ = GraphicsPipelineManager::GetInstance();
-	graphicsPipelineManager_->Initialize();
+	GraphicsPipelineManager::GetInstance()->Initialize();
+}
+
+void DirectXCore::Finalize()
+{
+	backBuffer_->Finalize();
+	if (backBuffer_) {
+		delete backBuffer_;
+		backBuffer_ = nullptr;
+	}
+
+	if (swapChain_) {
+		delete swapChain_;
+		swapChain_ = nullptr;
+	}
+
+	commandQueue_->Finalize();
+	if (commandQueue_) {
+		delete commandQueue_;
+		commandQueue_ = nullptr;
+	}
+
+	commandList_->Finalize();
+	if (commandList_) {
+		delete commandList_;
+		commandList_ = nullptr;
+	}
+	/*if (commandList_) {
+		delete commandList_;
+	}
+	if (commandQueue_) {
+		delete commandQueue_;
+	}
+	if (swapChain_) {
+		delete swapChain_;
+	}
+	if (backBuffer_) {
+		delete backBuffer_;
+	}
+	if (depthBuffer_) {
+		delete depthBuffer_;
+	}*/
 }
 
 void DirectXCore::PreDrawRenderTexture()
 {
 	//commandList_->BarrierChange(swapChain_->GetSwapChain(), D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
-	
+
 	//commandList_->OMSetRenderTargets(renderTexture_->GetCpuDescHandleRTV(), depthBuffer_->GetDescriptorHeap());
-	commandList_->OMSetRenderTargets(renderTexture_->GetCpuDescHandleRTV(), renderTexture_->GetDepthBuffer()->GetDescriptorHeap());
-	commandList_->ClearRenderTargetView(renderTexture_->GetRenderTargetClearValue(), *renderTexture_->GetCpuDescHandleRTV());
-	commandList_->ClearDepthStencilView(/*depthBuffer_->GetDescriptorHeap()*/renderTexture_->GetDepthBuffer()->GetDescriptorHeap());
+	RenderTexture::GetInstance()->OMSetRenderTargets();
+	RenderTexture::GetInstance()->ClearRenderTargetView();
+	RenderTexture::GetInstance()->ClearDepthStencilView();
+	//commandList_->OMSetRenderTargets(renderTexture_->GetCpuDescHandleRTV(), renderTexture_->GetDepthBuffer()->GetDescriptorHeap());
+	//commandList_->ClearRenderTargetView(renderTexture_->GetRenderTargetClearValue(), *renderTexture_->GetCpuDescHandleRTV());
+	//commandList_->ClearDepthStencilView(/*depthBuffer_->GetDescriptorHeap()*/renderTexture_->GetDepthBuffer()->GetDescriptorHeap());
 	commandList_->RSSetViewports(float(windowWidth_), float(windowHeight_));
 	commandList_->RSSetScissorRects(windowWidth_, windowHeight_);
 }
 
 void DirectXCore::PostDrawRenderTexture()
 {
-	
-	commandList_->BarrierChange(renderTexture_->GetResource(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+
+	commandList_->BarrierChange(RenderTexture::GetInstance()->GetResource(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
 	PreDrawSwapchain();
-	renderTexture_->Copy();
-	commandList_->BarrierChange(renderTexture_->GetResource(), D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_RENDER_TARGET);
+	RenderTexture::GetInstance()->Copy();
+	commandList_->BarrierChange(RenderTexture::GetInstance()->GetResource(), D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_RENDER_TARGET);
 }
 
 void DirectXCore::PreDrawSwapchain()
 {
 	commandList_->BarrierChange(swapChain_->GetSwapChain(), D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
-	
+
 	commandList_->OMSetRenderTargets(&backBuffer_->GetCpuDescHandleRTV()[swapChain_->GetSwapChain()->GetCurrentBackBufferIndex()]);
 	commandList_->ClearRenderTargetView(Vector4(0.1f, 0.25f, 0.5f, 0.0f), backBuffer_->GetCpuDescHandleRTV()[swapChain_->GetSwapChain()->GetCurrentBackBufferIndex()]);
 	commandList_->RSSetViewports(float(windowWidth_), float(windowHeight_));
@@ -118,8 +165,11 @@ void DirectXCore::PostDrawSwapchain()
 
 
 	// コマンドリストの実行
-	ID3D12CommandList* cmdLists[] = { commandList_->GetCommandList() }; // コマンドリストの配列
-	commandQueue_->GetCommandQueue()->ExecuteCommandLists(1, cmdLists);
+	//ID3D12CommandList* cmdLists[] = { commandList_->GetCommandList() }; // コマンドリストの配列
+	Microsoft::WRL::ComPtr<ID3D12CommandList> cmdLists[] = { commandList_->GetCommandList() };
+	ID3D12CommandList* rawCmdLists[] = { cmdLists[0].Get() };
+	commandQueue_->GetCommandQueue()->ExecuteCommandLists(1, rawCmdLists);
+	//commandQueue_->GetCommandQueue()->ExecuteCommandLists(1, commandList_->GetCommandLists());
 
 	// バッファをフリップ
 	result = swapChain_->GetSwapChain()->Present(1, 0);
@@ -127,7 +177,7 @@ void DirectXCore::PostDrawSwapchain()
 	if (FAILED(result)) {
 		Microsoft::WRL::ComPtr<ID3D12DeviceRemovedExtendedData> dred;
 
-		result = device_->GetDevice()->QueryInterface(IID_PPV_ARGS(&dred));
+		result = Device::GetInstance()->GetDevice()->QueryInterface(IID_PPV_ARGS(&dred));
 		assert(SUCCEEDED(result));
 
 		// 自動パンくず取得
@@ -141,6 +191,9 @@ void DirectXCore::PostDrawSwapchain()
 	// FPS固定
 	UpdateFixFPS();
 	commandList_->CommandClear();
+	/*for (auto& list : cmdLists) {
+		list = nullptr;
+	}*/
 }
 
 
@@ -152,17 +205,29 @@ void DirectXCore::InitializeFixFPS()
 
 void DirectXCore::UpdateFixFPS()
 {
-	const std::chrono::microseconds kMinTime(uint64_t(1000000.0f / 60.0f));
-	const std::chrono::microseconds kMinCheckTime(uint64_t(1000000.0f / 65.0f));
+	timeBeginPeriod(1);
+	auto now = std::chrono::steady_clock::now();
+	auto elapsed = std::chrono::duration_cast<std::chrono::microseconds>(now - reference_);
 
-	std::chrono::steady_clock::time_point now = std::chrono::steady_clock::now();
-	std::chrono::microseconds elapsed = std::chrono::duration_cast<std::chrono::microseconds>(now - reference_);
+	static const std::chrono::microseconds kMinCheckTime(uint64_t(1000000.0f / 62.0f));
+	static const std::chrono::microseconds kMinTime(uint64_t(1000000.0f / 60.0f));
+	std::chrono::microseconds check = kMinCheckTime - elapsed;
+	if (check > std::chrono::microseconds(0)) {
+		std::chrono::microseconds waitTime = kMinTime - elapsed;
 
-	if (elapsed < kMinTime) {
-		while (std::chrono::steady_clock::now() - reference_ < kMinTime) {
-			std::this_thread::sleep_for(std::chrono::microseconds(1));
-		}
+		auto waitStart = std::chrono::steady_clock::now();
+		do {
+			std::this_thread::sleep_for(std::chrono::nanoseconds(1));
+		} while (std::chrono::steady_clock::now() - waitStart < waitTime);
 	}
 
-	reference_ = std::chrono::steady_clock::now();
+	// 再計算して referenceTime_ を更新
+	now = std::chrono::steady_clock::now();
+	elapsed = std::chrono::duration_cast<std::chrono::microseconds>(now - reference_);
+	reference_ = now;
+
+	// microseconds から seconds に変換
+	std::chrono::duration<float> deltaTime = std::chrono::duration<float>(elapsed.count() / 1000000.0f);
+
+	timeEndPeriod(1);
 }

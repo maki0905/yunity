@@ -63,7 +63,7 @@ public:
 
 
 public:
-
+	void Finalize();
 	/// <summary>
 	/// 描画
 	/// </summary>
@@ -86,10 +86,9 @@ private:
 	/// </summary>
 	/// <param name="sizeInBytes"></param>
 	/// <returns>サイズ</returns>
-	ID3D12Resource* CreateBufferResource(size_t sizeInBytes);
+	Microsoft::WRL::ComPtr<ID3D12Resource> CreateBufferResource(size_t sizeInBytes);
 
 private:
-	static ID3D12Device* device_;
 	static ID3D12GraphicsCommandList* commandList_;
 	static RootSignature* rootSignature_;
 	static PipelineState* pipelineState_;

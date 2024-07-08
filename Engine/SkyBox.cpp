@@ -10,15 +10,12 @@
 #include "ShaderCompiler.h"
 #include "TextureManager.h"
 
-
-ID3D12Device* SkyBox::device_ = nullptr;
 ID3D12GraphicsCommandList* SkyBox::commandList_ = nullptr;
 RootSignature* SkyBox::rootSignature_ = nullptr;
 PipelineState* SkyBox::pipelineState_ = nullptr;
 
 void SkyBox::StaticInitialize()
 {
-	device_ = Device::GetInstance()->GetDevice();
 
 	InitializeGraphicsPipeline();
 }
@@ -46,7 +43,7 @@ SkyBox* SkyBox::Create()
 
 void SkyBox::InitializeGraphicsPipeline()
 {
-	rootSignature_ = new RootSignature(device_, static_cast<int>(RootBindings::kCount), 1);
+	rootSignature_ = new RootSignature(Device::GetInstance()->GetDevice() , static_cast<int>(RootBindings::kCount), 1);
 
 	D3D12_STATIC_SAMPLER_DESC staticSamplers = {};
 	staticSamplers.Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;
@@ -66,7 +63,7 @@ void SkyBox::InitializeGraphicsPipeline()
 
 	rootSignature_->Finalize(D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
 
-	pipelineState_ = new PipelineState(device_, rootSignature_);
+	pipelineState_ = new PipelineState(Device::GetInstance()->GetDevice(), rootSignature_);
 
 	// InputLayout
 	D3D12_INPUT_ELEMENT_DESC inputElementDescs[] = {
@@ -110,9 +107,18 @@ void SkyBox::InitializeGraphicsPipeline()
 	pipelineState_->Finalize();
 }
 
+void SkyBox::Finalize()
+{
+	if (rootSignature_) {
+		delete rootSignature_;
+	}
+	if (pipelineState_) {
+		delete pipelineState_;
+	}
+}
+
 void SkyBox::Draw(const WorldTransform& worldTransform)
 {
-	assert(device_);
 	assert(commandList_);
 	assert(worldTransform.constBuff_.Get());
 
@@ -235,7 +241,7 @@ void SkyBox::CreateBox()
 
 }
 
-ID3D12Resource* SkyBox::CreateBufferResource(size_t sizeInBytes)
+Microsoft::WRL::ComPtr<ID3D12Resource> SkyBox::CreateBufferResource(size_t sizeInBytes)
 {
 	HRESULT result = S_FALSE;
 	// リソース用のヒープの設定
@@ -252,8 +258,8 @@ ID3D12Resource* SkyBox::CreateBufferResource(size_t sizeInBytes)
 	ResourceDesc.SampleDesc.Count = 1;
 	ResourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
 	// リソースを作る
-	ID3D12Resource* resource = nullptr;
-	result = device_->CreateCommittedResource(&uploadHeapProperties, D3D12_HEAP_FLAG_NONE,
+	Microsoft::WRL::ComPtr<ID3D12Resource> resource = nullptr;
+	result = Device::GetInstance()->GetDevice()->CreateCommittedResource(&uploadHeapProperties, D3D12_HEAP_FLAG_NONE,
 		&ResourceDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(&resource));
 	assert(SUCCEEDED(result));
 	return resource;

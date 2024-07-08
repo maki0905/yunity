@@ -28,8 +28,8 @@ class GraphicsPipelineManager {
 		std::unordered_map<BlendModeType, PipelineState*> pso_;
 	};*/
 	struct GraphicsPipeline {
-		PipelineState* pso_[BlendModeType::kBlendCount];
-		RootSignature* rooSignature_;
+		std::unique_ptr<PipelineState> pso_[BlendModeType::kBlendCount];
+		std::unique_ptr<RootSignature> rooSignature_;
 	};
 public:
 	static GraphicsPipelineManager* GetInstance();
@@ -50,8 +50,9 @@ private:
 	GraphicsPipelineManager(const GraphicsPipelineManager&) = delete;
 	GraphicsPipelineManager& operator=(const GraphicsPipelineManager&) = delete;
 private:
-	ID3D12Device* device_;
+	//Microsoft::WRL::ComPtr<ID3D12Device> device_;
 	GraphicsCommon* graphicsCommon_;
-	GraphicsPipeline* graphicsPipelines_[PipelineType::kCount];
+	std::unique_ptr<GraphicsPipeline> graphicsPipelines_[PipelineType::kCount];
+	//GraphicsPipeline* graphicsPipelines_[PipelineType::kCount];
 
 };

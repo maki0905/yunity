@@ -10,15 +10,12 @@
 #include "ShaderCompiler.h"
 #include <GraphicsPipelineManager.h>
 
-
-ID3D12Device* PrimitiveDrawer::device_ = nullptr;
 ID3D12GraphicsCommandList* PrimitiveDrawer::commandList_ = nullptr;
 RootSignature* PrimitiveDrawer::rootSignature_ = nullptr;
 PipelineState* PrimitiveDrawer::pipelineState_ = nullptr;
 
 void PrimitiveDrawer::StaticInitialize()
 {
-	device_ = Device::GetInstance()->GetDevice();
 
 	InitializeGraphicsPipeline();
 }
@@ -56,7 +53,7 @@ PrimitiveDrawer* PrimitiveDrawer::Create(Type type)
 
 void PrimitiveDrawer::InitializeGraphicsPipeline()
 {
-	rootSignature_ = new RootSignature(device_, static_cast<int>(RootBindings::kCount), 1);
+	rootSignature_ = new RootSignature(Device::GetInstance()->GetDevice(), static_cast<int>(RootBindings::kCount), 1);
 
 	D3D12_STATIC_SAMPLER_DESC staticSamplers = {};
 	staticSamplers.Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;
@@ -75,7 +72,7 @@ void PrimitiveDrawer::InitializeGraphicsPipeline()
 
 	rootSignature_->Finalize(D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
 
-	pipelineState_ = new PipelineState(device_, rootSignature_);
+	pipelineState_ = new PipelineState(Device::GetInstance()->GetDevice(), rootSignature_);
 
 	// InputLayout
 	D3D12_INPUT_ELEMENT_DESC inputElementDescs[] = {
@@ -131,9 +128,18 @@ void PrimitiveDrawer::InitializeGraphicsPipeline()
 
 }
 
+void PrimitiveDrawer::Finalize()
+{
+	if (rootSignature_) {
+		delete rootSignature_;
+	}
+	if (pipelineState_) {
+		delete pipelineState_;
+	}
+}
+
 void PrimitiveDrawer::Draw(const WorldTransform& worldTransform)
 {
-	assert(device_);
 	assert(commandList_);
 	assert(worldTransform.constBuff_.Get());
 
@@ -160,7 +166,6 @@ void PrimitiveDrawer::Draw(const WorldTransform& worldTransform)
 
 void PrimitiveDrawer::Draw(const Vector3& start, const Vector3& end, const Vector4& color)
 {
-	assert(device_);
 	assert(commandList_);
 
 	GraphicsPipelineManager::GetInstance()->SetCommandList(commandList_, PipelineType::kLine, BlendModeType::kNone);
@@ -430,7 +435,7 @@ ID3D12Resource* PrimitiveDrawer::CreateBufferResource(size_t sizeInBytes)
 	ResourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
 	// リソースを作る
 	ID3D12Resource* resource = nullptr;
-	result = device_->CreateCommittedResource(&uploadHeapProperties, D3D12_HEAP_FLAG_NONE,
+	result = Device::GetInstance()->GetDevice()->CreateCommittedResource(&uploadHeapProperties, D3D12_HEAP_FLAG_NONE,
 		&ResourceDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(&resource));
 	assert(SUCCEEDED(result));
 	return resource;

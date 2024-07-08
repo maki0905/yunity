@@ -11,13 +11,16 @@ public:
 	static CameraManager* GetInstance();
 
 	void Initialize();
+	void Finalize();
 
 	void Update();
 
-	Camera* GetCamera() { return camera_.get(); }
+	Camera* GetCamera() { return camera_; }
 private:
-	std::unique_ptr<Camera> camera_;
-	std::unique_ptr<DebugCamera> debugCamera_;
+	/*std::unique_ptr<Camera> camera_;
+	std::unique_ptr<DebugCamera> debugCamera_;*/
+	Camera* camera_;
+	DebugCamera* debugCamera_;
 	bool isDebug_;
 
 };

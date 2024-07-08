@@ -5,12 +5,13 @@
 #include "WindowsAPI.h"
 #include "DirectXCore.h"
 #include "DescriptorHeap.h"
+#include "Device.h"
 
 #pragma comment(lib, "d3d12.lib")
 
 DepthBuffer::DepthBuffer()
 {
-	device_ = Device::GetInstance()->GetDevice();
+	//device_ = Device::GetInstance()->GetDevice();
 	commandList_ = DirectXCore::GetInstance()->GetCommandList();
 }
 
@@ -29,7 +30,7 @@ void DepthBuffer::Create()
 	dsvDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT; // Format。基本的にはResourceに合わせる
 	dsvDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D; // 2dTexture
 	// DSVHeapの先頭にDSVをつくる
-	device_->CreateDepthStencilView(depthStencilResource_.Get(), &dsvDesc, /*dsvHeap_->GetHeapPointer()->GetCPUDescriptorHandleForHeapStart()*/dsvHeap_->Alloc().GetCPUHandle());
+	Device::GetInstance()->GetDevice()->CreateDepthStencilView(depthStencilResource_.Get(), &dsvDesc, /*dsvHeap_->GetHeapPointer()->GetCPUDescriptorHandleForHeapStart()*/dsvHeap_->Alloc().GetCPUHandle());
 }
 
 void DepthBuffer::ClearDepthView()
@@ -65,7 +66,7 @@ Microsoft::WRL::ComPtr<ID3D12Resource> DepthBuffer::CreateDepthStencilTextureRes
 	depthClearValue.DepthStencil.Depth = 1.0f; // 1.0f(最大値)でクリア
 	depthClearValue.Format = DXGI_FORMAT_D24_UNORM_S8_UINT; // フォーマット。Resourceと合わせる
 
-	hr = device_->CreateCommittedResource(
+	hr = Device::GetInstance()->GetDevice()->CreateCommittedResource(
 		&heapProps, // Heapの設定
 		D3D12_HEAP_FLAG_NONE, // Heapの特殊な設定
 		&depthResourceDesc, // Resourceの設定

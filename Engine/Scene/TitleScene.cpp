@@ -2,6 +2,8 @@
 
 #include "SceneManager.h"
 #include "ModelManager.h"
+#include "RenderTexture.h"
+
 
 void TitleScene::Initialize()
 {
@@ -12,10 +14,11 @@ void TitleScene::Initialize()
 	sprite_ = std::make_unique<Sprite>();
 	sprite_.reset(Sprite::Create(TextureManager::GetInstance()->Load("TITLE.png"), { 320.0f, 260.0f }));
 
-	model_ = std::make_unique<Model>();
-	model_.reset(ModelManager::GetInstance()->CreateModel(obj, "terrain"));
-	model_->SetCamera(camera_/*camera_.get()*/);
-	model_->SetLighting(false);
+	//model_ = std::make_unique<Model>();
+	//model_.reset(ModelManager::GetInstance()->CreateModel(obj, "terrain"));
+	//model_->SetCamera(camera_/*camera_.get()*/);
+	//model_->SetLighting(false);
+	RenderTexture::GetInstance()->postEffectFlag_[static_cast<uint32_t>(PostEffects::kOutline)];
 }
 
 void TitleScene::Update()
@@ -44,11 +47,11 @@ void TitleScene::DrawBack()
 
 void TitleScene::Draw3D()
 {
-	model_->Draw(worldTransform_);
+	//model_->Draw(worldTransform_);
 }
 
 void TitleScene::DrawFront()
 {
-	//sprite_->Draw();
+	sprite_->Draw();
 }
 

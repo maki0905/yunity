@@ -10,4 +10,4 @@
 /// </summary>
 /// <param name="sizeInBytes"></param>
 /// <returns>サイズ</returns>
-ID3D12Resource* CreateBufferResource(size_t sizeInBytes);
+Microsoft::WRL::ComPtr<ID3D12Resource> CreateBufferResource(size_t sizeInBytes);

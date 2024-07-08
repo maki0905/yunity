@@ -35,16 +35,16 @@ void Framework::Initialize()
 	primitive_ = new PrimitiveDrawer();
 	primitive_->StaticInitialize();
 
-	particle_ = new ParticleDrawer();
-	particle_->StaticInitialize();
+	/*particle_ = new ParticleDrawer();
+	particle_->StaticInitialize();*/
 
 	// テクスチャマネージャー
 	textureManager_ = TextureManager::GetInstance();
-	textureManager_->Initialize(Device::GetInstance()->GetDevice());
+	textureManager_->Initialize();
 	TextureManager::Load("white1x1.png");
 
-	/*sphere_ = new SphereDrawer();
-	sphere_->StaticInitialize();*/
+	///*sphere_ = new SphereDrawer();
+	//sphere_->StaticInitialize();*/
 
 	audio_ = Audio::GetInstance();
 	audio_->Initialize();
@@ -77,6 +77,10 @@ void Framework::Initialize()
 void Framework::Finalize()
 {
 	imguiManager_->Finalize();
+	skybox_->Finalize();
+	primitive_->Finalize();
+	sprite_->Finalize();
+	directXCore_->Finalize();
 	windowsAPI_->TerminateGameWindow();
 }
 

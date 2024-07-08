@@ -3,20 +3,14 @@
 #include <cassert>
 
 #include "WindowsAPI.h"
+#include "Device.h"
 
 #pragma comment(lib, "d3d12.lib")
 #pragma comment(lib, "dxgi.lib")
 
-SwapChain::SwapChain(ID3D12CommandQueue* commandQueue, IDXGIFactory7* dxgiFactory)
-{
-	commandQueue_ = commandQueue;
-	dxgiFactory_ = dxgiFactory;
-
-}
-
 void SwapChain::Create()
 {
-	CreateSwapChain();
+	//CreateSwapChain();
 	CreateFactory();
 }
 
@@ -24,7 +18,7 @@ void SwapChain::CreateFactory()
 {
 }
 
-void SwapChain::CreateSwapChain()
+void SwapChain::CreateSwapChain(ID3D12CommandQueue* commandQueue)
 {
 	HRESULT result = S_FALSE;
 
@@ -39,8 +33,8 @@ void SwapChain::CreateSwapChain()
 	swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD; // フリップ後は速やかに破棄
 	swapChainDesc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING; // ティアリングサポート
 	Microsoft::WRL::ComPtr<IDXGISwapChain1> swapChain1;
-	result = dxgiFactory_->CreateSwapChainForHwnd(
-		commandQueue_.Get(), WindowsAPI::GetInstance()->GetHwnd(),
+	result = Device::GetInstance()->GetDxgiFactory()->CreateSwapChainForHwnd(
+		commandQueue, WindowsAPI::GetInstance()->GetHwnd(),
 		&swapChainDesc, nullptr, nullptr, &swapChain1
 	);
 	assert(SUCCEEDED(result));
