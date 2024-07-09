@@ -32,7 +32,6 @@ void TextureManager::Initialize(std::string directoryPath) {
 }
 
 void TextureManager::ResetAll() {
-	HRESULT result = S_FALSE;
 
 	//// デスクリプタヒープを生成
 	//D3D12_DESCRIPTOR_HEAP_DESC descHeapDesc = {};
@@ -232,7 +231,6 @@ uint32_t TextureManager::LoadInternal(const std::string& fileName) {
 	DescriptorHandle srvHandle = srvHeap_->Alloc();
 
 	// シェーダリソースビュー作成
-	auto size = Device::GetInstance()->GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 	/*texture.cpuDescHandleSRV =  descriptorHeap_->GetCPUDescriptorHandleForHeapStart();
 	texture.cpuDescHandleSRV.ptr += size * indexNextDescriptorHeap_;
 	texture.gpuDescHandleSRV = descriptorHeap_->GetGPUDescriptorHandleForHeapStart();

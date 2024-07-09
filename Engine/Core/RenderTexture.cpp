@@ -10,6 +10,7 @@
 #include "PipelineState.h"
 #include "TextureManager.h"
 #include "CameraManager.h"
+#include "PostEffect.h"
 
 RootSignature* RenderTexture::rootSignature_ = nullptr;
 PipelineState* RenderTexture::pipelineState_ = nullptr;
@@ -108,6 +109,7 @@ void RenderTexture::Initalize()
 	depthBuffe_ = std::make_unique<DepthBuffer>();
 	depthBuffe_->Create();
 	postEffect_ = std::make_unique<PostEffect>();
+	postEffect_->InitializeGraphicsPipeline();
 	postEffect_->Initalize();
 	for (uint32_t index = 0; index < static_cast<uint32_t>(PostEffects::kCount); index++) {
 		postEffectFlag_[index] = false;
@@ -137,20 +139,7 @@ void RenderTexture::Create()
 	commandList_ = DirectXCore::GetInstance()->GetCommandList();
 }
 
-void RenderTexture::Copy()
-{
-	materialData_->projectionInverse = Inverse(CameraManager::GetInstance()->GetCamera()->GetProjectionMatrix());
-
-	commandList_->SetGraphicsRootSignature(rootSignature_->GetSignature());
-	commandList_->SetPipelineState(pipelineState_->GetPipelineStateObject());
-	commandList_->SetGraphicsRootDescriptorTable(static_cast<UINT>(RootBindings::kTexture), gpuDescHandleSRV_);
-	commandList_->SetGraphicsRootDescriptorTable(static_cast<UINT>(RootBindings::kDepthTexture), depthTextureGpuDescHandleSRV_);
-	commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(RootBindings::kMaterial), materialResource_->GetGPUVirtualAddress());
-	//TextureManager::GetInstance()->SetGraphicsRootDescriptorTable(commandList_.Get(), static_cast<UINT>(RootBindings::kTexture), 0);
-	commandList_->DrawInstanced(3, 1, 0, 0);
-}
-
-void RenderTexture::PreDraw()
+void RenderTexture::Machining()
 {
 	selectedFlag_ = false;
 	for (auto& flag : postEffectFlag_) {
@@ -160,13 +149,74 @@ void RenderTexture::PreDraw()
 		}
 	}
 
+	materialData_->projectionInverse = Inverse(CameraManager::GetInstance()->GetCamera()->GetProjectionMatrix());
+
+	if (selectedFlag_) {
+		uint32_t preIndex = 0;
+		for (uint32_t index = 0; index < static_cast<uint32_t>(PostEffects::kCount); index++) {
+			if (postEffectFlag_[index]) {
+				postEffect_->OMSetRenderTargets(index);
+				postEffect_->ClearRenderTargetView(index);
+				postEffect_->ClearRenderTargetView(index);
+				postEffect_->SetGraphicsRootSignature(index);
+				postEffect_->SetPipelineState(index);
+				postEffect_->SetMaterial(index);
+				if (preIndex != 0) {
+
+					postEffect_->SetGraphicsRootDescriptorTable(PostEffect::RootBindings::kTexture, preIndex);
+					postEffect_->SetGraphicsRootDescriptorTable(PostEffect::RootBindings::kDepthTexture, preIndex);
+				}
+				else {
+					commandList_->SetGraphicsRootDescriptorTable(static_cast<UINT>(RootBindings::kTexture), gpuDescHandleSRV_);
+					commandList_->SetGraphicsRootDescriptorTable(static_cast<UINT>(RootBindings::kDepthTexture), depthTextureGpuDescHandleSRV_);
+
+				}
+				commandList_->DrawInstanced(3, 1, 0, 0);
+				preIndex = index;
+			}
+		}
+
+	}
+
 
 
 }
 
-void RenderTexture::PostDraw()
+void RenderTexture::Copy()
 {
+	uint32_t finIndex = 0;
+	for (uint32_t index = 0; index < static_cast<uint32_t>(PostEffects::kCount); index++) {
+		if (postEffectFlag_[index]) {
+			finIndex = index;
+		}
+	}
+	commandList_->SetGraphicsRootSignature(rootSignature_->GetSignature());
+	commandList_->SetPipelineState(pipelineState_->GetPipelineStateObject());
+	if (selectedFlag_) {
+		postEffect_->SetGraphicsRootDescriptorTable(PostEffect::RootBindings::kTexture, finIndex);
+		postEffect_->SetGraphicsRootDescriptorTable(PostEffect::RootBindings::kDepthTexture, finIndex);
+
+	}
+	else {
+		commandList_->SetGraphicsRootDescriptorTable(static_cast<UINT>(RootBindings::kTexture), gpuDescHandleSRV_);
+		commandList_->SetGraphicsRootDescriptorTable(static_cast<UINT>(RootBindings::kDepthTexture), depthTextureGpuDescHandleSRV_);
+	}
+	commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(RootBindings::kMaterial), materialResource_->GetGPUVirtualAddress());
+	commandList_->DrawInstanced(3, 1, 0, 0);
 }
+
+bool RenderTexture::CheckPostEffect()
+{
+	selectedFlag_ = false;
+	for (auto& flag : postEffectFlag_) {
+		if (flag) {
+			selectedFlag_ = true;
+			return selectedFlag_;
+		}
+	}
+	return selectedFlag_;
+}
+
 
 //void RenderTexture::OMSetREnderTargets(ID3D12DescriptorHeap* dsvHeap_)
 //{
@@ -179,39 +229,49 @@ void RenderTexture::PostDraw()
 
 void RenderTexture::ClearRenderTargetView()
 {
-	if (postEffectFlag_[static_cast<uint32_t>(PostEffects::kOutline)]) {
+	float clearColor[] = { kRenderTargetClearValue.x, kRenderTargetClearValue.y, kRenderTargetClearValue.z, kRenderTargetClearValue.w };
+	commandList_->ClearRenderTargetView(cpuDescHandleRTV_, clearColor, 0, nullptr);
+	/*if (postEffectFlag_[static_cast<uint32_t>(PostEffects::kOutline)]) {
 		postEffect_->ClearRenderTargetView();
 	}
 	else {
 		float clearColor[] = { kRenderTargetClearValue.x, kRenderTargetClearValue.y, kRenderTargetClearValue.z, kRenderTargetClearValue.w };
 		commandList_->ClearRenderTargetView(cpuDescHandleRTV_, clearColor, 0, nullptr);
-	}
+	}*/
 }
 
 void RenderTexture::OMSetRenderTargets()
 {
-	if (postEffectFlag_[static_cast<uint32_t>(PostEffects::kOutline)]) {
+	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle =
+		D3D12_CPU_DESCRIPTOR_HANDLE(depthBuffe_->GetDescriptorHeap()->GetCPUDescriptorHandleForHeapStart());
+	commandList_->OMSetRenderTargets(1, &cpuDescHandleRTV_, false, &dsvHandle);
+	/*if (postEffectFlag_[static_cast<uint32_t>(PostEffects::kOutline)]) {
 		postEffect_->OMSetRenderTargets();
 	}
 	else {
 		D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle =
 			D3D12_CPU_DESCRIPTOR_HANDLE(depthBuffe_->GetDescriptorHeap()->GetCPUDescriptorHandleForHeapStart());
 		commandList_->OMSetRenderTargets(1, &cpuDescHandleRTV_, false, &dsvHandle);
-	}
+	}*/
 }
 
 void RenderTexture::ClearDepthStencilView()
 {
-	if (postEffectFlag_[static_cast<uint32_t>(PostEffects::kOutline)]) {
-		postEffect_->ClearDepthStencilView();
-	}
-	else {
-		// 深度ステンシルビュー用デスクリプタヒープのハンドルを取得
-		D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle =
-			D3D12_CPU_DESCRIPTOR_HANDLE(depthBuffe_->GetDescriptorHeap()->GetCPUDescriptorHandleForHeapStart());
-		// 深度バッファのクリア
-		commandList_->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
-	}
+	// 深度ステンシルビュー用デスクリプタヒープのハンドルを取得
+	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle =
+		D3D12_CPU_DESCRIPTOR_HANDLE(depthBuffe_->GetDescriptorHeap()->GetCPUDescriptorHandleForHeapStart());
+	// 深度バッファのクリア
+	commandList_->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
+	//if (postEffectFlag_[static_cast<uint32_t>(PostEffects::kOutline)]) {
+	//	postEffect_->ClearDepthStencilView();
+	//}
+	//else {
+	//	// 深度ステンシルビュー用デスクリプタヒープのハンドルを取得
+	//	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle =
+	//		D3D12_CPU_DESCRIPTOR_HANDLE(depthBuffe_->GetDescriptorHeap()->GetCPUDescriptorHandleForHeapStart());
+	//	// 深度バッファのクリア
+	//	commandList_->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
+	//}
 }
 
 

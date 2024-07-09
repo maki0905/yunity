@@ -46,7 +46,7 @@ void PostEffect::InitializeGraphicsPipeline()
 
 		rootSignature_[index]->InitializeStaticSampler(0, staticSamplers[0], D3D12_SHADER_VISIBILITY_PIXEL);
 
-		//rootSignature_->InitializeStaticSampler(1, staticSamplers[1], D3D12_SHADER_VISIBILITY_PIXEL);
+		rootSignature_[index]->InitializeStaticSampler(1, staticSamplers[1], D3D12_SHADER_VISIBILITY_PIXEL);
 
 		rootSignature_[index]->GetParameter(static_cast<size_t>(RootBindings::kTexture)).InitializeAsDescriptorRange(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 0, 1, D3D12_SHADER_VISIBILITY_PIXEL);
 
@@ -144,29 +144,68 @@ void PostEffect::Initalize()
 	//commandList_ = DirectXCore::GetInstance()->GetCommandList();
 }
 
-
-
-void PostEffect::ClearRenderTargetView()
+void PostEffect::SetGraphicsRootSignature(uint32_t index)
 {
-	float clearColor[] = { kRenderTargetClearValue.x, kRenderTargetClearValue.y, kRenderTargetClearValue.z, kRenderTargetClearValue.w };
-	commandList_->ClearRenderTargetView(cpuDescHandleRTV_[static_cast<uint32_t>(PostEffects::kOutline)], clearColor, 0, nullptr);
-	
+	DirectXCore::GetInstance()->GetCommandList()->SetGraphicsRootSignature(rootSignature_[index]->GetSignature());
 }
 
-void PostEffect::OMSetRenderTargets()
+void PostEffect::SetPipelineState(uint32_t index)
+{
+	DirectXCore::GetInstance()->GetCommandList()->SetPipelineState(pipelineState_[index]->GetPipelineStateObject());
+}
+
+void PostEffect::CRTV(uint32_t index)
+{
+	float clearColor[] = { kRenderTargetClearValue.x, kRenderTargetClearValue.y, kRenderTargetClearValue.z, kRenderTargetClearValue.w };
+	DirectXCore::GetInstance()->GetCommandList()->ClearRenderTargetView(cpuDescHandleRTV_[index], clearColor, 0, nullptr);
+}
+
+
+
+void PostEffect::ClearRenderTargetView(uint32_t index)
+{
+	float clearColor[] = { kRenderTargetClearValue.x, kRenderTargetClearValue.y, kRenderTargetClearValue.z, kRenderTargetClearValue.w };
+	DirectXCore::GetInstance()->GetCommandList()->ClearRenderTargetView(cpuDescHandleRTV_[index], clearColor, 0, nullptr);
+}
+
+void PostEffect::OMSetRenderTargets(uint32_t index)
 {
 	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle =
 		D3D12_CPU_DESCRIPTOR_HANDLE(depthBuffe_->GetDescriptorHeap()->GetCPUDescriptorHandleForHeapStart());
-	commandList_->OMSetRenderTargets(1, &cpuDescHandleRTV_[static_cast<uint32_t>(PostEffects::kOutline)], false, &dsvHandle);
+	DirectXCore::GetInstance()->GetCommandList()->OMSetRenderTargets(1, &cpuDescHandleRTV_[index], false, &dsvHandle);
 }
 
-void PostEffect::ClearDepthStencilView()
+void PostEffect::ClearDepthStencilView(uint32_t index)
 {
 	// 深度ステンシルビュー用デスクリプタヒープのハンドルを取得
 	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle =
 		D3D12_CPU_DESCRIPTOR_HANDLE(depthBuffe_->GetDescriptorHeap()->GetCPUDescriptorHandleForHeapStart());
 	// 深度バッファのクリア
-	commandList_->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
+	DirectXCore::GetInstance()->GetCommandList()->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
+}
+
+void PostEffect::SetGraphicsRootDescriptorTable(RootBindings binding, uint32_t index)
+{
+	switch (binding)
+	{
+	case PostEffect::RootBindings::kTexture:
+		DirectXCore::GetInstance()->GetCommandList()->SetGraphicsRootDescriptorTable(static_cast<UINT>(binding), gpuDescHandleSRV_[index]);
+		break;
+	case PostEffect::RootBindings::kDepthTexture:
+		DirectXCore::GetInstance()->GetCommandList()->SetGraphicsRootDescriptorTable(static_cast<UINT>(RootBindings::kDepthTexture), depthTextureGpuDescHandleSRV_);
+		break;
+	}
+}
+
+void PostEffect::SetMaterial(uint32_t index)
+{
+	SetMaterialData(index);
+	DirectXCore::GetInstance()->GetCommandList()->SetGraphicsRootConstantBufferView(static_cast<UINT>(RootBindings::kMaterial), materialResource_[index]->GetGPUVirtualAddress());
+}
+
+void PostEffect::SetMaterialData(uint32_t index)
+{
+	materialData_[index]->projectionInverse = Inverse(CameraManager::GetInstance()->GetCamera()->GetProjectionMatrix());
 }
 
 void PostEffect::CreateResorce()
@@ -261,12 +300,6 @@ void PostEffect::InitializeMaterial()
 		materialData_[index]->projectionInverse = MakeIdentity4x4();
 	}
 
-}
-
-void PostEffect::ClearRenderTargetView(uint32_t flag)
-{
-	float clearColor[] = { kRenderTargetClearValue.x, kRenderTargetClearValue.y, kRenderTargetClearValue.z, kRenderTargetClearValue.w };
-	commandList_->ClearRenderTargetView(cpuDescHandleRTV_[flag], clearColor, 0, nullptr);
 }
 
 Microsoft::WRL::ComPtr<ID3D12Resource> PostEffect::CreateRenderTextureResource(uint32_t width, uint32_t hight, DXGI_FORMAT format, const Vector4& clearColor)

@@ -12,11 +12,11 @@ class PipelineState;
 class RootSignature;
 
 enum class PostEffects {
+	kOutline,
 	kGrayscale,
 	kVignetting,
 	kSmoothing,
 	kGaussianFilter,
-	kOutline,
 	kRadialBlur,
 	kDissolve,
 	kRandom,
@@ -24,6 +24,7 @@ enum class PostEffects {
 };
 
 class PostEffect {
+public:
 	/// <summary>
 	/// ルートパラメータ番号
 	/// </summary>
@@ -33,8 +34,6 @@ class PostEffect {
 		kMaterial,
 		kCount,          // 最大数
 	};
-public:
-
 	struct Material {
 		Matrix4x4 projectionInverse;
 	};
@@ -42,9 +41,15 @@ public:
 	static void InitializeGraphicsPipeline();
 public:
 	void Initalize();
-	void ClearRenderTargetView();
-	void OMSetRenderTargets();
-	void ClearDepthStencilView();
+	void SetGraphicsRootSignature(uint32_t index);
+	void SetPipelineState(uint32_t index);
+	void CRTV(uint32_t index);
+	void ClearRenderTargetView(uint32_t index);
+	void OMSetRenderTargets(uint32_t index);
+	void ClearDepthStencilView(uint32_t index);
+	void SetGraphicsRootDescriptorTable(RootBindings binding, uint32_t index);
+	void SetMaterial(uint32_t index);
+	void SetMaterialData(uint32_t index);
 
 	//private:
 	//	PostEffect() = default;
@@ -59,7 +64,7 @@ private:
 
 	void InitializeMaterial();
 
-	void ClearRenderTargetView(uint32_t flag);
+	//void ClearRenderTargetView(uint32_t flag);
 
 	Microsoft::WRL::ComPtr<ID3D12Resource> CreateRenderTextureResource(uint32_t width, uint32_t hight, DXGI_FORMAT format, const Vector4& clearColor);
 

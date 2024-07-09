@@ -18,7 +18,8 @@ void TitleScene::Initialize()
 	//model_.reset(ModelManager::GetInstance()->CreateModel(obj, "terrain"));
 	//model_->SetCamera(camera_/*camera_.get()*/);
 	//model_->SetLighting(false);
-	RenderTexture::GetInstance()->postEffectFlag_[static_cast<uint32_t>(PostEffects::kOutline)];
+	RenderTexture::GetInstance()->postEffectFlag_[static_cast<uint32_t>(PostEffects::kGrayscale)] = true;
+	RenderTexture::GetInstance()->postEffectFlag_[static_cast<uint32_t>(PostEffects::kVignetting)] = true;
 }
 
 void TitleScene::Update()

@@ -38,8 +38,11 @@ public:
 	/// 生成
 	/// </summary>
 	void Create();
-
+	void Machining();
 	void Copy();
+
+
+	bool CheckPostEffect();
 
 	void PreDraw();
 	void PostDraw();
@@ -107,6 +110,4 @@ private:
 	std::unique_ptr<PostEffect> postEffect_;
 
 	bool selectedFlag_;
-
-
 };

@@ -70,7 +70,9 @@ void GameManager::Draw()
 
 	directXCore_->PostDrawRenderTexture();
 #pragma endregion
-	//directXCore_->PreDrawSwapchain();
+
+	directXCore_->PreDrawSwapchain();
+
 
 	// ImGui描画
 	imguiManager_->Draw();

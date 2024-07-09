@@ -50,5 +50,6 @@ private:
 	//std::unordered_map<std::string, Model::ModelData> models_;
 	std::unordered_map<std::string, Model::ModelData> modelDataStorage_;
 	std::unordered_map<std::string, Animation> animationDataStorage_;
+	//std::vector<Model*>
 	std::vector<Model*> models_;
 };
