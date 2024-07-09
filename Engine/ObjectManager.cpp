@@ -42,13 +42,23 @@ std::vector<Object3D*> ObjectManager::GetObjects(const std::string& fileName)
 	return objects_[fileName];
 }
 
-std::vector<Object3D*> ObjectManager::GetObj(const std::string& fileName, const std::string& modelName)
-{
-	std::vector<Object3D*> result;
+Vector3 ObjectManager::GetPos(const std::string& fileName, const std::string& modelName) {
+	Vector3 result;
 	for (auto& obj : objects_[fileName]) {
 		if (obj->GetModel()->GetModelName() == modelName) {
-			result.push_back(obj);
+			result = obj->GetTranslation();
 		}
 	}
 	return result;
 }
+
+//std::vector<Object3D*> ObjectManager::GetObj(const std::string& fileName, const std::string& modelName)
+//{
+//	std::vector<Object3D*> result;
+//	for (auto& obj : objects_[fileName]) {
+//		if (obj->GetModel()->GetModelName() == modelName) {
+//			result.push_back(obj);
+//		}
+//	}
+//	return result;
+//}

@@ -69,7 +69,7 @@ void StageScene::Initialize()
 	////start_.reset(ModelManager::GetInstance()->CreateModel(obj, "startBox"));
 	//start_.reset(ModelManager::GetInstance()->CreateModel(obj, "Cube"));
 	//start_->SetCamera(camera_.get());
-	//startWT_.Initialize();
+	startWT_.Initialize();
 	//startWT_.translation_.y = 6.0f;
 	//end_ = std::make_unique<Model>();
 	//end_.reset(ModelManager::GetInstance()->CreateModel(obj, "endBox"));
@@ -79,6 +79,7 @@ void StageScene::Initialize()
 	//player_->ResetPos(startWT_.translation_);
 
 	ObjectManager::GetInstance()->Load(stageName_, camera_/*camera_.get()*/, world_.get());
+	startWT_.translation_ = ObjectManager::GetInstance()->GetPos(stageName_, "startBox");
 	//ObjectManager::GetInstance()->Load("TL1", camera_.get(), world_.get());
 	/*trampolines_ = ObjectManager::GetInstance()->GetObjects("stage0", "Trampoline");*/
 
@@ -141,7 +142,7 @@ void StageScene::Update()
 	endWT_.UpdateMatrix();*/
 
 	if (!player_->GetActive()) {
-		//player_->ResetPos(startWT_.translation_);
+		player_->ResetPos(startWT_.translation_);
 	}
 
 

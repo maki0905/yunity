@@ -17,9 +17,9 @@ enum class PostEffects {
 	kSmoothing,
 	kGaussianFilter,
 	kRadialBlur,
+	kVignetting,
 	kDissolve,
 	kRandom,
-	kVignetting,
 	kCount,
 };
 

@@ -34,6 +34,9 @@ void Object3D::Initialize(Model* model, World* world, Collider::Shape shape)
 	if (model_->GetModelName() == "Trampoline") {
 		SetCollisionAttribute(kCollisionAttributeTrampoline);
 	}
+	else if (model_->GetModelName() == "endBox") {
+		SetCollisionAttribute(kCollisionAttributeGoal);
+	}
 	else {
 		SetCollisionAttribute(kCollisionAttributeFloor);
 	}

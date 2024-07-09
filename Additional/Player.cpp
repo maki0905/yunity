@@ -31,7 +31,7 @@ void Player::Initialize(Camera* camera, World* world)
 
 	stiffness_ = 1.0f;
 	dampar_ = 0.1f;
-	mass_ = 1.0f;
+	mass_ = 10.0f;
 	limitLength_ = 15.0f;
 
 	/*CreateBody(world, &worldTransform_, 2.0f);*/
@@ -315,6 +315,8 @@ void Player::Update()
 	ImGui::DragFloat("mass", &mass_);
 	ImGui::DragFloat("stiffness", &stiffness_);
 	ImGui::DragFloat("damping", &dampar_);
+	Vector3 velocity = GetVelocity();
+	ImGui::DragFloat3("velocity", &velocity.x);
 	if (ImGui::Button("reset")) {
 		Reset();
 		worldTransform_.translation_ = { 0.0f, 0.0f, 0.0f };
@@ -407,6 +409,10 @@ void Player::OnCollisionEvent(Body* body)
 			}
 
 		}
+	}
+
+	if (body->GetCollisionAttribute() == kCollisionAttributeGoal) {
+		isActive_ = false;
 	}
 
 	if (GetVertical().y > 0.0f) {
