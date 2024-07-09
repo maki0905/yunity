@@ -34,6 +34,11 @@ void ModelManager::Update()
 	}
 }
 
+void ModelManager::Reset()
+{
+	models_.clear();
+}
+
 Model* ModelManager::CreateModel(Format format, const std::string& folderName, const std::string& fileName, ModelType modelType)
 {
 	Model* model = new Model();

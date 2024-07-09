@@ -1,6 +1,7 @@
 #include "SceneManager.h"
 
 #include <cassert>
+#include "ModelManager.h"
 
 SceneManager* SceneManager::GetInstance()
 {
@@ -22,6 +23,8 @@ void SceneManager::Update()
 		if (scene_) {
 			scene_.reset();
 		}
+
+		ModelManager::GetInstance()->Reset();
 
 		// シーン切り替え
 		scene_.reset(nextScene_);

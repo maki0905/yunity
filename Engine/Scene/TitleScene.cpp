@@ -38,7 +38,7 @@ void TitleScene::Update()
 	}
 
 	if (Input::GetInstance()->TriggerKey(DIK_SPACE)) {
-		SceneManager::GetInstance()->ChangeScene("GAMESTAGE");
+		SceneManager::GetInstance()->ChangeScene("SELECT");
 	}
 
 	worldTransform_.UpdateMatrix();
