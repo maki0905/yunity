@@ -152,7 +152,7 @@ void RenderTexture::Machining()
 	materialData_->projectionInverse = Inverse(CameraManager::GetInstance()->GetCamera()->GetProjectionMatrix());
 
 	if (selectedFlag_) {
-		uint32_t preIndex = 0;
+		uint32_t preIndex = static_cast<uint32_t>(PostEffects::kCount);
 		for (uint32_t index = 0; index < static_cast<uint32_t>(PostEffects::kCount); index++) {
 			if (postEffectFlag_[index]) {
 				postEffect_->OMSetRenderTargets(index);
@@ -161,7 +161,7 @@ void RenderTexture::Machining()
 				postEffect_->SetGraphicsRootSignature(index);
 				postEffect_->SetPipelineState(index);
 				postEffect_->SetMaterial(index);
-				if (preIndex != 0) {
+				if (preIndex != static_cast<uint32_t>(PostEffects::kCount)) {
 
 					postEffect_->SetGraphicsRootDescriptorTable(PostEffect::RootBindings::kTexture, preIndex);
 					postEffect_->SetGraphicsRootDescriptorTable(PostEffect::RootBindings::kDepthTexture, preIndex);

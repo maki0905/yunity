@@ -14,12 +14,14 @@ void TitleScene::Initialize()
 	sprite_ = std::make_unique<Sprite>();
 	sprite_.reset(Sprite::Create(TextureManager::GetInstance()->Load("TITLE.png"), { 320.0f, 260.0f }));
 
-	//model_ = std::make_unique<Model>();
-	//model_.reset(ModelManager::GetInstance()->CreateModel(obj, "terrain"));
-	//model_->SetCamera(camera_/*camera_.get()*/);
-	//model_->SetLighting(false);
+	model_ = std::make_unique<Model>();
+	model_.reset(ModelManager::GetInstance()->CreateModel(obj, "terrain"));
+	model_->SetCamera(camera_/*camera_.get()*/);
+	model_->SetLighting(false);
 	RenderTexture::GetInstance()->postEffectFlag_[static_cast<uint32_t>(PostEffects::kGrayscale)] = true;
 	RenderTexture::GetInstance()->postEffectFlag_[static_cast<uint32_t>(PostEffects::kVignetting)] = true;
+	RenderTexture::GetInstance()->postEffectFlag_[static_cast<uint32_t>(PostEffects::kOutline)] = true;
+	RenderTexture::GetInstance()->postEffectFlag_[static_cast<uint32_t>(PostEffects::kRadialBlur)] = true;
 }
 
 void TitleScene::Update()
@@ -48,7 +50,7 @@ void TitleScene::DrawBack()
 
 void TitleScene::Draw3D()
 {
-	//model_->Draw(worldTransform_);
+	model_->Draw(worldTransform_);
 }
 
 void TitleScene::DrawFront()

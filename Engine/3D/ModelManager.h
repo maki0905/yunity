@@ -5,6 +5,7 @@
 #include <unordered_map>
 #include <wrl.h>
 #include <memory>
+#include <list>
 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
@@ -50,6 +51,6 @@ private:
 	//std::unordered_map<std::string, Model::ModelData> models_;
 	std::unordered_map<std::string, Model::ModelData> modelDataStorage_;
 	std::unordered_map<std::string, Animation> animationDataStorage_;
-	//std::vector<Model*>
-	std::vector<Model*> models_;
+	std::list<Model*> models_;
+	//std::vector<Model*> models_;
 };

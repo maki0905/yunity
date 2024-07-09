@@ -14,12 +14,12 @@ class RootSignature;
 enum class PostEffects {
 	kOutline,
 	kGrayscale,
-	kVignetting,
 	kSmoothing,
 	kGaussianFilter,
 	kRadialBlur,
 	kDissolve,
 	kRandom,
+	kVignetting,
 	kCount,
 };
 
