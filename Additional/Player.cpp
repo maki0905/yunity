@@ -277,13 +277,20 @@ void Player::Update()
 			reticleMove = Multiply(0.8f, reticleMove.Normalize());
 			reticleWorldTransform_.translation_ = Add(reticleWorldTransform_.translation_, reticleMove);
 
+			bool isHit = false;
+			RayCastHit hit;
+			Vector3 direction = Subtract({ reticleWorldTransform_.matWorld_.m[3][0], reticleWorldTransform_.matWorld_.m[3][1], reticleWorldTransform_.matWorld_.m[3][2] }, worldTransform_.translation_);
+			float lenght = Length(direction);
+			if (lenght > limitLength_) {
+				lenght = limitLength_;
+			}
+			direction.Normalize();
+			isHit = RayCast(worldTransform_.translation_, direction, &hit, lenght, GetWorld(), kCollisionAttributePlayer);
+
 			// ワイヤー
 			if ((pad_.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) && !(prePad_.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER)) {
 				if (!isWire_) {
-					Vector3 direction = Subtract({ reticleWorldTransform_.matWorld_.m[3][0], reticleWorldTransform_.matWorld_.m[3][1], reticleWorldTransform_.matWorld_.m[3][2] }, worldTransform_.translation_);
-					direction.Normalize();
-					RayCastHit hit;
-					if (RayCast(worldTransform_.translation_, direction, &hit, limitLength_, GetWorld(), kCollisionAttributePlayer)) {
+					if (isHit) {
 						isWire_ = true;
 						//point_ = hit.collider->GetTranslation();
 						point_ = hit.point;
@@ -296,6 +303,13 @@ void Player::Update()
 				else {
 					isWire_ = false;
 				}
+			}
+
+			if (isHit) {
+				reticle_->SetTextureHandle(onReticle_);
+			}
+			else {
+				reticle_->SetTextureHandle(offReticle_);
 			}
 
 
@@ -395,7 +409,7 @@ void Player::Draw()
 
 void Player::DrawUI()
 {
-	//reticle_->Draw();
+	reticle_->Draw();
 }
 
 void Player::OnCollisionEvent(Body* body)

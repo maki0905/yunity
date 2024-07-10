@@ -276,6 +276,19 @@ void RenderTexture::ClearDepthStencilView()
 
 
 
+void RenderTexture::SelectPostEffect(PostEffects postEffect, bool flag)
+{
+	postEffectFlag_[static_cast<uint32_t>(postEffect)] = flag;
+
+}
+
+void RenderTexture::ClearPostEffect()
+{
+	for (uint32_t index = 0; index < static_cast<uint32_t>(PostEffects::kCount); index++) {
+		postEffectFlag_[index] = false;
+	}
+}
+
 void RenderTexture::CreateResorce()
 {
 	renderTextureResource_ = CreateRenderTextureResource(WindowsAPI::kWindowWidth, WindowsAPI::kWindowHeight, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, kRenderTargetClearValue);

@@ -18,10 +18,14 @@ void TitleScene::Initialize()
 	model_.reset(ModelManager::GetInstance()->CreateModel(obj, "terrain"));
 	model_->SetCamera(camera_/*camera_.get()*/);
 	model_->SetLighting(false);
-	RenderTexture::GetInstance()->postEffectFlag_[static_cast<uint32_t>(PostEffects::kGrayscale)] = true;
+	RenderTexture::GetInstance()->SelectPostEffect(PostEffects::kGrayscale, true);
+	RenderTexture::GetInstance()->SelectPostEffect(PostEffects::kVignetting, true);
+	RenderTexture::GetInstance()->SelectPostEffect(PostEffects::kOutline, true);
+	//RenderTexture::GetInstance()->SelectPostEffect(PostEffects::kRadialBlur, true);
+	/*RenderTexture::GetInstance()->postEffectFlag_[static_cast<uint32_t>(PostEffects::kGrayscale)] = true;
 	RenderTexture::GetInstance()->postEffectFlag_[static_cast<uint32_t>(PostEffects::kVignetting)] = true;
 	RenderTexture::GetInstance()->postEffectFlag_[static_cast<uint32_t>(PostEffects::kOutline)] = true;
-	RenderTexture::GetInstance()->postEffectFlag_[static_cast<uint32_t>(PostEffects::kRadialBlur)] = true;
+	RenderTexture::GetInstance()->postEffectFlag_[static_cast<uint32_t>(PostEffects::kRadialBlur)] = true;*/
 }
 
 void TitleScene::Update()
@@ -31,6 +35,7 @@ void TitleScene::Update()
 		if (Input::GetInstance()->GetJoystickState(0, pad_)) {
 			if ((pad_.Gamepad.wButtons & XINPUT_GAMEPAD_A) && !(prePad_.Gamepad.wButtons & XINPUT_GAMEPAD_A)) {
 				SceneManager::GetInstance()->ChangeScene("SELECT");
+				RenderTexture::GetInstance()->ClearPostEffect();
 			}
 
 

@@ -59,6 +59,8 @@ public:
 	ID3D12Resource* GetResource() { return renderTextureResource_.Get(); }
 	DepthBuffer* GetDepthBuffer() { return depthBuffe_.get(); }
 
+	void SelectPostEffect(PostEffects postEffect, bool flag);
+	void ClearPostEffect();
 	bool postEffectFlag_[static_cast<uint32_t>(PostEffects::kCount)];
 
 private:
