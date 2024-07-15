@@ -11,6 +11,10 @@ void Player::Initialize(Camera* camera, World* world)
 	worldTransform_.rotateType_ = RotationType::Quaternion;
 	worldTransform_.translation_.y = 3.0f;
 	SetMass(2.0f);
+	SetFirictionCombine(FrictionCombine::kAverage);
+	SetMiu(0.3f);
+	SetBounceCombine(BounceCombine::kAverage);
+	SetBounciness(0.8f);
 	/*worldTransform_.Initialize(RotationType::Quaternion);
 	worldTransform_.translation_.y = 3.0f;*/
 
@@ -31,7 +35,7 @@ void Player::Initialize(Camera* camera, World* world)
 
 	stiffness_ = 1.0f;
 	dampar_ = 0.1f;
-	mass_ = 10.0f;
+	mass_ = 1.0f;
 	limitLength_ = 15.0f;
 
 	/*CreateBody(world, &worldTransform_, 2.0f);*/
@@ -425,9 +429,6 @@ void Player::OnCollisionEvent(Body* body)
 		}
 	}
 
-	if (body->GetCollisionAttribute() == kCollisionAttributeGoal) {
-		isActive_ = false;
-	}
 
 	if (GetVertical().y > 0.0f) {
 		isJunp_ = false;
@@ -441,6 +442,13 @@ void Player::OnCollisionEvent(Body* body)
 	
 #endif
 	isHit_ = true;
+}
+
+void Player::OnTriggerEvent(Body* body)
+{
+	if (body->GetCollisionAttribute() == kCollisionAttributeGoal) {
+		isActive_ = false;
+	}
 }
 
 void Player::ResetPos(const Vector3& pos)

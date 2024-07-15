@@ -6,6 +6,23 @@
 
 class Body : public Collider {
 public:
+	enum class FrictionCombine {
+		kNone,    // 計算しない
+		kAverage, // 平均化
+		kMinimum, // 小さい方 
+		kMaximum, // 大きい方
+		kMultiply // 乗算
+	};
+
+	enum class BounceCombine {
+		kNone,    // 計算しない
+		kAverage, // 平均化
+		kMinimum, // 小さい方 
+		kMaximum, // 大きい方
+		kMultiply // 乗算
+	};
+
+public:
 	void CreateBody(World* world, WorldTransform* worldTransform, float mass = 0.0f);
 	void Solve();
 
@@ -41,6 +58,13 @@ public:
 	bool GetIsTrigger() { return isTrigger_; }
 	void SetIsTrigger(bool isTrigger) { isTrigger_ = isTrigger; }
 
+	float GetMiu() { return miu_; }
+	void SetMiu(float miu) { miu_ = miu; }
+	void SetFirictionCombine(FrictionCombine frictionCombine) { frictionCombine_ = frictionCombine; }
+
+	float GetBounciness() { return bounciness_; }
+	void SetBounciness(float bounciness) { bounciness_ = bounciness; }
+	void SetBounceCombine(BounceCombine bounceCombine) { bounceCombine_ = bounceCombine; }
 
 private:
 
@@ -60,8 +84,19 @@ private:
 	float drag_ = 0.05f;
 	// 重力加速度
 	Vector3 gravityAcceleration_;
+	// 摩擦計算方法
+	FrictionCombine frictionCombine_;
 	// 摩擦係数
-	float miu_ = 0.5f;
+	float miu_ = 0.0f;
+	// 動摩擦力
+	float magnitude_ = 0.0f;
+	// 反発計算方法
+	BounceCombine bounceCombine_;
+	// 反発係数
+	float bounciness_ = 0.0f;
+	// 法線
+	Vector3 normalVector_;
+	
 	// 垂直抗力
 	Vector3 vertical_;
 	bool isTrigger_;

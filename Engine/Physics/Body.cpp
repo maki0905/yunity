@@ -32,6 +32,12 @@ void Body::CreateBody(World* world, WorldTransform* worldTransform, float mass)
 	velocity_ = { 0.0f, 0.0f, 0.0f };
 	acceleration_ = { 0.0f, 0.0f, 0.0f };
 	force_ = { 0.0f, 0.0f, 0.0f };
+	frictionCombine_ = FrictionCombine::kNone;
+	miu_ = 0.0f;
+	magnitude_ = 0.0f;
+	bounceCombine_ = BounceCombine::kNone;
+	bounciness_ = 0.0f;
+	normalVector_ = { 0.0f, 0.0f, 0.0f };
 	world_ = world;
 	worldTransform_ = worldTransform;
 }
@@ -49,8 +55,31 @@ void Body::Solve()
 			gravity = gravityAcceleration_;
 		}
 
-		acceleration_ = Add(gravity, airResistanceAcceleration);
+		if (frictionCombine_ != FrictionCombine::kNone && normalVector_.y != 0.0f) {
+			Vector3 dirction = velocity_;
+			dirction.y = 0.0f;
+			dirction.Normalize();
+
+			Vector3 frictionalForce = Multiply(-magnitude_, dirction);
+			acceleration_ = Multiply(1.0f / mass_, frictionalForce);
+			if (std::fabsf(acceleration_.x * world_->deltaTime_) > std::fabs(velocity_.x)) {
+				acceleration_.x = velocity_.x / world_->deltaTime_;
+			}
+			if (std::fabsf(acceleration_.y * world_->deltaTime_) > std::fabs(velocity_.y)) {
+				acceleration_.y = velocity_.y / world_->deltaTime_;
+			}
+			if (std::fabsf(acceleration_.z * world_->deltaTime_) > std::fabs(velocity_.z)) {
+				acceleration_.z = velocity_.z / world_->deltaTime_;
+			}
+
+			acceleration_ = Add(acceleration_, Add(gravity, airResistanceAcceleration));
+		}
+		else {
+			acceleration_ = Add(gravity, airResistanceAcceleration);
+		}
+
 		acceleration_ = Add(acceleration_, Multiply(1.0f / mass_, force_));
+
 		force_ = { 0.0f, 0.0f, 0.0f };
 
 		velocity_ = Add(velocity_, Multiply(world_->deltaTime_, acceleration_));
@@ -113,12 +142,68 @@ void Body::OnCollision(Body* body)
 		Vector3 pushBack = GetPushback(a, b);
 		worldTransform_->translation_ = Add(pushBack, worldTransform_->translation_);
 		worldTransform_->UpdateMatrix();
-		if (pushBack.x != 0.0f) {
-			velocity_.x = 0.0f;
+
+		float miu = 0.0f;
+		switch (frictionCombine_)
+		{
+		case Body::FrictionCombine::kNone:
+			break;
+		case Body::FrictionCombine::kAverage:
+			miu = (miu_ + body->GetMiu()) / 2.0f;
+			magnitude_ = miu * Length(Multiply(-mass_, world_->GetGravity()));
+			break;
+		case Body::FrictionCombine::kMinimum:
+			miu = min(miu_, body->GetMiu());
+			magnitude_ = miu * Length(Multiply(-mass_, world_->GetGravity()));
+			break;
+		case Body::FrictionCombine::kMaximum:
+			miu = max(miu_, body->GetMiu());
+			magnitude_ = miu * Length(Multiply(-mass_, world_->GetGravity()));
+			break;
+		case Body::FrictionCombine::kMultiply:
+			miu = miu_ * body->GetMiu();
+			magnitude_ = miu * Length(Multiply(-mass_, world_->GetGravity()));
+			break;
 		}
-		if (pushBack.y != 0.0f) {
-			velocity_.y = 0.0f;
+
+		float e = 0.0f;
+		switch (bounceCombine_)
+		{
+		case Body::BounceCombine::kNone:
+			if (pushBack.x != 0.0f) {
+				velocity_.x = 0.0f;
+			}
+			if (pushBack.y != 0.0f) {
+				velocity_.y = 0.0f;
+			}
+			break;
+		case Body::BounceCombine::kAverage:
+			e = (bounciness_ + body->GetBounciness()) / 2.0f;
+			break;
+		case Body::BounceCombine::kMinimum:
+			e = min(bounciness_, body->GetBounciness());
+			break;
+		case Body::BounceCombine::kMaximum:
+			e = max(bounciness_, body->GetBounciness());
+			break;
+		case Body::BounceCombine::kMultiply:
+			e = bounciness_ * body->GetBounciness();
+			break;
 		}
+
+		if (bounceCombine_ != BounceCombine::kNone) {
+			if (pushBack.x != 0.0f) {
+				velocity_.x = -velocity_.x * e;
+			}
+			if (pushBack.y != 0.0f) {
+				velocity_.y = -velocity_.y * e;
+			}
+			if (pushBack.z != 0.0f) {
+				velocity_.z = -velocity_.z * e;
+			}
+		}
+
+		normalVector_ = pushBack;
 		vertical_ = pushBack;
 	}
 }

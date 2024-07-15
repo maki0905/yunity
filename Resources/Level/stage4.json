@@ -6,7 +6,7 @@
             "name": "立方体",
             "transform": {
                 "translation": [
-                    151.76808166503906,
+                    83.31848907470703,
                     0.0,
                     0.0
                 ],
@@ -16,7 +16,7 @@
                     0.0
                 ],
                 "scaling": [
-                    170.59124755859375,
+                    92.25849914550781,
                     1.0,
                     1.4355984926223755
                 ]
@@ -78,9 +78,9 @@
             "name": "立方体.002",
             "transform": {
                 "translation": [
-                    29.222408294677734,
+                    270.1788330078125,
                     0.0,
-                    3.8819758892059326
+                    8.9744234085083
                 ],
                 "rotation": [
                     0.0,
@@ -90,10 +90,46 @@
                 "scaling": [
                     1.0,
                     1.0,
-                    1.0
+                    4.191327095031738
                 ]
             },
             "file_name": "endBox",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    2.0,
+                    2.0,
+                    2.0
+                ],
+                "isTrigger": true
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "立方体.003",
+            "transform": {
+                "translation": [
+                    39.89888000488281,
+                    0.0,
+                    8.574027061462402
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    6.836499214172363
+                ]
+            },
+            "file_name": "Cube",
             "collider": {
                 "type": "BOX",
                 "center": [
@@ -111,12 +147,12 @@
         },
         {
             "type": "MESH",
-            "name": "立方体.003",
+            "name": "立方体.004",
             "transform": {
                 "translation": [
-                    14.061410903930664,
+                    29.770950317382812,
                     0.0,
-                    9.43143081665039
+                    4.5013628005981445
                 ],
                 "rotation": [
                     0.0,
@@ -126,7 +162,43 @@
                 "scaling": [
                     1.0,
                     1.0,
-                    7.872303485870361
+                    1.0
+                ]
+            },
+            "file_name": "Trampoline",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    2.0,
+                    2.0,
+                    2.0
+                ],
+                "isTrigger": false
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "立方体.005",
+            "transform": {
+                "translation": [
+                    80.14920043945312,
+                    0.0,
+                    12.146539688110352
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    10.241512298583984
                 ]
             },
             "file_name": "Cube",
@@ -142,7 +214,223 @@
                     2.0,
                     2.0
                 ],
-                "isTrigger": true
+                "isTrigger": false
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "立方体.006",
+            "transform": {
+                "translation": [
+                    59.89915466308594,
+                    0.0,
+                    4.5013628005981445
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "Trampoline",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    2.0,
+                    2.0,
+                    2.0
+                ],
+                "isTrigger": false
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "立方体.007",
+            "transform": {
+                "translation": [
+                    70.37852478027344,
+                    0.0,
+                    12.313258171081543
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "Trampoline",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    2.0,
+                    2.0,
+                    2.0
+                ],
+                "isTrigger": false
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "立方体.008",
+            "transform": {
+                "translation": [
+                    130.35874938964844,
+                    0.0,
+                    12.146539688110352
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    10.333292007446289
+                ]
+            },
+            "file_name": "Cube",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    2.0,
+                    2.0,
+                    2.0
+                ],
+                "isTrigger": false
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "立方体.009",
+            "transform": {
+                "translation": [
+                    110.31448364257812,
+                    0.0,
+                    4.5013628005981445
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "Trampoline",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    2.0,
+                    2.0,
+                    2.0
+                ],
+                "isTrigger": false
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "立方体.010",
+            "transform": {
+                "translation": [
+                    266.7278747558594,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    33.03845977783203,
+                    1.0,
+                    1.4355984926223755
+                ]
+            },
+            "file_name": "Cube",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    2.0,
+                    2.0,
+                    2.0
+                ],
+                "isTrigger": false
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "立方体.011",
+            "transform": {
+                "translation": [
+                    205.7833709716797,
+                    0.0,
+                    12.170463562011719
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    17.625146865844727,
+                    1.0,
+                    1.4355984926223755
+                ]
+            },
+            "file_name": "Cube",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    2.0,
+                    2.0,
+                    2.0
+                ],
+                "isTrigger": false
             }
         }
     ]

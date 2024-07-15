@@ -25,6 +25,7 @@ public:
 
 	//void OnCollisionEvent(Body* body = nullptr) override;
 	virtual void OnCollisionEvent(Body* body);
+	virtual void OnTriggerEvent(Body* body);
 
 	void ResetPos(const Vector3& pos);
 
