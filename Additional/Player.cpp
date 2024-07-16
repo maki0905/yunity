@@ -18,7 +18,7 @@ void Player::Initialize(Camera* camera, World* world)
 	/*worldTransform_.Initialize(RotationType::Quaternion);
 	worldTransform_.translation_.y = 3.0f;*/
 
-	models_["player"] = ModelManager::GetInstance()->CreateModel(obj, "startBox");
+	models_["player"].reset(ModelManager::GetInstance()->CreateModel(obj, "startBox"));
 	models_["player"]->SetCamera(camera);
 	/*model_.reset(ModelManager::GetInstance()->CreateModel(obj, "startBox"));
 	model_->SetCamera(camera);*/
@@ -52,6 +52,7 @@ void Player::Initialize(Camera* camera, World* world)
 	line_->SetCamera(camera_);
 
 	reticle3D_ = std::make_unique<Model>();
+	//reticle3D_ = ModelManager::GetInstance()->CreateModel(obj, "apex");
 	reticle3D_.reset(ModelManager::GetInstance()->CreateModel(obj, "apex"));
 	reticle3D_->SetCamera(camera_);
 
@@ -65,6 +66,7 @@ void Player::Initialize(Camera* camera, World* world)
 	reticleWorldTransform_.parent_ = &worldTransform_;
 
 	apex_ = std::make_unique<Model>();
+	//apex_ = ModelManager::GetInstance()->CreateModel(obj, "apex");
 	apex_.reset(ModelManager::GetInstance()->CreateModel(obj, "apex"));
 	apex_->SetCamera(camera_);
 	apexWorldTransform_.Initialize();

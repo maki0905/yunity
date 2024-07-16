@@ -32,22 +32,17 @@ void DirectXCore::Initialize()
 	windowHeight_ = WindowsAPI::GetInstance()->kWindowHeight;
 
 	// デバイス
-	/*device_ = Device::GetInstance();
-	device_->Initialize();*/
 	Device::GetInstance()->Initialize();
 
 	// コマンド関連
-	//commandList_ = std::make_unique<CommandList>();
-	commandList_ = new CommandList();
+	commandList_ = std::make_unique<CommandList>();
 	commandList_->Create();
-	//commandQueue_ = std::make_unique<CommandQueue>();
-	commandQueue_ = new CommandQueue();
+	commandQueue_ = std::make_unique<CommandQueue>();
 	commandQueue_->Create();
 
 	// スワップチェーン
-	//swapChain_ = std::make_unique<SwapChain>();
-	swapChain_ = new SwapChain();
-	swapChain_->CreateSwapChain(commandQueue_->GetCommandQueue());
+	swapChain_ = std::make_unique<SwapChain>();
+	swapChain_->Create(commandQueue_->GetCommandQueue());
 
 	// 各種デスクリプタヒープ
 	for (int i = 0; i < static_cast<int>(HeapType::kCount); i++) {
@@ -58,12 +53,7 @@ void DirectXCore::Initialize()
 	descriptorHeaps_[static_cast<int>(HeapType::kSRV)]->Create(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, 128, true);
 	descriptorHeaps_[static_cast<int>(HeapType::kDSV)]->Create(D3D12_DESCRIPTOR_HEAP_TYPE_DSV, 2, false);
 
-	//// バッファ
-	///*depthBuffer_ = new DepthBuffer();
-	//depthBuffer_->Create();*/
-
-	//backBuffer_ = std::make_unique<BackBuffer>();
-	backBuffer_ = new BackBuffer();
+	backBuffer_ = std::make_unique<BackBuffer>();
 	backBuffer_->Create(swapChain_->GetSwapChain());
 
 	// Shader
@@ -81,66 +71,22 @@ void DirectXCore::Initialize()
 
 void DirectXCore::Finalize()
 {
-	backBuffer_->Finalize();
-	if (backBuffer_) {
-		delete backBuffer_;
-		backBuffer_ = nullptr;
-	}
-
-	if (swapChain_) {
-		delete swapChain_;
-		swapChain_ = nullptr;
-	}
-
-	commandQueue_->Finalize();
-	if (commandQueue_) {
-		delete commandQueue_;
-		commandQueue_ = nullptr;
-	}
-
-	commandList_->Finalize();
-	if (commandList_) {
-		delete commandList_;
-		commandList_ = nullptr;
-	}
-	/*if (commandList_) {
-		delete commandList_;
-	}
-	if (commandQueue_) {
-		delete commandQueue_;
-	}
-	if (swapChain_) {
-		delete swapChain_;
-	}
-	if (backBuffer_) {
-		delete backBuffer_;
-	}
-	if (depthBuffer_) {
-		delete depthBuffer_;
-	}*/
+	RenderTexture::GetInstance()->Finalize();
 }
 
 void DirectXCore::PreDrawRenderTexture()
 {
-	//commandList_->BarrierChange(swapChain_->GetSwapChain(), D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
-
-	//commandList_->OMSetRenderTargets(renderTexture_->GetCpuDescHandleRTV(), depthBuffer_->GetDescriptorHeap());
 	RenderTexture::GetInstance()->OMSetRenderTargets();
 	RenderTexture::GetInstance()->ClearRenderTargetView();
 	RenderTexture::GetInstance()->ClearDepthStencilView();
-	//commandList_->OMSetRenderTargets(renderTexture_->GetCpuDescHandleRTV(), renderTexture_->GetDepthBuffer()->GetDescriptorHeap());
-	//commandList_->ClearRenderTargetView(renderTexture_->GetRenderTargetClearValue(), *renderTexture_->GetCpuDescHandleRTV());
-	//commandList_->ClearDepthStencilView(/*depthBuffer_->GetDescriptorHeap()*/renderTexture_->GetDepthBuffer()->GetDescriptorHeap());
 	commandList_->RSSetViewports(float(windowWidth_), float(windowHeight_));
 	commandList_->RSSetScissorRects(windowWidth_, windowHeight_);
 }
 
 void DirectXCore::PostDrawRenderTexture()
 {
-
 	commandList_->BarrierChange(RenderTexture::GetInstance()->GetResource(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
 	RenderTexture::GetInstance()->Machining();
-
 }
 
 void DirectXCore::PreDrawSwapchain()
@@ -153,9 +99,6 @@ void DirectXCore::PreDrawSwapchain()
 	commandList_->RSSetScissorRects(windowWidth_, windowHeight_);
 	RenderTexture::GetInstance()->Copy();
 	commandList_->BarrierChange(RenderTexture::GetInstance()->GetResource(), D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_RENDER_TARGET);
-	//backBuffer_->SetRenderTarget(swapChain_->GetSwapChain(), depthBuffer_->GetDescriptorHeap());
-	//backBuffer_->ClearRenderTarget(swapChain_->GetSwapChain());
-	//depthBuffer_->ClearDepthView();
 }
 
 void DirectXCore::PostDrawSwapchain()

@@ -5,9 +5,7 @@
 #include "WindowsAPI.h"
 #include "DescriptorHeap.h"
 #include "Device.h"
-//#include "Externals/imgui/imgui_impl_dx12.h"
 #include "imgui_impl_dx12.h"
-//#include "Externals/imgui/imgui_impl_win32.h"
 #include "imgui_impl_win32.h"
 #endif // _DEBUG
 
@@ -21,36 +19,22 @@ ImGuiManager* ImGuiManager::GetInstance()
 void ImGuiManager::Initialize()
 {
 #ifdef _DEBUG
-	directXCore_ = DirectXCore::GetInstance();
-	Device* device = Device::GetInstance();
-	srvHeap_ = directXCore_->GetDescriptorHeap(DirectXCore::HeapType::kSRV);
-	DescriptorHandle srvHandle = srvHeap_->Alloc();
-
+	DescriptorHandle srvHandle = DirectXCore::GetInstance()->GetDescriptorHeap(DirectXCore::HeapType::kSRV)->Alloc();
+	IMGUI_CHECKVERSION();
 	// ImGuiのコンテキストを生成
 	ImGui::CreateContext();
 	// ImGuiのスタイルを設定
 	ImGui::StyleColorsDark();
 	// プラットフォームとレンダラーのバックエンドを設定する
 	ImGui_ImplWin32_Init(WindowsAPI::GetInstance()->GetHwnd());
-	//ImGui_ImplDX12_Init(
-	//	device->GetDevice(), 
-	//	static_cast<int>(directXCore_->GetBackBufferCount()),
-	//	DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, srvHeap_->GetHeapPointer(),
-	//	srvHeap_->GetHeapPointer()->GetCPUDescriptorHandleForHeapStart(),
-	//	srvHeap_->GetHeapPointer()->GetGPUDescriptorHandleForHeapStart()
-	//	/*srvHeap_->GetCPUDescriptorHandleForHeapStart(),*/
-	//	/*srvHeap_->GetGPUDescriptorHandleForHeapStart()*/);
 	ImGui_ImplDX12_Init(
-		device->GetDevice(),
-		static_cast<int>(directXCore_->GetBackBufferCount()),
+		Device::GetInstance()->GetDevice(),
+		static_cast<int>(DirectXCore::GetInstance()->GetBackBufferCount()),
 		DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, 
-		srvHeap_->GetHeapPointer(),
-		srvHandle.GetCPUHandle()
-		/*srvHeap_->GetHeapPointer()->GetCPUDescriptorHandleForHeapStart()*/,
+		DirectXCore::GetInstance()->GetDescriptorHeap(DirectXCore::HeapType::kSRV)->GetHeapPointer(),
+		srvHandle.GetCPUHandle(),
 		srvHandle.GetGPUHandle()
-		/*srvHeap_->GetHeapPointer()->GetGPUDescriptorHandleForHeapStart()*/
-		/*srvHeap_->GetCPUDescriptorHandleForHeapStart(),*/
-	/*srvHeap_->GetGPUDescriptorHandleForHeapStart()*/);
+		);
 
 	ImGuiIO& io = ImGui::GetIO();
 	// 標準フォントを追加する
@@ -102,10 +86,11 @@ void ImGuiManager::Draw()
 	//ID3D12GraphicsCommandList* commandList = directXCore_->GetCommandList();
 
 	// デスクリプタヒープの配列をセットするコマンド
-	ID3D12DescriptorHeap* ppHeaps[] = { /*srvHeap_.Get()*/ srvHeap_->GetHeapPointer()};
-	directXCore_->GetCommandList()->SetDescriptorHeaps(_countof(ppHeaps), ppHeaps);
+	ID3D12DescriptorHeap* ppHeaps[] = { /*srvHeap_.Get()*/ DirectXCore::GetInstance()->GetDescriptorHeap(DirectXCore::HeapType::kSRV)->GetHeapPointer()};
+	DirectXCore::GetInstance()->GetCommandList()->SetDescriptorHeaps(_countof(ppHeaps), ppHeaps);
 	// 描画コマンドを発行
-	ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), directXCore_->GetCommandList());
+	ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), DirectXCore::GetInstance()->GetCommandList());
+
 #endif
 
 }

@@ -144,6 +144,21 @@ void PostEffect::Initalize()
 	//commandList_ = DirectXCore::GetInstance()->GetCommandList();
 }
 
+void PostEffect::Finalize()
+{
+	for (uint32_t index = 0; index <= static_cast<uint32_t>(PostEffects::kCount); index++) {
+		if (pipelineState_[index]) {
+			delete pipelineState_[index];
+			pipelineState_[index] = nullptr;
+		}
+		if (rootSignature_[index]) {
+			delete rootSignature_[index];
+			rootSignature_[index] = nullptr;
+		}
+
+	}
+}
+
 void PostEffect::SetGraphicsRootSignature(uint32_t index)
 {
 	DirectXCore::GetInstance()->GetCommandList()->SetGraphicsRootSignature(rootSignature_[index]->GetSignature());

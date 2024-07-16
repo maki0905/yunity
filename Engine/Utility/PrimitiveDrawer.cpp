@@ -16,7 +16,6 @@ PipelineState* PrimitiveDrawer::pipelineState_ = nullptr;
 
 void PrimitiveDrawer::StaticInitialize()
 {
-
 	InitializeGraphicsPipeline();
 }
 
@@ -135,6 +134,9 @@ void PrimitiveDrawer::Finalize()
 	}
 	if (pipelineState_) {
 		delete pipelineState_;
+	}
+	if (commandList_) {
+		commandList_->Release();
 	}
 }
 

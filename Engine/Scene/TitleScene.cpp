@@ -14,14 +14,16 @@ void TitleScene::Initialize()
 	sprite_ = std::make_unique<Sprite>();
 	sprite_.reset(Sprite::Create(TextureManager::GetInstance()->Load("TITLE.png"), { 320.0f, 260.0f }));
 
-	model_ = std::make_unique<Model>();
-	model_.reset(ModelManager::GetInstance()->CreateModel(obj, "terrain"));
+	model_ = new Model();
+	model_ = ModelManager::GetInstance()->CreateModel(obj, "terrain");
+	//model_ = std::make_unique<Model>();
+	//ModelManager::GetInstance()->CreateModel(obj, "terrain");
 	model_->SetCamera(camera_/*camera_.get()*/);
 	model_->SetLighting(false);
 	RenderTexture::GetInstance()->SelectPostEffect(PostEffects::kGrayscale, true);
 	RenderTexture::GetInstance()->SelectPostEffect(PostEffects::kVignetting, true);
 	RenderTexture::GetInstance()->SelectPostEffect(PostEffects::kOutline, true);
-	//RenderTexture::GetInstance()->SelectPostEffect(PostEffects::kRadialBlur, true);
+	RenderTexture::GetInstance()->SelectPostEffect(PostEffects::kRadialBlur, true);
 	/*RenderTexture::GetInstance()->postEffectFlag_[static_cast<uint32_t>(PostEffects::kGrayscale)] = true;
 	RenderTexture::GetInstance()->postEffectFlag_[static_cast<uint32_t>(PostEffects::kVignetting)] = true;
 	RenderTexture::GetInstance()->postEffectFlag_[static_cast<uint32_t>(PostEffects::kOutline)] = true;

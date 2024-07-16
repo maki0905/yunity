@@ -13,7 +13,6 @@ class SwapChain;
 class CommandList
 {
 public:
-	void Finalize();
 	/// <summary>
 	/// 生成
 	/// </summary>
@@ -54,16 +53,16 @@ public:
 	void RSSetScissorRects(UINT width, UINT height);
 
 	ID3D12GraphicsCommandList* GetCommandList() {
-		//return commandList_.Get();
-		return commandList_;
+		return commandList_.Get();
+		//return commandList_;
 	}
 
 	ID3D12CommandList* GetCommandLists();
 
 
 	ID3D12CommandAllocator* GetCommandAllocator() {
-		//return commandAllocator_.Get();
-		return commandAllocator_;
+		return commandAllocator_.Get();
+		//return commandAllocator_;
 	}
 
 private:
@@ -78,12 +77,8 @@ private:
 	void CreateList();
 
 private:
-
-	//Microsoft::WRL::ComPtr<ID3D12Device> device_;
-	/*Microsoft::WRL::ComPtr<ID3D12CommandAllocator> commandAllocator_;
-	Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> commandList_;*/
-	ID3D12CommandAllocator* commandAllocator_;
-	ID3D12GraphicsCommandList* commandList_;
+	Microsoft::WRL::ComPtr<ID3D12CommandAllocator> commandAllocator_;
+	Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> commandList_;
 
 };
 

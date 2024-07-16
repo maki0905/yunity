@@ -6,8 +6,6 @@
 class CommandQueue
 {
 public:
-
-	void Finalize();
 	/// <summary>
 	/// 生成
 	/// </summary>

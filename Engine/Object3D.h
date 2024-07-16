@@ -27,12 +27,12 @@ public:
 	Vector3 GetTranslation() { return worldTransform_.translation_; }
 
 	Model* GetModel() { return model_.get(); }
-	Model* GetModel(const std::string& modelName) { return models_[modelName]; }
+	Model* GetModel(const std::string& modelName) { return models_[modelName].get(); }
 	void SetModel(const std::string& modelName, Model* model);
 
 protected:
 	WorldTransform worldTransform_;
-	std::map<std::string, Model*> models_;
+	std::map<std::string, std::unique_ptr<Model>> models_;
 	Camera* camera_;
 private:
 	//Camera* camera_;

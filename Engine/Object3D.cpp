@@ -94,5 +94,5 @@ void Object3D::OnTriggerEvent(Body* body)
 
 void Object3D::SetModel(const std::string& modelName, Model* model)
 {
-	models_[modelName] = model;
+	models_[modelName].reset(model);
 }

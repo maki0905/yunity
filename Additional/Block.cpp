@@ -5,8 +5,8 @@ void Block::Initialize(Camera* camera)
 {
 	worldTransfrom_.Initialize();
 
-	model_.reset(ModelManager::GetInstance()->CreateModel(obj, "startBox"));
-	model_->SetCamera(camera);
+	/*model_.reset(ModelManager::GetInstance()->CreateModel(obj, "startBox"));
+	model_->SetCamera(camera);*/
 	
 
 	//CreateCollider(&worldTransfrom_, Type::kAABB, RotationType::Euler, camera);

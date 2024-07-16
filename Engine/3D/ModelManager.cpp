@@ -24,6 +24,15 @@ void ModelManager::Initialize()
 	models_.clear();
 }
 
+void ModelManager::Finalize()
+{
+	/*for (auto& model : models_) {
+		delete model;
+	}*/
+	//models_.clear();
+
+}
+
 void ModelManager::Update()
 {
 	for (auto& model : models_) {
@@ -41,7 +50,10 @@ void ModelManager::Reset()
 
 Model* ModelManager::CreateModel(Format format, const std::string& folderName, const std::string& fileName, ModelType modelType)
 {
-	Model* model = new Model();
+	/*std::unique_ptr<Model> model;
+	model = std::make_unique<Model>();*/
+	std::unique_ptr<Model> model = std::make_unique<Model>();
+	//Model* model = new Model();
 	//LoadInternal(fileName, format);
 	//std::string path = folderName + "/" + fileName;
 	std::string path = folderName;
@@ -53,9 +65,31 @@ Model* ModelManager::CreateModel(Format format, const std::string& folderName, c
 		modelDataStorage_[path] = LoadModelFile(format, folderName, fileName);
 	}
 	model->Initialize(path, modelType, modelDataStorage_[path]);
-	models_.emplace_back(model);
-	return model;
+	Model* modePtr = model.get();
+	models_.emplace_back(std::move(model));
+	return modePtr;
 }
+
+//std::unique_ptr<Model> ModelManager::CreateModel(Format format, const std::string& folderName, const std::string& fileName, ModelType modelType)
+//{
+//	/*std::unique_ptr<Model> model;
+//	model = std::make_unique<Model>();*/
+//	Model* model = new Model();
+//	//LoadInternal(fileName, format);
+//	//std::string path = folderName + "/" + fileName;
+//	std::string path = folderName;
+//	if (fileName.size() != 0) {
+//		path = path + "/" + fileName;
+//	}
+//	auto itr = modelDataStorage_.find(path);
+//	if (itr == modelDataStorage_.end()) {
+//		modelDataStorage_[path] = LoadModelFile(format, folderName, fileName);
+//	}
+//	model->Initialize(path, modelType, modelDataStorage_[path]);
+//	models_.emplace_back(model);
+//	return model;
+//	//return std::unique_ptr<Model>();
+//}
 
 Model::ModelData& ModelManager::GetModelData(const std::string& modelName)
 {

@@ -112,11 +112,6 @@ public:
 	};
 
 public:
-	/// <summary>
-	/// 静的初期化
-	/// </summary>
-	/// <param name="device">デバイス</param>
-	static void StaticInitialize();
 
 	/// <summary>
 	/// 描画前処理
@@ -130,10 +125,15 @@ public:
 	static void PostDraw();
 
 public:
+	~Model() {
+		Finalize();
+	}
 	/// <summary>
 	/// 初期化
 	/// </summary>
 	void Initialize(const std::string& name, const ModelType& modelType, const ModelData& modelData);
+
+	void Finalize();
 
 	/// <summary>
 	/// 描画
@@ -189,7 +189,7 @@ private:
 	/// </summary>
 	/// <param name="sizeInBytes"></param>
 	/// <returns>サイズ</returns>
-	ID3D12Resource* CreateBufferResource(size_t sizeInBytes);
+	Microsoft::WRL::ComPtr<ID3D12Resource> CreateBufferResource(size_t sizeInBytes);
 
 	Skeleton CreateSkelton(const Node& rootNode);
 
@@ -198,11 +198,7 @@ private:
 	SkinCluster CreateSkinCluster();
 
 private:
-	static ID3D12Device* device_;
 	static ID3D12GraphicsCommandList* commandList_;
-	static RootSignature* rootSignature_;
-	static PipelineState* pipelineState_;
-
 private:
 	ModelType modelType_ = ModelType::kRigid;
 	BlendModeType blendModeType_ = BlendModeType::kNormal;

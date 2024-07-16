@@ -3,64 +3,53 @@
 void Framework::Initialize()
 {
 	// WindowsAPI
-	windowsAPI_ = WindowsAPI::GetInstance();
-	windowsAPI_->CreateGameWindow();
+	WindowsAPI::GetInstance()->CreateGameWindow();
 
 	// DirectX基盤
-	directXCore_ = DirectXCore::GetInstance();
-	directXCore_->Initialize();
+	DirectXCore::GetInstance()->Initialize();
 
 #pragma region 汎用機能初期化
 
 #ifdef _DEBUG
 	// ImGui
-	imguiManager_ = ImGuiManager::GetInstance();
-	imguiManager_->Initialize();
+	ImGuiManager::GetInstance()->Initialize();
 #endif // _DEBUG
 
 	// Input
-	input_ = Input::GetInstance();
-	input_->Initialize();
+	Input::GetInstance()->Initialize();
 
 
-	modelManager_ = ModelManager::GetInstance();
-	modelManager_->Initialize();
-	// 3Dオブジェクト
-	model_ = new Model();
-	model_->StaticInitialize();
+	ModelManager::GetInstance()->Initialize();
 
-	sprite_ = new Sprite();
+	model_ = std::make_unique<Model>();
+
+	sprite_ = std::make_unique<Sprite>();
 	sprite_->StaticInitialize();
 
-	primitive_ = new PrimitiveDrawer();
+	primitive_ = std::make_unique<PrimitiveDrawer>();
 	primitive_->StaticInitialize();
 
 	/*particle_ = new ParticleDrawer();
 	particle_->StaticInitialize();*/
 
 	// テクスチャマネージャー
-	textureManager_ = TextureManager::GetInstance();
-	textureManager_->Initialize();
+	TextureManager::GetInstance()->Initialize();
 	TextureManager::Load("white1x1.png");
 
 	///*sphere_ = new SphereDrawer();
 	//sphere_->StaticInitialize();*/
 
-	audio_ = Audio::GetInstance();
-	audio_->Initialize();
+	Audio::GetInstance()->Initialize();
 
-	sceneManager_ = SceneManager::GetInstance();
-	sceneManager_->Initialize();
-	sceneManager_->ChangeScene("TITLE");
+	SceneManager::GetInstance()->Initialize();
+	SceneManager::GetInstance()->ChangeScene("TITLE");
 
-	csv_ = CSV::GetInstance();
-	csv_->Initialize();
+	CSV::GetInstance()->Initialize();
 
-	skybox_ = new SkyBox();
+	skybox_ = std::make_unique<SkyBox>();
 	skybox_->StaticInitialize();
 
-	objectManager_ = ObjectManager::GetInstance();
-	objectManager_->Initialize();
+	ObjectManager::GetInstance()->Initialize();
 
 #pragma endregion
 
@@ -76,20 +65,27 @@ void Framework::Initialize()
 
 void Framework::Finalize()
 {
-	imguiManager_->Finalize();
+	skybox_->Finalize();
+	primitive_->Finalize();
+	sprite_->Finalize();
+	model_->Finalize();
+	ModelManager::GetInstance()->Finalize();
+	ImGuiManager::GetInstance()->Finalize();
+	WindowsAPI::GetInstance()->TerminateGameWindow();
+	/*imguiManager_->Finalize();
 	skybox_->Finalize();
 	primitive_->Finalize();
 	sprite_->Finalize();
 	directXCore_->Finalize();
-	windowsAPI_->TerminateGameWindow();
+	windowsAPI_->TerminateGameWindow();*/
 }
 
 void Framework::Update()
 {
 	// ImGui受付開始
-	imguiManager_->Begin();
+	ImGuiManager::GetInstance()->Begin();
 
-	input_->Update();
+	Input::GetInstance()->Update();
 
 	// シーンのチェック
 	/*prevSceneNo_ = currentSceneNo_;
@@ -103,9 +99,9 @@ void Framework::Update()
 	// 更新
 	//sceneArr_[currentSceneNo_]->Update();
 
-	sceneManager_->Update();
-	modelManager_->Update();
+	SceneManager::GetInstance()->Update();
+	ModelManager::GetInstance()->Update();
 
 	// ImGui受付終了
-	imguiManager_->End();
+	ImGuiManager::GetInstance()->End();
 }
