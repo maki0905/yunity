@@ -20,20 +20,39 @@ void ObjectManager::Load(const std::string& fileName, Camera* camera, World* wor
 	LevelData* levelData = LevelEditor::GetInstance()->LoadFile(fileName);
 
 	for (auto& object : levelData->objects) {
-		Model* model = nullptr;
-		model = ModelManager::GetInstance()->CreateModel(obj, object.fileName);
-		model->SetCamera(camera);
+		if (object.fileName == "startBox") {
+			Model* model = nullptr;
+			model = ModelManager::GetInstance()->CreateModel(obj, object.fileName);
+			model->SetCamera(camera);
 
-		Object3D* newObject = new Object3D();
-		newObject->SetPosition(object.translation);
-		newObject->SetRotation(object.rotation);
-		newObject->SetScale(object.scaling);
-		newObject->SetSize(object.size);
-		newObject->SetCenter(object.center);
-		newObject->SetIsTrigger(object.isTrigger);
-		newObject->Initialize(model, world, object.shape);
-		world->Add(newObject);
-		objects_[fileName].push_back(newObject);
+			MoveFloor* newObject = new MoveFloor();
+			newObject->SetPosition(object.translation);
+			newObject->SetRotation(object.rotation);
+			newObject->SetScale(object.scaling);
+			newObject->SetSize(object.size);
+			newObject->SetCenter(object.center);
+			newObject->SetIsTrigger(object.isTrigger);
+			newObject->Initialize(model, world, object.shape);
+			world->Add(newObject);
+			objects_[fileName].push_back(newObject);
+
+		}
+		else {
+			Model* model = nullptr;
+			model = ModelManager::GetInstance()->CreateModel(obj, object.fileName);
+			model->SetCamera(camera);
+
+			Object3D* newObject = new Object3D();
+			newObject->SetPosition(object.translation);
+			newObject->SetRotation(object.rotation);
+			newObject->SetScale(object.scaling);
+			newObject->SetSize(object.size);
+			newObject->SetCenter(object.center);
+			newObject->SetIsTrigger(object.isTrigger);
+			newObject->Initialize(model, world, object.shape);
+			world->Add(newObject);
+			objects_[fileName].push_back(newObject);
+		}
 	}
 }
 

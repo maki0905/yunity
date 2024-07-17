@@ -7,6 +7,7 @@
 #include "Object3D.h"
 #include "Camera.h"
 #include "World.h"
+#include "MoveFloor.h"
 
 class ObjectManager {
 public:

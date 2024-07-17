@@ -180,6 +180,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Engine\Skydome.cpp" />
     <ClCompile Include="Additional\Player.cpp" />
     <ClCompile Include="Engine\3D\ParticleDrawer.cpp" />
+    <ClCompile Include="Additional\MoveFloor.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Additional\Block.h" />
@@ -260,6 +261,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Additional\Player.h" />
     <ClInclude Include="Engine\3D\ParticleDrawer.h" />
     <ClInclude Include="Engine\Math\Random.h" />
+    <ClInclude Include="Additional\MoveFloor.h" />
     <ClInclude Include="SafeDelete.h" />
     <ClInclude Include="Engine\Core\ShaderCompiler.h" />
     <ClInclude Include="Engine\Math\Sphere.h" />
