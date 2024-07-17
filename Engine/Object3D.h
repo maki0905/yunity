@@ -8,9 +8,6 @@
 class Object3D : public Body{
 public:
 	~Object3D() {
-		/*for (auto& pair : models_) {
-			delete pair.second;
-		}*/
 		models_.clear();
 	}
 	void Initialize(Model* model, World* world, Collider::Shape shape);

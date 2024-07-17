@@ -58,9 +58,9 @@ private:
 
 	bool isFloot_;
 
-	Model* reticle3D_;
+	std::unique_ptr<Model> reticle3D_;
 	//WorldTransform reticle3DWorldTransform_;
-	Model* apex_;
+	std::unique_ptr<Model> apex_;
 	WorldTransform apexWorldTransform_;
 
 

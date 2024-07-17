@@ -27,9 +27,12 @@ void ModelManager::Initialize()
 void ModelManager::Finalize()
 {
 	/*for (auto& model : models_) {
-		delete model;
-	}*/
-	//models_.clear();
+		if (model) {
+			delete model;
+			model = nullptr;
+		}
+	}
+	models_.clear();*/
 
 }
 

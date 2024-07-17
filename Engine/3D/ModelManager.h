@@ -25,7 +25,6 @@ class ModelManager {
 	};
 public:
 	//static Model::ModelData* Load(const std::string& fileName, const std::string format);
-
 	static ModelManager* GetInstance();
 
 	void Initialize();
