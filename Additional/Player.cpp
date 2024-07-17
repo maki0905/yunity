@@ -18,7 +18,7 @@ void Player::Initialize(Camera* camera, World* world)
 	/*worldTransform_.Initialize(RotationType::Quaternion);
 	worldTransform_.translation_.y = 3.0f;*/
 
-	models_["player"].reset(ModelManager::GetInstance()->CreateModel(obj, "startBox"));
+	models_["player"] = ModelManager::GetInstance()->CreateModel(obj, "startBox");
 	models_["player"]->SetCamera(camera);
 	/*model_.reset(ModelManager::GetInstance()->CreateModel(obj, "startBox"));
 	model_->SetCamera(camera);*/

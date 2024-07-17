@@ -4,8 +4,8 @@
 
 void Skydome::Initialize(Camera* camera, Vector3 size)
 {
-	model_ = std::make_unique<Model>();
-	model_.reset(ModelManager::GetInstance()->CreateModel(obj, "skydome"));
+	model_ = new Model();
+	model_ = ModelManager::GetInstance()->CreateModel(obj, "skydome");
 	model_->SetCamera(camera);
 
 	worldTransform_.Initialize();

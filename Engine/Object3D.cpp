@@ -25,8 +25,8 @@
 
 void Object3D::Initialize(Model* model, World* world, Collider::Shape shape)
 {
-	model_ = std::make_unique<Model>();
-	model_.reset(model);
+	model_ = new Model();
+	model_ = model;
 	worldTransform_.Initialize();
 	CreateBody(world, &worldTransform_, 0.0f);
 	CreateCollider(&worldTransform_, shape, model_->GetCamera(), size_);
@@ -81,7 +81,7 @@ void Object3D::Draw()
 	}*/
 	//model_->Draw(worldTransform_, TextureManager::GetInstance()->Load("trampoline.png"));
 	model_->Draw(worldTransform_/*,texture_*/);
-	Collider::HitBox();
+	Collider::HitBox(camera_);
 }
 
 void Object3D::OnCollisionEvent(Body* body)
@@ -94,5 +94,5 @@ void Object3D::OnTriggerEvent(Body* body)
 
 void Object3D::SetModel(const std::string& modelName, Model* model)
 {
-	models_[modelName].reset(model);
+	models_[modelName]= model;
 }

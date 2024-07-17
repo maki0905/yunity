@@ -62,8 +62,8 @@ void StageScene::Initialize()
 	world_->Initialize({0.0f, -9.8f, 0.0f});
 	//world_->Initialize();
 
-	player_ = std::make_unique<Player>();
-	player_->Initialize(camera_/*camera_.get()*/, world_.get());
+	//player_ = std::make_unique<Player>();
+	//player_->Initialize(camera_/*camera_.get()*/, world_.get());
 
 	//start_ = std::make_unique<Model>();
 	////start_.reset(ModelManager::GetInstance()->CreateModel(obj, "startBox"));
@@ -78,7 +78,7 @@ void StageScene::Initialize()
 	//endWT_.translation_ = { 10.0f, 3.0f, 0.0f };
 	//player_->ResetPos(startWT_.translation_);
 
-	ObjectManager::GetInstance()->Load(stageName_, camera_/*camera_.get()*/, world_.get());
+	//ObjectManager::GetInstance()->Load(stageName_, camera_/*camera_.get()*/, world_.get());
 	startWT_.translation_ = ObjectManager::GetInstance()->GetPos(stageName_, "startBox");
 	//ObjectManager::GetInstance()->Load("TL1", camera_.get(), world_.get());
 	/*trampolines_ = ObjectManager::GetInstance()->GetObjects("stage0", "Trampoline");*/
@@ -115,35 +115,35 @@ void StageScene::Update()
 	/*---------------------------------------------------------*/
 
 
-	player_->Update();
-	for (auto& object : ObjectManager::GetInstance()->GetObjects(stageName_)) {
-		object->Update();
-	}
-	/*for (auto& object : ObjectManager::GetInstance()->GetObjects("TL1")) {
-		object->Update();
-	}*/
-	world_->Solve();
+	//player_->Update();
+	//for (auto& object : ObjectManager::GetInstance()->GetObjects(stageName_)) {
+	//	object->Update();
+	//}
+	///*for (auto& object : ObjectManager::GetInstance()->GetObjects("TL1")) {
+	//	object->Update();
+	//}*/
+	//world_->Solve();
 
-	skyboxWorldTransform_.UpdateMatrix();
+	//skyboxWorldTransform_.UpdateMatrix();
 
-	if (Input::GetInstance()->TriggerKey(DIK_LSHIFT)) {
-		isDebug_ ^= true;
-	}
+	//if (Input::GetInstance()->TriggerKey(DIK_LSHIFT)) {
+	//	isDebug_ ^= true;
+	//}
 
-	if (isDebug_) {
-		debugCamera_->Update(camera_/*camera_.get()*/);
-		camera_->Update();
-	}
-	else {
-		camera_->Update();
-	}
+	//if (isDebug_) {
+	//	debugCamera_->Update(camera_/*camera_.get()*/);
+	//	camera_->Update();
+	//}
+	//else {
+	//	camera_->Update();
+	//}
 
-	/*startWT_.UpdateMatrix();
-	endWT_.UpdateMatrix();*/
+	///*startWT_.UpdateMatrix();
+	//endWT_.UpdateMatrix();*/
 
-	if (!player_->GetActive()) {
-		player_->ResetPos(startWT_.translation_);
-	}
+	//if (!player_->GetActive()) {
+	//	player_->ResetPos(startWT_.translation_);
+	//}
 
 
 }
@@ -168,13 +168,13 @@ void StageScene::Draw3D()
 	/*start_->Draw(startWT_);
 	end_->Draw(endWT_);*/
 	skydome_->Draw();
-	for (auto& object : ObjectManager::GetInstance()->GetObjects(stageName_)) {
-		object->Draw();
-	}
-	/*for (auto& object : ObjectManager::GetInstance()->GetObjects("TL1")) {
-		object->Draw();
-	}*/
-	player_->Draw();
+	//for (auto& object : ObjectManager::GetInstance()->GetObjects(stageName_)) {
+	//	object->Draw();
+	//}
+	///*for (auto& object : ObjectManager::GetInstance()->GetObjects("TL1")) {
+	//	object->Draw();
+	//}*/
+	//player_->Draw();
 	
 
 	//player_->Draw();
@@ -182,5 +182,5 @@ void StageScene::Draw3D()
 
 void StageScene::DrawFront()
 {
-	player_->DrawUI();
+	//player_->DrawUI();
 }

@@ -168,6 +168,17 @@ void Collider::HitBox()
 	HitBox_->Draw(worldTransform_HitBox_);
 }
 
+void Collider::HitBox(Camera* camera)
+{
+	worldTransform_HitBox_.scale_ = Multiply(size_, worldTransform_->scale_);
+	worldTransform_HitBox_.rotation_ = worldTransform_->rotation_;
+	worldTransform_HitBox_.translation_ = worldTransform_->translation_;
+	worldTransform_HitBox_.UpdateMatrix();
+	HitBox_->SetCamera(camera);
+
+	HitBox_->Draw(worldTransform_HitBox_);
+}
+
 AABB Collider::GetAABB()
 {
 	return AABB(Subtract(worldTransform_->translation_, GetHitBoxSize()), Add(worldTransform_->translation_, GetHitBoxSize()));
