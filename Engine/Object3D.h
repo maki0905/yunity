@@ -7,8 +7,15 @@
 
 class Object3D : public Body{
 public:
+	~Object3D() {
+		/*for (auto& pair : models_) {
+			delete pair.second;
+		}*/
+		models_.clear();
+	}
 	void Initialize(Model* model, World* world, Collider::Shape shape);
 	void Initialize(World* world, Collider::Shape shape);
+	//void Initialize(std::unique_ptr<Model> model, World* world, Collider::Shape shape);
 	virtual void Update();
 	virtual void Draw();
 
@@ -29,17 +36,18 @@ public:
 	Vector3 GetCenter() { return center_; }
 	Vector3 GetTranslation() { return worldTransform_.translation_; }
 
-	Model* GetModel() { return model_; }
-	Model* GetModel(const std::string& modelName) { return models_[modelName]; }
+	Model* GetModel() { return model_.get(); }
+	Model* GetModel(const std::string& modelName) { return models_[modelName].get(); }
 	void SetModel(const std::string& modelName, Model* model);
 
 protected:
 	WorldTransform worldTransform_;
-	std::unordered_map<std::string, Model*> models_;
+	std::unordered_map<std::string, std::unique_ptr<Model>> models_;
 	Camera* camera_;
 private:
 	//Camera* camera_;
-	Model* model_;
+	std::unique_ptr<Model> model_;
+	//Model* model_;
 	//std::map<std::string, Model*> models_;
 	//WorldTransform worldTransform_;
 	Vector3 size_;

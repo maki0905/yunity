@@ -18,7 +18,7 @@ void Player::Initialize(Camera* camera, World* world)
 	/*worldTransform_.Initialize(RotationType::Quaternion);
 	worldTransform_.translation_.y = 3.0f;*/
 
-	models_["player"] = ModelManager::GetInstance()->CreateModel(obj, "startBox");
+	models_["player"].reset(ModelManager::GetInstance()->CreateModel(obj, "startBox"));
 	models_["player"]->SetCamera(camera);
 	/*model_.reset(ModelManager::GetInstance()->CreateModel(obj, "startBox"));
 	model_->SetCamera(camera);*/
@@ -47,29 +47,29 @@ void Player::Initialize(Camera* camera, World* world)
 	SetCollisionAttribute(kCollisionAttributePlayer);
 	isActive_ = false;
 
-	line_ = std::make_unique<PrimitiveDrawer>();
-	line_.reset(PrimitiveDrawer::Create());
-	line_->SetCamera(camera_);
+	//line_ = std::make_unique<PrimitiveDrawer>();
+	//line_.reset(PrimitiveDrawer::Create());
+	//line_->SetCamera(camera_);
 
-	reticle3D_ = std::make_unique<Model>();
+	//reticle3D_ = new Model();
+	////reticle3D_ = ModelManager::GetInstance()->CreateModel(obj, "apex");
 	//reticle3D_ = ModelManager::GetInstance()->CreateModel(obj, "apex");
-	reticle3D_.reset(ModelManager::GetInstance()->CreateModel(obj, "apex"));
-	reticle3D_->SetCamera(camera_);
+	//reticle3D_->SetCamera(camera_);
 
-	onReticle_ = TextureManager::GetInstance()->Load("onReticle.png");
-	offReticle_ = TextureManager::GetInstance()->Load("offReticle.png");
-	reticle_ = std::make_unique<Sprite>();
-	reticle_.reset(Sprite::Create(offReticle_, { 0.0f, 0.0f }, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
+	//onReticle_ = TextureManager::GetInstance()->Load("onReticle.png");
+	//offReticle_ = TextureManager::GetInstance()->Load("offReticle.png");
+	//reticle_ = std::make_unique<Sprite>();
+	//reticle_.reset(Sprite::Create(offReticle_, { 0.0f, 0.0f }, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
 
-	reticleWorldTransform_.Initialize();
-	reticleWorldTransform_.translation_.x = 3.0f;
-	reticleWorldTransform_.parent_ = &worldTransform_;
+	//reticleWorldTransform_.Initialize();
+	//reticleWorldTransform_.translation_.x = 3.0f;
+	//reticleWorldTransform_.parent_ = &worldTransform_;
 
-	apex_ = std::make_unique<Model>();
+	//apex_ = new Model();
+	////apex_ = ModelManager::GetInstance()->CreateModel(obj, "apex");
 	//apex_ = ModelManager::GetInstance()->CreateModel(obj, "apex");
-	apex_.reset(ModelManager::GetInstance()->CreateModel(obj, "apex"));
-	apex_->SetCamera(camera_);
-	apexWorldTransform_.Initialize();
+	//apex_->SetCamera(camera_);
+	//apexWorldTransform_.Initialize();
 
 	isWire_ = false;
 	isJunp_ = false;
@@ -404,11 +404,11 @@ void Player::Draw()
 	//raticle_->Draw(reticleWorldTransform_, TextureManager::GetInstance()->Load("uvChecker.png"));
 	//model_->Draw(worldTransform_, TextureManager::GetInstance()->Load("uvChecker.png"));
 	HitBox();
-	line_->Draw(worldTransform_.translation_, point_, { 0.0f, 0.0f, 0.0f, 1.0f });
+	/*line_->Draw(worldTransform_.translation_, point_, { 0.0f, 0.0f, 0.0f, 1.0f });
 	reticle3D_->Draw(reticleWorldTransform_, TextureManager::GetInstance()->Load("pink1x1.png"));
 	if (isWire_) {
 		apex_->Draw(apexWorldTransform_, TextureManager::GetInstance()->Load("purple1x1.png"));
-	}
+	}*/
 	//reticle_->Draw();
 	//Collider::HitBox();
 }

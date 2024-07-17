@@ -14,8 +14,8 @@ void TitleScene::Initialize()
 	sprite_ = std::make_unique<Sprite>();
 	sprite_.reset(Sprite::Create(TextureManager::GetInstance()->Load("TITLE.png"), { 320.0f, 260.0f }));
 
-	model_ = new Model();
-	model_ = ModelManager::GetInstance()->CreateModel(obj, "terrain");
+	model_ = std::make_unique<Model>();
+	model_.reset(ModelManager::GetInstance()->CreateModel(obj, "terrain"));
 	//model_ = std::make_unique<Model>();
 	//ModelManager::GetInstance()->CreateModel(obj, "terrain");
 	model_->SetCamera(camera_/*camera_.get()*/);

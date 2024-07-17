@@ -52,8 +52,8 @@ Model* ModelManager::CreateModel(Format format, const std::string& folderName, c
 {
 	/*std::unique_ptr<Model> model;
 	model = std::make_unique<Model>();*/
-	std::unique_ptr<Model> model = std::make_unique<Model>();
-	//Model* model = new Model();
+	/*std::unique_ptr<Model> model = std::make_unique<Model>();*/
+	Model* model = new Model();
 	//LoadInternal(fileName, format);
 	//std::string path = folderName + "/" + fileName;
 	std::string path = folderName;
@@ -65,16 +65,17 @@ Model* ModelManager::CreateModel(Format format, const std::string& folderName, c
 		modelDataStorage_[path] = LoadModelFile(format, folderName, fileName);
 	}
 	model->Initialize(path, modelType, modelDataStorage_[path]);
-	Model* modePtr = model.get();
-	models_.emplace_back(std::move(model));
-	return modePtr;
+	//Model* modePtr = model.get();
+	models_.emplace_back(model);
+	return models_.back();
 }
 
 //std::unique_ptr<Model> ModelManager::CreateModel(Format format, const std::string& folderName, const std::string& fileName, ModelType modelType)
 //{
 //	/*std::unique_ptr<Model> model;
 //	model = std::make_unique<Model>();*/
-//	Model* model = new Model();
+//	std::unique_ptr<Model> model = std::make_unique<Model>();
+//	//Model* model = new Model();
 //	//LoadInternal(fileName, format);
 //	//std::string path = folderName + "/" + fileName;
 //	std::string path = folderName;
@@ -86,9 +87,9 @@ Model* ModelManager::CreateModel(Format format, const std::string& folderName, c
 //		modelDataStorage_[path] = LoadModelFile(format, folderName, fileName);
 //	}
 //	model->Initialize(path, modelType, modelDataStorage_[path]);
-//	models_.emplace_back(model);
-//	return model;
-//	//return std::unique_ptr<Model>();
+//	Model* modePtr = model.get();
+//	models_.emplace_back(std::move(model));
+//	return models_.back().get();
 //}
 
 Model::ModelData& ModelManager::GetModelData(const std::string& modelName)

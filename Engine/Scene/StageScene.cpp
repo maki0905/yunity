@@ -62,8 +62,8 @@ void StageScene::Initialize()
 	world_->Initialize({0.0f, -9.8f, 0.0f});
 	//world_->Initialize();
 
-	//player_ = std::make_unique<Player>();
-	//player_->Initialize(camera_/*camera_.get()*/, world_.get());
+	player_ = std::make_unique<Player>();
+	player_->Initialize(camera_/*camera_.get()*/, world_.get());
 
 	//start_ = std::make_unique<Model>();
 	////start_.reset(ModelManager::GetInstance()->CreateModel(obj, "startBox"));
@@ -174,7 +174,7 @@ void StageScene::Draw3D()
 	///*for (auto& object : ObjectManager::GetInstance()->GetObjects("TL1")) {
 	//	object->Draw();
 	//}*/
-	//player_->Draw();
+	player_->Draw();
 	
 
 	//player_->Draw();

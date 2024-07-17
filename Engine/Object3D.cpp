@@ -25,8 +25,8 @@
 
 void Object3D::Initialize(Model* model, World* world, Collider::Shape shape)
 {
-	model_ = new Model();
-	model_ = model;
+	model_ = std::make_unique<Model>();
+	model_.reset(model);
 	worldTransform_.Initialize();
 	CreateBody(world, &worldTransform_, 0.0f);
 	CreateCollider(&worldTransform_, shape, model_->GetCamera(), size_);
@@ -43,6 +43,27 @@ void Object3D::Initialize(Model* model, World* world, Collider::Shape shape)
 	isHit_ = false;
 	texture_ = TextureManager::GetInstance()->Load("uvChecker.png");
 }
+
+//void Object3D::Initialize(std::unique_ptr<Model> model, World* world, Collider::Shape shape)
+//{
+//	model_ = std::make_unique<Model>();
+//	model_ = std::move(model);
+//	worldTransform_.Initialize();
+//	CreateBody(world, &worldTransform_, 0.0f);
+//	CreateCollider(&worldTransform_, shape, model_->GetCamera(), size_);
+//
+//	if (model_->GetModelName() == "Trampoline") {
+//		SetCollisionAttribute(kCollisionAttributeTrampoline);
+//	}
+//	else if (model_->GetModelName() == "endBox") {
+//		SetCollisionAttribute(kCollisionAttributeGoal);
+//	}
+//	else {
+//		SetCollisionAttribute(kCollisionAttributeFloor);
+//	}
+//	isHit_ = false;
+//	texture_ = TextureManager::GetInstance()->Load("uvChecker.png");
+//}
 
 void Object3D::Initialize(World* world, Collider::Shape shape)
 {
@@ -94,5 +115,5 @@ void Object3D::OnTriggerEvent(Body* body)
 
 void Object3D::SetModel(const std::string& modelName, Model* model)
 {
-	models_[modelName]= model;
+	models_[modelName].reset(model);
 }

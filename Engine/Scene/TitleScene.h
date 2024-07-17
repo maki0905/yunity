@@ -24,7 +24,7 @@ private:
 
 	WorldTransform worldTransform_;
 	std::unique_ptr<Sprite> sprite_ = nullptr;
-	Model* model_ = nullptr;
+	std::unique_ptr<Model> model_ = nullptr;
 	//std::unique_ptr<Model> model_ = nullptr;
 };
 
