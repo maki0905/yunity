@@ -78,7 +78,7 @@ void StageScene::Initialize()
 	//endWT_.translation_ = { 10.0f, 3.0f, 0.0f };
 	//player_->ResetPos(startWT_.translation_);
 
-	//ObjectManager::GetInstance()->Load(stageName_, camera_/*camera_.get()*/, world_.get());
+	ObjectManager::GetInstance()->Load(stageName_, camera_/*camera_.get()*/, world_.get());
 	startWT_.translation_ = ObjectManager::GetInstance()->GetPos(stageName_, "startBox");
 	//ObjectManager::GetInstance()->Load("TL1", camera_.get(), world_.get());
 	/*trampolines_ = ObjectManager::GetInstance()->GetObjects("stage0", "Trampoline");*/
@@ -115,35 +115,33 @@ void StageScene::Update()
 	/*---------------------------------------------------------*/
 
 
-	//player_->Update();
-	//for (auto& object : ObjectManager::GetInstance()->GetObjects(stageName_)) {
-	//	object->Update();
-	//}
+	player_->Update();
+	ObjectManager::GetInstance()->Update(stageName_);
 	///*for (auto& object : ObjectManager::GetInstance()->GetObjects("TL1")) {
 	//	object->Update();
 	//}*/
-	//world_->Solve();
+	world_->Solve();
 
-	//skyboxWorldTransform_.UpdateMatrix();
+	skyboxWorldTransform_.UpdateMatrix();
 
-	//if (Input::GetInstance()->TriggerKey(DIK_LSHIFT)) {
-	//	isDebug_ ^= true;
-	//}
+	if (Input::GetInstance()->TriggerKey(DIK_LSHIFT)) {
+		isDebug_ ^= true;
+	}
 
-	//if (isDebug_) {
-	//	debugCamera_->Update(camera_/*camera_.get()*/);
-	//	camera_->Update();
-	//}
-	//else {
-	//	camera_->Update();
-	//}
+	if (isDebug_) {
+		debugCamera_->Update(camera_/*camera_.get()*/);
+		camera_->Update();
+	}
+	else {
+		camera_->Update();
+	}
 
-	///*startWT_.UpdateMatrix();
-	//endWT_.UpdateMatrix();*/
+	/*startWT_.UpdateMatrix();
+	endWT_.UpdateMatrix();*/
 
-	//if (!player_->GetActive()) {
-	//	player_->ResetPos(startWT_.translation_);
-	//}
+	if (!player_->GetActive()) {
+		player_->ResetPos(startWT_.translation_);
+	}
 
 
 }
@@ -168,9 +166,7 @@ void StageScene::Draw3D()
 	/*start_->Draw(startWT_);
 	end_->Draw(endWT_);*/
 	skydome_->Draw();
-	//for (auto& object : ObjectManager::GetInstance()->GetObjects(stageName_)) {
-	//	object->Draw();
-	//}
+	ObjectManager::GetInstance()->Draw(stageName_);
 	///*for (auto& object : ObjectManager::GetInstance()->GetObjects("TL1")) {
 	//	object->Draw();
 	//}*/

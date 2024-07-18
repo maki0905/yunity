@@ -15,9 +15,24 @@ void ObjectManager::Initialize()
 	objects_.clear();
 }
 
+void ObjectManager::Update(const std::string& fileName)
+{
+	for (auto& object : objects_[fileName]) {
+		object->Update();
+	}
+}
+
+void ObjectManager::Draw(const std::string& fileName)
+{
+	for (auto& object : objects_[fileName]) {
+		object->Draw();
+	}
+}
+
 void ObjectManager::Load(const std::string& fileName, Camera* camera, World* world)
 {
-	LevelData* levelData = LevelEditor::GetInstance()->LoadFile(fileName);
+	std::unique_ptr<LevelData> levelData = std::make_unique<LevelData>();
+	levelData.reset(LevelEditor::GetInstance()->LoadFile(fileName));
 
 	for (auto& object : levelData->objects) {
 		/*Model* model = nullptr;
@@ -26,6 +41,7 @@ void ObjectManager::Load(const std::string& fileName, Camera* camera, World* wor
 		/*std::unique_ptr<Model> model = std::make_unique<Model>();
 		model.reset(ModelManager::GetInstance()->CreateModel(obj, object.fileName));*/
 
+		//std::unique_ptr<Object3D> newObject = std::make_unique<Object3D>();
 		Object3D* newObject = new Object3D();
 		newObject->SetPosition(object.translation);
 		newObject->SetRotation(object.rotation);
@@ -36,17 +52,17 @@ void ObjectManager::Load(const std::string& fileName, Camera* camera, World* wor
 		newObject->Initialize(ModelManager::GetInstance()->CreateModel(obj, object.fileName), world, object.shape);
 		newObject->SetCamera(camera);
 		world->Add(newObject);
-		objects_[fileName].push_back(newObject);
+		objects_[fileName].emplace_back(newObject);
 	}
 }
 
-std::vector<Object3D*> ObjectManager::GetObjects(const std::string& fileName)
-{
-	return objects_[fileName];
-}
+//std::vector<std::unique_ptr<Object3D>> ObjectManager::GetObjects(const std::string& fileName)
+//{
+//	return std::move(objects_[fileName]);
+//}
 
 Vector3 ObjectManager::GetPos(const std::string& fileName, const std::string& modelName) {
-	Vector3 result;
+	Vector3 result = { 0.0f, 0.0f, 0.0f };
 	for (auto& obj : objects_[fileName]) {
 		if (obj->GetModel()->GetModelName() == modelName) {
 			result = obj->GetTranslation();
