@@ -250,7 +250,7 @@ void Player::Update()
 			const float threshold = 0.7f;
 			bool isMoving = false;
 			// 速さ
-			float speed = 0.3f;
+			float speed = 2.0f;
 			if (isFloot_) {
 				speed = 0.1f;
 			}
@@ -300,14 +300,18 @@ void Player::Update()
 						isWire_ = true;
 						//point_ = hit.collider->GetTranslation();
 						point_ = hit.point;
-						apexWorldTransform_.translation_ = point_;
-					}
-					else {
-						isWire_ = false;
+						apexWorldTransform_.translation_ = hit.point;
+						if (hit.collider->GetCollisionAttribute() == kCollisionAttributeMoveFloor) {
+							apexWorldTransform_.parent_ = hit.collider->GetWorldTransform();
+							apexWorldTransform_.translation_ = Subtract(apexWorldTransform_.translation_, hit.collider->GetMatWorldTranslation());
+						}
 					}
 				}
 				else {
 					isWire_ = false;
+					if (apexWorldTransform_.parent_) {
+						apexWorldTransform_.parent_ = nullptr;
+					}
 				}
 			}
 
@@ -356,7 +360,7 @@ void Player::Update()
 		point_ = worldTransform_.translation_;
 	}
 	else {
-		AddForce(RubberMovement(worldTransform_.translation_, point_, limitLength_, stiffness_, dampar_), 0);
+		AddForce(RubberMovement(worldTransform_.translation_, apexWorldTransform_.GetMatWorldTranslation(), limitLength_, stiffness_, dampar_), 0);
 	}
 
 	reticleWorldTransform_.UpdateMatrix();
@@ -404,9 +408,9 @@ void Player::Draw()
 	//raticle_->Draw(reticleWorldTransform_, TextureManager::GetInstance()->Load("uvChecker.png"));
 	//model_->Draw(worldTransform_, TextureManager::GetInstance()->Load("uvChecker.png"));
 	HitBox();
-	line_->Draw(worldTransform_.translation_, point_, { 0.0f, 0.0f, 0.0f, 1.0f });
 	reticle3D_->Draw(reticleWorldTransform_, TextureManager::GetInstance()->Load("pink1x1.png"));
 	if (isWire_) {
+		line_->Draw(worldTransform_.translation_, apexWorldTransform_.GetMatWorldTranslation(), { 0.0f, 0.0f, 0.0f, 1.0f });
 		apex_->Draw(apexWorldTransform_, TextureManager::GetInstance()->Load("purple1x1.png"));
 	}
 	//reticle_->Draw();
@@ -478,6 +482,7 @@ void Player::ResetPos(const Vector3& pos)
 	worldTransform_.translation_ = pos;
 	Reset();
 	point_ = worldTransform_.translation_;
+	apexWorldTransform_.translation_ = worldTransform_.translation_;
 	isWire_ = false;
 	isActive_ = true;
 }
