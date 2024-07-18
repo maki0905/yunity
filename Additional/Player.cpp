@@ -20,6 +20,7 @@ void Player::Initialize(Camera* camera, World* world)
 	models_["player"] = std::make_unique<Model>();
 	models_["player"].reset(ModelManager::GetInstance()->CreateModel(obj, "startBox"));
 	models_["player"]->SetCamera(camera);
+
 	/*model_.reset(ModelManager::GetInstance()->CreateModel(obj, "startBox"));
 	model_->SetCamera(camera);*/
 	/*model_.reset(ModelManager::GetInstance()->CreateModel(gltf, "human", "sneakWalk", ModelType::kSkin));
@@ -51,9 +52,9 @@ void Player::Initialize(Camera* camera, World* world)
 	//line_.reset(PrimitiveDrawer::Create());
 	//line_->SetCamera(camera_);
 
-	//reticle3D_ = new Model();
+	//reticle3D_ = std::make_unique<Model>();
 	////reticle3D_ = ModelManager::GetInstance()->CreateModel(obj, "apex");
-	//reticle3D_ = ModelManager::GetInstance()->CreateModel(obj, "apex");
+	//reticle3D_.reset(ModelManager::GetInstance()->CreateModel(obj, "apex"));
 	//reticle3D_->SetCamera(camera_);
 
 	//onReticle_ = TextureManager::GetInstance()->Load("onReticle.png");
@@ -61,9 +62,9 @@ void Player::Initialize(Camera* camera, World* world)
 	//reticle_ = std::make_unique<Sprite>();
 	//reticle_.reset(Sprite::Create(offReticle_, { 0.0f, 0.0f }, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
 
-	//reticleWorldTransform_.Initialize();
-	//reticleWorldTransform_.translation_.x = 3.0f;
-	//reticleWorldTransform_.parent_ = &worldTransform_;
+	/*reticleWorldTransform_.Initialize();
+	reticleWorldTransform_.translation_.x = 3.0f;
+	reticleWorldTransform_.parent_ = &worldTransform_;*/
 
 	//apex_ = new Model();
 	////apex_ = ModelManager::GetInstance()->CreateModel(obj, "apex");
@@ -404,9 +405,9 @@ void Player::Draw()
 	//raticle_->Draw(reticleWorldTransform_, TextureManager::GetInstance()->Load("uvChecker.png"));
 	//model_->Draw(worldTransform_, TextureManager::GetInstance()->Load("uvChecker.png"));
 	HitBox();
-	/*line_->Draw(worldTransform_.translation_, point_, { 0.0f, 0.0f, 0.0f, 1.0f });
-	reticle3D_->Draw(reticleWorldTransform_, TextureManager::GetInstance()->Load("pink1x1.png"));
-	if (isWire_) {
+	//line_->Draw(worldTransform_.translation_, point_, { 0.0f, 0.0f, 0.0f, 1.0f });
+	//reticle3D_->Draw(reticleWorldTransform_, TextureManager::GetInstance()->Load("pink1x1.png"));
+	/*if (isWire_) {
 		apex_->Draw(apexWorldTransform_, TextureManager::GetInstance()->Load("purple1x1.png"));
 	}*/
 	//reticle_->Draw();

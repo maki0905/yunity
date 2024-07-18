@@ -12,9 +12,9 @@ void Collider::CreateCollider(WorldTransform* worldTransform, Shape shape, Camer
 	switch (shape_)
 	{
 	case Collider::kSphere:
-		sphere_ = std::make_unique<Sphere>();
+		/*sphere_ = std::make_unique<Sphere>();
 		sphere_->center = { worldTransform_->matWorld_.m[3][0], worldTransform_->matWorld_.m[3][1], worldTransform_->matWorld_.m[3][2] };
-		sphere_->radius = 1.0f;
+		sphere_->radius = 1.0f;*/
 		HitBox_.reset(PrimitiveDrawer::Create(PrimitiveDrawer::Type::kSphere));
 		//sphere_. = { .center = {worldTransform_->matWorld_.m[3][0], worldTransform_->matWorld_.m[3][1], worldTransform_->matWorld_.m[3][2]}, .radius = {1.0f}};
 		//sphere_ = sphere
@@ -22,9 +22,9 @@ void Collider::CreateCollider(WorldTransform* worldTransform, Shape shape, Camer
 	case Collider::kPlane:
 		break;
 	case Collider::kAABB:
-		aabb_ = std::make_unique<AABB>();
+		/*aabb_ = std::make_unique<AABB>();
 		aabb_->min = Subtract(worldTransform_->translation_, Multiply(size_, worldTransform_->scale_));
-		aabb_->max = Add(worldTransform_->translation_, Multiply(size_, worldTransform_->scale_));
+		aabb_->max = Add(worldTransform_->translation_, Multiply(size_, worldTransform_->scale_));*/
 		HitBox_.reset(PrimitiveDrawer::Create(PrimitiveDrawer::Type::kBox));
 		//aabb_->min = 
 		break;
