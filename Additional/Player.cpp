@@ -333,30 +333,8 @@ void Player::Update()
 
 	camera_->SetTranslate({ GetMatWorldTranslation().x, GetMatWorldTranslation().y, camera_->GetTranslate().z });
 
-#ifdef _DEBUG
-	ImGui::Begin("Player");
-	ImGui::DragFloat3("translate", &worldTransform_.translation_.x);
-	ImGui::DragFloat("mass", &mass_);
-	ImGui::DragFloat("stiffness", &stiffness_);
-	ImGui::DragFloat("damping", &dampar_);
-	Vector3 velocity = GetVelocity();
-	ImGui::DragFloat3("velocity", &velocity.x);
-	if (ImGui::Button("reset")) {
-		isActive_ = false;
-
-	}
-
-	ImGui::End();
-
-#endif
-
-	/*if (Input::GetInstance()->TriggerKey(DIK_SPACE)) {
-		isWire_ ^= true;
-		point_ = Add(worldTransform_.translation_, { 5.0f, 0.0f, 0.0f });
-	}*/
-
 	if (!isWire_) {
-		point_ = worldTransform_.translation_;
+		apexWorldTransform_.translation_ = worldTransform_.translation_;
 	}
 	else {
 		AddForce(RubberMovement(GetMatWorldTranslation(), apexWorldTransform_.GetMatWorldTranslation(), limitLength_, stiffness_, dampar_), 0);
@@ -391,7 +369,23 @@ void Player::Update()
 
 	isHit_ = false;
 	isFloot_ = true;
-	//collisionBody_ = nullptr;
+
+#ifdef _DEBUG
+	ImGui::Begin("Player");
+	ImGui::DragFloat3("translate", &worldTransform_.translation_.x);
+	ImGui::DragFloat("mass", &mass_);
+	ImGui::DragFloat("stiffness", &stiffness_);
+	ImGui::DragFloat("damping", &dampar_);
+	Vector3 velocity = GetVelocity();
+	ImGui::DragFloat3("velocity", &velocity.x);
+	if (ImGui::Button("reset")) {
+		isActive_ = false;
+
+	}
+
+	ImGui::End();
+
+#endif
 }
 
 void Player::Draw()
