@@ -61,19 +61,11 @@ private:
 	DirectXCore(const DirectXCore&) = delete;
 	const DirectXCore& operator=(const DirectXCore&) = delete;
 private:
-
-	//Device* device_ = nullptr;
-	CommandList* commandList_;
-	//std::unique_ptr<CommandList> commandList_;
-	CommandQueue* commandQueue_;
-	//std::unique_ptr<CommandQueue> commandQueue_;
-	SwapChain* swapChain_;
-	//std::unique_ptr<SwapChain> swapChain_;
-	BackBuffer* backBuffer_;
-	//std::unique_ptr<BackBuffer> backBuffer_;
-	DepthBuffer* depthBuffer_;
-	//std::unique_ptr<DepthBuffer> depthBuffer_;
-	//ShaderCompiler* shaderCompiler_ = nullptr;
+	std::unique_ptr<CommandList> commandList_;
+	std::unique_ptr<CommandQueue> commandQueue_;
+	std::unique_ptr<SwapChain> swapChain_;
+	std::unique_ptr<BackBuffer> backBuffer_;
+	std::unique_ptr<DepthBuffer> depthBuffer_;
 
 	UINT windowWidth_;
 	UINT windowHeight_;
@@ -81,10 +73,5 @@ private:
 	std::unique_ptr<DescriptorHeap> descriptorHeaps_[static_cast<int>(HeapType::kCount)];
 
 	std::chrono::steady_clock::time_point reference_;
-
-	//ImGuiManager* imguiManager_ = nullptr;
-	//RenderTexture* renderTexture_ = nullptr;
-	//GraphicsPipelineManager* graphicsPipelineManager_;
-	
 };
 

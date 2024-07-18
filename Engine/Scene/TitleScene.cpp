@@ -16,12 +16,14 @@ void TitleScene::Initialize()
 
 	model_ = std::make_unique<Model>();
 	model_.reset(ModelManager::GetInstance()->CreateModel(obj, "terrain"));
+	//model_ = std::make_unique<Model>();
+	//ModelManager::GetInstance()->CreateModel(obj, "terrain");
 	model_->SetCamera(camera_/*camera_.get()*/);
 	model_->SetLighting(false);
 	RenderTexture::GetInstance()->SelectPostEffect(PostEffects::kGrayscale, true);
 	RenderTexture::GetInstance()->SelectPostEffect(PostEffects::kVignetting, true);
 	RenderTexture::GetInstance()->SelectPostEffect(PostEffects::kOutline, true);
-	//RenderTexture::GetInstance()->SelectPostEffect(PostEffects::kRadialBlur, true);
+	RenderTexture::GetInstance()->SelectPostEffect(PostEffects::kRadialBlur, true);
 	/*RenderTexture::GetInstance()->postEffectFlag_[static_cast<uint32_t>(PostEffects::kGrayscale)] = true;
 	RenderTexture::GetInstance()->postEffectFlag_[static_cast<uint32_t>(PostEffects::kVignetting)] = true;
 	RenderTexture::GetInstance()->postEffectFlag_[static_cast<uint32_t>(PostEffects::kOutline)] = true;

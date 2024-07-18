@@ -8,17 +8,8 @@
 #pragma comment(lib, "d3d12.lib")
 #pragma comment(lib, "dxgi.lib")
 
-void SwapChain::Create()
-{
-	//CreateSwapChain();
-	CreateFactory();
-}
 
-void SwapChain::CreateFactory()
-{
-}
-
-void SwapChain::CreateSwapChain(ID3D12CommandQueue* commandQueue)
+void SwapChain::Create(ID3D12CommandQueue* commandQueue)
 {
 	HRESULT result = S_FALSE;
 

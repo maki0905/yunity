@@ -6,19 +6,6 @@
 
 #pragma comment(lib, "d3d12")
 
-void CommandQueue::Finalize()
-{
-	if (commandQueue_) {
-		commandQueue_->Release();
-		commandQueue_ = nullptr;
-	}
-	if (fence_) {
-		fence_->Release();
-		fence_ = nullptr;
-	}
-
-}
-
 void CommandQueue::Create()
 {
 	HRESULT result = S_FALSE;

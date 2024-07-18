@@ -25,16 +25,18 @@ class ModelManager {
 	};
 public:
 	//static Model::ModelData* Load(const std::string& fileName, const std::string format);
-
 	static ModelManager* GetInstance();
 
 	void Initialize();
+
+	void Finalize();
 
 	void Update();
 
 	void Reset();
 
 	Model* CreateModel(Format format, const std::string& folderName, const std::string& fileName = "", ModelType modelType = kRigid);
+	//std::unique_ptr<Model> CreateModel(Format format, const std::string& folderName, const std::string& fileName = "", ModelType modelType = kRigid);
 	Model::ModelData& GetModelData(const std::string& modelName);
 	Animation GetAnimation(Format format, const std::string& folderName, const std::string& fileName = "");
 
@@ -53,6 +55,6 @@ private:
 	//std::unordered_map<std::string, Model::ModelData> models_;
 	std::unordered_map<std::string, Model::ModelData> modelDataStorage_;
 	std::unordered_map<std::string, Animation> animationDataStorage_;
-	//std::list<Model*> models_;
+	//std::vector<Model*> models_;
 	std::vector<Model*> models_;
 };

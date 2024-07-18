@@ -15,9 +15,24 @@ void ObjectManager::Initialize()
 	objects_.clear();
 }
 
+void ObjectManager::Update(const std::string& fileName)
+{
+	for (auto& object : objects_[fileName]) {
+		object->Update();
+	}
+}
+
+void ObjectManager::Draw(const std::string& fileName)
+{
+	for (auto& object : objects_[fileName]) {
+		object->Draw();
+	}
+}
+
 void ObjectManager::Load(const std::string& fileName, Camera* camera, World* world)
 {
-	LevelData* levelData = LevelEditor::GetInstance()->LoadFile(fileName);
+	std::unique_ptr<LevelData> levelData = std::make_unique<LevelData>();
+	levelData.reset(LevelEditor::GetInstance()->LoadFile(fileName));
 
 	for (auto& object : levelData->objects) {
 		if (object.fileName == "startBox") {
@@ -25,6 +40,20 @@ void ObjectManager::Load(const std::string& fileName, Camera* camera, World* wor
 			model = ModelManager::GetInstance()->CreateModel(obj, object.fileName);
 			model->SetCamera(camera);
 
+		//std::unique_ptr<Object3D> newObject = std::make_unique<Object3D>();
+		Object3D* newObject = new Object3D();
+		newObject->SetPosition(object.translation);
+		newObject->SetRotation(object.rotation);
+		newObject->SetScale(object.scaling);
+		newObject->SetSize(object.size);
+		newObject->SetCenter(object.center);
+		newObject->SetIsTrigger(object.isTrigger);
+		newObject->Initialize(ModelManager::GetInstance()->CreateModel(obj, object.fileName), world, object.shape);
+		newObject->SetCamera(camera);
+		world->Add(newObject);
+		objects_[fileName].emplace_back(newObject);
+	}
+}
 			MoveFloor* newObject = new MoveFloor();
 			newObject->SetPosition(object.translation);
 			newObject->SetRotation(object.rotation);
@@ -56,13 +85,13 @@ void ObjectManager::Load(const std::string& fileName, Camera* camera, World* wor
 	}
 }
 
-std::vector<Object3D*> ObjectManager::GetObjects(const std::string& fileName)
-{
-	return objects_[fileName];
-}
+//std::vector<std::unique_ptr<Object3D>> ObjectManager::GetObjects(const std::string& fileName)
+//{
+//	return std::move(objects_[fileName]);
+//}
 
 Vector3 ObjectManager::GetPos(const std::string& fileName, const std::string& modelName) {
-	Vector3 result;
+	Vector3 result = { 0.0f, 0.0f, 0.0f };
 	for (auto& obj : objects_[fileName]) {
 		if (obj->GetModel()->GetModelName() == modelName) {
 			result = obj->GetTranslation();

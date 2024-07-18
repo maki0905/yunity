@@ -101,7 +101,7 @@ private:
 	/// </summary>
 	/// <param name="sizeInBytes"></param>
 	/// <returns>サイズ</returns>
-	ID3D12Resource* CreateBufferResource(size_t sizeInBytes);
+	//ID3D12Resource* CreateBufferResource(size_t sizeInBytes);
 
 private:
 	static ID3D12GraphicsCommandList* commandList_;

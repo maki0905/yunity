@@ -2,14 +2,9 @@
 
 #ifdef _DEBUG
 #include <d3d12.h>
-//#include "externals/imgui/imgui.h"
 #include "imgui.h"
 #include <wrl.h>
 #endif // _DEBUG
-
-class WindowsAPI;
-class DirectXCore;
-class DescriptorHeap;
 
 class ImGuiManager
 {
@@ -43,10 +38,6 @@ public:
 	
 private:
 #ifdef _DEBUG
-	// DirectX基盤インスタンス
-	DirectXCore* directXCore_ = nullptr;
-	// SRV用ヒープ
-	DescriptorHeap* srvHeap_;
 #endif // _DEBUG
 
 private:

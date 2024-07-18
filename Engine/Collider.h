@@ -32,6 +32,7 @@ public:
 	void CreateCollider(WorldTransform* worldTransform, Shape shape, Camera* camera, const Vector3& size);
 
 	void HitBox();
+	void HitBox(Camera* camera);
 
 	WorldTransform GetWorldTransform() { return *worldTransform_; }
 	Vector3 GetColliderSize() { return size_; }

@@ -248,6 +248,9 @@ void Sprite::Finalize()
 	if (pipelineState_) {
 		delete pipelineState_;
 	}
+	if (commandList_) {
+		commandList_->Release();
+	}
 }
 
 

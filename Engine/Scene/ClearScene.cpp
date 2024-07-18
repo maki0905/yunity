@@ -5,55 +5,55 @@
 
 void ClearScene::Initialize()
 {
-	camera_ = std::make_unique<Camera>();
-	debugCamera_ = std::make_unique<DebugCamera>();
-	isDebug_ = false;
+	//camera_ = std::make_unique<Camera>();
+	//debugCamera_ = std::make_unique<DebugCamera>();
+	//isDebug_ = false;
 
-	model0_ = std::make_unique<Model>();
-	//model0_.reset(Model::Create("terrain", "obj"));
-	//model0_.reset(Model::Create("plane", "gltf"));
-	//model0_.reset(ModelManager::GetInstance()->CreateModel(gltf, true, "simpleSkin"));
-	model0_.reset(ModelManager::GetInstance()->CreateModel(gltf, "human", "sneakWalk", ModelType::kSkin));
-	model0_->SetCamera(camera_.get());
-	worldTransform0_.Initialize();
-	worldTransform0_.scale_ = Vector3(10.0f, 10.0f, 10.0f);
-	worldTransform0_.translation_ = { 10.0f, 0.0f, 0.0f };
-	worldTransform0_.quaternion_ = { 0.0f, 1.0f, 0.0f, 0.0f };
+	//model0_ = std::make_unique<Model>();
+	////model0_.reset(Model::Create("terrain", "obj"));
+	////model0_.reset(Model::Create("plane", "gltf"));
+	////model0_.reset(ModelManager::GetInstance()->CreateModel(gltf, true, "simpleSkin"));
+	//model0_.reset(ModelManager::GetInstance()->CreateModel(gltf, "human", "sneakWalk", ModelType::kSkin));
+	//model0_->SetCamera(camera_.get());
+	//worldTransform0_.Initialize();
+	//worldTransform0_.scale_ = Vector3(10.0f, 10.0f, 10.0f);
+	//worldTransform0_.translation_ = { 10.0f, 0.0f, 0.0f };
+	//worldTransform0_.quaternion_ = { 0.0f, 1.0f, 0.0f, 0.0f };
 
-	model0_->SetAnimation("walk", ModelManager::GetInstance()->GetAnimation(gltf, "human", "walk"), AnimationCommon::kLooping);
-	model0_->SetAnimation("sneakWalk", ModelManager::GetInstance()->GetAnimation(gltf, "human", "sneakWalk"), AnimationCommon::kLooping);
+	//model0_->SetAnimation("walk", ModelManager::GetInstance()->GetAnimation(gltf, "human", "walk"), AnimationCommon::kLooping);
+	//model0_->SetAnimation("sneakWalk", ModelManager::GetInstance()->GetAnimation(gltf, "human", "sneakWalk"), AnimationCommon::kLooping);
 
-	model1_ = std::make_unique<Model>();
-	model1_.reset(ModelManager::GetInstance()->CreateModel(gltf, "human", "walk", ModelType::kSkin));
-	model1_->SetCamera(camera_.get());
-	worldTransform1_.Initialize();
-	worldTransform1_.scale_ = Vector3(10.0f, 10.0f, 10.0f);
-	worldTransform1_.translation_ = { -10.0f, 0.0f, 0.0f };
-	worldTransform1_.quaternion_ = { 0.0f, 1.0f, 0.0f, 0.0f };
+	//model1_ = std::make_unique<Model>();
+	//model1_.reset(ModelManager::GetInstance()->CreateModel(gltf, "human", "walk", ModelType::kSkin));
+	//model1_->SetCamera(camera_.get());
+	//worldTransform1_.Initialize();
+	//worldTransform1_.scale_ = Vector3(10.0f, 10.0f, 10.0f);
+	//worldTransform1_.translation_ = { -10.0f, 0.0f, 0.0f };
+	//worldTransform1_.quaternion_ = { 0.0f, 1.0f, 0.0f, 0.0f };
 
-	model2_ = std::make_unique<Model>();
-	model2_.reset(ModelManager::GetInstance()->CreateModel(obj, "needle_Body"));
-	model2_->SetCamera(camera_.get());
-	worldTransform2_.Initialize();
-	worldTransform2_.scale_ = { 100.0f, 100.0f, 100.0f };
+	//model2_ = std::make_unique<Model>();
+	//model2_.reset(ModelManager::GetInstance()->CreateModel(obj, "needle_Body"));
+	//model2_->SetCamera(camera_.get());
+	//worldTransform2_.Initialize();
+	//worldTransform2_.scale_ = { 100.0f, 100.0f, 100.0f };
 
-	uint32_t handle = TextureManager::GetInstance()->Load("rostock_laage_airport_4k.dds");
-	//worldTransform2_.scale_ = { 10.0f, 10.0f, 10.0f };
+	//uint32_t handle = TextureManager::GetInstance()->Load("rostock_laage_airport_4k.dds");
+	////worldTransform2_.scale_ = { 10.0f, 10.0f, 10.0f };
 
-	skybox_ = std::make_unique<SkyBox>();
-	skybox_.reset(SkyBox::Create());
-	skybox_->SetCamera(camera_.get());
-	skybox_->SetTexture("rostock_laage_airport_4k.dds");
+	//skybox_ = std::make_unique<SkyBox>();
+	//skybox_.reset(SkyBox::Create());
+	//skybox_->SetCamera(camera_.get());
+	//skybox_->SetTexture("rostock_laage_airport_4k.dds");
 
-	world_ = std::make_unique<World>();
-	world_->Initialize();
+	//world_ = std::make_unique<World>();
+	//world_->Initialize();
 
 
-	player_ = std::make_unique<Player>();
-	player_->Initialize(camera_.get(), world_.get());
+	//player_ = std::make_unique<Player>();
+	//player_->Initialize(camera_.get(), world_.get());
 
-	objects_.clear();
-	LevelData* levelData = LevelEditor::GetInstance()->LoadFile("stage");
+	//objects_.clear();
+	//LevelData* levelData = LevelEditor::GetInstance()->LoadFile("stage");
 	
 	// レベルデータからオブジェクトを生成、配置
 	//for (auto& objectData : levelData->objects) {

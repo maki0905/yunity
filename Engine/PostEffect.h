@@ -41,6 +41,7 @@ public:
 	static void InitializeGraphicsPipeline();
 public:
 	void Initalize();
+	void Finalize();
 	void SetGraphicsRootSignature(uint32_t index);
 	void SetPipelineState(uint32_t index);
 	void CRTV(uint32_t index);

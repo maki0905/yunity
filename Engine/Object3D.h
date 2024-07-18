@@ -7,8 +7,12 @@
 
 class Object3D : public Body{
 public:
+	~Object3D() {
+		models_.clear();
+	}
 	void Initialize(Model* model, World* world, Collider::Shape shape);
 	void Initialize(World* world, Collider::Shape shape);
+	//void Initialize(std::unique_ptr<Model> model, World* world, Collider::Shape shape);
 	virtual void Update();
 	virtual void Draw();
 
@@ -21,22 +25,26 @@ public:
 	void SetScale(const Vector3& scale) { worldTransform_.scale_ = scale; }
 	void SetSize(const Vector3& size) { size_ = size; }
 	void SetCenter(const Vector3& center) { center_ = center; }
-	void SetCamera(Camera* camera) { camera_ = camera; }
+	void SetCamera(Camera* camera) { 
+		camera_ = camera; 
+		model_->SetCamera(camera);
+	}
 	Vector3 GetSize() { return size_; }
 	Vector3 GetCenter() { return center_; }
 	Vector3 GetTranslation() { return worldTransform_.translation_; }
 
 	Model* GetModel() { return model_.get(); }
-	Model* GetModel(const std::string& modelName) { return models_[modelName]; }
+	Model* GetModel(const std::string& modelName) { return models_[modelName].get(); }
 	void SetModel(const std::string& modelName, Model* model);
 
 protected:
 	WorldTransform worldTransform_;
-	std::map<std::string, Model*> models_;
+	std::unordered_map<std::string, std::unique_ptr<Model>> models_;
 	Camera* camera_;
 private:
 	//Camera* camera_;
-	std::unique_ptr<Model>model_;
+	std::unique_ptr<Model> model_;
+	//Model* model_;
 	//std::map<std::string, Model*> models_;
 	//WorldTransform worldTransform_;
 	Vector3 size_;

@@ -13,16 +13,8 @@
 #include "GraphicsPipelineManager.h"
 #include "RootBindingsCommon.h"
 
-ID3D12Device* Model::device_ = nullptr;
 ID3D12GraphicsCommandList* Model::commandList_ = nullptr;
-RootSignature* Model::rootSignature_ = nullptr;
-PipelineState* Model::pipelineState_ = nullptr;
 
-
-void Model::StaticInitialize()
-{
-	device_ = Device::GetInstance()->GetDevice();
-}
 
 void Model::PreDraw(ID3D12GraphicsCommandList* commandList)
 {
@@ -65,9 +57,33 @@ void Model::Initialize(const std::string& name, const ModelType& modelType, cons
 	}
 }
 
+void Model::Finalize()
+{
+	/*if (commandList_) {
+		commandList_->Release();
+		commandList_ = nullptr;
+	}*/
+
+	//// リソースの解放処理
+	//vertexResource_.Reset();
+	//indexResource_.Reset();
+	//directionalLightResource_.Reset();
+	//materialResource_.Reset();
+	//pointLightResource_.Reset();
+	//nodeResource_.Reset();
+
+	// その他の動的に割り当てたメモリの解放
+	/*vertexData_ = nullptr;
+	mappedIndex_ = nullptr;
+	directionalLightData_ = nullptr;
+	materialData_ = nullptr;
+	pointLightData_ = nullptr;
+	nodeData_ = nullptr;*/
+
+}
+
 void Model::Draw(const WorldTransform& worldTransform, uint32_t textureHandle)
 {
-	assert(device_);
 	assert(commandList_);
 	assert(worldTransform.constBuff_.Get());
 
@@ -120,7 +136,6 @@ void Model::Draw(const WorldTransform& worldTransform, uint32_t textureHandle)
 
 void Model::Draw(const WorldTransform& worldTransform/*, const Camera& camera*/)
 {
-	assert(device_);
 	assert(commandList_);
 	assert(worldTransform.constBuff_.Get());
 
@@ -143,7 +158,7 @@ void Model::Draw(const WorldTransform& worldTransform/*, const Camera& camera*/)
 		TextureManager::GetInstance()->SetGraphicsRootDescriptorTable(commandList_, static_cast<UINT>(SkinningRootBindings::kEnvironmentMap), textureCubeHandle_);
 	}
 	else {
-		GraphicsPipelineManager::GetInstance()->SetCommandList(commandList_, PipelineType::kObject3d,blendModeType_);
+		GraphicsPipelineManager::GetInstance()->SetCommandList(commandList_, PipelineType::kObject3d, blendModeType_);
 		commandList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		// 頂点バッファの設定
 		commandList_->IASetVertexBuffers(0, 1, &vertexBufferView_);
@@ -453,6 +468,7 @@ void Model::CreateMesh()
 	// 頂点リソースにデータを書き込む
 	vertexResource_->Map(0, nullptr, (void**)&vertexData_); // 書き込むためのアドレスを取得
 	std::memcpy(vertexData_, modelData_.vertices.data(), sizeof(VertexData) * modelData_.vertices.size()); // 頂点データをリソースにコピー
+	vertexResource_->Unmap(0, nullptr);
 }
 
 void Model::CreateIndex()
@@ -511,7 +527,7 @@ void Model::InitializeNode()
 }
 
 
-ID3D12Resource* Model::CreateBufferResource(size_t sizeInBytes)
+Microsoft::WRL::ComPtr<ID3D12Resource> Model::CreateBufferResource(size_t sizeInBytes)
 {
 	HRESULT result = S_FALSE;
 	// リソース用のヒープの設定
@@ -528,7 +544,7 @@ ID3D12Resource* Model::CreateBufferResource(size_t sizeInBytes)
 	ResourceDesc.SampleDesc.Count = 1;
 	ResourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
 	// リソースを作る
-	ID3D12Resource* resource = nullptr;
+	Microsoft::WRL::ComPtr<ID3D12Resource> resource = nullptr;
 	result = Device::GetInstance()->GetDevice()->CreateCommittedResource(&uploadHeapProperties, D3D12_HEAP_FLAG_NONE,
 		&ResourceDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(&resource));
 	assert(SUCCEEDED(result));

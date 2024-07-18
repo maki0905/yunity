@@ -115,6 +115,9 @@ void SkyBox::Finalize()
 	if (pipelineState_) {
 		delete pipelineState_;
 	}
+	if (commandList_) {
+		commandList_->Release();
+	}
 }
 
 void SkyBox::Draw(const WorldTransform& worldTransform)

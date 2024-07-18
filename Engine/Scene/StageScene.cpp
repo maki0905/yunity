@@ -59,7 +59,7 @@ void StageScene::Initialize()
 	skybox_->SetTexture("rostock_laage_airport_4k.dds");
 
 	world_ = std::make_unique<World>();
-	world_->Initialize({0.0f, -9.8f, 0.0f});
+	world_->Initialize({0.0f, 0.0f, 0.0f});
 	//world_->Initialize();
 
 	player_ = std::make_unique<Player>();
@@ -116,12 +116,10 @@ void StageScene::Update()
 
 
 	player_->Update();
-	for (auto& object : ObjectManager::GetInstance()->GetObjects(stageName_)) {
-		object->Update();
-	}
-	/*for (auto& object : ObjectManager::GetInstance()->GetObjects("TL1")) {
-		object->Update();
-	}*/
+	ObjectManager::GetInstance()->Update(stageName_);
+	///*for (auto& object : ObjectManager::GetInstance()->GetObjects("TL1")) {
+	//	object->Update();
+	//}*/
 	world_->Solve();
 
 	skyboxWorldTransform_.UpdateMatrix();
@@ -168,12 +166,10 @@ void StageScene::Draw3D()
 	/*start_->Draw(startWT_);
 	end_->Draw(endWT_);*/
 	skydome_->Draw();
-	for (auto& object : ObjectManager::GetInstance()->GetObjects(stageName_)) {
-		object->Draw();
-	}
-	/*for (auto& object : ObjectManager::GetInstance()->GetObjects("TL1")) {
-		object->Draw();
-	}*/
+	ObjectManager::GetInstance()->Draw(stageName_);
+	///*for (auto& object : ObjectManager::GetInstance()->GetObjects("TL1")) {
+	//	object->Draw();
+	//}*/
 	player_->Draw();
 	
 
