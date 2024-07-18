@@ -11,7 +11,7 @@ void Player::Initialize(Camera* camera, World* world)
 	worldTransform_.rotateType_ = RotationType::Quaternion;
 	worldTransform_.translation_.y = 3.0f;
 	SetMass(2.0f);
-	SetFirictionCombine(FrictionCombine::kAverage);
+	SetFirictionCombine(FrictionCombine::kNone);
 	SetMiu(0.3f);
 	SetBounceCombine(BounceCombine::kNone);
 	SetBounciness(0.8f);
@@ -59,7 +59,7 @@ void Player::Initialize(Camera* camera, World* world)
 	onReticle_ = TextureManager::GetInstance()->Load("onReticle.png");
 	offReticle_ = TextureManager::GetInstance()->Load("offReticle.png");
 	reticle_ = std::make_unique<Sprite>();
-	reticle_.reset(Sprite::Create(offReticle_, { 0.0f, 0.0f }, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
+	reticle_.reset(Sprite::Create(offReticle_, { 0.0f, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.5f, 0.5f }));
 
 	reticleWorldTransform_.Initialize();
 	reticleWorldTransform_.translation_.x = 3.0f;
@@ -201,7 +201,7 @@ void Player::Update()
 
 	/*if (Input::GetInstance()->TriggerKey(DIK_UP)) {
 		AddForce({ 0.0f, 15.0f, 0.0f }, 1);
-		
+
 	}
 	if (Input::GetInstance()->PushKey(DIK_RIGHT)) {
 		worldTransform_.translation_.x += 0.1f;
@@ -247,7 +247,7 @@ void Player::Update()
 		if (Input::GetInstance()->GetJoystickState(0, pad_)) {
 
 			// プレイヤーの動き
-			const float threshold = 0.7f; 
+			const float threshold = 0.7f;
 			bool isMoving = false;
 			// 速さ
 			float speed = 0.3f;
@@ -256,7 +256,7 @@ void Player::Update()
 			}
 
 			// 移動量
-			move = { (float)pad_.Gamepad.sThumbLX, 0,0};
+			move = { (float)pad_.Gamepad.sThumbLX, 0,0 };
 
 			if (Length(move) > threshold) {
 				isMoving = true;
@@ -327,7 +327,7 @@ void Player::Update()
 		reticleWorldTransform_.translation_ = Multiply(limitLength_, dir);
 	}
 
-	camera_->SetTranslate({worldTransform_.translation_.x, worldTransform_.translation_.y, camera_->GetTranslate().z});
+	camera_->SetTranslate({ GetMatWorldTranslation().x, GetMatWorldTranslation().y, camera_->GetTranslate().z });
 
 #ifdef _DEBUG
 	ImGui::Begin("Player");
@@ -344,31 +344,13 @@ void Player::Update()
 	}
 
 	ImGui::End();
-	
-#endif
 
-	isHit_ = false;
+#endif
 
 	/*if (Input::GetInstance()->TriggerKey(DIK_SPACE)) {
 		isWire_ ^= true;
 		point_ = Add(worldTransform_.translation_, { 5.0f, 0.0f, 0.0f });
 	}*/
-
-	if (Input::GetInstance()->TriggerKey(DIK_R)) {
-		Vector3 direction = Subtract({ reticleWorldTransform_.matWorld_.m[3][0], reticleWorldTransform_.matWorld_.m[3][1], reticleWorldTransform_.matWorld_.m[3][2] }, worldTransform_.translation_);
-		direction.Normalize();
-		RayCastHit hit;
-		if (RayCast(worldTransform_.translation_, direction, &hit, 10.0f, GetWorld(), kCollisionAttributePlayer)) {
-			isWire_ = true;
-			//point_ = hit.collider->GetTranslation();
-			point_ = hit.point;
-			apexWorldTransform_.translation_ = point_;
-		}
-		else {
-			isWire_ = false;
-		}
-
-	}
 
 	if (!isWire_) {
 		point_ = worldTransform_.translation_;
@@ -388,17 +370,25 @@ void Player::Update()
 	}
 
 	if (isMoving_) {
-		if (collisionBody_) {
-			if (collisionBody_->GetCollisionAttribute() != kCollisionAttributeMoveFloor) {
+		if (worldTransform_.parent_) {
+			if (!isHit_) {
+				worldTransform_.translation_ = Add(worldTransform_.translation_, worldTransform_.parent_->GetMatWorldTranslation());
 				worldTransform_.parent_ = nullptr;
-				worldTransform_.translation_ = Add(worldTransform_.translation_, collisionBody_->GetMatWorldTranslation());
 				isMoving_ = false;
+			}
+			else if (collisionBody_) {
+				if (collisionBody_->GetCollisionAttribute() != kCollisionAttributeMoveFloor) {
+					worldTransform_.translation_ = Add(worldTransform_.translation_, worldTransform_.parent_->GetMatWorldTranslation());
+					worldTransform_.parent_ = nullptr;
+					isMoving_ = false;
+				}
 			}
 		}
 	}
 
-
+	isHit_ = false;
 	isFloot_ = true;
+	//collisionBody_ = nullptr;
 }
 
 void Player::Draw()
@@ -441,30 +431,35 @@ void Player::OnCollisionEvent(Body* body)
 		}
 	}
 
-	if (body->GetCollisionAttribute() == kCollisionAttributeMoveFloor && !isMoving_) {
+	if (body->GetCollisionAttribute() == kCollisionAttributeMoveFloor) {
 		AABB aabb = GetAABB();
 		AABB other = body->GetAABB();
 		if (aabb.min.y >= other.max.y) {
 			if (aabb.min.x < other.max.x && aabb.max.x > other.min.x) {
-				worldTransform_.parent_ = collisionBody_->GetWorldTransform();
-				worldTransform_.translation_ = Subtract(worldTransform_.translation_, collisionBody_->GetMatWorldTranslation());
-				isMoving_ = true;
+				if (worldTransform_.parent_ == nullptr) {
+					worldTransform_.parent_ = body->GetWorldTransform();
+					worldTransform_.translation_ = Subtract(worldTransform_.translation_, body->GetMatWorldTranslation());
+					isMoving_ = true;
+				}
 			}
 
 		}
 	}
 
-
-	if (GetVertical().y > 0.0f) {
+	if (GetNormalVector().y > 0.0f) {
+		isJunp_ = false;
+		//isFloot_ = false;
+	}
+	/*if (GetVertical().y > 0.0f) {
 		isJunp_ = false;
 		isFloot_ = false;
-	}
+	}*/
 
 #ifdef _DEBUG
 	ImGui::Begin("Player");
 	ImGui::Text("Hit");
 	ImGui::End();
-	
+
 #endif
 	isHit_ = true;
 

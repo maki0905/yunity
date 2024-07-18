@@ -62,5 +62,7 @@ struct WorldTransform {
 	/// 定数バッファに転送する
 	/// </summary>
 	void TransferMatrix();
+
+	Vector3 GetMatWorldTranslation() { return { matWorld_.m[3][0], matWorld_.m[3][1], matWorld_.m[3][2] }; }
 };
 

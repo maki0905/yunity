@@ -68,6 +68,8 @@ public:
 	void SetBounciness(float bounciness) { bounciness_ = bounciness; }
 	void SetBounceCombine(BounceCombine bounceCombine) { bounceCombine_ = bounceCombine; }
 
+	Vector3 GetNormalVector() { return normalVector_; }
+
 private:
 
 	World* world_;

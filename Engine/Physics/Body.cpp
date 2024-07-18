@@ -140,7 +140,7 @@ void Body::OnCollision(Body* body)
 		AABB a = { Subtract(GetMatWorldTranslation(), GetHitBoxSize()), Add(GetMatWorldTranslation(), GetHitBoxSize())};
 		AABB b = { Subtract(body->GetMatWorldTranslation(), body->GetHitBoxSize()), Add(body->GetMatWorldTranslation(), body->GetHitBoxSize()) };
 		Vector3 pushBack = GetPushback(a, b);
-		worldTransform_->translation_ = Add(pushBack, GetMatWorldTranslation());
+		worldTransform_->translation_ = Add(pushBack, worldTransform_->translation_);
 		//worldTransform_->UpdateMatrix();
 
 		float miu = 0.0f;

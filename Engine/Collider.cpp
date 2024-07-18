@@ -162,7 +162,7 @@ void Collider::HitBox()
 	//worldTransform_HitBox_.scale_ = Multiply(2.5f, worldTransform_->scale_);
 	worldTransform_HitBox_.scale_ = Multiply(size_, worldTransform_->scale_);
 	worldTransform_HitBox_.rotation_ = worldTransform_->rotation_;
-	worldTransform_HitBox_.translation_ = worldTransform_->translation_;
+	worldTransform_HitBox_.translation_ = { worldTransform_->matWorld_.m[3][0], worldTransform_->matWorld_.m[3][1], worldTransform_->matWorld_.m[3][2] };
 	worldTransform_HitBox_.UpdateMatrix();
 
 	HitBox_->Draw(worldTransform_HitBox_);
