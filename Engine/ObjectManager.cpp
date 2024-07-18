@@ -36,24 +36,7 @@ void ObjectManager::Load(const std::string& fileName, Camera* camera, World* wor
 
 	for (auto& object : levelData->objects) {
 		if (object.fileName == "startBox") {
-			Model* model = nullptr;
-			model = ModelManager::GetInstance()->CreateModel(obj, object.fileName);
-			model->SetCamera(camera);
 
-		//std::unique_ptr<Object3D> newObject = std::make_unique<Object3D>();
-		Object3D* newObject = new Object3D();
-		newObject->SetPosition(object.translation);
-		newObject->SetRotation(object.rotation);
-		newObject->SetScale(object.scaling);
-		newObject->SetSize(object.size);
-		newObject->SetCenter(object.center);
-		newObject->SetIsTrigger(object.isTrigger);
-		newObject->Initialize(ModelManager::GetInstance()->CreateModel(obj, object.fileName), world, object.shape);
-		newObject->SetCamera(camera);
-		world->Add(newObject);
-		objects_[fileName].emplace_back(newObject);
-	}
-}
 			MoveFloor* newObject = new MoveFloor();
 			newObject->SetPosition(object.translation);
 			newObject->SetRotation(object.rotation);
@@ -61,16 +44,13 @@ void ObjectManager::Load(const std::string& fileName, Camera* camera, World* wor
 			newObject->SetSize(object.size);
 			newObject->SetCenter(object.center);
 			newObject->SetIsTrigger(object.isTrigger);
-			newObject->Initialize(model, world, object.shape);
+			newObject->Initialize(ModelManager::GetInstance()->CreateModel(obj, object.fileName), world, object.shape);
+			newObject->SetCamera(camera);
 			world->Add(newObject);
-			objects_[fileName].push_back(newObject);
+			objects_[fileName].emplace_back(newObject);
 
 		}
 		else {
-			Model* model = nullptr;
-			model = ModelManager::GetInstance()->CreateModel(obj, object.fileName);
-			model->SetCamera(camera);
-
 			Object3D* newObject = new Object3D();
 			newObject->SetPosition(object.translation);
 			newObject->SetRotation(object.rotation);
@@ -78,9 +58,10 @@ void ObjectManager::Load(const std::string& fileName, Camera* camera, World* wor
 			newObject->SetSize(object.size);
 			newObject->SetCenter(object.center);
 			newObject->SetIsTrigger(object.isTrigger);
-			newObject->Initialize(model, world, object.shape);
+			newObject->Initialize(ModelManager::GetInstance()->CreateModel(obj, object.fileName), world, object.shape);
+			newObject->SetCamera(camera);
 			world->Add(newObject);
-			objects_[fileName].push_back(newObject);
+			objects_[fileName].emplace_back(newObject);
 		}
 	}
 }
