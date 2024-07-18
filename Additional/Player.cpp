@@ -11,10 +11,10 @@ void Player::Initialize(Camera* camera, World* world)
 	worldTransform_.rotateType_ = RotationType::Quaternion;
 	worldTransform_.translation_.y = 3.0f;
 	SetMass(2.0f);
-	SetFirictionCombine(FrictionCombine::kNone);
+	SetFirictionCombine(FrictionCombine::kAverage);
 	SetMiu(0.3f);
-	SetBounceCombine(BounceCombine::kNone);
-	SetBounciness(0.8f);
+	SetBounceCombine(BounceCombine::kAverage);
+	SetBounciness(0.5f);
 	/*worldTransform_.Initialize(RotationType::Quaternion);
 	worldTransform_.translation_.y = 3.0f;*/
 	models_["player"] = std::make_unique<Model>();
@@ -250,8 +250,8 @@ void Player::Update()
 			const float threshold = 0.7f;
 			bool isMoving = false;
 			// 速さ
-			float speed = 2.0f;
-			if (isFloot_) {
+			float speed = 0.5f;
+			if (!isHit_) {
 				speed = 0.1f;
 			}
 
@@ -342,8 +342,7 @@ void Player::Update()
 	Vector3 velocity = GetVelocity();
 	ImGui::DragFloat3("velocity", &velocity.x);
 	if (ImGui::Button("reset")) {
-		Reset();
-		worldTransform_.translation_ = { 0.0f, 0.0f, 0.0f };
+		isActive_ = false;
 
 	}
 
@@ -360,7 +359,7 @@ void Player::Update()
 		point_ = worldTransform_.translation_;
 	}
 	else {
-		AddForce(RubberMovement(worldTransform_.translation_, apexWorldTransform_.GetMatWorldTranslation(), limitLength_, stiffness_, dampar_), 0);
+		AddForce(RubberMovement(GetMatWorldTranslation(), apexWorldTransform_.GetMatWorldTranslation(), limitLength_, stiffness_, dampar_), 0);
 	}
 
 	reticleWorldTransform_.UpdateMatrix();
