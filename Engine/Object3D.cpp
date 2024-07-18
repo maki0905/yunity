@@ -29,7 +29,7 @@ void Object3D::Initialize(Model* model, World* world, Collider::Shape shape)
 	model_.reset(model);
 	worldTransform_.Initialize();
 	CreateBody(world, &worldTransform_, 0.0f);
-	CreateCollider(&worldTransform_, shape, model_->GetCamera(), size_);
+	CreateCollider(&worldTransform_, shape, CameraManager::GetInstance()->GetCamera(), size_);
 
 	if (model_->GetModelName() == "Trampoline") {
 		SetCollisionAttribute(kCollisionAttributeTrampoline);

@@ -35,7 +35,7 @@ void ObjectManager::Load(const std::string& fileName, Camera* camera, World* wor
 	levelData.reset(LevelEditor::GetInstance()->LoadFile(fileName));
 
 	for (auto& object : levelData->objects) {
-		if (object.fileName == "startBox") {
+		if (object.fileName == "MoveFloor") {
 
 			MoveFloor* newObject = new MoveFloor();
 			newObject->SetPosition(object.translation);
