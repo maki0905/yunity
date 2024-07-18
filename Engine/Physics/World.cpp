@@ -19,6 +19,7 @@ void World::Solve()
 		std::chrono::duration<float> deltaTime = currentTime - lastTime_;
 		deltaTime_ = deltaTime.count();
 		lastTime_ = currentTime;
+		deltaTime_ = 1.0f / 60.0f;
 		obj->Solve();
 	}
 

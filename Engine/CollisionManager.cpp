@@ -41,7 +41,7 @@ void CollisionManager::CheckCollisionPair(Object3D* colliderA, Object3D* collide
 	{
 	case Collider::Shape::kSphere:
 		Sphere sphereA;
-		sphereA.center = colliderA->GetWorldTransform().translation_;
+		sphereA.center = colliderA->GetTranslation();
 		sphereA.radius = colliderA->GetHitBoxSize().x;
 		switch (colliderB->GetShape())
 		{
@@ -63,8 +63,8 @@ void CollisionManager::CheckCollisionPair(Object3D* colliderA, Object3D* collide
 		{
 		case Collider::Shape::kAABB:
 			if (IsCollision(
-				AABB(Subtract(colliderA->GetWorldTransform().translation_, colliderA->GetHitBoxSize()), Add(colliderA->GetWorldTransform().translation_, colliderA->GetHitBoxSize())),
-				AABB(Subtract(colliderB->GetWorldTransform().translation_, colliderB->GetHitBoxSize()), Add(colliderB->GetWorldTransform().translation_, colliderB->GetHitBoxSize())))) {
+				AABB(Subtract(colliderA->GetMatWorldTranslation(), colliderA->GetHitBoxSize()), Add(colliderA->GetMatWorldTranslation(), colliderA->GetHitBoxSize())),
+				AABB(Subtract(colliderB->GetMatWorldTranslation(), colliderB->GetHitBoxSize()), Add(colliderB->GetMatWorldTranslation(), colliderB->GetHitBoxSize())))) {
 
 				if (colliderA->GetIsTrigger() || colliderB->GetIsTrigger()) {
 					colliderA->OnTriggerEvent(colliderB);

@@ -37,6 +37,9 @@ void Object3D::Initialize(Model* model, World* world, Collider::Shape shape)
 	else if (model_->GetModelName() == "endBox") {
 		SetCollisionAttribute(kCollisionAttributeGoal);
 	}
+	else if (model_->GetModelName() == "MoveFloor") {
+		SetCollisionAttribute(kCollisionAttributeMoveFloor);
+	}
 	else {
 		SetCollisionAttribute(kCollisionAttributeFloor);
 	}
@@ -83,7 +86,7 @@ void Object3D::Update()
 	ImGui::End();
 #endif
 	isHit_ = false;
-	worldTransform_.UpdateMatrix();
+	//worldTransform_.UpdateMatrix();
 }
 
 void Object3D::Draw()

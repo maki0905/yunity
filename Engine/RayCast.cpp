@@ -27,8 +27,8 @@ bool RayCast(const Vector3& origin, const Vector3& direction, RayCastHit* hitInf
 			break;
 		case Collider::Shape::kAABB:
 			AABB aabb;
-			aabb.min = Subtract(obj->GetWorldTransform().translation_, obj->GetHitBoxSize());
-			aabb.max = Add(obj->GetWorldTransform().translation_, obj->GetHitBoxSize());
+			aabb.min = Subtract(obj->GetTranslation(), obj->GetHitBoxSize());
+			aabb.max = Add(obj->GetTranslation(), obj->GetHitBoxSize());
 			if (IsCollision(ray, aabb)) {
 				hitInfo->collider = obj;
 				hitInfo->point = RayIntersection(ray, aabb);
@@ -63,8 +63,8 @@ bool RayCast(const Vector3& origin, const Vector3& direction, RayCastHit* hitInf
 			break;
 		case Collider::Shape::kAABB:
 			AABB aabb;
-			aabb.min = Subtract(obj->GetWorldTransform().translation_, obj->GetHitBoxSize());
-			aabb.max = Add(obj->GetWorldTransform().translation_, obj->GetHitBoxSize());
+			aabb.min = Subtract(obj->GetTranslation(), obj->GetHitBoxSize());
+			aabb.max = Add(obj->GetTranslation(), obj->GetHitBoxSize());
 			if (IsCollision(ray, aabb)) {
 				hitInfo->collider = obj;
 				hitInfo->point = RayIntersection(ray, aabb);

@@ -50,8 +50,10 @@ public:
 
 	void SetGravity(const Vector3& gravity) { gravityAcceleration_ = gravity; }
 
-	WorldTransform GetWorldTransform() { return *worldTransform_; };
+	WorldTransform* GetWorldTransform() { return worldTransform_; };
 	Vector3 GetTranslation() { return worldTransform_->translation_; }
+	Vector3 GetMatWorldTranslation() { return { worldTransform_->matWorld_.m[3][0], worldTransform_->matWorld_.m[3][1], worldTransform_->matWorld_.m[3][2] }; }
+
 
 	Vector3 GetVertical() { return vertical_; }
 

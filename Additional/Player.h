@@ -69,5 +69,8 @@ private:
 	uint32_t onReticle_;
 	uint32_t offReticle_;
 
+	bool isMoving_;
+	Body* collisionBody_;
+
 };
 

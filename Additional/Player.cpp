@@ -13,7 +13,7 @@ void Player::Initialize(Camera* camera, World* world)
 	SetMass(2.0f);
 	SetFirictionCombine(FrictionCombine::kAverage);
 	SetMiu(0.3f);
-	SetBounceCombine(BounceCombine::kAverage);
+	SetBounceCombine(BounceCombine::kNone);
 	SetBounciness(0.8f);
 	/*worldTransform_.Initialize(RotationType::Quaternion);
 	worldTransform_.translation_.y = 3.0f;*/
@@ -73,6 +73,7 @@ void Player::Initialize(Camera* camera, World* world)
 	isWire_ = false;
 	isJunp_ = false;
 	isFloot_ = true;
+	isMoving_ = false;
 
 	Input::GetInstance()->GetJoystickState(0, pad_);
 
@@ -386,8 +387,18 @@ void Player::Update()
 		isActive_ = false;
 	}
 
-	isFloot_ = true;
+	if (isMoving_) {
+		if (collisionBody_) {
+			if (collisionBody_->GetCollisionAttribute() != kCollisionAttributeMoveFloor) {
+				worldTransform_.parent_ = nullptr;
+				worldTransform_.translation_ = Add(worldTransform_.translation_, collisionBody_->GetMatWorldTranslation());
+				isMoving_ = false;
+			}
+		}
+	}
 
+
+	isFloot_ = true;
 }
 
 void Player::Draw()
@@ -430,6 +441,19 @@ void Player::OnCollisionEvent(Body* body)
 		}
 	}
 
+	if (body->GetCollisionAttribute() == kCollisionAttributeMoveFloor && !isMoving_) {
+		AABB aabb = GetAABB();
+		AABB other = body->GetAABB();
+		if (aabb.min.y >= other.max.y) {
+			if (aabb.min.x < other.max.x && aabb.max.x > other.min.x) {
+				worldTransform_.parent_ = collisionBody_->GetWorldTransform();
+				worldTransform_.translation_ = Subtract(worldTransform_.translation_, collisionBody_->GetMatWorldTranslation());
+				isMoving_ = true;
+			}
+
+		}
+	}
+
 
 	if (GetVertical().y > 0.0f) {
 		isJunp_ = false;
@@ -443,6 +467,8 @@ void Player::OnCollisionEvent(Body* body)
 	
 #endif
 	isHit_ = true;
+
+	collisionBody_ = body;
 }
 
 void Player::OnTriggerEvent(Body* body)

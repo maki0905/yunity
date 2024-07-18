@@ -32,7 +32,6 @@ public:
 	Vector3 GetSize() { return size_; }
 	Vector3 GetCenter() { return center_; }
 	Vector3 GetTranslation() { return worldTransform_.translation_; }
-
 	Model* GetModel() { return model_.get(); }
 	Model* GetModel(const std::string& modelName) { return models_[modelName].get(); }
 	void SetModel(const std::string& modelName, Model* model);
