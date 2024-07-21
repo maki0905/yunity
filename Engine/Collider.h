@@ -49,7 +49,9 @@ public:
 	void SetCollisionMask(uint32_t collisionMask) { CollisionMask_ = collisionMask; }
 
 	Shape GetShape() { return shape_; }
+	void SetShape(Shape shape) { shape_ = shape; }
 	Vector3 GetHitBoxSize() { return Multiply(Multiply(0.5f, size_), worldTransform_->scale_); }
+	void SetHitBoxSize(Vector3 size) { size_ = size; }
 
 	Sphere* GetSphere() { return sphere_.get(); }
 	Plane* GetPlane() { return plane_.get(); }

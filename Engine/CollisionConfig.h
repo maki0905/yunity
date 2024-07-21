@@ -11,4 +11,4 @@ const uint32_t kCollisionAttributeTrampoline = 0b1 << 2;
 const uint32_t kCollisionAttributeGoal = 0b1 << 3;
 // 動く床
 const uint32_t kCollisionAttributeMoveFloor = 0b1 << 4;
-
+const uint32_t kCollisionAttributeCoin = 0b1 << 5;

@@ -40,12 +40,27 @@ void CollisionManager::CheckCollisionPair(Object3D* colliderA, Object3D* collide
 	switch (colliderA->GetShape())
 	{
 	case Collider::Shape::kSphere:
-		Sphere sphereA;
-		sphereA.center = colliderA->GetTranslation();
-		sphereA.radius = colliderA->GetHitBoxSize().x;
 		switch (colliderB->GetShape())
 		{
+		case Collider::Shape::kSphere:
+
+			break;
 		case Collider::Shape::kAABB:
+			if (IsCollision(
+				Sphere(colliderA->GetMatWorldTranslation(), colliderA->GetHitBoxSize().x * 2.0f),
+				AABB(Subtract(colliderB->GetMatWorldTranslation(), colliderB->GetHitBoxSize()), Add(colliderB->GetMatWorldTranslation(), colliderB->GetHitBoxSize())))) {
+
+				if (colliderA->GetIsTrigger() || colliderB->GetIsTrigger()) {
+					colliderA->OnTriggerEvent(colliderB);
+					colliderB->OnTriggerEvent(colliderA);
+				}
+				else {
+					colliderA->OnCollision(colliderB);
+					colliderB->OnCollision(colliderA);
+					colliderA->OnCollisionEvent(colliderB);
+					colliderB->OnCollisionEvent(colliderA);
+				}
+			}
 			/*if (IsCollision(
 				Sphere(colliderA->GetWorldTransform().translation_, colliderA->GetHitBoxSize().x),
 				AABB(Subtract(colliderB->GetWorldTransform().translation_, colliderB->GetHitBoxSize()), Add(colliderB->GetWorldTransform().translation_, colliderB->GetHitBoxSize())))) {
@@ -54,13 +69,29 @@ void CollisionManager::CheckCollisionPair(Object3D* colliderA, Object3D* collide
 			}*/
 
 			break;
-		default:
-			break;
 		}
 		break;
 	case Collider::Shape::kAABB:
 		switch (colliderB->GetShape())
 		{
+		case Collider::Shape::kSphere:
+			if (IsCollision(
+				AABB{Subtract(colliderA->GetMatWorldTranslation(), colliderA->GetHitBoxSize()), Add(colliderA->GetMatWorldTranslation(), colliderA->GetHitBoxSize()) },
+				Sphere{colliderB->GetMatWorldTranslation(), colliderB->GetHitBoxSize().x * 2.0f})) {
+
+				if (colliderA->GetIsTrigger() || colliderB->GetIsTrigger()) {
+					colliderA->OnTriggerEvent(colliderB);
+					colliderB->OnTriggerEvent(colliderA);
+				}
+				else {
+					colliderA->OnCollision(colliderB);
+					colliderB->OnCollision(colliderA);
+					colliderA->OnCollisionEvent(colliderB);
+					colliderB->OnCollisionEvent(colliderA);
+				}
+			}
+
+			break;
 		case Collider::Shape::kAABB:
 			if (IsCollision(
 				AABB(Subtract(colliderA->GetMatWorldTranslation(), colliderA->GetHitBoxSize()), Add(colliderA->GetMatWorldTranslation(), colliderA->GetHitBoxSize())),
@@ -79,12 +110,8 @@ void CollisionManager::CheckCollisionPair(Object3D* colliderA, Object3D* collide
 			}
 
 			break;
-		default:
-			break;
 		}
 
-		break;
-	default:
 		break;
 	}
 }

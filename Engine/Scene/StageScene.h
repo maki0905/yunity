@@ -13,6 +13,7 @@
 #include "World.h"
 #include "ObjectManager.h"
 #include "Skydome.h"
+#include "Coin.h"
 
 class StageScene : public IScene
 {
@@ -61,6 +62,8 @@ private:
 	WorldTransform startWT_;
 	std::vector<Object3D*> floors_;
 	std::vector<Object3D*> trampolines_;
+
+	std::unique_ptr<Coin> coin_;
 
 	std::string stageName_ = "stage4";
 

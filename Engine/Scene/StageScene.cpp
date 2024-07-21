@@ -86,6 +86,15 @@ void StageScene::Initialize()
 	skydome_ = std::make_unique<Skydome>();
 	skydome_->Initialize(camera_/*camera_.get()*/, {5.0f, 5.0f, 5.0f});
 
+	coin_ = std::make_unique<Coin>();
+	coin_->SetPosition({ 3.0f, 3.0f, 0.0f });
+	coin_->SetSize({ 1.0f, 1.0f, 1.0f });
+	coin_->SetIsTrigger(true);
+	coin_->Initialize(ModelManager::GetInstance()->CreateModel(obj, "Coin"), world_.get(), Collider::Shape::kSphere);
+	coin_->SetIsActive(true);
+	coin_->SetCamera(camera_);
+	world_->Add(coin_.get());
+
 }
 
 void StageScene::Update()
@@ -117,6 +126,10 @@ void StageScene::Update()
 
 	player_->Update();
 	ObjectManager::GetInstance()->Update(stageName_);
+	coin_->Update();
+	if (!coin_->GetIsActive()) {
+		world_->Take(coin_.get());
+	}
 	///*for (auto& object : ObjectManager::GetInstance()->GetObjects("TL1")) {
 	//	object->Update();
 	//}*/
@@ -171,6 +184,9 @@ void StageScene::Draw3D()
 	//	object->Draw();
 	//}*/
 	player_->Draw();
+	if (coin_->GetIsActive()) {
+		coin_->Draw();
+	}
 	
 
 	//player_->Draw();

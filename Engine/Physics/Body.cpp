@@ -24,6 +24,33 @@ namespace {
 			return Vector3(0, 0, pushZ);
 		}
 	}
+
+	Vector3 GetPushback(const Sphere& sphere, const AABB& aabb) {
+		// 最近接点を求める
+		Vector3 closestPoint{ std::clamp(sphere.center.x, aabb.min.x, aabb.max.x), std::clamp(sphere.center.y, aabb.min.y, aabb.max.y), std::clamp(sphere.center.z, aabb.min.z, aabb.max.z) };
+
+		Vector3 delta = Subtract(sphere.center, closestPoint);
+		float distance = Length(delta);
+
+		float penetrationDepth = sphere.radius - distance;
+		Vector3 normal = delta.Normalize();
+		return Multiply(penetrationDepth, normal);
+	}
+
+	Vector3 GetPushback(const AABB& aabb, const Sphere& sphere) {
+		// 最近接点を求める
+		Vector3 closestPoint{ std::clamp(sphere.center.x, aabb.min.x, aabb.max.x), std::clamp(sphere.center.y, aabb.min.y, aabb.max.y), std::clamp(sphere.center.z, aabb.min.z, aabb.max.z) };
+
+		Vector3 delta = Subtract(sphere.center, closestPoint);
+		float distance = Length(delta);
+
+		float penetrationDepth = sphere.radius - distance;
+
+		Vector3 normal = delta.Normalize();
+		return Multiply(penetrationDepth, normal);
+
+		
+	}
 }
 
 void Body::CreateBody(World* world, WorldTransform* worldTransform, float mass)
@@ -136,11 +163,39 @@ void Body::OnCollision(Body* body)
 		resolve = Multiply(resolve, Normalize(velocity_));
 		resolve = Multiply(-1.0f, resolve);
 		worldTransform_->translation_ = Add(worldTransform_->translation_, resolve);*/
+		Vector3 pushback = { 0.0f, 0.0f, 0.0f };
+		switch (GetShape())
+		{
+		case Collider::Shape::kSphere:
+			switch (body->GetShape())
+			{
+			case Collider::Shape::kSphere:
+				//pushback = GetPushback(Sphere{worldTransform_->GetMatWorldTranslation(), GetHitBoxSize().x * 2.0f},);
+				break;
+			case Collider::Shape::kAABB:
+				pushback = GetPushback(Sphere{ worldTransform_->GetMatWorldTranslation(), GetHitBoxSize().x * 2.0f }, AABB{ Subtract(body->GetMatWorldTranslation(), body->GetHitBoxSize()), Add(body->GetMatWorldTranslation(), body->GetHitBoxSize()) });
 
-		AABB a = { Subtract(GetMatWorldTranslation(), GetHitBoxSize()), Add(GetMatWorldTranslation(), GetHitBoxSize())};
+				break;
+			}
+			break;
+		case Collider::Shape::kAABB:
+			switch (body->GetShape())
+			{
+			case Collider::Shape::kSphere:
+				pushback = GetPushback(Sphere{ body->GetMatWorldTranslation(), body->GetHitBoxSize().x * 2.0f }, AABB{ Subtract(GetMatWorldTranslation(), GetHitBoxSize()), Add(GetMatWorldTranslation(), GetHitBoxSize()) });
+				break;
+			case Collider::Shape::kAABB:
+				pushback = GetPushback(AABB{ Subtract(GetMatWorldTranslation(), GetHitBoxSize()), Add(GetMatWorldTranslation(), GetHitBoxSize()) }, AABB{ Subtract(body->GetMatWorldTranslation(), body->GetHitBoxSize()), Add(body->GetMatWorldTranslation(), body->GetHitBoxSize()) });
+				break;
+			}
+
+			break;
+		}
+
+		/*AABB a = { Subtract(GetMatWorldTranslation(), GetHitBoxSize()), Add(GetMatWorldTranslation(), GetHitBoxSize())};
 		AABB b = { Subtract(body->GetMatWorldTranslation(), body->GetHitBoxSize()), Add(body->GetMatWorldTranslation(), body->GetHitBoxSize()) };
-		Vector3 pushBack = GetPushback(a, b);
-		worldTransform_->translation_ = Add(pushBack, worldTransform_->translation_);
+		Vector3 pushBack = GetPushback(a, b);*/
+		worldTransform_->translation_ = Add(pushback, worldTransform_->translation_);
 		worldTransform_->UpdateMatrix();
 
 		float miu = 0.0f;
@@ -170,10 +225,10 @@ void Body::OnCollision(Body* body)
 		switch (bounceCombine_)
 		{
 		case Body::BounceCombine::kNone:
-			if (pushBack.x != 0.0f) {
+			if (pushback.x != 0.0f) {
 				velocity_.x = 0.0f;
 			}
-			if (pushBack.y != 0.0f) {
+			if (pushback.y != 0.0f) {
 				velocity_.y = 0.0f;
 			}
 			break;
@@ -192,19 +247,19 @@ void Body::OnCollision(Body* body)
 		}
 
 		if (bounceCombine_ != BounceCombine::kNone) {
-			if (pushBack.x != 0.0f) {
+			if (pushback.x != 0.0f) {
 				velocity_.x = -velocity_.x * e;
 			}
-			if (pushBack.y != 0.0f) {
+			if (pushback.y != 0.0f) {
 				velocity_.y = -velocity_.y * e;
 			}
-			if (pushBack.z != 0.0f) {
+			if (pushback.z != 0.0f) {
 				velocity_.z = -velocity_.z * e;
 			}
 		}
 
-		normalVector_ = pushBack;
-		vertical_ = pushBack;
+		normalVector_ = pushback;
+		vertical_ = pushback;
 	}
 }
 

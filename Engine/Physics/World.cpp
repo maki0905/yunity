@@ -31,3 +31,16 @@ void World::Solve()
 
 
 }
+
+void World::Take(Object3D* collider)
+{
+	for (std::list<Object3D*>::iterator iterator = allocator_.begin(); iterator != allocator_.end();) {
+		if (*iterator == collider) {
+			iterator = allocator_.erase(iterator);
+			continue;
+		}
+
+		iterator++;
+	}
+
+}

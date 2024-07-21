@@ -20,6 +20,7 @@ public:
 	void Solve();
 
 	void Add(Object3D* collider) { allocator_.push_back(collider); };
+	void Take(Object3D* collider);
 
 	std::list<Object3D*> GetAllocator() { return allocator_; }
 
