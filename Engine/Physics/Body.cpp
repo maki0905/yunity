@@ -141,7 +141,7 @@ void Body::OnCollision(Body* body)
 		AABB b = { Subtract(body->GetMatWorldTranslation(), body->GetHitBoxSize()), Add(body->GetMatWorldTranslation(), body->GetHitBoxSize()) };
 		Vector3 pushBack = GetPushback(a, b);
 		worldTransform_->translation_ = Add(pushBack, worldTransform_->translation_);
-		//worldTransform_->UpdateMatrix();
+		worldTransform_->UpdateMatrix();
 
 		float miu = 0.0f;
 		switch (frictionCombine_)

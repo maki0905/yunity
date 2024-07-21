@@ -353,15 +353,28 @@ void Player::Update()
 	if (isMoving_) {
 		if (worldTransform_.parent_) {
 			if (!isHit_) {
-				worldTransform_.translation_ = Add(worldTransform_.translation_, worldTransform_.parent_->GetMatWorldTranslation());
+
+				Matrix4x4 invers = Inverse(worldTransform_.parent_->matWorld_);
+				Matrix4x4 lMat = Multiply(worldTransform_.matWorld_, invers);
+				Vector3 t = { lMat.m[3][0], lMat.m[3][1], lMat.m[3][2] };
+				Vector3 t2 = worldTransform_.parent_->GetMatWorldTranslation();
+				worldTransform_.translation_ = Add(t, t2);
 				worldTransform_.parent_ = nullptr;
-				isMoving_ = false;
+				/*worldTransform_.translation_ = Add(worldTransform_.translation_, worldTransform_.parent_->GetMatWorldTranslation());
+				worldTransform_.parent_ = nullptr;
+				isMoving_ = false;*/
 			}
 			else if (collisionBody_) {
 				if (collisionBody_->GetCollisionAttribute() != kCollisionAttributeMoveFloor) {
-					worldTransform_.translation_ = Add(worldTransform_.translation_, worldTransform_.parent_->GetMatWorldTranslation());
+					Matrix4x4 invers = Inverse(worldTransform_.parent_->matWorld_);
+					Matrix4x4 lMat = Multiply(worldTransform_.matWorld_, invers);
+					Vector3 t = { lMat.m[3][0], lMat.m[3][1], lMat.m[3][2] };
+					Vector3 t2 = worldTransform_.parent_->GetMatWorldTranslation();
+					worldTransform_.translation_ = Add(t, t2);
 					worldTransform_.parent_ = nullptr;
-					isMoving_ = false;
+					/*worldTransform_.translation_ = Add(worldTransform_.translation_, worldTransform_.parent_->GetMatWorldTranslation());
+					worldTransform_.parent_ = nullptr;
+					isMoving_ = false;*/
 				}
 			}
 		}
