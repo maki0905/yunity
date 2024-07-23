@@ -115,6 +115,9 @@ void PostEffect::InitializeGraphicsPipeline()
 		case PostEffects::kRandom:
 			pipelineState_[index]->SetShader(PipelineState::ShaderType::kPS, ShaderCompiler::GetInstance()->Get("CopyImage", ShaderCompiler::ShaderType::kPS));
 			break;
+		case PostEffects::kHSVFilter:
+			pipelineState_[index]->SetShader(PipelineState::ShaderType::kPS, ShaderCompiler::GetInstance()->Get("HSVFilter", ShaderCompiler::ShaderType::kPS));
+			break;
 		default:
 			break;
 		}

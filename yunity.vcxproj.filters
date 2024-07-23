@@ -675,6 +675,7 @@
     <FxCompile Include="Resources\Shaders\Skybox.VS.hlsl" />
     <FxCompile Include="Resources\Shaders\Line.VS.hlsl" />
     <FxCompile Include="Resources\Shaders\Line.PS.hlsl" />
+    <FxCompile Include="Resources\Shaders\HSVFilter.PS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\Object3d.hlsli">
@@ -686,5 +687,6 @@
     <None Include="Resources\Shaders\Fullscreen.hlsli" />
     <None Include="Resources\Shaders\Skybox.hlsli" />
     <None Include="Resources\Shaders\Line.hlsli" />
+    <None Include="Resources\Shaders\Interconversion.hlsli" />
   </ItemGroup>
 </Project>

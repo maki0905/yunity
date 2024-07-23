@@ -147,6 +147,9 @@ void ShaderCompiler::ShaderCompile()
 	psblob_["Skybox"] = CompileShader(L"Resources/Shaders/Skybox.PS.hlsl", L"ps_6_0");
 	assert(psblob_["Skybox"]);
 
+	psblob_["HSVFilter"] = CompileShader(L"Resources/Shaders/HSVFilter.PS.hlsl", L"ps_6_0");
+	assert(psblob_["HSVFilter"]);
+
 
 }
 

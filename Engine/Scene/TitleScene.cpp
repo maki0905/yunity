@@ -28,6 +28,7 @@ void TitleScene::Initialize()
 	player_->Initialize(camera_/*camera_.get()*/, world_.get());
 
 	ObjectManager::GetInstance()->Load("title", camera_/*camera_.get()*/, world_.get());
+	RenderTexture::GetInstance()->SelectPostEffect(PostEffects::kHSVFilter, true);
 	//RenderTexture::GetInstance()->SelectPostEffect(PostEffects::kGrayscale, true);
 	//RenderTexture::GetInstance()->SelectPostEffect(PostEffects::kVignetting, true);
 	//RenderTexture::GetInstance()->SelectPostEffect(PostEffects::kOutline, true);

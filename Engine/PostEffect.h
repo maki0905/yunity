@@ -20,6 +20,7 @@ enum class PostEffects {
 	kVignetting,
 	kDissolve,
 	kRandom,
+	kHSVFilter,
 	kCount,
 };
 
