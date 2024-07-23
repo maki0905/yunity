@@ -78,7 +78,7 @@
 //}
 
 Camera::Camera() :
-	transform_({ {1.0f, 1.0f, 1.0f}, {/*std::numbers::pi_v<float> / 3.0f*/0, /*std::numbers::pi_v<float>*/0, 0 }, { 0, 10.0f, -50.0f} }),
+	transform_({ {1.0f, 1.0f, 1.0f}, {/*std::numbers::pi_v<float> / 3.0f*/0, /*std::numbers::pi_v<float>*/0, 0 }, { 0, 0.0f, -50.0f} }),
 	fovAngleY_(ConvertToRadians(45.0f)),
 	aspectRatio_((float)16 / 9),
 	nearClip_(10.0f),

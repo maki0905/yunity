@@ -1,0 +1,63 @@
+{
+    "name": "scene",
+    "objects": [
+        {
+            "type": "MESH",
+            "name": "テキスト",
+            "transform": {
+                "translation": [
+                    -0.943206250667572,
+                    0.0,
+                    11.293977737426758
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "TitleFont"
+        },
+        {
+            "type": "MESH",
+            "name": "立方体",
+            "transform": {
+                "translation": [
+                    0.0,
+                    0.0,
+                    -19.496923446655273
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "TitleStage",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    78.77999877929688,
+                    2.0,
+                    20.130001068115234
+                ],
+                "isTrigger": false
+            }
+        }
+    ]
+}

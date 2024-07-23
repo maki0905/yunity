@@ -331,7 +331,7 @@ void Player::Update()
 		reticleWorldTransform_.translation_ = Multiply(limitLength_, dir);
 	}
 
-	camera_->SetTranslate({ GetMatWorldTranslation().x, GetMatWorldTranslation().y, camera_->GetTranslate().z });
+	//camera_->SetTranslate({ GetMatWorldTranslation().x, GetMatWorldTranslation().y, camera_->GetTranslate().z });
 
 	if (!isWire_) {
 		apexWorldTransform_.translation_ = worldTransform_.translation_;

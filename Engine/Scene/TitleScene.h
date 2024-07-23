@@ -6,6 +6,8 @@
 #include "CameraManager.h"
 #include "Sprite.h"
 #include "Model.h"
+#include "World.h"
+#include "Player.h"
 
 class TitleScene : public IScene
 {
@@ -25,6 +27,8 @@ private:
 	WorldTransform worldTransform_;
 	std::unique_ptr<Sprite> sprite_ = nullptr;
 	std::unique_ptr<Model> model_ = nullptr;
+	std::unique_ptr<World> world_;
+	std::unique_ptr<Player> player_;
 	//std::unique_ptr<Model> model_ = nullptr;
 };
 

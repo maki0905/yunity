@@ -26,14 +26,18 @@ public:
 
 	void SetGravity(const Vector3& gravity) { gravity_ = gravity; };
 	Vector3 GetGravity() { return gravity_; };
+
+	void SetFixedTime(bool isFixedTime) { isFixedTime_ = isFixedTime; }
 	// デルタタイム
 	//float deltaTime_ = 1.0f / 60.0f;
 	float deltaTime_;
+	const float fixedDeltaTime_ = 1.0f / 60.0f;
 
 private:
 	std::chrono::steady_clock::time_point lastTime_;
 	std::unique_ptr<CollisionManager> collisionManager_;
 	std::list<Object3D*> allocator_;
 	Vector3 gravity_;
+	bool isFixedTime_;
 
 };

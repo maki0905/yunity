@@ -2,6 +2,7 @@
 
 #include "Object3D.h"
 #include "DirectXCore.h"
+#include "ImGuiManager.h"
 
 void World::Initialize(const Vector3& gravity)
 {
@@ -9,17 +10,25 @@ void World::Initialize(const Vector3& gravity)
 	allocator_.clear();
 	gravity_ = gravity;
 	lastTime_ = std::chrono::high_resolution_clock::now();
+	isFixedTime_ = true;
 }
 
 void World::Solve()
 {
 	//deltaTime_ = DirectXCore::GetInstance()->GetDeletTime();
-	for (auto& obj : allocator_) {
+	float time = 0.0f;
+	if (!isFixedTime_) {
 		auto currentTime = std::chrono::high_resolution_clock::now();
 		std::chrono::duration<float> deltaTime = currentTime - lastTime_;
 		deltaTime_ = deltaTime.count();
 		lastTime_ = currentTime;
-		obj->Solve();
+	}
+	else {
+		time = fixedDeltaTime_;
+	}
+
+	for (auto& obj : allocator_) {
+		obj->Solve(time);
 	}
 
 	collisionManager_->ClearCollider();

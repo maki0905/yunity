@@ -69,7 +69,7 @@ void Body::CreateBody(World* world, WorldTransform* worldTransform, float mass)
 	worldTransform_ = worldTransform;
 }
 
-void Body::Solve()
+void Body::Solve(float time)
 {
 	if (mass_ != 0.0f) {
 		// 空気抵抗airResistanceは、速度に比例して逆方向に発生する
@@ -89,14 +89,14 @@ void Body::Solve()
 
 			Vector3 frictionalForce = Multiply(-magnitude_, dirction);
 			acceleration_ = Multiply(1.0f / mass_, frictionalForce);
-			if (std::fabsf(acceleration_.x * world_->deltaTime_) > std::fabs(velocity_.x)) {
-				acceleration_.x = velocity_.x / world_->deltaTime_;
+			if (std::fabsf(acceleration_.x * time) > std::fabs(velocity_.x)) {
+				acceleration_.x = velocity_.x / time;
 			}
-			if (std::fabsf(acceleration_.y * world_->deltaTime_) > std::fabs(velocity_.y)) {
-				acceleration_.y = velocity_.y / world_->deltaTime_;
+			if (std::fabsf(acceleration_.y * time) > std::fabs(velocity_.y)) {
+				acceleration_.y = velocity_.y / time;
 			}
-			if (std::fabsf(acceleration_.z * world_->deltaTime_) > std::fabs(velocity_.z)) {
-				acceleration_.z = velocity_.z / world_->deltaTime_;
+			if (std::fabsf(acceleration_.z * time) > std::fabs(velocity_.z)) {
+				acceleration_.z = velocity_.z / time;
 			}
 
 			acceleration_ = Add(acceleration_, Add(gravity, airResistanceAcceleration));
@@ -109,9 +109,9 @@ void Body::Solve()
 
 		force_ = { 0.0f, 0.0f, 0.0f };
 
-		velocity_ = Add(velocity_, Multiply(world_->deltaTime_, acceleration_));
+		velocity_ = Add(velocity_, Multiply(time, acceleration_));
 
-		worldTransform_->translation_ = Add(worldTransform_->translation_,Multiply(world_->deltaTime_, velocity_));
+		worldTransform_->translation_ = Add(worldTransform_->translation_, Multiply(time, velocity_));
 	}
 
 	worldTransform_->UpdateMatrix();

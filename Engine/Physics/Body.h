@@ -24,7 +24,7 @@ public:
 
 public:
 	void CreateBody(World* world, WorldTransform* worldTransform, float mass = 0.0f);
-	void Solve();
+	void Solve(float time);
 
 	Vector3 RubberMovement(const Vector3& start, const Vector3& end, float limitLength, float stiffness, float dampingCoefficient);
 

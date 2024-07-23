@@ -89,10 +89,11 @@ void StageScene::Initialize()
 	coin_ = std::make_unique<Coin>();
 	coin_->SetPosition({ 3.0f, 3.0f, 0.0f });
 	coin_->SetSize({ 1.0f, 1.0f, 1.0f });
-	coin_->SetIsTrigger(true);
+	coin_->SetIsTrigger(false);
 	coin_->Initialize(ModelManager::GetInstance()->CreateModel(obj, "Coin"), world_.get(), Collider::Shape::kSphere);
 	coin_->SetIsActive(true);
 	coin_->SetCamera(camera_);
+	coin_->SetMass(1.0f);
 	world_->Add(coin_.get());
 
 }
@@ -127,6 +128,9 @@ void StageScene::Update()
 	player_->Update();
 	ObjectManager::GetInstance()->Update(stageName_);
 	coin_->Update();
+	if (Input::GetInstance()->TriggerKey(DIK_RIGHT)) {
+		coin_->AddForce(Vector3{1.0f, 0.0f, 0.0f}, 1);
+	}
 	if (!coin_->GetIsActive()) {
 		world_->Take(coin_.get());
 	}
@@ -134,6 +138,11 @@ void StageScene::Update()
 	//	object->Update();
 	//}*/
 	world_->Solve();
+
+	ImGui::Begin("Coin");
+	Vector3 velocity = coin_->GetVelocity();
+	ImGui::DragFloat3("velocity", &velocity.x);
+	ImGui::End();
 
 	skyboxWorldTransform_.UpdateMatrix();
 

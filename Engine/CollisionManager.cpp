@@ -84,10 +84,16 @@ void CollisionManager::CheckCollisionPair(Object3D* colliderA, Object3D* collide
 					colliderB->OnTriggerEvent(colliderA);
 				}
 				else {
-					colliderA->OnCollision(colliderB);
-					colliderB->OnCollision(colliderA);
-					colliderA->OnCollisionEvent(colliderB);
-					colliderB->OnCollisionEvent(colliderA);
+					if (colliderA->GetCollisionAttribute() == kCollisionAttributePlayer && colliderB->GetCollisionAttribute() == kCollisionAttributeCoin) {
+						colliderA->OnTriggerEvent(colliderB);
+						colliderB->OnTriggerEvent(colliderA);
+					}
+					else {
+						colliderA->OnCollision(colliderB);
+						colliderB->OnCollision(colliderA);
+						colliderA->OnCollisionEvent(colliderB);
+						colliderB->OnCollisionEvent(colliderA);
+					}
 				}
 			}
 
