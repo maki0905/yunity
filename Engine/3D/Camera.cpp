@@ -100,8 +100,33 @@ Camera::Camera() :
 
 }
 
+Vector3 Camera::Offset()
+{
+	Vector3 offset = { 0.0f, 10.0f, -50.0f };
+	Matrix4x4 rotate = MakeRotateYMatrix(transform_.rotate.y);
+	offset = TransformNormal(offset, rotate);
+	return offset;
+}
+
 void Camera::Update()
 {
+
+	if (target_ != nullptr) {
+		Vector3 interTarget = target_->GetMatWorldTranslation();
+		if(!fixedAngle_.x){
+			transform_.rotate.x = target_->rotation_.x;
+		}
+		if (!fixedAngle_.y) {
+			transform_.rotate.y = target_->rotation_.y;
+		}
+		if (!fixedAngle_.z) {
+			transform_.rotate.z = target_->rotation_.z;
+		}
+
+		Vector3 offset = Offset();
+
+		transform_.translate = Add(interTarget, offset);
+	}
 	worldMatrix_ = MakeAffineMatrix(transform_);
 	viewMatrix_ = Inverse(worldMatrix_);
 	projectionMatrix_ = MakePerspectiveFovMatrix(fovAngleY_, aspectRatio_, nearClip_, farClip_);

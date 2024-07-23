@@ -4,6 +4,7 @@
 #include <wrl.h>
 #include "Transform.h"
 #include "MathFunction.h"
+#include "WorldTransform.h"
 
 // 定数バッファ用データ構造体
 struct ConstBufferDataViewProjection {
@@ -84,6 +85,8 @@ public:
 	void SetAspectRatio(float aspectRatio) { aspectRatio_ = aspectRatio; }
 	void SetNearClip(float nearClip) { nearClip_ = nearClip; }
 	void SetFarClip(float farClip) { farClip_ = farClip; }
+	void SetTarget(WorldTransform* target) { target_ = target; }
+	void SetFixedAngle(Vector3 fixedAngle) { fixedAngle_ = fixedAngle; }
 
 	// getter
 	ID3D12Resource* GetConstBuff() const { return constBuff_.Get(); }
@@ -93,6 +96,8 @@ public:
 	const Matrix4x4& GetProjectionMatrix() const { return projectionMatrix_; }
 	const Vector3& GetRotate()const { return transform_.rotate; }
 	const Vector3& GetTranslate()const { return transform_.translate; }
+private:
+	Vector3 Offset();
 
 private:
 	// 定数バッファ
@@ -106,6 +111,9 @@ private:
 	Matrix4x4 worldMatrix_;
 	Matrix4x4 viewMatrix_;
 	Matrix4x4 projectionMatrix_;
+
+	WorldTransform* target_;
+	Vector3 fixedAngle_;
 
 #pragma region ビュー行列の設定
 	EulerTransform transform_;
