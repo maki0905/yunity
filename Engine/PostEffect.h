@@ -37,6 +37,9 @@ public:
 	};
 	struct Material {
 		Matrix4x4 projectionInverse;
+		float hue;
+		float saturation;
+		float value;
 	};
 public:
 	static void InitializeGraphicsPipeline();
@@ -52,6 +55,7 @@ public:
 	void SetGraphicsRootDescriptorTable(RootBindings binding, uint32_t index);
 	void SetMaterial(uint32_t index);
 	void SetMaterialData(uint32_t index);
+	void Adjustment();
 
 	//private:
 	//	PostEffect() = default;

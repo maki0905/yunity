@@ -10,6 +10,7 @@
 #include "PipelineState.h"
 #include "TextureManager.h"
 #include "CameraManager.h"
+#include "ImGuiManager.h"
 
 RootSignature* PostEffect::rootSignature_[static_cast<uint32_t>(PostEffects::kCount)];
 PipelineState* PostEffect::pipelineState_[static_cast<uint32_t>(PostEffects::kCount)];
@@ -224,6 +225,16 @@ void PostEffect::SetMaterial(uint32_t index)
 void PostEffect::SetMaterialData(uint32_t index)
 {
 	materialData_[index]->projectionInverse = Inverse(CameraManager::GetInstance()->GetCamera()->GetProjectionMatrix());
+}
+
+void PostEffect::Adjustment()
+{
+	ImGui::Begin("PostEffect");
+	ImGui::DragFloat ("Hue", &materialData_[static_cast<uint32_t>(PostEffects::kHSVFilter)]->hue, 0.01f, -1.0f, 1.0f);
+	ImGui::DragFloat("Saturation", &materialData_[static_cast<uint32_t>(PostEffects::kHSVFilter)]->saturation, 0.01f, -1.0f, 1.0f);
+	ImGui::DragFloat("Value", &materialData_[static_cast<uint32_t>(PostEffects::kHSVFilter)]->value, 0.01f, -1.0f, 1.0f);
+	ImGui::End();
+
 }
 
 void PostEffect::CreateResorce()
