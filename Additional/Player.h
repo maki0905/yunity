@@ -30,6 +30,7 @@ public:
 	void ResetPos(const Vector3& pos);
 
 	bool GetActive() { return isActive_; }
+	bool GetSelect() { return isSelect_; }
 
 private:
 	XINPUT_STATE pad_;
@@ -71,6 +72,8 @@ private:
 
 	bool isMoving_;
 	Body* collisionBody_;
+
+	bool isSelect_;
 
 };
 

@@ -101,7 +101,7 @@ void Framework::Update()
 
 	SceneManager::GetInstance()->Update();
 	ModelManager::GetInstance()->Update();
-	RenderTexture::GetInstance()->GetPostEffect()->Adjustment();
+	//RenderTexture::GetInstance()->GetPostEffect()->Adjustment();
 
 	// ImGui受付終了
 	ImGuiManager::GetInstance()->End();

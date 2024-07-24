@@ -78,7 +78,7 @@
 //}
 
 Camera::Camera() :
-	transform_({ {1.0f, 1.0f, 1.0f}, {/*std::numbers::pi_v<float> / 3.0f*/0, /*std::numbers::pi_v<float>*/0, 0 }, { 0, 0.0f, -50.0f} }),
+	transform_({ {1.0f, 1.0f, 1.0f}, {/*std::numbers::pi_v<float> / 3.0f*/0, /*std::numbers::pi_v<float>*/0, 0 }, { 0, 10.0f, -50.0f} }),
 	fovAngleY_(ConvertToRadians(45.0f)),
 	aspectRatio_((float)16 / 9),
 	nearClip_(10.0f),
@@ -113,6 +113,16 @@ void Camera::Update()
 
 	if (target_ != nullptr) {
 		Vector3 interTarget = target_->GetMatWorldTranslation();
+		if (fixedAxis_.x) {
+			interTarget.x = 0.0f;
+		}
+		if (fixedAxis_.y) {
+			interTarget.y = 0.0f;
+		}
+		if (fixedAxis_.z) {
+			interTarget.z = 0.0f;
+		}
+
 		if(!fixedAngle_.x){
 			transform_.rotate.x = target_->rotation_.x;
 		}
@@ -138,3 +148,5 @@ void Camera::Update()
 	//constMap_CameraForGPU_->worldPosition = { worldMatrix_.m[3][0], worldMatrix_.m[3][1], worldMatrix_.m[3][2] };
 	constMap_CameraForGPU_->worldPosition = transform_.translate;
 }
+
+

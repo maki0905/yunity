@@ -43,6 +43,9 @@ void Object3D::Initialize(Model* model, World* world, Collider::Shape shape)
 	else if (model_->GetModelName() == "Coin") {
 		SetCollisionAttribute(kCollisionAttributeCoin);
 	}
+	else if (model_->GetModelName() == "SelectPoint") {
+		SetCollisionAttribute(kCollisionAttributeSelect);
+	}
 	else {
 		SetCollisionAttribute(kCollisionAttributeFloor);
 	}

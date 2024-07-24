@@ -27,6 +27,7 @@ public:
 	void Solve(float time);
 
 	Vector3 RubberMovement(const Vector3& start, const Vector3& end, float limitLength, float stiffness, float dampingCoefficient);
+	Vector3 Spring(const Vector3& anchor, const Vector3& position, float naturalLength, float stiffness, float dampingCoefficient);
 
 	void AddForce(const Vector3& force, uint32_t mode);
 

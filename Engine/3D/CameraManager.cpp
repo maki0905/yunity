@@ -10,16 +10,16 @@ void CameraManager::Initialize()
 {
     /*camera_ = std::make_unique<Camera>();
     debugCamera_ = std::make_unique<DebugCamera>();*/
-	camera_ = new Camera();
+	camera_ = std::make_unique<Camera>();
 	debugCamera_ = new DebugCamera();
 	isDebug_ = false;
 }
 
 void CameraManager::Finalize()
 {
-	if (camera_) {
+	/*if (camera_) {
 		delete camera_;
-	}
+	}*/
 	if (debugCamera_) {
 		delete debugCamera_;
 	}
@@ -32,7 +32,7 @@ void CameraManager::Update()
 	}
 
 	if (isDebug_) {
-		debugCamera_->Update(camera_);
+		debugCamera_->Update(camera_.get());
 		camera_->Update();
 	}
 	else {

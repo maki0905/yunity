@@ -121,6 +121,16 @@ void LevelEditor::LoadObjectRecursive(LevelData* levelData, nlohmann::json deser
 				objectData.isTrigger = collider["isTrigger"];
 			}
 
+			if (object.contains("body")) {
+				nlohmann::json& body = object["body"];
+				objectData.mass = (float)body["mass"];
+				objectData.drag = (float)body["drag"];
+				objectData.miu = (float)body["miu"];
+				objectData.frictionCombine = (uint32_t)body["frictionCombine"];
+				objectData.bounciness = (float)body["bounciness"];
+				objectData.bounceCombine = (uint32_t)body["bounceCombine"];
+			}
+
 		}
 
 		// 再帰

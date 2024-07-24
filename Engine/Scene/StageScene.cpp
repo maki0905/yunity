@@ -48,6 +48,7 @@ void StageScene::Initialize()
 	//camera_ = std::make_unique<Camera>();
 	//camera_.reset(CameraManager::GetInstance()->GetCamera());
 	camera_ = CameraManager::GetInstance()->GetCamera();
+	camera_->SetFixedAxis({ 0.0f, 0.0f, 1.0f });
 	debugCamera_ = std::make_unique<DebugCamera>();
 	isDebug_ = false;
 
@@ -64,6 +65,7 @@ void StageScene::Initialize()
 
 	player_ = std::make_unique<Player>();
 	player_->Initialize(camera_/*camera_.get()*/, world_.get());
+	camera_->SetTarget(player_->GetWorldTransform());
 
 	//start_ = std::make_unique<Model>();
 	////start_.reset(ModelManager::GetInstance()->CreateModel(obj, "startBox"));

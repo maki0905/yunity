@@ -4,6 +4,7 @@
 #include "ModelManager.h"
 #include "RenderTexture.h"
 #include "ObjectManager.h"
+#include "ImGuiManager.h"
 
 void TitleScene::Initialize()
 {
@@ -18,15 +19,21 @@ void TitleScene::Initialize()
 	sprite_.reset(Sprite::Create(TextureManager::GetInstance()->Load("TITLE.png"), { 320.0f, 260.0f }));
 
 	model_ = std::make_unique<Model>();
-	model_.reset(ModelManager::GetInstance()->CreateModel(obj, "SelectPoint"));
+	model_.reset(ModelManager::GetInstance()->CreateModel(obj, "Cube"));
 	//model_ = std::make_unique<Model>();
 	//ModelManager::GetInstance()->CreateModel(obj, "terrain");
 	model_->SetCamera(camera_/*camera_.get()*/);
 	model_->SetLighting(false);
 
+	/*obj_ = std::make_unique<Object3D>();
+	obj_->Initialize(ModelManager::GetInstance()->CreateModel(obj, "Cube"), world_.get(), Collider::kAABB);
+	obj_->SetCamera(camera_);
+	obj_->SetMass(2.0f);
+	world_->Add(obj_.get());*/
+
 	player_ = std::make_unique<Player>();
 	player_->Initialize(camera_/*camera_.get()*/, world_.get());
-	camera_->SetTarget(player_->GetWorldTransform());
+	camera_->SetTarget(nullptr);  
 
 	ObjectManager::GetInstance()->Load("title", camera_/*camera_.get()*/, world_.get());
 	//RenderTexture::GetInstance()->SelectPostEffect(PostEffects::kHSVFilter, true);
@@ -45,6 +52,15 @@ void TitleScene::Update()
 	prePad_ = pad_;
 
 	player_->Update();
+	if (player_->GetWorldTransform()->GetMatWorldTranslation().x >= 35.0f) {
+		SceneManager::GetInstance()->ChangeScene("SELECT");
+	}
+	else if (player_->GetWorldTransform()->GetMatWorldTranslation().x < -30.0f) {
+		player_->GetWorldTransform()->translation_.x = -30.0f;
+		Vector3 velocity = player_->GetVelocity();
+		velocity.x *= -0.2f;
+		player_->SetVelocity(velocity);
+	}
 	/*if (Input::GetInstance()->IsControllerConnected()) {
 		if (Input::GetInstance()->GetJoystickState(0, pad_)) {
 			if ((pad_.Gamepad.wButtons & XINPUT_GAMEPAD_A) && !(prePad_.Gamepad.wButtons & XINPUT_GAMEPAD_A)) {
@@ -55,6 +71,14 @@ void TitleScene::Update()
 
 		}
 	}*/
+
+	/*ImGui::Begin("Player");
+	Vector3 pos = obj_->GetWorldTransform()->translation_;
+	ImGui::DragFloat3("pos", &pos.x);
+	obj_->SetPosition(pos);
+	ImGui::End();
+
+	obj_->AddForce(obj_->Spring({ 0.0f, 0.0f, 0.0f }, obj_->GetMatWorldTranslation(), 0.0f, 1.0f, 0.1f), 0);*/
 
 	world_->Solve();
 
@@ -70,6 +94,7 @@ void TitleScene::Draw3D()
 	ObjectManager::GetInstance()->Draw("title");
 	player_->Draw();
 	//model_->Draw(worldTransform_);
+	//obj_->Draw();
 }
 
 void TitleScene::DrawFront()

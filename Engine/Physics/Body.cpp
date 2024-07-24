@@ -125,10 +125,28 @@ Vector3 Body::RubberMovement(const Vector3& start, const Vector3& end, float lim
 	if (length != 0.0f)
 	{
 		if (length > limitLength) {
-			length - limitLength;
+			length = limitLength;
 		}
 		Vector3 direction = Normalize(diff);
 		Vector3 displacement = Multiply(length, Subtract(start, end));
+		Vector3 restoringForce = Multiply(-stiffness, displacement);
+		Vector3 dampingForce = Multiply(-dampingCoefficient, velocity_);
+		Vector3 force = Add(restoringForce, dampingForce);
+		return force;
+	}
+	return { 0.0f, 0.0f, 0.0f };
+}
+
+Vector3 Body::Spring(const Vector3& anchor, const Vector3& position, float naturalLength, float stiffness, float dampingCoefficient)
+{
+	Vector3 diff = Subtract(position, anchor);
+	float length = Length(diff);
+	//length = 100f;
+	if (length != 0.0f)
+	{
+		Vector3 direction = Normalize(diff);
+		Vector3 restPosition = Add(anchor,Multiply(naturalLength, direction));
+		Vector3 displacement = Multiply(length, Subtract(position, restPosition));
 		Vector3 restoringForce = Multiply(-stiffness, displacement);
 		Vector3 dampingForce = Multiply(-dampingCoefficient, velocity_);
 		Vector3 force = Add(restoringForce, dampingForce);

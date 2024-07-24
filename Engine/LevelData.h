@@ -17,6 +17,12 @@ public:
 		Vector3 size;
 		Vector3 center;
 		bool isTrigger;
+		float mass;
+		float drag;
+		float miu;
+		uint32_t frictionCombine;
+		float bounciness;
+		uint32_t bounceCombine;
 	};
 
 public:

@@ -3,6 +3,7 @@
 #include "ImGuiManager.h"
 #include "ModelManager.h"
 #include "RayCast.h"
+#include "SceneManager.h"
 
 void Player::Initialize(Camera* camera, World* world)
 {
@@ -74,6 +75,8 @@ void Player::Initialize(Camera* camera, World* world)
 	isJunp_ = false;
 	isFloot_ = true;
 	isMoving_ = false;
+	isSelect_ = false;
+
 
 	Input::GetInstance()->GetJoystickState(0, pad_);
 
@@ -337,7 +340,8 @@ void Player::Update()
 		apexWorldTransform_.translation_ = worldTransform_.translation_;
 	}
 	else {
-		AddForce(RubberMovement(GetMatWorldTranslation(), apexWorldTransform_.GetMatWorldTranslation(), limitLength_, stiffness_, dampar_), 0);
+		AddForce(Spring(apexWorldTransform_.GetMatWorldTranslation(), GetMatWorldTranslation(), 0.0f, stiffness_, dampar_), 0);
+		//AddForce(RubberMovement(GetMatWorldTranslation(), apexWorldTransform_.GetMatWorldTranslation(), limitLength_, stiffness_, dampar_), 0);
 	}
 
 	reticleWorldTransform_.UpdateMatrix();
@@ -382,6 +386,7 @@ void Player::Update()
 
 	isHit_ = false;
 	isFloot_ = true;
+	isSelect_ = false;
 
 #ifdef _DEBUG
 	ImGui::Begin("Player");
@@ -480,6 +485,9 @@ void Player::OnTriggerEvent(Body* body)
 {
 	if (body->GetCollisionAttribute() == kCollisionAttributeGoal) {
 		isActive_ = false;
+	}
+	if (body->GetCollisionAttribute() == kCollisionAttributeSelect) {
+		isSelect_ = true;
 	}
 }
 

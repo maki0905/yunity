@@ -86,7 +86,9 @@ public:
 	void SetNearClip(float nearClip) { nearClip_ = nearClip; }
 	void SetFarClip(float farClip) { farClip_ = farClip; }
 	void SetTarget(WorldTransform* target) { target_ = target; }
-	void SetFixedAngle(Vector3 fixedAngle) { fixedAngle_ = fixedAngle; }
+	void SetFixedAngle(const Vector3& fixedAngle) { fixedAngle_ = fixedAngle; }
+	void SetFixedAxis(const Vector3& fixedAxis) { fixedAxis_ = fixedAxis; }
+	void SetOffset(const Vector3& offset) { offset_ = offset; }
 
 	// getter
 	ID3D12Resource* GetConstBuff() const { return constBuff_.Get(); }
@@ -96,6 +98,10 @@ public:
 	const Matrix4x4& GetProjectionMatrix() const { return projectionMatrix_; }
 	const Vector3& GetRotate()const { return transform_.rotate; }
 	const Vector3& GetTranslate()const { return transform_.translate; }
+	WorldTransform* GetTarget() { return target_; }
+	Vector3 GetFixedAngle() { return fixedAngle_; }
+	Vector3 GetFixedAxis() { return fixedAxis_; }
+	Vector3 GetOffset() { return offset_; }
 private:
 	Vector3 Offset();
 
@@ -114,6 +120,8 @@ private:
 
 	WorldTransform* target_;
 	Vector3 fixedAngle_;
+	Vector3 fixedAxis_;
+	Vector3 offset_;
 
 #pragma region ビュー行列の設定
 	EulerTransform transform_;
