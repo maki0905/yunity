@@ -193,6 +193,7 @@ void RenderTexture::Copy()
 	}
 	commandList_->SetGraphicsRootSignature(rootSignature_->GetSignature());
 	commandList_->SetPipelineState(pipelineState_->GetPipelineStateObject());
+	commandList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 	if (selectedFlag_) {
 		postEffect_->SetGraphicsRootDescriptorTable(PostEffect::RootBindings::kTexture, finIndex);
 		postEffect_->SetGraphicsRootDescriptorTable(PostEffect::RootBindings::kDepthTexture, finIndex);

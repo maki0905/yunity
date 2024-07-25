@@ -101,6 +101,5 @@ void TitleScene::Draw3D()
 
 void TitleScene::DrawFront()
 {
-	sprite_->Draw();
 }
 

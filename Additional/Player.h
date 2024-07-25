@@ -9,7 +9,7 @@
 #include "WorldTransform.h"
 #include "Object3D.h"
 #include "Sprite.h"
-
+#include "Score.h"
 
 
 class Player : public Object3D
@@ -76,8 +76,6 @@ private:
 	bool isSelect_;
 
 	// スコア
-	std::unique_ptr<Sprite> scoreBackground_;
-	std::unique_ptr<Sprite> scoreNumber_;
-
+	std::unique_ptr<Score> scoreUI_;
 };
 

@@ -80,6 +80,9 @@ void Player::Initialize(Camera* camera, World* world)
 
 	Input::GetInstance()->GetJoystickState(0, pad_);
 
+	scoreUI_ = std::make_unique<Score>();
+	scoreUI_->Initialize();
+
 }
 
 void Player::Update()
@@ -388,6 +391,15 @@ void Player::Update()
 	isFloot_ = true;
 	isSelect_ = false;
 
+	if (Input::GetInstance()->TriggerKey(DIK_UP)) {
+		scoreUI_->AddScore(10);
+	}
+	if (Input::GetInstance()->TriggerKey(DIK_DOWN)) {
+		scoreUI_->AddScore(100);
+	}
+
+	scoreUI_->Update();
+
 #ifdef _DEBUG
 	ImGui::Begin("Player");
 	ImGui::DragFloat3("translate", &worldTransform_.translation_.x);
@@ -431,6 +443,7 @@ void Player::Draw()
 void Player::DrawUI()
 {
 	reticle_->Draw();
+	scoreUI_->Draw();
 }
 
 void Player::OnCollisionEvent(Body* body)

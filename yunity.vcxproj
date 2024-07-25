@@ -109,6 +109,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Additional\Block.cpp" />
     <ClCompile Include="Additional\BlockManager.cpp" />
     <ClCompile Include="Additional\Coin.cpp" />
+    <ClCompile Include="Additional\Score.cpp" />
     <ClCompile Include="Additional\StartObject.cpp" />
     <ClCompile Include="Engine\3D\BaseParticle.cpp" />
     <ClCompile Include="Engine\3D\CameraManager.cpp" />
@@ -189,6 +190,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Additional\BlockManager.h" />
     <ClInclude Include="Additional\Coin.h" />
     <ClInclude Include="Additional\EndObject.h" />
+    <ClInclude Include="Additional\Score.h" />
     <ClInclude Include="Additional\StartObject.h" />
     <ClInclude Include="Engine\3D\BaseParticle.h" />
     <ClInclude Include="Engine\3D\CameraManager.h" />
