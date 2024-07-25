@@ -17,7 +17,7 @@ void Score::Initialize()
 		scoreNumber_[index]->SetSize({ 44.0f, 44.0f });
 		scoreNumber_[index]->SetTextureRect({ 0.0f,384.0f }, { 64.0f, 64.0f });
 	}
-	score_ = 10;
+	score_ = 0;
 	digit_ = 1;
 }
 

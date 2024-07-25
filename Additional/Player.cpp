@@ -502,6 +502,9 @@ void Player::OnTriggerEvent(Body* body)
 	if (body->GetCollisionAttribute() == kCollisionAttributeSelect) {
 		isSelect_ = true;
 	}
+	if (body->GetCollisionAttribute() == kCollisionAttributeCoin) {
+		scoreUI_->AddScore(10);
+	}
 }
 
 void Player::ResetPos(const Vector3& pos)
