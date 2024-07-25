@@ -53,15 +53,18 @@ void GameManager::Draw()
 
 #pragma region 前景描画
 
-	sprite_->PreDraw(DirectXCore::GetInstance()->GetCommandList());
+	/*sprite_->PreDraw(DirectXCore::GetInstance()->GetCommandList());
 	SceneManager::GetInstance()->DrawFront();
-	sprite_->PostDraw();
+	sprite_->PostDraw();*/
 
 	DirectXCore::GetInstance()->PostDrawRenderTexture();
 #pragma endregion
 
 	DirectXCore::GetInstance()->PreDrawSwapchain();
 
+	sprite_->PreDraw(DirectXCore::GetInstance()->GetCommandList());
+	SceneManager::GetInstance()->DrawFront();
+	sprite_->PostDraw();
 
 	// ImGui描画
 	ImGuiManager::GetInstance()->Draw();

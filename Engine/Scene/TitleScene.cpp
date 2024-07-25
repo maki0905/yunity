@@ -16,7 +16,9 @@ void TitleScene::Initialize()
 	world_->Initialize({ 0.0f, -9.8f, 0.0f });
 
 	sprite_ = std::make_unique<Sprite>();
-	sprite_.reset(Sprite::Create(TextureManager::GetInstance()->Load("TITLE.png"), { 320.0f, 260.0f }));
+	sprite_.reset(Sprite::Create(TextureManager::GetInstance()->Load("ScoreBackground.png"), { 0.0f, 0.0f }));
+	sprite_->SetSize({ 128.0f, 128.0f });
+	sprite_->SetTextureRect({ 0.0f, 576.0f}, {64.0f, 64.0f});
 
 	model_ = std::make_unique<Model>();
 	model_.reset(ModelManager::GetInstance()->CreateModel(obj, "Cube"));
@@ -99,6 +101,6 @@ void TitleScene::Draw3D()
 
 void TitleScene::DrawFront()
 {
-	//sprite_->Draw();
+	sprite_->Draw();
 }
 

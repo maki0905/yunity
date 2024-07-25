@@ -76,6 +76,7 @@ void DirectXCore::Finalize()
 
 void DirectXCore::PreDrawRenderTexture()
 {
+	//commandList_->BarrierChange(RenderTexture::GetInstance()->GetResource(), D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_RENDER_TARGET);
 	RenderTexture::GetInstance()->OMSetRenderTargets();
 	RenderTexture::GetInstance()->ClearRenderTargetView();
 	RenderTexture::GetInstance()->ClearDepthStencilView();
@@ -95,6 +96,7 @@ void DirectXCore::PreDrawSwapchain()
 
 	commandList_->OMSetRenderTargets(&backBuffer_->GetCpuDescHandleRTV()[swapChain_->GetSwapChain()->GetCurrentBackBufferIndex()]);
 	commandList_->ClearRenderTargetView(Vector4(0.1f, 0.25f, 0.5f, 0.0f), backBuffer_->GetCpuDescHandleRTV()[swapChain_->GetSwapChain()->GetCurrentBackBufferIndex()]);
+	commandList_->ClearDepthStencilView(RenderTexture::GetInstance()->GetDepthBuffer()->GetDescriptorHeap());
 	commandList_->RSSetViewports(float(windowWidth_), float(windowHeight_));
 	commandList_->RSSetScissorRects(windowWidth_, windowHeight_);
 	RenderTexture::GetInstance()->Copy();

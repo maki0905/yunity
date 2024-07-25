@@ -75,5 +75,9 @@ private:
 
 	bool isSelect_;
 
+	// スコア
+	std::unique_ptr<Sprite> scoreBackground_;
+	std::unique_ptr<Sprite> scoreNumber_;
+
 };
 
