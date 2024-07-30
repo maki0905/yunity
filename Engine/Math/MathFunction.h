@@ -46,6 +46,9 @@ inline Vector2 Abs(const Vector2& v) {
     return Vector2(Abs(v.x), Abs(v.y));
 }
 
+float DegToRad();
+float RadToDeg();
+
 Vector2 Add(const Vector2& v1, const Vector2& v2);
 Vector2 Subtract(const Vector2& v1, const Vector2& v2);
 Vector2 Multiply(float k, const Vector2& v);
@@ -78,6 +81,8 @@ Vector3 Cross(const Vector3& v1, const Vector3& v2);
 Vector3 GetXAxis(const Matrix4x4& m);
 Vector3 GetYAxis(const Matrix4x4& m);
 Vector3 GetZAxis(const Matrix4x4& m);
+
+Vector3 ConvertToRadians(const Vector3& v);
 
 // 行列の加法
 Matrix4x4 Add(const Matrix4x4& m1, const Matrix4x4& m2);

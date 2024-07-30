@@ -106,8 +106,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Additional\Block.cpp" />
-    <ClCompile Include="Additional\BlockManager.cpp" />
     <ClCompile Include="Additional\Coin.cpp" />
     <ClCompile Include="Additional\Score.cpp" />
     <ClCompile Include="Additional\StartObject.cpp" />
@@ -130,6 +128,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Engine\Base\Framework.cpp" />
     <ClCompile Include="Engine\Core\GraphicsCommon.cpp" />
     <ClCompile Include="Engine\Core\GraphicsPipelineManager.cpp" />
+    <ClCompile Include="Engine\EventTrigger.cpp" />
     <ClCompile Include="Engine\Format.cpp" />
     <ClCompile Include="Engine\LevelEditor.cpp" />
     <ClCompile Include="Engine\Object3D.cpp" />
@@ -186,8 +185,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Additional\MoveFloor.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Additional\Block.h" />
-    <ClInclude Include="Additional\BlockManager.h" />
     <ClInclude Include="Additional\Coin.h" />
     <ClInclude Include="Additional\EndObject.h" />
     <ClInclude Include="Additional\Score.h" />
@@ -212,6 +209,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\Base\Framework.h" />
     <ClInclude Include="Engine\Core\GraphicsCommon.h" />
     <ClInclude Include="Engine\Core\GraphicsPipelineManager.h" />
+    <ClInclude Include="Engine\EventTrigger.h" />
     <ClInclude Include="Engine\Format.h" />
     <ClInclude Include="Engine\Keyframe.h" />
     <ClInclude Include="Engine\LevelData.h" />

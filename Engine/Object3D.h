@@ -27,7 +27,9 @@ public:
 	void SetCenter(const Vector3& center) { center_ = center; }
 	void SetCamera(Camera* camera) { 
 		camera_ = camera; 
-		model_->SetCamera(camera);
+		if (model_) {
+			model_->SetCamera(camera);
+		}
 	}
 	Vector3 GetSize() { return size_; }
 	Vector3 GetCenter() { return center_; }
@@ -35,6 +37,7 @@ public:
 	Model* GetModel() { return model_.get(); }
 	Model* GetModel(const std::string& modelName) { return models_[modelName].get(); }
 	void SetModel(const std::string& modelName, Model* model);
+	Vector3 GetColliderCenter() { return Add(GetMatWorldTranslation(), center_); }
 
 protected:
 	WorldTransform worldTransform_;

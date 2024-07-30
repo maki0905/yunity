@@ -1,13 +1,19 @@
 #pragma once
 
+#include <string>
+#include "EventTrigger.h"
+
 class CommonData {
+
 public:
 	static CommonData* GetInstance();
 
 	void Initialize();
 
+	std::string GetStageName();
+
 	bool isGoal_;
-	int stageNum_;
+	EventTrigger::SerialNumber stageNum_;
 
 
 

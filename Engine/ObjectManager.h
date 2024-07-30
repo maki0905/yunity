@@ -8,6 +8,7 @@
 #include "Camera.h"
 #include "World.h"
 #include "MoveFloor.h"
+#include "EventTrigger.h"
 
 class ObjectManager {
 public:

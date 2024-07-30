@@ -72,7 +72,7 @@ void Player::Initialize(Camera* camera, World* world)
 	apexWorldTransform_.Initialize();
 
 	isWire_ = false;
-	isJunp_ = false;
+	isJunp_ = true;
 	isFloot_ = true;
 	isMoving_ = false;
 	isSelect_ = false;
@@ -367,9 +367,6 @@ void Player::Update()
 				Vector3 t2 = worldTransform_.parent_->GetMatWorldTranslation();
 				worldTransform_.translation_ = Add(t, t2);
 				worldTransform_.parent_ = nullptr;
-				/*worldTransform_.translation_ = Add(worldTransform_.translation_, worldTransform_.parent_->GetMatWorldTranslation());
-				worldTransform_.parent_ = nullptr;
-				isMoving_ = false;*/
 			}
 			else if (collisionBody_) {
 				if (collisionBody_->GetCollisionAttribute() != kCollisionAttributeMoveFloor) {
@@ -379,9 +376,6 @@ void Player::Update()
 					Vector3 t2 = worldTransform_.parent_->GetMatWorldTranslation();
 					worldTransform_.translation_ = Add(t, t2);
 					worldTransform_.parent_ = nullptr;
-					/*worldTransform_.translation_ = Add(worldTransform_.translation_, worldTransform_.parent_->GetMatWorldTranslation());
-					worldTransform_.parent_ = nullptr;
-					isMoving_ = false;*/
 				}
 			}
 		}
@@ -420,12 +414,6 @@ void Player::Update()
 
 void Player::Draw()
 {
-	/*if (RayCast({ 0.0f, 0.0f, 0.0f }, { 1.0f, 0.0f, 0.0f }, nullptr, 5.0f, GetWorld())) {
-		model_->Draw(worldTransform_, TextureManager::GetInstance()->Load("uvChecker.png"));
-	}
-	else {
-		model_->Draw(worldTransform_);
-	}*/
 	models_["player"]->Draw(worldTransform_);
 	//model_->Draw(worldTransform_);
 	//raticle_->Draw(reticleWorldTransform_, TextureManager::GetInstance()->Load("uvChecker.png"));
@@ -436,8 +424,6 @@ void Player::Draw()
 		line_->Draw(worldTransform_.translation_, apexWorldTransform_.GetMatWorldTranslation(), { 0.0f, 0.0f, 0.0f, 1.0f });
 		apex_->Draw(apexWorldTransform_, TextureManager::GetInstance()->Load("purple1x1.png"));
 	}
-	//reticle_->Draw();
-	//Collider::HitBox();
 }
 
 void Player::DrawUI()
@@ -457,6 +443,10 @@ void Player::OnCollisionEvent(Body* body)
 			}
 
 		}
+	}
+
+	if (body->GetCollisionAttribute() == kCollisionAttributeSpike) {
+		isActive_ = false;
 	}
 
 	if (body->GetCollisionAttribute() == kCollisionAttributeMoveFloor) {

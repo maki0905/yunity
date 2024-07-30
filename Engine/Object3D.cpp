@@ -110,7 +110,9 @@ void Object3D::Draw()
 		model_->Draw(worldTransform_);
 	}*/
 	//model_->Draw(worldTransform_, TextureManager::GetInstance()->Load("trampoline.png"));
-	model_->Draw(worldTransform_/*,texture_*/);
+	if (model_) {
+		model_->Draw(worldTransform_/*,texture_*/);
+	}
 	Collider::HitBox(camera_);
 }
 

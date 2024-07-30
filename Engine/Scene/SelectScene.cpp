@@ -21,7 +21,7 @@ void SelectScene::Initialize()
 	player_->Initialize(camera_/*camera_.get()*/, world_.get());
 	player_->SetPosition({ -35.0f, -3.5f, 0.0f });
 	//camera_->SetTarget(player_->GetWorldTransform());
-	ObjectManager::GetInstance()->Load("select", camera_/*camera_.get()*/, world_.get());
+	ObjectManager::GetInstance()->Load("select1", camera_/*camera_.get()*/, world_.get());
 
 	/*sprite_ = std::make_unique<Sprite>();
 	sprite_.reset(Sprite::Create(TextureManager::GetInstance()->Load("SELECT.png"), { 320.0f, 260.0f }));*/
@@ -81,7 +81,7 @@ void SelectScene::DrawBack()
 
 void SelectScene::Draw3D()
 {
-	ObjectManager::GetInstance()->Draw("select");
+	ObjectManager::GetInstance()->Draw("select1");
 	player_->Draw();
 }
 

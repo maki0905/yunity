@@ -8,6 +8,7 @@
 #include "Model.h"
 #include "World.h"
 #include "Player.h"
+#include "Skydome.h"
 
 class TitleScene : public IScene
 {
@@ -30,6 +31,9 @@ private:
 	std::unique_ptr<World> world_;
 	std::unique_ptr<Player> player_;
 	std::unique_ptr<Object3D> obj_;
+	std::unique_ptr<Skydome> skydome_;
+	float k = 0.5f;
+	float i = 0.0f;
 	//std::unique_ptr<Model> model_ = nullptr;
 };
 

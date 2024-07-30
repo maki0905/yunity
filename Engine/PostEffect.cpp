@@ -229,12 +229,13 @@ void PostEffect::SetMaterialData(uint32_t index)
 
 void PostEffect::Adjustment()
 {
+#ifdef _DEBUG
 	ImGui::Begin("PostEffect");
 	ImGui::DragFloat ("Hue", &materialData_[static_cast<uint32_t>(PostEffects::kHSVFilter)]->hue, 0.01f, -1.0f, 1.0f);
 	ImGui::DragFloat("Saturation", &materialData_[static_cast<uint32_t>(PostEffects::kHSVFilter)]->saturation, 0.01f, -1.0f, 1.0f);
 	ImGui::DragFloat("Value", &materialData_[static_cast<uint32_t>(PostEffects::kHSVFilter)]->value, 0.01f, -1.0f, 1.0f);
 	ImGui::End();
-
+#endif
 }
 
 void PostEffect::CreateResorce()

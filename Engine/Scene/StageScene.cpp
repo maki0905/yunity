@@ -6,6 +6,7 @@
 #include "ImGuiManager.h"
 #include "SceneManager.h"
 #include "ModelManager.h"
+#include "CommonData.h"
 
 void StageScene::Initialize()
 {
@@ -80,6 +81,7 @@ void StageScene::Initialize()
 	//endWT_.translation_ = { 10.0f, 3.0f, 0.0f };
 	//player_->ResetPos(startWT_.translation_);
 
+	stageName_ = CommonData::GetInstance()->GetStageName();
 	ObjectManager::GetInstance()->Load(stageName_, camera_/*camera_.get()*/, world_.get());
 	startWT_.translation_ = ObjectManager::GetInstance()->GetPos(stageName_, "startBox");
 	//ObjectManager::GetInstance()->Load("TL1", camera_.get(), world_.get());
@@ -141,10 +143,12 @@ void StageScene::Update()
 	//}*/
 	world_->Solve();
 
+#ifdef _DEBUG
 	ImGui::Begin("Coin");
 	Vector3 velocity = coin_->GetVelocity();
 	ImGui::DragFloat3("velocity", &velocity.x);
 	ImGui::End();
+#endif
 
 	skyboxWorldTransform_.UpdateMatrix();
 

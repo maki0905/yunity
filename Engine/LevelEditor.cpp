@@ -4,7 +4,7 @@
 #include "imgui/imgui.h"
 #include <fstream>
 #include <Windows.h>
-
+#include "MathFunction.h"
 
 LevelEditor* LevelEditor::GetInstance()
 {
@@ -86,6 +86,76 @@ void LevelEditor::LoadObjectRecursive(LevelData* levelData, nlohmann::json deser
 			objectData.translation.y = (float)transform["translation"][2];
 			objectData.translation.z = (float)transform["translation"][1];
 			// 回転角
+			objectData.rotation.x = -(float)transform["rotation"][0] * DegToRad();
+			objectData.rotation.y = -(float)transform["rotation"][2] * DegToRad();
+			objectData.rotation.z = -(float)transform["rotation"][1] * DegToRad();
+			// スケーリング
+			objectData.scaling.x = (float)transform["scaling"][0];
+			objectData.scaling.y = (float)transform["scaling"][2];
+			objectData.scaling.z = (float)transform["scaling"][1];
+
+			// 当たり判定の読み込み
+			if (object.contains("collider")) {
+				nlohmann::json& collider = object["collider"];
+				if (collider["type"] == "BOX") {
+					if (objectData.rotation.x == 0.0f && objectData.rotation.y == 0.0f && objectData.rotation.z == 0.0f) {
+						objectData.shape = Collider::Shape::kAABB;
+					}
+					else {
+						objectData.shape = Collider::Shape::kOBB;
+					}
+				}
+				else if (collider["type"] == "SPHERE") {
+
+				}
+
+				// サイズ
+				objectData.size.x = (float)collider["size"][0];
+				objectData.size.y = (float)collider["size"][2];
+				objectData.size.z = (float)collider["size"][1];
+				// 位置
+				objectData.center.x = (float)collider["center"][0];
+				objectData.center.y = (float)collider["center"][2];
+				objectData.center.z = (float)collider["center"][1];
+				// 衝突するかどうか
+				objectData.isTrigger = collider["isTrigger"];
+				// 属性
+				objectData.attribute = collider["attribute"];
+			}
+
+			if (object.contains("body")) {
+				nlohmann::json& body = object["body"];
+				objectData.mass = (float)body["mass"];
+				objectData.drag = (float)body["drag"];
+				objectData.miu = (float)body["miu"];
+				objectData.frictionCombine = (uint32_t)body["frictionCombine"];
+				objectData.bounciness = (float)body["bounciness"];
+				objectData.bounceCombine = (uint32_t)body["bounceCombine"];
+			}
+
+			if (object.contains("eventtrigger")) {
+				nlohmann::json& eventtrigger = object["eventtrigger"];
+				objectData.serialNumber = (uint32_t)eventtrigger["serialnumber"];
+			}
+
+		}
+
+		// EMPTY
+		if (type.compare("EMPTY") == 0) {
+			// 要素追加
+			levelData->objects.emplace_back(LevelData::ObjectData{});
+			// 今追加した要素の参照を得る
+			LevelData::ObjectData& objectData = levelData->objects.back();
+
+			objectData.empth = true;
+
+			// トランスフォームのパラメーター読み込み
+			nlohmann::json& transform = object["transform"];
+			// 平行移動
+			objectData.translation.x = (float)transform["translation"][0];
+			objectData.translation.y = (float)transform["translation"][2];
+			objectData.translation.z = (float)transform["translation"][1];
+			// 回転角
 			objectData.rotation.x = -(float)transform["rotation"][0];
 			objectData.rotation.y = -(float)transform["rotation"][2];
 			objectData.rotation.z = -(float)transform["rotation"][1];
@@ -119,6 +189,8 @@ void LevelEditor::LoadObjectRecursive(LevelData* levelData, nlohmann::json deser
 				objectData.center.z = (float)collider["center"][1];
 				// 衝突するかどうか
 				objectData.isTrigger = collider["isTrigger"];
+				// 属性
+				objectData.attribute = (uint32_t)collider["attribute"];
 			}
 
 			if (object.contains("body")) {
@@ -129,6 +201,11 @@ void LevelEditor::LoadObjectRecursive(LevelData* levelData, nlohmann::json deser
 				objectData.frictionCombine = (uint32_t)body["frictionCombine"];
 				objectData.bounciness = (float)body["bounciness"];
 				objectData.bounceCombine = (uint32_t)body["bounceCombine"];
+			}
+
+			if (object.contains("eventtrigger")) {
+				nlohmann::json& eventtrigger = object["eventtrigger"];
+				objectData.serialNumber = (uint32_t)eventtrigger["serialnumber"];
 			}
 
 		}

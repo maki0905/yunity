@@ -15,3 +15,5 @@ const uint32_t kCollisionAttributeMoveFloor = 0b1 << 4;
 const uint32_t kCollisionAttributeCoin = 0b1 << 5;
 // セレクト
 const uint32_t kCollisionAttributeSelect = 0b1 << 6;
+// トゲ
+const uint32_t kCollisionAttributeSpike = 0b1 << 7;

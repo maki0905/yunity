@@ -6,6 +6,16 @@
 #include <math.h>
 #include <ranges>
 
+float DegToRad()
+{
+	return 0.0174532924f;
+}
+
+float RadToDeg()
+{
+	return 57.29578f;
+}
+
 Vector2 Add(const Vector2& v1, const Vector2& v2)
 {
 	Vector2 result;
@@ -169,6 +179,13 @@ Vector3 GetYAxis(const Matrix4x4& m)
 Vector3 GetZAxis(const Matrix4x4& m)
 {
 	return Vector3(m.m[2][0], m.m[2][1], m.m[2][2]);
+}
+
+Vector3 ConvertToRadians(const Vector3& v)
+{
+	Vector3 result = Multiply(float(M_PI) / 180.0f, v);
+
+	return result;
 }
 
 Matrix4x4 Add(const Matrix4x4& m1, const Matrix4x4& m2) {
@@ -482,9 +499,9 @@ Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rot, const Vecto
 	Matrix4x4 rotateY = MakeRotateYMatrix(rot.y);
 	// Z軸周り回転行列の作成
 	Matrix4x4 rotateZ = MakeRotateZMatrix(rot.z);
-	// 回転行列の合成(Z回転 * X回転 * Y回転)
-	Matrix4x4 rotateMatrix = Multiply(Multiply(rotateZ, rotateX), rotateY);
-
+	// 回転行列の合成(X回転 * Y回転 * Z回転)
+	//Matrix4x4 rotateMatrix = Multiply(Multiply(rotateZ, rotateX), rotateY);
+	Matrix4x4 rotateMatrix = Multiply(rotateX,Multiply(rotateY, rotateZ));
 	// 平行移動行列の作成
 	Matrix4x4 translateMatrix = MakeTranslateMatrix(translate);
 

@@ -3,28 +3,6 @@
     "objects": [
         {
             "type": "MESH",
-            "name": "テキスト",
-            "transform": {
-                "translation": [
-                    0.0,
-                    0.0,
-                    17.0
-                ],
-                "rotation": [
-                    0.0,
-                    -0.0,
-                    0.0
-                ],
-                "scaling": [
-                    1.0,
-                    1.0,
-                    1.0
-                ]
-            },
-            "file_name": "TitleFont"
-        },
-        {
-            "type": "MESH",
             "name": "立方体",
             "transform": {
                 "translation": [
@@ -52,30 +30,44 @@
                     0.0
                 ],
                 "size": [
-                    110.0,
-                    23.0,
-                    20.0
+                    109.0,
+                    21.389999389648438,
+                    20.770000457763672
                 ],
                 "isTrigger": false,
                 "attribute": 1
-            },
-            "body": {
-                "mass": 0.0,
-                "drag": 0.05,
-                "miu": 0.5,
-                "frictionCombine": 1,
-                "bounciness": 0.0,
-                "bounceCombine": 0
             }
+        },
+        {
+            "type": "MESH",
+            "name": "円柱",
+            "transform": {
+                "translation": [
+                    0.0,
+                    0.0,
+                    -4.955874919891357
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "SelectPoint"
         },
         {
             "type": "EMPTY",
             "name": "エンプティ",
             "transform": {
                 "translation": [
-                    -0.2616277039051056,
-                    -0.023350238800048828,
-                    0.5620558261871338
+                    0.0,
+                    0.0,
+                    -4.165038108825684
                 ],
                 "rotation": [
                     0.0,
@@ -96,12 +88,15 @@
                     0.0
                 ],
                 "size": [
-                    2.0,
-                    2.0,
+                    5.649999618530273,
+                    6.400000095367432,
                     2.0
                 ],
-                "isTrigger": false,
-                "attribute": 1
+                "isTrigger": true,
+                "attribute": 6
+            },
+            "eventtrigger": {
+                "serialnumber": 0
             }
         }
     ]
