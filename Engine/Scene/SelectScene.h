@@ -11,6 +11,11 @@
 
 class SelectScene : public IScene
 {
+	struct Easing {
+		bool flag;
+		float t;
+		Vector3 scale;
+	};
 public:
 	void Initialize() override;
 	void Update() override;
@@ -24,9 +29,14 @@ private:
 	XINPUT_STATE pad_;
 	XINPUT_STATE prePad_;
 
-	WorldTransform worldTransform_;
+	WorldTransform worldTransform_[3];
 	std::unique_ptr<Sprite> sprite_ = nullptr;
-	std::unique_ptr<Model> model_ = nullptr;
+	std::unique_ptr<Model> models_[3];
+	bool isActiveTV_[3];
+	uint32_t preNum_;
+	Easing grow_[3];
+	Easing shrink_[3];
+	uint32_t textureTV_[3];
 	std::unique_ptr<World> world_;
 	std::unique_ptr<Player> player_;
 };

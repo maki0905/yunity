@@ -13,7 +13,7 @@ public:
 	std::string GetStageName();
 
 	bool isGoal_;
-	EventTrigger::SerialNumber stageNum_;
+	uint32_t stageNum_ = -1;
 
 
 

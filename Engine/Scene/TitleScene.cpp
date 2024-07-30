@@ -34,9 +34,9 @@ void TitleScene::Initialize()
 	obj_->SetCollisionAttribute(kCollisionAttributeSpike);
 	world_->Add(obj_.get());*/
 
-	//player_ = std::make_unique<Player>();
-	//player_->Initialize(camera_/*camera_.get()*/, world_.get());
-	//camera_->SetTarget(nullptr);  
+	player_ = std::make_unique<Player>();
+	player_->Initialize(camera_/*camera_.get()*/, world_.get());
+	camera_->SetTarget(nullptr);  
 
 	ObjectManager::GetInstance()->Load("title", camera_/*camera_.get()*/, world_.get());
 	//RenderTexture::GetInstance()->SelectPostEffect(PostEffects::kHSVFilter, true);
@@ -63,7 +63,7 @@ void TitleScene::Update()
 	Matrix4x4 rotateZ = MakeRotateZMatrix(rotate.z);
 	Matrix4x4 rotateXYZ = Multiply(rotateX, Multiply(rotateY, rotateZ));*/
 
-	/*player_->Update();
+	player_->Update();
 	if (player_->GetWorldTransform()->GetMatWorldTranslation().x >= 35.0f) {
 		SceneManager::GetInstance()->ChangeScene("SELECT");
 	}
@@ -72,7 +72,7 @@ void TitleScene::Update()
 		Vector3 velocity = player_->GetVelocity();
 		velocity.x *= -0.2f;
 		player_->SetVelocity(velocity);
-	}*/
+	}
 	/*if (Input::GetInstance()->IsControllerConnected()) {
 		if (Input::GetInstance()->GetJoystickState(0, pad_)) {
 			if ((pad_.Gamepad.wButtons & XINPUT_GAMEPAD_A) && !(prePad_.Gamepad.wButtons & XINPUT_GAMEPAD_A)) {
@@ -118,7 +118,7 @@ void TitleScene::Draw3D()
 {
 	skydome_->Draw();
 	ObjectManager::GetInstance()->Draw("title");
-	//player_->Draw();
+	player_->Draw();
 	model_->Draw(worldTransform_);
 	//obj_->Draw();
 }

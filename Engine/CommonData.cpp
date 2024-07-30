@@ -19,13 +19,13 @@ std::string CommonData::GetStageName()
 
 	switch (stageNum_)
 	{
-	case EventTrigger::SerialNumber::kStage1:
+	case 0:
 		result = "stage1";
 		break;
-	case EventTrigger::SerialNumber::kStage2:
+	case 1:
 		result = "stage2";
 		break;
-	case EventTrigger::SerialNumber::kStage3:
+	case 2:
 		result = "stage3";
 		break;
 	}
