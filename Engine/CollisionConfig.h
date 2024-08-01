@@ -17,3 +17,7 @@ const uint32_t kCollisionAttributeCoin = 0b1 << 5;
 const uint32_t kCollisionAttributeSelect = 0b1 << 6;
 // トゲ
 const uint32_t kCollisionAttributeSpike = 0b1 << 7;
+// TV
+const uint32_t kCollisionAttributeTV1= 0b1 << 8;
+const uint32_t kCollisionAttributeTV2 = 0b1 << 9;
+const uint32_t kCollisionAttributeTV3 = 0b1 << 10;

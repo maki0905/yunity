@@ -90,15 +90,7 @@ void StageScene::Initialize()
 	skydome_ = std::make_unique<Skydome>();
 	skydome_->Initialize(camera_/*camera_.get()*/, {5.0f, 5.0f, 5.0f});
 
-	coin_ = std::make_unique<Coin>();
-	coin_->SetPosition({ 3.0f, 3.0f, 0.0f });
-	coin_->SetSize({ 1.0f, 1.0f, 1.0f });
-	coin_->SetIsTrigger(false);
-	coin_->Initialize(ModelManager::GetInstance()->CreateModel(obj, "Coin"), world_.get(), Collider::Shape::kSphere);
-	coin_->SetIsActive(true);
-	coin_->SetCamera(camera_);
-	coin_->SetMass(1.0f);
-	world_->Add(coin_.get());
+	CommonData::GetInstance()->scene_ = Scene::kStage;
 
 }
 
@@ -131,24 +123,10 @@ void StageScene::Update()
 
 	player_->Update();
 	ObjectManager::GetInstance()->Update(stageName_);
-	coin_->Update();
-	if (Input::GetInstance()->TriggerKey(DIK_RIGHT)) {
-		coin_->AddForce(Vector3{1.0f, 0.0f, 0.0f}, 1);
-	}
-	if (!coin_->GetIsActive()) {
-		world_->Take(coin_.get());
-	}
 	///*for (auto& object : ObjectManager::GetInstance()->GetObjects("TL1")) {
 	//	object->Update();
 	//}*/
 	world_->Solve();
-
-#ifdef _DEBUG
-	ImGui::Begin("Coin");
-	Vector3 velocity = coin_->GetVelocity();
-	ImGui::DragFloat3("velocity", &velocity.x);
-	ImGui::End();
-#endif
 
 	skyboxWorldTransform_.UpdateMatrix();
 
@@ -170,6 +148,16 @@ void StageScene::Update()
 	if (!player_->GetActive()) {
 		player_->ResetPos(startWT_.translation_);
 	}
+
+	if (CommonData::GetInstance()->isGoal_) {
+		CommonData::GetInstance()->isGoal_ = false;
+		SceneManager::GetInstance()->ChangeScene("SELECT");
+
+
+	}
+
+#ifdef _DEBUG
+#endif
 
 
 }
@@ -199,9 +187,6 @@ void StageScene::Draw3D()
 	//	object->Draw();
 	//}*/
 	player_->Draw();
-	if (coin_->GetIsActive()) {
-		coin_->Draw();
-	}
 	
 
 	//player_->Draw();

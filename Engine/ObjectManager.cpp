@@ -43,6 +43,7 @@ void ObjectManager::Load(const std::string& fileName, Camera* camera, World* wor
 			newObject->SetScale(object.scaling);
 			newObject->SetSize(object.size);
 			newObject->SetCenter(object.center);
+			newObject->SetCollisionAttribute(0b1 << object.attribute);
 			newObject->SetIsTrigger(object.isTrigger);
 			newObject->SetMass(object.mass);
 			newObject->SetDrag(object.drag);
@@ -56,6 +57,28 @@ void ObjectManager::Load(const std::string& fileName, Camera* camera, World* wor
 			objects_[fileName].emplace_back(newObject);
 
 		}
+		else if (object.fileName == "TV") {
+			TV* newObject = new TV();
+			newObject->SetPosition(object.translation);
+			newObject->SetRotation(object.rotation);
+			newObject->SetScale(object.scaling);
+			newObject->SetSize(object.size);
+			newObject->SetCenter(object.center);
+			newObject->SetCollisionAttribute(0b1 << object.attribute);
+			newObject->SetIsTrigger(object.isTrigger);
+			newObject->SetMass(object.mass);
+			newObject->SetDrag(object.drag);
+			newObject->SetMiu(object.miu);
+			newObject->SetFirictionCombine(static_cast<Body::FrictionCombine>(object.frictionCombine));
+			newObject->SetBounciness(object.bounciness);
+			newObject->SetBounceCombine(static_cast<Body::BounceCombine>(object.bounceCombine));
+			newObject->Initialize(ModelManager::GetInstance()->CreateModel(obj, object.fileName), world, object.shape);
+			newObject->InitializeTexture();
+			newObject->SetCamera(camera);
+			world->Add(newObject);
+			objects_[fileName].emplace_back(newObject);
+
+		}
 		else if (object.serialNumber != -1) {
 			EventTrigger* newObject = new EventTrigger();
 			newObject->SetPosition(object.translation);
@@ -63,9 +86,9 @@ void ObjectManager::Load(const std::string& fileName, Camera* camera, World* wor
 			newObject->SetScale(object.scaling);
 			newObject->SetSize(object.size);
 			newObject->SetCenter(object.center);
+			newObject->SetCollisionAttribute(0b1 << object.attribute);
 			newObject->SetIsTrigger(object.isTrigger);
 			newObject->SetSerialNumber(object.serialNumber);
-			newObject->SetCollisionAttribute(0b1 << object.attribute);
 			newObject->Initialize(world, object.shape);
 			world->Add(newObject);
 			objects_[fileName].emplace_back(newObject);
@@ -92,7 +115,9 @@ void ObjectManager::Load(const std::string& fileName, Camera* camera, World* wor
 				newObject->Initialize(ModelManager::GetInstance()->CreateModel(obj, object.fileName), world, object.shape);
 			}
 			newObject->SetCamera(camera);
-			world->Add(newObject);
+			if (Length(object.size) > 0) {
+				world->Add(newObject);
+			}
 			objects_[fileName].emplace_back(newObject);
 		}
 	}

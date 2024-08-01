@@ -30,6 +30,7 @@ public:
 	void ResetPos(const Vector3& pos);
 
 	bool GetActive() { return isActive_; }
+	void SetSelect(bool isSelect) { isSelect_ = isSelect; }
 	bool GetSelect() { return isSelect_; }
 
 private:

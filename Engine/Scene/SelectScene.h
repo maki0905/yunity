@@ -8,6 +8,7 @@
 #include "Model.h"
 #include "World.h"
 #include "Player.h"
+#include "Skydome.h"
 
 class SelectScene : public IScene
 {
@@ -39,4 +40,5 @@ private:
 	uint32_t textureTV_[3];
 	std::unique_ptr<World> world_;
 	std::unique_ptr<Player> player_;
+	std::unique_ptr<Skydome> skydome_;
 };

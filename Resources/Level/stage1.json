@@ -3,10 +3,10 @@
     "objects": [
         {
             "type": "MESH",
-            "name": "立方体",
+            "name": "立方体.009",
             "transform": {
                 "translation": [
-                    0.0,
+                    26.36275291442871,
                     0.0,
                     0.0
                 ],
@@ -16,12 +16,12 @@
                     0.0
                 ],
                 "scaling": [
-                    7.215116500854492,
+                    8.354156494140625,
                     1.0,
                     1.0
                 ]
             },
-            "file_name": "Cube",
+            "file_name": "Floor",
             "collider": {
                 "type": "BOX",
                 "center": [
@@ -30,45 +30,20 @@
                     0.0
                 ],
                 "size": [
-                    2.0,
-                    2.0,
-                    2.0
-                ]
-            }
-        },
-        {
-            "type": "MESH",
-            "name": "立方体.001",
-            "transform": {
-                "translation": [
-                    147.01220703125,
-                    0.0,
-                    0.0
+                    8.0,
+                    8.0,
+                    8.0
                 ],
-                "rotation": [
-                    0.0,
-                    -0.0,
-                    0.0
-                ],
-                "scaling": [
-                    7.6211628913879395,
-                    1.0,
-                    1.0
-                ]
+                "isTrigger": false,
+                "attribute": 1
             },
-            "file_name": "Cube",
-            "collider": {
-                "type": "BOX",
-                "center": [
-                    0.0,
-                    0.0,
-                    0.0
-                ],
-                "size": [
-                    2.0,
-                    2.0,
-                    2.0
-                ]
+            "body": {
+                "mass": 0.0,
+                "drag": 0.05,
+                "miu": 1.0000001192092896,
+                "frictionCombine": 0,
+                "bounciness": 0.0,
+                "bounceCombine": 0
             }
         },
         {
@@ -76,7 +51,7 @@
             "name": "立方体.002",
             "transform": {
                 "translation": [
-                    27.895004272460938,
+                    93.4941635131836,
                     0.0,
                     0.0
                 ],
@@ -86,12 +61,12 @@
                     0.0
                 ],
                 "scaling": [
-                    1.0,
+                    8.354156494140625,
                     1.0,
                     1.0
                 ]
             },
-            "file_name": "Cube",
+            "file_name": "Floor",
             "collider": {
                 "type": "BOX",
                 "center": [
@@ -100,10 +75,20 @@
                     0.0
                 ],
                 "size": [
-                    2.0,
-                    2.0,
-                    2.0
-                ]
+                    8.0,
+                    8.0,
+                    8.0
+                ],
+                "isTrigger": false,
+                "attribute": 1
+            },
+            "body": {
+                "mass": 0.0,
+                "drag": 0.05,
+                "miu": 1.0,
+                "frictionCombine": 0,
+                "bounciness": 0.0,
+                "bounceCombine": 0
             }
         },
         {
@@ -111,7 +96,7 @@
             "name": "立方体.003",
             "transform": {
                 "translation": [
-                    54.88593292236328,
+                    161.01034545898438,
                     0.0,
                     0.0
                 ],
@@ -121,12 +106,12 @@
                     0.0
                 ],
                 "scaling": [
-                    1.0,
+                    8.354156494140625,
                     1.0,
                     1.0
                 ]
             },
-            "file_name": "Cube",
+            "file_name": "Floor",
             "collider": {
                 "type": "BOX",
                 "center": [
@@ -135,10 +120,20 @@
                     0.0
                 ],
                 "size": [
-                    2.0,
-                    2.0,
-                    2.0
-                ]
+                    8.0,
+                    8.0,
+                    8.0
+                ],
+                "isTrigger": false,
+                "attribute": 1
+            },
+            "body": {
+                "mass": 0.0,
+                "drag": 0.05,
+                "miu": 1.0,
+                "frictionCombine": 0,
+                "bounciness": 0.0,
+                "bounceCombine": 0
             }
         },
         {
@@ -146,7 +141,7 @@
             "name": "立方体.004",
             "transform": {
                 "translation": [
-                    80.23773193359375,
+                    252.73446655273438,
                     0.0,
                     0.0
                 ],
@@ -156,12 +151,12 @@
                     0.0
                 ],
                 "scaling": [
-                    1.0,
+                    8.354156494140625,
                     1.0,
                     1.0
                 ]
             },
-            "file_name": "Cube",
+            "file_name": "Floor",
             "collider": {
                 "type": "BOX",
                 "center": [
@@ -170,10 +165,20 @@
                     0.0
                 ],
                 "size": [
-                    2.0,
-                    2.0,
-                    2.0
-                ]
+                    8.0,
+                    8.0,
+                    8.0
+                ],
+                "isTrigger": false,
+                "attribute": 1
+            },
+            "body": {
+                "mass": 0.0,
+                "drag": 0.05,
+                "miu": 1.0,
+                "frictionCombine": 0,
+                "bounciness": 0.0,
+                "bounceCombine": 0
             }
         },
         {
@@ -181,9 +186,9 @@
             "name": "立方体.005",
             "transform": {
                 "translation": [
-                    100.39989471435547,
+                    60.06412887573242,
                     0.0,
-                    0.0
+                    7.574746131896973
                 ],
                 "rotation": [
                     0.0,
@@ -196,7 +201,7 @@
                     1.0
                 ]
             },
-            "file_name": "Cube",
+            "file_name": "Floor",
             "collider": {
                 "type": "BOX",
                 "center": [
@@ -205,10 +210,12 @@
                     0.0
                 ],
                 "size": [
-                    2.0,
-                    2.0,
-                    2.0
-                ]
+                    8.0,
+                    8.0,
+                    8.0
+                ],
+                "isTrigger": false,
+                "attribute": 1
             }
         },
         {
@@ -216,9 +223,9 @@
             "name": "立方体.006",
             "transform": {
                 "translation": [
-                    116.81684875488281,
+                    127.24989318847656,
                     0.0,
-                    0.0
+                    11.458087921142578
                 ],
                 "rotation": [
                     0.0,
@@ -228,10 +235,10 @@
                 "scaling": [
                     1.0,
                     1.0,
-                    1.0
+                    1.9073749780654907
                 ]
             },
-            "file_name": "Cube",
+            "file_name": "Floor",
             "collider": {
                 "type": "BOX",
                 "center": [
@@ -240,10 +247,12 @@
                     0.0
                 ],
                 "size": [
-                    2.0,
-                    2.0,
-                    2.0
-                ]
+                    8.0,
+                    8.0,
+                    8.0
+                ],
+                "isTrigger": false,
+                "attribute": 1
             }
         },
         {
@@ -251,9 +260,9 @@
             "name": "立方体.007",
             "transform": {
                 "translation": [
-                    131.02719116210938,
+                    208.01719665527344,
                     0.0,
-                    0.0
+                    26.291967391967773
                 ],
                 "rotation": [
                     0.0,
@@ -261,12 +270,12 @@
                     0.0
                 ],
                 "scaling": [
-                    1.0,
+                    3.5260632038116455,
                     1.0,
                     1.0
                 ]
             },
-            "file_name": "Cube",
+            "file_name": "Floor",
             "collider": {
                 "type": "BOX",
                 "center": [
@@ -275,20 +284,44 @@
                     0.0
                 ],
                 "size": [
-                    2.0,
-                    2.0,
-                    2.0
-                ]
+                    8.0,
+                    8.0,
+                    8.0
+                ],
+                "isTrigger": false,
+                "attribute": 1
             }
         },
         {
             "type": "MESH",
-            "name": "立方体.008",
+            "name": "Cube.001",
             "transform": {
                 "translation": [
-                    13.551359176635742,
                     0.0,
-                    0.0
+                    0.0,
+                    10.097589492797852
+                ],
+                "rotation": [
+                    90.00000762939453,
+                    -0.0,
+                    -179.99998474121094
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "startBox"
+        },
+        {
+            "type": "MESH",
+            "name": "球.002",
+            "transform": {
+                "translation": [
+                    45.0,
+                    14.0,
+                    14.620694160461426
                 ],
                 "rotation": [
                     0.0,
@@ -301,29 +334,31 @@
                     1.0
                 ]
             },
-            "file_name": "Cube",
+            "file_name": "TV",
             "collider": {
                 "type": "BOX",
                 "center": [
                     0.0,
-                    0.0,
+                    -14.0,
                     0.0
                 ],
                 "size": [
-                    2.0,
-                    2.0,
-                    2.0
-                ]
+                    19.0,
+                    10.0,
+                    20.0
+                ],
+                "isTrigger": true,
+                "attribute": 8
             }
         },
         {
             "type": "MESH",
-            "name": "立方体.009",
+            "name": "球.001",
             "transform": {
                 "translation": [
-                    41.044403076171875,
-                    0.0,
-                    0.0
+                    86.52104187011719,
+                    14.0,
+                    14.810346603393555
                 ],
                 "rotation": [
                     0.0,
@@ -336,29 +371,31 @@
                     1.0
                 ]
             },
-            "file_name": "Cube",
+            "file_name": "TV",
             "collider": {
                 "type": "BOX",
                 "center": [
                     0.0,
-                    0.0,
+                    -14.0,
                     0.0
                 ],
                 "size": [
-                    2.0,
-                    2.0,
-                    2.0
-                ]
+                    19.0,
+                    10.0,
+                    20.0
+                ],
+                "isTrigger": true,
+                "attribute": 9
             }
         },
         {
             "type": "MESH",
-            "name": "立方体.010",
+            "name": "球.003",
             "transform": {
                 "translation": [
-                    68.16826629638672,
-                    0.0,
-                    0.0
+                    111.91938018798828,
+                    14.0,
+                    14.810346603393555
                 ],
                 "rotation": [
                     0.0,
@@ -371,29 +408,31 @@
                     1.0
                 ]
             },
-            "file_name": "Cube",
+            "file_name": "TV",
             "collider": {
                 "type": "BOX",
                 "center": [
                     0.0,
-                    0.0,
+                    -14.0,
                     0.0
                 ],
                 "size": [
-                    2.0,
-                    2.0,
-                    2.0
-                ]
+                    19.0,
+                    10.0,
+                    20.0
+                ],
+                "isTrigger": true,
+                "attribute": 10
             }
         },
         {
             "type": "MESH",
-            "name": "立方体.011",
+            "name": "Cube",
             "transform": {
                 "translation": [
-                    89.65509796142578,
+                    267.51806640625,
                     0.0,
-                    0.0
+                    8.94449234008789
                 ],
                 "rotation": [
                     0.0,
@@ -401,12 +440,12 @@
                     0.0
                 ],
                 "scaling": [
-                    1.0,
-                    1.0,
-                    1.0
+                    3.0,
+                    3.0,
+                    3.0
                 ]
             },
-            "file_name": "Cube",
+            "file_name": "endBox",
             "collider": {
                 "type": "BOX",
                 "center": [
@@ -415,10 +454,12 @@
                     0.0
                 ],
                 "size": [
-                    2.0,
-                    2.0,
-                    2.0
-                ]
+                    3.0,
+                    3.0,
+                    3.0
+                ],
+                "isTrigger": true,
+                "attribute": 3
             }
         }
     ]

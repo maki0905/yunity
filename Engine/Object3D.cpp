@@ -28,10 +28,11 @@ void Object3D::Initialize(Model* model, World* world, Collider::Shape shape)
 	model_ = std::make_unique<Model>();
 	model_.reset(model);
 	worldTransform_.Initialize();
+	worldTransform_.UpdateMatrix();
 	CreateBody(world, &worldTransform_, 0.0f);
-	CreateCollider(&worldTransform_, shape, CameraManager::GetInstance()->GetCamera(), size_);
+	CreateCollider(&worldTransform_, shape, CameraManager::GetInstance()->GetCamera());
 
-	if (model_->GetModelName() == "Trampoline") {
+	/*if (model_->GetModelName() == "Trampoline") {
 		SetCollisionAttribute(kCollisionAttributeTrampoline);
 	}
 	else if (model_->GetModelName() == "endBox") {
@@ -48,7 +49,7 @@ void Object3D::Initialize(Model* model, World* world, Collider::Shape shape)
 	}
 	else {
 		SetCollisionAttribute(kCollisionAttributeFloor);
-	}
+	}*/
 	isHit_ = false;
 	texture_ = TextureManager::GetInstance()->Load("uvChecker.png");
 }
@@ -79,7 +80,7 @@ void Object3D::Initialize(World* world, Collider::Shape shape)
 	camera_ = CameraManager::GetInstance()->GetCamera();
 	worldTransform_.Initialize();
 	CreateBody(world, &worldTransform_, 0.0f);
-	CreateCollider(&worldTransform_, shape, camera_, size_);
+	CreateCollider(&worldTransform_, shape, camera_);
 }
 
 void Object3D::Update()
@@ -113,7 +114,9 @@ void Object3D::Draw()
 	if (model_) {
 		model_->Draw(worldTransform_/*,texture_*/);
 	}
+#ifdef _DEBUG
 	Collider::HitBox(camera_);
+#endif
 }
 
 void Object3D::OnCollisionEvent(Body* body)

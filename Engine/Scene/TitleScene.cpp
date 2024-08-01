@@ -5,6 +5,7 @@
 #include "RenderTexture.h"
 #include "ObjectManager.h"
 #include "ImGuiManager.h"
+#include "CommonData.h"
 
 void TitleScene::Initialize()
 {
@@ -19,7 +20,7 @@ void TitleScene::Initialize()
 	sprite_->SetTextureRect({ 0.0f, 576.0f}, {64.0f, 64.0f});
 
 	model_ = std::make_unique<Model>();
-	model_.reset(ModelManager::GetInstance()->CreateModel(obj, "Signboard"));
+	model_.reset(ModelManager::GetInstance()->CreateModel(obj,/* ""*/"Signboard"));
 	//model_ = std::make_unique<Model>();
 	//ModelManager::GetInstance()->CreateModel(obj, "terrain");
 	model_->SetCamera(camera_/*camera_.get()*/);
@@ -51,6 +52,9 @@ void TitleScene::Initialize()
 
 	skydome_ = std::make_unique<Skydome>();
 	skydome_->Initialize(camera_/*camera_.get()*/, { 5.0f, 5.0f, 5.0f });
+
+	CommonData::GetInstance()->stageNum_ = -1;
+	CommonData::GetInstance()->scene_ = Scene::kTitle;
 }
 
 void TitleScene::Update()

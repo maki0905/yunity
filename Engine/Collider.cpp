@@ -3,6 +3,43 @@
 #include "ImGuiManager.h"
 #include <algorithm>
 
+void Collider::CreateCollider(WorldTransform* worldTransform, Shape shape, Camera* camera)
+{
+	shape_ = shape;
+	worldTransform_ = worldTransform;
+
+	switch (shape_)
+	{
+	case Collider::kSphere:
+		/*sphere_ = std::make_unique<Sphere>();
+		sphere_->center = { worldTransform_->matWorld_.m[3][0], worldTransform_->matWorld_.m[3][1], worldTransform_->matWorld_.m[3][2] };
+		sphere_->radius = 1.0f;*/
+		HitBox_.reset(PrimitiveDrawer::Create(PrimitiveDrawer::Type::kSphere));
+		//sphere_. = { .center = {worldTransform_->matWorld_.m[3][0], worldTransform_->matWorld_.m[3][1], worldTransform_->matWorld_.m[3][2]}, .radius = {1.0f}};
+		//sphere_ = sphere
+		break;
+	case Collider::kPlane:
+		break;
+	case Collider::kAABB:
+		/*aabb_ = std::make_unique<AABB>();
+		aabb_->min = Subtract(worldTransform_->translation_, Multiply(size_, worldTransform_->scale_));
+		aabb_->max = Add(worldTransform_->translation_, Multiply(size_, worldTransform_->scale_));*/
+		HitBox_.reset(PrimitiveDrawer::Create(PrimitiveDrawer::Type::kBox));
+		//aabb_->min = 
+		break;
+	case Collider::kCapsule:
+		break;
+	case Collider::kOBB:
+		break;
+	default:
+		break;
+	}
+	//worldTransform_->UpdateMatrix(RotationType::Euler);
+
+	HitBox_->SetCamera(camera);
+	worldTransform_HitBox_.Initialize();
+}
+
 void Collider::CreateCollider(WorldTransform* worldTransform, Shape shape, Camera* camera, const Vector3& size)
 {
 	shape_ = shape;
@@ -162,7 +199,7 @@ void Collider::HitBox()
 	//worldTransform_HitBox_.scale_ = Multiply(2.5f, worldTransform_->scale_);
 	worldTransform_HitBox_.scale_ = Multiply(size_, worldTransform_->scale_);
 	worldTransform_HitBox_.rotation_ = worldTransform_->rotation_;
-	worldTransform_HitBox_.translation_ = { worldTransform_->matWorld_.m[3][0], worldTransform_->matWorld_.m[3][1], worldTransform_->matWorld_.m[3][2] };
+	worldTransform_HitBox_.translation_ = GetColliderCenter();
 	worldTransform_HitBox_.UpdateMatrix();
 
 	HitBox_->Draw(worldTransform_HitBox_);
@@ -172,7 +209,7 @@ void Collider::HitBox(Camera* camera)
 {
 	worldTransform_HitBox_.scale_ = Multiply(size_, worldTransform_->scale_);
 	worldTransform_HitBox_.rotation_ = worldTransform_->rotation_;
-	worldTransform_HitBox_.translation_ = { worldTransform_->matWorld_.m[3][0], worldTransform_->matWorld_.m[3][1], worldTransform_->matWorld_.m[3][2] };
+	worldTransform_HitBox_.translation_ = GetColliderCenter();
 	worldTransform_HitBox_.UpdateMatrix();
 	HitBox_->SetCamera(camera);
 

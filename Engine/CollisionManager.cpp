@@ -47,8 +47,8 @@ void CollisionManager::CheckCollisionPair(Object3D* colliderA, Object3D* collide
 			break;
 		case Collider::Shape::kAABB:
 			if (IsCollision(
-				Sphere(colliderA->GetMatWorldTranslation(), colliderA->GetHitBoxSize().x * 2.0f),
-				AABB(Subtract(colliderB->GetMatWorldTranslation(), colliderB->GetHitBoxSize()), Add(colliderB->GetMatWorldTranslation(), colliderB->GetHitBoxSize())))) {
+				Sphere(colliderA->GetColliderCenter(), colliderA->GetHitBoxSize().x * 2.0f),
+				AABB(Subtract(colliderB->GetColliderCenter(), colliderB->GetHitBoxSize()), Add(colliderB->GetColliderCenter(), colliderB->GetHitBoxSize())))) {
 
 				if (colliderA->GetIsTrigger() || colliderB->GetIsTrigger()) {
 					colliderA->OnTriggerEvent(colliderB);
@@ -76,8 +76,8 @@ void CollisionManager::CheckCollisionPair(Object3D* colliderA, Object3D* collide
 		{
 		case Collider::Shape::kSphere:
 			if (IsCollision(
-				AABB{Subtract(colliderA->GetMatWorldTranslation(), colliderA->GetHitBoxSize()), Add(colliderA->GetMatWorldTranslation(), colliderA->GetHitBoxSize()) },
-				Sphere{colliderB->GetMatWorldTranslation(), colliderB->GetHitBoxSize().x * 2.0f})) {
+				AABB{Subtract(colliderA->GetColliderCenter(), colliderA->GetHitBoxSize()), Add(colliderA->GetColliderCenter(), colliderA->GetHitBoxSize()) },
+				Sphere{colliderB->GetColliderCenter(), colliderB->GetHitBoxSize().x * 2.0f})) {
 
 				if (colliderA->GetIsTrigger() || colliderB->GetIsTrigger()) {
 					colliderA->OnTriggerEvent(colliderB);
@@ -100,8 +100,8 @@ void CollisionManager::CheckCollisionPair(Object3D* colliderA, Object3D* collide
 			break;
 		case Collider::Shape::kAABB:
 			if (IsCollision(
-				AABB(Subtract(colliderA->GetMatWorldTranslation(), colliderA->GetHitBoxSize()), Add(colliderA->GetMatWorldTranslation(), colliderA->GetHitBoxSize())),
-				AABB(Subtract(colliderB->GetMatWorldTranslation(), colliderB->GetHitBoxSize()), Add(colliderB->GetMatWorldTranslation(), colliderB->GetHitBoxSize())))) {
+				AABB(Subtract(colliderA->GetColliderCenter(), colliderA->GetHitBoxSize()), Add(colliderA->GetColliderCenter(), colliderA->GetHitBoxSize())),
+				AABB(Subtract(colliderB->GetColliderCenter(), colliderB->GetHitBoxSize()), Add(colliderB->GetColliderCenter(), colliderB->GetHitBoxSize())))) {
 
 				if (colliderA->GetIsTrigger() || colliderB->GetIsTrigger()) {
 					colliderA->OnTriggerEvent(colliderB);

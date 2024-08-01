@@ -119,7 +119,10 @@ void RenderTexture::Initalize()
 
 void RenderTexture::Finalize()
 {
+#ifdef _DEBUG
 	postEffect_->Finalize();
+#endif // _DEBUG
+
 	if (rootSignature_) {
 		delete rootSignature_;
 		rootSignature_ = nullptr;

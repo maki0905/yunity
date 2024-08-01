@@ -28,7 +28,7 @@ public:
 	};
 
 public:
-
+	void CreateCollider(WorldTransform* worldTransform, Shape shape, Camera* camera);
 	void CreateCollider(WorldTransform* worldTransform, Shape shape, Camera* camera, const Vector3& size);
 
 	void HitBox();
@@ -59,6 +59,13 @@ public:
 	Capsule* GetCapsule() { return capsule_.get(); }
 	OBB* GetOBB() { return obb_.get(); }
 
+	void SetSize(const Vector3& size) { size_ = size; }
+	void SetCenter(const Vector3& center) { center_ = center; }
+	Vector3 GetSize() { return size_; }
+	Vector3 GetCenter() { return center_; }
+
+	Vector3 GetColliderCenter() { return Add(worldTransform_->GetMatWorldTranslation(), center_); }
+
 private:
 
 	WorldTransform* worldTransform_;
@@ -79,6 +86,7 @@ private:
 
 	// HitBoxタイプ
 	Shape shape_;
+	Vector3 center_;
 	Vector3 size_;
 	WorldTransform worldTransform_HitBox_;
 	std::unique_ptr<PrimitiveDrawer> HitBox_;

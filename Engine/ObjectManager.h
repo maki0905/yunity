@@ -9,6 +9,7 @@
 #include "World.h"
 #include "MoveFloor.h"
 #include "EventTrigger.h"
+#include "TV.h"
 
 class ObjectManager {
 public:

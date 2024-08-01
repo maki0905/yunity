@@ -4,10 +4,11 @@
 #include "ModelManager.h"
 #include "RayCast.h"
 #include "SceneManager.h"
+#include "CommonData.h"
 
 void Player::Initialize(Camera* camera, World* world)
 {
-	SetSize({ 2.5f, 2.5f, 2.5f });
+	SetSize({ 2.0f, 6.0f, 2.0f });
 	Object3D::Initialize(world, Collider::Shape::kAABB);
 	worldTransform_.rotateType_ = RotationType::Quaternion;
 	worldTransform_.translation_.y = 3.0f;
@@ -19,7 +20,7 @@ void Player::Initialize(Camera* camera, World* world)
 	/*worldTransform_.Initialize(RotationType::Quaternion);
 	worldTransform_.translation_.y = 3.0f;*/
 	models_["player"] = std::make_unique<Model>();
-	models_["player"].reset(ModelManager::GetInstance()->CreateModel(obj, "startBox"));
+	models_["player"].reset(ModelManager::GetInstance()->CreateModel(obj, "Player"));
 	models_["player"]->SetCamera(camera);
 
 	/*model_.reset(ModelManager::GetInstance()->CreateModel(obj, "startBox"));
@@ -280,7 +281,7 @@ void Player::Update()
 			if ((pad_.Gamepad.wButtons & XINPUT_GAMEPAD_A) && !(prePad_.Gamepad.wButtons & XINPUT_GAMEPAD_A)) {
 				if (!isJunp_) {
 					isJunp_ = true;
-					AddForce({ 0.0f, 20.0f, 0.0f }, 1);
+					AddForce({ 0.0f, 25.0f, 0.0f }, 1);
 				}
 			}
 
@@ -300,23 +301,25 @@ void Player::Update()
 			isHit = RayCast(worldTransform_.translation_, direction, &hit, lenght, GetWorld(), kCollisionAttributePlayer);
 
 			// ワイヤー
-			if ((pad_.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) && !(prePad_.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER)) {
-				if (!isWire_) {
-					if (isHit) {
-						isWire_ = true;
-						//point_ = hit.collider->GetTranslation();
-						point_ = hit.point;
-						apexWorldTransform_.translation_ = hit.point;
-						if (hit.collider->GetCollisionAttribute() == kCollisionAttributeMoveFloor) {
-							apexWorldTransform_.parent_ = hit.collider->GetWorldTransform();
-							apexWorldTransform_.translation_ = Subtract(apexWorldTransform_.translation_, hit.collider->GetMatWorldTranslation());
+			if (CommonData::GetInstance()->scene_ == Scene::kStage) {
+				if ((pad_.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) && !(prePad_.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER)) {
+					if (!isWire_) {
+						if (isHit) {
+							isWire_ = true;
+							//point_ = hit.collider->GetTranslation();
+							point_ = hit.point;
+							apexWorldTransform_.translation_ = hit.point;
+							if (hit.collider->GetCollisionAttribute() == kCollisionAttributeMoveFloor) {
+								apexWorldTransform_.parent_ = hit.collider->GetWorldTransform();
+								apexWorldTransform_.translation_ = Subtract(apexWorldTransform_.translation_, hit.collider->GetMatWorldTranslation());
+							}
 						}
 					}
-				}
-				else {
-					isWire_ = false;
-					if (apexWorldTransform_.parent_) {
-						apexWorldTransform_.parent_ = nullptr;
+					else {
+						isWire_ = false;
+						if (apexWorldTransform_.parent_) {
+							apexWorldTransform_.parent_ = nullptr;
+						}
 					}
 				}
 			}
@@ -385,13 +388,6 @@ void Player::Update()
 	isFloot_ = true;
 	isSelect_ = false;
 
-	if (Input::GetInstance()->TriggerKey(DIK_UP)) {
-		scoreUI_->AddScore(10);
-	}
-	if (Input::GetInstance()->TriggerKey(DIK_DOWN)) {
-		scoreUI_->AddScore(100);
-	}
-
 	scoreUI_->Update();
 
 #ifdef _DEBUG
@@ -418,12 +414,17 @@ void Player::Draw()
 	//model_->Draw(worldTransform_);
 	//raticle_->Draw(reticleWorldTransform_, TextureManager::GetInstance()->Load("uvChecker.png"));
 	//model_->Draw(worldTransform_, TextureManager::GetInstance()->Load("uvChecker.png"));
-	HitBox();
-	reticle3D_->Draw(reticleWorldTransform_, TextureManager::GetInstance()->Load("pink1x1.png"));
-	if (isWire_) {
-		line_->Draw(worldTransform_.translation_, apexWorldTransform_.GetMatWorldTranslation(), { 0.0f, 0.0f, 0.0f, 1.0f });
-		apex_->Draw(apexWorldTransform_, TextureManager::GetInstance()->Load("purple1x1.png"));
+	if (CommonData::GetInstance()->scene_ == Scene::kStage) {
+		reticle3D_->Draw(reticleWorldTransform_, TextureManager::GetInstance()->Load("pink1x1.png"));
+		if (isWire_) {
+			line_->Draw(worldTransform_.translation_, apexWorldTransform_.GetMatWorldTranslation(), { 0.0f, 0.0f, 0.0f, 1.0f });
+			apex_->Draw(apexWorldTransform_, TextureManager::GetInstance()->Load("purple1x1.png"));
+		}
 	}
+#ifdef _DEBUG
+	HitBox();
+#endif // _DEBUG
+
 }
 
 void Player::DrawUI()
@@ -487,7 +488,7 @@ void Player::OnCollisionEvent(Body* body)
 void Player::OnTriggerEvent(Body* body)
 {
 	if (body->GetCollisionAttribute() == kCollisionAttributeGoal) {
-		isActive_ = false;
+		CommonData::GetInstance()->isGoal_ = true;
 	}
 	if (body->GetCollisionAttribute() == kCollisionAttributeSelect) {
 		isSelect_ = true;

@@ -39,12 +39,24 @@ void SelectScene::Initialize()
 	player_ = std::make_unique<Player>();
 	player_->Initialize(camera_/*camera_.get()*/, world_.get());
 	player_->SetPosition({ -35.0f, -3.5f, 0.0f });
+
+	if (CommonData::GetInstance()->stageNum_ != -1) {
+		player_->SetPosition({ 0.0f * CommonData::GetInstance()->stageNum_, -3.5f, 0.0f});
+		player_->SetSelect(true);
+		worldTransform_[CommonData::GetInstance()->stageNum_].scale_ = { 1.0f, 1.0f, 1.0f };
+		isActiveTV_[CommonData::GetInstance()->stageNum_] = true;
+	}
+
 	//camera_->SetTarget(player_->GetWorldTransform());
 	ObjectManager::GetInstance()->Load("select", camera_/*camera_.get()*/, world_.get());
 
 	/*sprite_ = std::make_unique<Sprite>();
 	sprite_.reset(Sprite::Create(TextureManager::GetInstance()->Load("SELECT.png"), { 320.0f, 260.0f }));*/
 	Input::GetInstance()->GetJoystickState(0, pad_);
+
+	skydome_ = std::make_unique<Skydome>();
+	skydome_->Initialize(camera_/*camera_.get()*/, { 5.0f, 5.0f, 5.0f });
+	CommonData::GetInstance()->scene_ = Scene::kSelect;
 }
 
 void SelectScene::Update()
@@ -155,6 +167,7 @@ void SelectScene::DrawBack()
 
 void SelectScene::Draw3D()
 {
+	skydome_->Draw();
 	ObjectManager::GetInstance()->Draw("select");
 	for (uint32_t index = 0; index < 3; index++) {
 		if (isActiveTV_[index]) {

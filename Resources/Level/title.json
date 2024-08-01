@@ -67,42 +67,6 @@
                 "bounciness": 0.0,
                 "bounceCombine": 0
             }
-        },
-        {
-            "type": "EMPTY",
-            "name": "エンプティ",
-            "transform": {
-                "translation": [
-                    -0.2616277039051056,
-                    -0.023350238800048828,
-                    0.5620558261871338
-                ],
-                "rotation": [
-                    0.0,
-                    -0.0,
-                    0.0
-                ],
-                "scaling": [
-                    1.0,
-                    1.0,
-                    1.0
-                ]
-            },
-            "collider": {
-                "type": "BOX",
-                "center": [
-                    0.0,
-                    0.0,
-                    0.0
-                ],
-                "size": [
-                    2.0,
-                    2.0,
-                    2.0
-                ],
-                "isTrigger": false,
-                "attribute": 1
-            }
         }
     ]
 }

@@ -3,6 +3,14 @@
 #include <string>
 #include "EventTrigger.h"
 
+enum class  Scene
+{
+	kTitle,
+	kSelect,
+	kStage,
+
+};
+
 class CommonData {
 
 public:
@@ -15,6 +23,7 @@ public:
 	bool isGoal_;
 	uint32_t stageNum_ = -1;
 
+	Scene scene_;
 
 
 private:
