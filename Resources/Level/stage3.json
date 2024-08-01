@@ -1,0 +1,952 @@
+{
+    "name": "scene",
+    "objects": [
+        {
+            "type": "MESH",
+            "name": "立方体.009",
+            "transform": {
+                "translation": [
+                    24.363609313964844,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    7.762886047363281,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "Floor",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    8.0,
+                    8.0,
+                    8.0
+                ],
+                "isTrigger": false,
+                "attribute": 1
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "立方体.001",
+            "transform": {
+                "translation": [
+                    211.67031860351562,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    7.762886047363281,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "Floor",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    8.0,
+                    8.0,
+                    8.0
+                ],
+                "isTrigger": false,
+                "attribute": 1
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "立方体.005",
+            "transform": {
+                "translation": [
+                    75.36421203613281,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "Trampoline",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    10.0,
+                    8.0,
+                    2.0
+                ],
+                "isTrigger": false,
+                "attribute": 2
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "立方体.002",
+            "transform": {
+                "translation": [
+                    114.77070617675781,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "Trampoline",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    10.0,
+                    8.0,
+                    2.0
+                ],
+                "isTrigger": false,
+                "attribute": 2
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "立方体.003",
+            "transform": {
+                "translation": [
+                    155.4355926513672,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "Trampoline",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    10.0,
+                    8.0,
+                    2.0
+                ],
+                "isTrigger": false,
+                "attribute": 2
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "立方体.004",
+            "transform": {
+                "translation": [
+                    95.27178192138672,
+                    0.0,
+                    5.967851638793945
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "Spike",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    6.0,
+                    2.0,
+                    2.0
+                ],
+                "isTrigger": false,
+                "attribute": 7
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "立方体.006",
+            "transform": {
+                "translation": [
+                    135.121337890625,
+                    0.0,
+                    5.967851638793945
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "Spike",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    6.0,
+                    2.0,
+                    2.0
+                ],
+                "isTrigger": false,
+                "attribute": 7
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "立方体.007",
+            "transform": {
+                "translation": [
+                    441.4399719238281,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    7.762886047363281,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "Floor",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    8.0,
+                    8.0,
+                    8.0
+                ],
+                "isTrigger": false,
+                "attribute": 1
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "立方体.008",
+            "transform": {
+                "translation": [
+                    274.9752502441406,
+                    0.0,
+                    26.577499389648438
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    3.7624495029449463,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "Floor",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    8.0,
+                    8.0,
+                    8.0
+                ],
+                "isTrigger": false,
+                "attribute": 1
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "立方体.010",
+            "transform": {
+                "translation": [
+                    325.297119140625,
+                    0.0,
+                    26.577499389648438
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    3.7624495029449463,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "Floor",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    8.0,
+                    8.0,
+                    8.0
+                ],
+                "isTrigger": false,
+                "attribute": 1
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "立方体.011",
+            "transform": {
+                "translation": [
+                    375.6189880371094,
+                    0.0,
+                    26.577499389648438
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    3.7624495029449463,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "Floor",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    8.0,
+                    8.0,
+                    8.0
+                ],
+                "isTrigger": false,
+                "attribute": 1
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "立方体.012",
+            "transform": {
+                "translation": [
+                    700.4511108398438,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    7.762886047363281,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "Floor",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    8.0,
+                    8.0,
+                    8.0
+                ],
+                "isTrigger": false,
+                "attribute": 1
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "立方体",
+            "transform": {
+                "translation": [
+                    481.721435546875,
+                    0.0,
+                    25.92403221130371
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "MoveFloor",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    18.0,
+                    4.0,
+                    4.0
+                ],
+                "isTrigger": false,
+                "attribute": 4
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "立方体.013",
+            "transform": {
+                "translation": [
+                    551.613037109375,
+                    0.0,
+                    25.92403221130371
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "MoveFloor",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    18.0,
+                    4.0,
+                    4.0
+                ],
+                "isTrigger": false,
+                "attribute": 4
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "立方体.014",
+            "transform": {
+                "translation": [
+                    621.8685913085938,
+                    0.0,
+                    25.92403221130371
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "MoveFloor",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    18.0,
+                    4.0,
+                    4.0
+                ],
+                "isTrigger": false,
+                "attribute": 4
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "立方体.015",
+            "transform": {
+                "translation": [
+                    482.90460205078125,
+                    0.0,
+                    12.387229919433594
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "Spike",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    6.0,
+                    2.0,
+                    2.0
+                ],
+                "isTrigger": false,
+                "attribute": 7
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "立方体.016",
+            "transform": {
+                "translation": [
+                    517.4512329101562,
+                    0.0,
+                    36.31836700439453
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    2.942103862762451,
+                    1.0,
+                    2.3332366943359375
+                ]
+            },
+            "file_name": "Spike",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    6.0,
+                    2.0,
+                    2.0
+                ],
+                "isTrigger": false,
+                "attribute": 7
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "立方体.017",
+            "transform": {
+                "translation": [
+                    586.8955688476562,
+                    0.0,
+                    36.31836700439453
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    2.942103862762451,
+                    1.0,
+                    2.3332366943359375
+                ]
+            },
+            "file_name": "Spike",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    6.0,
+                    2.0,
+                    2.0
+                ],
+                "isTrigger": false,
+                "attribute": 7
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "立方体.018",
+            "transform": {
+                "translation": [
+                    524.9284057617188,
+                    0.0,
+                    12.535055160522461
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "Spike",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    6.0,
+                    2.0,
+                    2.0
+                ],
+                "isTrigger": false,
+                "attribute": 7
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "立方体.019",
+            "transform": {
+                "translation": [
+                    559.177978515625,
+                    0.0,
+                    14.156326293945312
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "Spike",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    6.0,
+                    2.0,
+                    2.0
+                ],
+                "isTrigger": false,
+                "attribute": 7
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "Cube",
+            "transform": {
+                "translation": [
+                    0.0,
+                    0.0,
+                    17.826059341430664
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "startBox"
+        },
+        {
+            "type": "MESH",
+            "name": "Cube.001",
+            "transform": {
+                "translation": [
+                    715.0613403320312,
+                    0.0,
+                    11.695352554321289
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    5.0,
+                    2.0,
+                    5.0
+                ]
+            },
+            "file_name": "endBox",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    3.0,
+                    3.0,
+                    3.0
+                ],
+                "isTrigger": true,
+                "attribute": 3
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "立方体.021",
+            "transform": {
+                "translation": [
+                    501.79925537109375,
+                    0.0,
+                    8.142789840698242
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "MoveFloor",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    18.0,
+                    4.0,
+                    4.0
+                ],
+                "isTrigger": false,
+                "attribute": 11
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "立方体.022",
+            "transform": {
+                "translation": [
+                    574.6396484375,
+                    0.0,
+                    8.546213150024414
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "MoveFloor",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    18.0,
+                    4.0,
+                    4.0
+                ],
+                "isTrigger": false,
+                "attribute": 11
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "立方体.023",
+            "transform": {
+                "translation": [
+                    601.784912109375,
+                    0.0,
+                    14.156326293945312
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "Spike",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    6.0,
+                    2.0,
+                    2.0
+                ],
+                "isTrigger": false,
+                "attribute": 7
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "立方体.024",
+            "transform": {
+                "translation": [
+                    645.6019897460938,
+                    0.0,
+                    8.66695785522461
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "file_name": "MoveFloor",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    18.0,
+                    4.0,
+                    4.0
+                ],
+                "isTrigger": false,
+                "attribute": 11
+            }
+        }
+    ]
+}

@@ -52,6 +52,7 @@ void ObjectManager::Load(const std::string& fileName, Camera* camera, World* wor
 			newObject->SetBounciness(object.bounciness);
 			newObject->SetBounceCombine(static_cast<Body::BounceCombine>(object.bounceCombine));
 			newObject->Initialize(ModelManager::GetInstance()->CreateModel(obj, object.fileName), world, object.shape);
+			newObject->InitializeDirection();
 			newObject->SetCamera(camera);
 			world->Add(newObject);
 			objects_[fileName].emplace_back(newObject);

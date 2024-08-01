@@ -14,7 +14,7 @@ void Player::Initialize(Camera* camera, World* world)
 	worldTransform_.translation_.y = 3.0f;
 	SetMass(2.0f);
 	SetFirictionCombine(FrictionCombine::kAverage);
-	SetMiu(0.3f);
+	SetMiu(1.0f);
 	SetBounceCombine(BounceCombine::kAverage);
 	SetBounciness(0.5f);
 	/*worldTransform_.Initialize(RotationType::Quaternion);
@@ -258,8 +258,8 @@ void Player::Update()
 			bool isMoving = false;
 			// 速さ
 			float speed = 0.5f;
-			if (!isHit_) {
-				speed = 0.1f;
+			if (!isHit_ && !isWire_) {
+				speed = 0.2f;
 			}
 
 			// 移動量
@@ -309,7 +309,7 @@ void Player::Update()
 							//point_ = hit.collider->GetTranslation();
 							point_ = hit.point;
 							apexWorldTransform_.translation_ = hit.point;
-							if (hit.collider->GetCollisionAttribute() == kCollisionAttributeMoveFloor) {
+							if (hit.collider->GetCollisionAttribute() == kCollisionAttributeMoveFloorLeft || hit.collider->GetCollisionAttribute() == kCollisionAttributeMoveFloorRight) {
 								apexWorldTransform_.parent_ = hit.collider->GetWorldTransform();
 								apexWorldTransform_.translation_ = Subtract(apexWorldTransform_.translation_, hit.collider->GetMatWorldTranslation());
 							}
@@ -356,7 +356,7 @@ void Player::Update()
 	Vector2 pos = WorldToScreen({ reticleWorldTransform_.matWorld_.m[3][0], reticleWorldTransform_.matWorld_.m[3][1], reticleWorldTransform_.matWorld_.m[3][2] }, camera_->GetViewMatrix(), camera_->GetProjectionMatrix(), 1280.0f, 720.0f);
 	reticle_->SetPosition(pos);
 
-	if (worldTransform_.translation_.y < -6.0f) {
+	if (worldTransform_.translation_.y < -12.0f) {
 		isActive_ = false;
 	}
 
@@ -372,7 +372,7 @@ void Player::Update()
 				worldTransform_.parent_ = nullptr;
 			}
 			else if (collisionBody_) {
-				if (collisionBody_->GetCollisionAttribute() != kCollisionAttributeMoveFloor) {
+				if (collisionBody_->GetCollisionAttribute() != kCollisionAttributeMoveFloorLeft || collisionBody_->GetCollisionAttribute() != kCollisionAttributeMoveFloorRight) {
 					Matrix4x4 invers = Inverse(worldTransform_.parent_->matWorld_);
 					Matrix4x4 lMat = Multiply(worldTransform_.matWorld_, invers);
 					Vector3 t = { lMat.m[3][0], lMat.m[3][1], lMat.m[3][2] };
@@ -389,6 +389,12 @@ void Player::Update()
 	isSelect_ = false;
 
 	scoreUI_->Update();
+
+	if (std::abs(GetVelocity().x) > limitSpeed_) {
+		Vector3 velocity = GetVelocity();
+		float pandm = velocity.x / std::abs(velocity.x);
+		SetVelocity({ limitSpeed_ * pandm, velocity.y, velocity.z });
+	}
 
 #ifdef _DEBUG
 	ImGui::Begin("Player");
@@ -450,7 +456,7 @@ void Player::OnCollisionEvent(Body* body)
 		isActive_ = false;
 	}
 
-	if (body->GetCollisionAttribute() == kCollisionAttributeMoveFloor) {
+	if (body->GetCollisionAttribute() == kCollisionAttributeMoveFloorLeft || body->GetCollisionAttribute() == kCollisionAttributeMoveFloorRight) {
 		AABB aabb = GetAABB();
 		AABB other = body->GetAABB();
 		if (aabb.min.y >= other.max.y) {

@@ -111,7 +111,7 @@ void WindowsAPI::CreateGameWindow(const char* title, UINT windowStyle, int32_t c
 	// ウィンドウクラスの設定
 	wndClass_.cbSize = sizeof(WNDCLASSEX);
 	wndClass_.lpfnWndProc = (WNDPROC)WindowProc;     // ウィンドウプロシージャ
-	wndClass_.lpszClassName = L"LE2A_19_マキユキノリ";      // ウィンドウクラス名
+	wndClass_.lpszClassName = L"リトルプラネット";      // ウィンドウクラス名
 	wndClass_.hInstance = GetModuleHandle(nullptr);  // ウィンドウハンドル
 	wndClass_.hCursor = LoadCursor(NULL, IDC_ARROW); // カーソル指定
 

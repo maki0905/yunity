@@ -13,6 +13,9 @@ void SelectScene::Initialize()
 	pos.x = -15.0f;
 	camera_->SetTranslate(pos);*/
 	camera_->SetFixedAxis({ 0.0f, 1.0f, 1.0f });
+	camera_->SetRotate({ 0.0f, 0.0f, 0.0f });
+	camera_->SetTranslate({ 0.0f, 5.0f, -50.0f });
+	camera_->SetTarget(nullptr);
 
 	for (uint32_t index = 0; index < 3; index++) {
 		models_[index] = std::make_unique<Model>();
@@ -41,7 +44,7 @@ void SelectScene::Initialize()
 	player_->SetPosition({ -35.0f, -3.5f, 0.0f });
 
 	if (CommonData::GetInstance()->stageNum_ != -1) {
-		player_->SetPosition({ 0.0f * CommonData::GetInstance()->stageNum_, -3.5f, 0.0f});
+		player_->SetPosition({ 30.0f * CommonData::GetInstance()->stageNum_, -3.5f, 0.0f});
 		player_->SetSelect(true);
 		worldTransform_[CommonData::GetInstance()->stageNum_].scale_ = { 1.0f, 1.0f, 1.0f };
 		isActiveTV_[CommonData::GetInstance()->stageNum_] = true;
