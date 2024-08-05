@@ -25,7 +25,7 @@ public:
 private:
 	bool isDebug_ = false;
 
-	std::unique_ptr<Camera> camera_;
+	Camera* camera_;
 	std::unique_ptr<DebugCamera> debugCamera_;
 
 	std::vector<Object3D*> objects_;
