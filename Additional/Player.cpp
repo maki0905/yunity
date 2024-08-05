@@ -13,7 +13,7 @@ void Player::Initialize(Camera* camera, World* world)
 	worldTransform_.rotateType_ = RotationType::Quaternion;
 	worldTransform_.translation_.y = 3.0f;
 	SetMass(2.0f);
-	SetFirictionCombine(FrictionCombine::kAverage);
+	SetFirictionCombine(FrictionCombine::kMaximum);
 	SetMiu(1.0f);
 	SetBounceCombine(BounceCombine::kAverage);
 	SetBounciness(0.5f);
@@ -257,9 +257,9 @@ void Player::Update()
 			const float threshold = 0.7f;
 			bool isMoving = false;
 			// 速さ
-			float speed = 0.5f;
+			float speed = 1.0f;
 			if (!isHit_ && !isWire_) {
-				speed = 0.2f;
+				speed = 0.0f;
 			}
 
 			// 移動量
@@ -300,11 +300,12 @@ void Player::Update()
 			direction.Normalize();
 			isHit = RayCast(worldTransform_.translation_, direction, &hit, lenght, GetWorld(), kCollisionAttributePlayer);
 
+
 			// ワイヤー
 			if (CommonData::GetInstance()->scene_ == Scene::kStage) {
 				if ((pad_.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) && !(prePad_.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER)) {
 					if (!isWire_) {
-						if (isHit) {
+						if (isHit && hit.collider->GetCollisionAttribute() != kCollisionAttributeCoin) {
 							isWire_ = true;
 							//point_ = hit.collider->GetTranslation();
 							point_ = hit.point;
@@ -512,4 +513,5 @@ void Player::ResetPos(const Vector3& pos)
 	apexWorldTransform_.translation_ = worldTransform_.translation_;
 	isWire_ = false;
 	isActive_ = true;
+	scoreUI_->Reset();
 }

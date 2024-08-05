@@ -112,6 +112,8 @@ void Body::Solve(float time)
 		velocity_ = Add(velocity_, Multiply(time, acceleration_));
 
 		worldTransform_->translation_ = Add(worldTransform_->translation_, Multiply(time, velocity_));
+
+		magnitude_ = 0.0f;
 	}
 
 	worldTransform_->UpdateMatrix();

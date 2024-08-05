@@ -125,9 +125,7 @@ public:
 	static void PostDraw();
 
 public:
-	~Model() {
-		Finalize();
-	}
+	~Model();
 	/// <summary>
 	/// 初期化
 	/// </summary>

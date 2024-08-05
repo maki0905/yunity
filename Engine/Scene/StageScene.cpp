@@ -61,7 +61,7 @@ void StageScene::Initialize()
 	skybox_->SetTexture("rostock_laage_airport_4k.dds");
 
 	world_ = std::make_unique<World>();
-	world_->Initialize({0.0f, -9.8f, 0.0f});
+	world_->Initialize({0.0f, -15.0f, 0.0f});
 	//world_->Initialize();
 
 	player_ = std::make_unique<Player>();
@@ -147,6 +147,8 @@ void StageScene::Update()
 
 	if (!player_->GetActive()) {
 		player_->ResetPos(startWT_.translation_);
+		ObjectManager::GetInstance()->Clear(stageName_);
+		ObjectManager::GetInstance()->Load(stageName_, camera_/*camera_.get()*/, world_.get());
 	}
 
 	if (CommonData::GetInstance()->isGoal_) {
@@ -154,6 +156,10 @@ void StageScene::Update()
 		SceneManager::GetInstance()->ChangeScene("SELECT");
 
 
+	}
+
+	if (Input::GetInstance()->TriggerKey(DIK_T)) {
+		SceneManager::GetInstance()->ChangeScene("TITLE");
 	}
 
 #ifdef _DEBUG

@@ -12,6 +12,7 @@
 #include "ModelManager.h"
 #include "GraphicsPipelineManager.h"
 #include "RootBindingsCommon.h"
+#include "ModelManager.h"
 
 ID3D12GraphicsCommandList* Model::commandList_ = nullptr;
 
@@ -25,6 +26,12 @@ void Model::PreDraw(ID3D12GraphicsCommandList* commandList)
 void Model::PostDraw()
 {
 	commandList_ = nullptr;
+}
+
+Model::~Model()
+{
+	ModelManager::GetInstance()->Take(this);
+	Finalize();
 }
 
 

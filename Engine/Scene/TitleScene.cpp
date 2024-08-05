@@ -12,7 +12,7 @@ void TitleScene::Initialize()
 	//camera_.reset(CameraManager::GetInstance()->GetCamera());
 	camera_ = CameraManager::GetInstance()->GetCamera();
 	world_ = std::make_unique<World>();
-	world_->Initialize({ 0.0f, -9.8f, 0.0f });
+	world_->Initialize({ 0.0f, -15.0, 0.0f });
 
 	sprite_ = std::make_unique<Sprite>();
 	sprite_.reset(Sprite::Create(TextureManager::GetInstance()->Load("ScoreBackground.png"), { 0.0f, 0.0f }));

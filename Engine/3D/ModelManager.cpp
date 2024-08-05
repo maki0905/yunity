@@ -51,6 +51,17 @@ void ModelManager::Reset()
 	models_.clear();
 }
 
+void ModelManager::Take(Model* model)
+{
+	for (std::list<Model*>::iterator iterator = models_.begin(); iterator != models_.end();) {
+		if (*iterator == model) {
+			iterator = models_.erase(iterator);
+			continue;
+		}
+		iterator++;
+	}
+}
+
 Model* ModelManager::CreateModel(Format format, const std::string& folderName, const std::string& fileName, ModelType modelType)
 {
 	/*std::unique_ptr<Model> model;

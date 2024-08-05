@@ -10,6 +10,7 @@
 #include "MoveFloor.h"
 #include "EventTrigger.h"
 #include "TV.h"
+#include "Coin.h"
 
 class ObjectManager {
 public:
@@ -21,6 +22,7 @@ public:
 	std::vector<std::unique_ptr<Object3D>> GetObjects(const std::string& fileName);
 	//std::vector<Object3D*> GetObj(const std::string& fileName, const std::string& modelName);
 	Vector3 GetPos(const std::string& fileName, const std::string& modelName);
+	void Clear(const std::string& fileName);
 
 private:
 	ObjectManager() = default;

@@ -80,6 +80,26 @@ void ObjectManager::Load(const std::string& fileName, Camera* camera, World* wor
 			objects_[fileName].emplace_back(newObject);
 
 		}
+		else if (object.fileName == "Coin") {
+			Coin* newObject = new Coin();
+			newObject->SetPosition(object.translation);
+			newObject->SetRotation(object.rotation);
+			newObject->SetScale(object.scaling);
+			newObject->SetSize(object.size);
+			newObject->SetCenter(object.center);
+			newObject->SetCollisionAttribute(0b1 << object.attribute);
+			newObject->SetIsTrigger(object.isTrigger);
+			newObject->SetMass(object.mass);
+			newObject->SetDrag(object.drag);
+			newObject->SetMiu(object.miu);
+			newObject->SetFirictionCombine(static_cast<Body::FrictionCombine>(object.frictionCombine));
+			newObject->SetBounciness(object.bounciness);
+			newObject->SetBounceCombine(static_cast<Body::BounceCombine>(object.bounceCombine));
+			newObject->Initialize(ModelManager::GetInstance()->CreateModel(obj, object.fileName), world, object.shape);
+			newObject->SetCamera(camera);
+			world->Add(newObject);
+			objects_[fileName].emplace_back(newObject);
+		}
 		else if (object.serialNumber != -1) {
 			EventTrigger* newObject = new EventTrigger();
 			newObject->SetPosition(object.translation);
@@ -137,6 +157,14 @@ Vector3 ObjectManager::GetPos(const std::string& fileName, const std::string& mo
 		}
 	}
 	return result;
+}
+
+void ObjectManager::Clear(const std::string& fileName)
+{
+	for (auto& obj : objects_[fileName]) {
+		obj->GetWorld()->Take(obj.get());
+	}
+	objects_[fileName].clear();
 }
 
 //std::vector<Object3D*> ObjectManager::GetObj(const std::string& fileName, const std::string& modelName)

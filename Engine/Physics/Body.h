@@ -21,7 +21,6 @@ public:
 		kMaximum, // 大きい方
 		kMultiply // 乗算
 	};
-
 public:
 	void CreateBody(World* world, WorldTransform* worldTransform, float mass = 0.0f);
 	void Solve(float time);
@@ -86,7 +85,7 @@ private:
 	// 質量
 	float mass_;
 	// 空気抵抗
-	float drag_ = 0.05f;
+	float drag_ = 0.0005f;
 	// 重力加速度
 	Vector3 gravityAcceleration_;
 	// 摩擦計算方法

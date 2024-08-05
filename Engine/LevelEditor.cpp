@@ -106,7 +106,7 @@ void LevelEditor::LoadObjectRecursive(LevelData* levelData, nlohmann::json deser
 					}
 				}
 				else if (collider["type"] == "SPHERE") {
-
+					objectData.shape = Collider::Shape::kSphere;
 				}
 
 				// サイズ

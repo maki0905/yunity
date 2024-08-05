@@ -7,6 +7,20 @@
 //	SetSize({ 1.0f, 1.0f, 1.0f });
 //}
 
+void Coin::Update()
+{
+	if (!isActive_) {
+		GetWorld()->Take(this);
+	}
+}
+
+void Coin::Draw()
+{
+	if (isActive_) {
+		model_->Draw(worldTransform_);
+	}
+}
+
 void Coin::OnCollisionEvent(Body* body)
 {
 	if (body->GetCollisionAttribute() == kCollisionAttributePlayer) {

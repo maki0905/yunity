@@ -197,7 +197,12 @@ void Collider::CreateCollider(WorldTransform* worldTransform, Shape shape, Camer
 void Collider::HitBox()
 {
 	//worldTransform_HitBox_.scale_ = Multiply(2.5f, worldTransform_->scale_);
-	worldTransform_HitBox_.scale_ = Multiply(size_, worldTransform_->scale_);
+	if (shape_ == kSphere) {
+		worldTransform_HitBox_.scale_ = Multiply(size_.x, worldTransform_->scale_);
+	}
+	else {
+		worldTransform_HitBox_.scale_ = Multiply(size_, worldTransform_->scale_);
+	}
 	worldTransform_HitBox_.rotation_ = worldTransform_->rotation_;
 	worldTransform_HitBox_.translation_ = GetColliderCenter();
 	worldTransform_HitBox_.UpdateMatrix();
@@ -207,7 +212,12 @@ void Collider::HitBox()
 
 void Collider::HitBox(Camera* camera)
 {
-	worldTransform_HitBox_.scale_ = Multiply(size_, worldTransform_->scale_);
+	if (shape_ == kSphere) {
+		worldTransform_HitBox_.scale_ = Multiply(size_.x, worldTransform_->scale_);
+	}
+	else {
+		worldTransform_HitBox_.scale_ = Multiply(size_, worldTransform_->scale_);
+	}
 	worldTransform_HitBox_.rotation_ = worldTransform_->rotation_;
 	worldTransform_HitBox_.translation_ = GetColliderCenter();
 	worldTransform_HitBox_.UpdateMatrix();

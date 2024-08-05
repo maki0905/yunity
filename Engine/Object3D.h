@@ -7,9 +7,7 @@
 
 class Object3D : public Body{
 public:
-	~Object3D() {
-		models_.clear();
-	}
+	~Object3D();
 	void Initialize(Model* model, World* world, Collider::Shape shape);
 	void Initialize(World* world, Collider::Shape shape);
 	//void Initialize(std::unique_ptr<Model> model, World* world, Collider::Shape shape);

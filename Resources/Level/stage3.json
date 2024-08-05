@@ -947,6 +947,2041 @@
                 "isTrigger": false,
                 "attribute": 11
             }
+        },
+        {
+            "type": "MESH",
+            "name": "球",
+            "transform": {
+                "translation": [
+                    20.067800521850586,
+                    0.0,
+                    5.966763496398926
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.5,
+                    1.5,
+                    1.5
+                ]
+            },
+            "file_name": "Coin",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    2.0,
+                    2.0,
+                    2.0
+                ],
+                "isTrigger": true,
+                "attribute": 5
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "球.001",
+            "transform": {
+                "translation": [
+                    29.906234741210938,
+                    0.0,
+                    5.966763496398926
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.5,
+                    1.5,
+                    1.5
+                ]
+            },
+            "file_name": "Coin",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    2.0,
+                    2.0,
+                    2.0
+                ],
+                "isTrigger": true,
+                "attribute": 5
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "球.002",
+            "transform": {
+                "translation": [
+                    39.744667053222656,
+                    0.0,
+                    5.966763496398926
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.5,
+                    1.5,
+                    1.5
+                ]
+            },
+            "file_name": "Coin",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    2.0,
+                    2.0,
+                    2.0
+                ],
+                "isTrigger": true,
+                "attribute": 5
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "球.003",
+            "transform": {
+                "translation": [
+                    49.583099365234375,
+                    0.0,
+                    5.966763496398926
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.5,
+                    1.5,
+                    1.5
+                ]
+            },
+            "file_name": "Coin",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    2.0,
+                    2.0,
+                    2.0
+                ],
+                "isTrigger": true,
+                "attribute": 5
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "球.004",
+            "transform": {
+                "translation": [
+                    63.238067626953125,
+                    0.0,
+                    10.920642852783203
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.5,
+                    1.5,
+                    1.5
+                ]
+            },
+            "file_name": "Coin",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    2.0,
+                    2.0,
+                    2.0
+                ],
+                "isTrigger": true,
+                "attribute": 5
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "球.005",
+            "transform": {
+                "translation": [
+                    84.85499572753906,
+                    0.0,
+                    10.920642852783203
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.5,
+                    1.5,
+                    1.5
+                ]
+            },
+            "file_name": "Coin",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    2.0,
+                    2.0,
+                    2.0
+                ],
+                "isTrigger": true,
+                "attribute": 5
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "球.006",
+            "transform": {
+                "translation": [
+                    106.471923828125,
+                    0.0,
+                    10.920642852783203
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.5,
+                    1.5,
+                    1.5
+                ]
+            },
+            "file_name": "Coin",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    2.0,
+                    2.0,
+                    2.0
+                ],
+                "isTrigger": true,
+                "attribute": 5
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "球.007",
+            "transform": {
+                "translation": [
+                    124.48602294921875,
+                    0.0,
+                    10.920642852783203
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.5,
+                    1.5,
+                    1.5
+                ]
+            },
+            "file_name": "Coin",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    2.0,
+                    2.0,
+                    2.0
+                ],
+                "isTrigger": true,
+                "attribute": 5
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "球.008",
+            "transform": {
+                "translation": [
+                    145.4274139404297,
+                    0.0,
+                    10.920642852783203
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.5,
+                    1.5,
+                    1.5
+                ]
+            },
+            "file_name": "Coin",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    2.0,
+                    2.0,
+                    2.0
+                ],
+                "isTrigger": true,
+                "attribute": 5
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "球.009",
+            "transform": {
+                "translation": [
+                    164.72052001953125,
+                    0.0,
+                    10.920642852783203
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.5,
+                    1.5,
+                    1.5
+                ]
+            },
+            "file_name": "Coin",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    2.0,
+                    2.0,
+                    2.0
+                ],
+                "isTrigger": true,
+                "attribute": 5
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "球.010",
+            "transform": {
+                "translation": [
+                    189.95303344726562,
+                    0.0,
+                    6.074097633361816
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.5,
+                    1.5,
+                    1.5
+                ]
+            },
+            "file_name": "Coin",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    2.0,
+                    2.0,
+                    2.0
+                ],
+                "isTrigger": true,
+                "attribute": 5
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "球.011",
+            "transform": {
+                "translation": [
+                    199.61685180664062,
+                    0.0,
+                    6.074097633361816
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.5,
+                    1.5,
+                    1.5
+                ]
+            },
+            "file_name": "Coin",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    2.0,
+                    2.0,
+                    2.0
+                ],
+                "isTrigger": true,
+                "attribute": 5
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "球.012",
+            "transform": {
+                "translation": [
+                    209.93743896484375,
+                    0.0,
+                    6.074097633361816
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.5,
+                    1.5,
+                    1.5
+                ]
+            },
+            "file_name": "Coin",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    2.0,
+                    2.0,
+                    2.0
+                ],
+                "isTrigger": true,
+                "attribute": 5
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "球.013",
+            "transform": {
+                "translation": [
+                    219.50743103027344,
+                    0.0,
+                    6.074097633361816
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.5,
+                    1.5,
+                    1.5
+                ]
+            },
+            "file_name": "Coin",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    2.0,
+                    2.0,
+                    2.0
+                ],
+                "isTrigger": true,
+                "attribute": 5
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "球.014",
+            "transform": {
+                "translation": [
+                    229.9218292236328,
+                    0.0,
+                    6.074097633361816
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.5,
+                    1.5,
+                    1.5
+                ]
+            },
+            "file_name": "Coin",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    2.0,
+                    2.0,
+                    2.0
+                ],
+                "isTrigger": true,
+                "attribute": 5
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "球.015",
+            "transform": {
+                "translation": [
+                    239.3979949951172,
+                    0.0,
+                    6.074097633361816
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.5,
+                    1.5,
+                    1.5
+                ]
+            },
+            "file_name": "Coin",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    2.0,
+                    2.0,
+                    2.0
+                ],
+                "isTrigger": true,
+                "attribute": 5
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "球.016",
+            "transform": {
+                "translation": [
+                    285.333984375,
+                    0.0,
+                    20.125097274780273
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.5,
+                    1.5,
+                    1.5
+                ]
+            },
+            "file_name": "Coin",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    2.0,
+                    2.0,
+                    2.0
+                ],
+                "isTrigger": true,
+                "attribute": 5
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "球.017",
+            "transform": {
+                "translation": [
+                    275.8577880859375,
+                    0.0,
+                    20.125097274780273
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.5,
+                    1.5,
+                    1.5
+                ]
+            },
+            "file_name": "Coin",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    2.0,
+                    2.0,
+                    2.0
+                ],
+                "isTrigger": true,
+                "attribute": 5
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "球.018",
+            "transform": {
+                "translation": [
+                    265.44342041015625,
+                    0.0,
+                    20.125097274780273
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.5,
+                    1.5,
+                    1.5
+                ]
+            },
+            "file_name": "Coin",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    2.0,
+                    2.0,
+                    2.0
+                ],
+                "isTrigger": true,
+                "attribute": 5
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "球.019",
+            "transform": {
+                "translation": [
+                    314.6219482421875,
+                    0.0,
+                    20.125097274780273
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.5,
+                    1.5,
+                    1.5
+                ]
+            },
+            "file_name": "Coin",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    2.0,
+                    2.0,
+                    2.0
+                ],
+                "isTrigger": true,
+                "attribute": 5
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "球.020",
+            "transform": {
+                "translation": [
+                    325.03631591796875,
+                    0.0,
+                    20.125097274780273
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.5,
+                    1.5,
+                    1.5
+                ]
+            },
+            "file_name": "Coin",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    2.0,
+                    2.0,
+                    2.0
+                ],
+                "isTrigger": true,
+                "attribute": 5
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "球.021",
+            "transform": {
+                "translation": [
+                    334.51251220703125,
+                    0.0,
+                    20.125097274780273
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.5,
+                    1.5,
+                    1.5
+                ]
+            },
+            "file_name": "Coin",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    2.0,
+                    2.0,
+                    2.0
+                ],
+                "isTrigger": true,
+                "attribute": 5
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "球.022",
+            "transform": {
+                "translation": [
+                    385.17718505859375,
+                    0.0,
+                    20.125097274780273
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.5,
+                    1.5,
+                    1.5
+                ]
+            },
+            "file_name": "Coin",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    2.0,
+                    2.0,
+                    2.0
+                ],
+                "isTrigger": true,
+                "attribute": 5
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "球.023",
+            "transform": {
+                "translation": [
+                    375.70098876953125,
+                    0.0,
+                    20.125097274780273
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.5,
+                    1.5,
+                    1.5
+                ]
+            },
+            "file_name": "Coin",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    2.0,
+                    2.0,
+                    2.0
+                ],
+                "isTrigger": true,
+                "attribute": 5
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "球.024",
+            "transform": {
+                "translation": [
+                    365.28662109375,
+                    0.0,
+                    20.125097274780273
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.5,
+                    1.5,
+                    1.5
+                ]
+            },
+            "file_name": "Coin",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    2.0,
+                    2.0,
+                    2.0
+                ],
+                "isTrigger": true,
+                "attribute": 5
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "球.025",
+            "transform": {
+                "translation": [
+                    420.5719299316406,
+                    0.0,
+                    5.917969703674316
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.5,
+                    1.5,
+                    1.5
+                ]
+            },
+            "file_name": "Coin",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    2.0,
+                    2.0,
+                    2.0
+                ],
+                "isTrigger": true,
+                "attribute": 5
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "球.026",
+            "transform": {
+                "translation": [
+                    430.9862976074219,
+                    0.0,
+                    5.917969703674316
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.5,
+                    1.5,
+                    1.5
+                ]
+            },
+            "file_name": "Coin",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    2.0,
+                    2.0,
+                    2.0
+                ],
+                "isTrigger": true,
+                "attribute": 5
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "球.027",
+            "transform": {
+                "translation": [
+                    440.4624938964844,
+                    0.0,
+                    5.917969703674316
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.5,
+                    1.5,
+                    1.5
+                ]
+            },
+            "file_name": "Coin",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    2.0,
+                    2.0,
+                    2.0
+                ],
+                "isTrigger": true,
+                "attribute": 5
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "球.028",
+            "transform": {
+                "translation": [
+                    469.9230651855469,
+                    0.0,
+                    5.917969703674316
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.5,
+                    1.5,
+                    1.5
+                ]
+            },
+            "file_name": "Coin",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    2.0,
+                    2.0,
+                    2.0
+                ],
+                "isTrigger": true,
+                "attribute": 5
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "球.029",
+            "transform": {
+                "translation": [
+                    460.4468688964844,
+                    0.0,
+                    5.917969703674316
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.5,
+                    1.5,
+                    1.5
+                ]
+            },
+            "file_name": "Coin",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    2.0,
+                    2.0,
+                    2.0
+                ],
+                "isTrigger": true,
+                "attribute": 5
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "球.030",
+            "transform": {
+                "translation": [
+                    450.0325012207031,
+                    0.0,
+                    5.917969703674316
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.5,
+                    1.5,
+                    1.5
+                ]
+            },
+            "file_name": "Coin",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    2.0,
+                    2.0,
+                    2.0
+                ],
+                "isTrigger": true,
+                "attribute": 5
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "球.031",
+            "transform": {
+                "translation": [
+                    475.7401123046875,
+                    0.0,
+                    20.648252487182617
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.5,
+                    1.5,
+                    1.5
+                ]
+            },
+            "file_name": "Coin",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    2.0,
+                    2.0,
+                    2.0
+                ],
+                "isTrigger": true,
+                "attribute": 5
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "球.032",
+            "transform": {
+                "translation": [
+                    482.0262756347656,
+                    0.0,
+                    20.648252487182617
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.5,
+                    1.5,
+                    1.5
+                ]
+            },
+            "file_name": "Coin",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    2.0,
+                    2.0,
+                    2.0
+                ],
+                "isTrigger": true,
+                "attribute": 5
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "球.033",
+            "transform": {
+                "translation": [
+                    488.2186279296875,
+                    0.0,
+                    20.648252487182617
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.5,
+                    1.5,
+                    1.5
+                ]
+            },
+            "file_name": "Coin",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    2.0,
+                    2.0,
+                    2.0
+                ],
+                "isTrigger": true,
+                "attribute": 5
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "球.034",
+            "transform": {
+                "translation": [
+                    509.7042236328125,
+                    0.0,
+                    12.204141616821289
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.5,
+                    1.5,
+                    1.5
+                ]
+            },
+            "file_name": "Coin",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    2.0,
+                    2.0,
+                    2.0
+                ],
+                "isTrigger": true,
+                "attribute": 5
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "球.035",
+            "transform": {
+                "translation": [
+                    503.5118713378906,
+                    0.0,
+                    12.204141616821289
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.5,
+                    1.5,
+                    1.5
+                ]
+            },
+            "file_name": "Coin",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    2.0,
+                    2.0,
+                    2.0
+                ],
+                "isTrigger": true,
+                "attribute": 5
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "球.036",
+            "transform": {
+                "translation": [
+                    497.2257080078125,
+                    0.0,
+                    12.204141616821289
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.5,
+                    1.5,
+                    1.5
+                ]
+            },
+            "file_name": "Coin",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    2.0,
+                    2.0,
+                    2.0
+                ],
+                "isTrigger": true,
+                "attribute": 5
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "球.037",
+            "transform": {
+                "translation": [
+                    517.6041870117188,
+                    0.0,
+                    20.310489654541016
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.5,
+                    1.5,
+                    1.5
+                ]
+            },
+            "file_name": "Coin",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    2.0,
+                    2.0,
+                    2.0
+                ],
+                "isTrigger": true,
+                "attribute": 5
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "球.038",
+            "transform": {
+                "translation": [
+                    523.890380859375,
+                    0.0,
+                    20.310489654541016
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.5,
+                    1.5,
+                    1.5
+                ]
+            },
+            "file_name": "Coin",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    2.0,
+                    2.0,
+                    2.0
+                ],
+                "isTrigger": true,
+                "attribute": 5
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "球.039",
+            "transform": {
+                "translation": [
+                    530.0827026367188,
+                    0.0,
+                    20.310489654541016
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.5,
+                    1.5,
+                    1.5
+                ]
+            },
+            "file_name": "Coin",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    2.0,
+                    2.0,
+                    2.0
+                ],
+                "isTrigger": true,
+                "attribute": 5
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "球.040",
+            "transform": {
+                "translation": [
+                    550.0108032226562,
+                    0.0,
+                    20.310489654541016
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.5,
+                    1.5,
+                    1.5
+                ]
+            },
+            "file_name": "Coin",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    2.0,
+                    2.0,
+                    2.0
+                ],
+                "isTrigger": true,
+                "attribute": 5
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "球.041",
+            "transform": {
+                "translation": [
+                    543.8184814453125,
+                    0.0,
+                    20.310489654541016
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.5,
+                    1.5,
+                    1.5
+                ]
+            },
+            "file_name": "Coin",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    2.0,
+                    2.0,
+                    2.0
+                ],
+                "isTrigger": true,
+                "attribute": 5
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "球.042",
+            "transform": {
+                "translation": [
+                    537.5322875976562,
+                    0.0,
+                    20.310489654541016
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.5,
+                    1.5,
+                    1.5
+                ]
+            },
+            "file_name": "Coin",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    2.0,
+                    2.0,
+                    2.0
+                ],
+                "isTrigger": true,
+                "attribute": 5
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "球.043",
+            "transform": {
+                "translation": [
+                    566.4674682617188,
+                    0.0,
+                    12.99225902557373
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.5,
+                    1.5,
+                    1.5
+                ]
+            },
+            "file_name": "Coin",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    2.0,
+                    2.0,
+                    2.0
+                ],
+                "isTrigger": true,
+                "attribute": 5
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "球.044",
+            "transform": {
+                "translation": [
+                    572.753662109375,
+                    0.0,
+                    12.99225902557373
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.5,
+                    1.5,
+                    1.5
+                ]
+            },
+            "file_name": "Coin",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    2.0,
+                    2.0,
+                    2.0
+                ],
+                "isTrigger": true,
+                "attribute": 5
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "球.045",
+            "transform": {
+                "translation": [
+                    578.9459838867188,
+                    0.0,
+                    12.99225902557373
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.5,
+                    1.5,
+                    1.5
+                ]
+            },
+            "file_name": "Coin",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    2.0,
+                    2.0,
+                    2.0
+                ],
+                "isTrigger": true,
+                "attribute": 5
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "球.046",
+            "transform": {
+                "translation": [
+                    595.6090087890625,
+                    0.0,
+                    12.99225902557373
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.5,
+                    1.5,
+                    1.5
+                ]
+            },
+            "file_name": "Coin",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    2.0,
+                    2.0,
+                    2.0
+                ],
+                "isTrigger": true,
+                "attribute": 5
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "球.047",
+            "transform": {
+                "translation": [
+                    589.4166870117188,
+                    0.0,
+                    12.99225902557373
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.5,
+                    1.5,
+                    1.5
+                ]
+            },
+            "file_name": "Coin",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    2.0,
+                    2.0,
+                    2.0
+                ],
+                "isTrigger": true,
+                "attribute": 5
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "球.048",
+            "transform": {
+                "translation": [
+                    583.1304931640625,
+                    0.0,
+                    12.99225902557373
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.5,
+                    1.5,
+                    1.5
+                ]
+            },
+            "file_name": "Coin",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    2.0,
+                    2.0,
+                    2.0
+                ],
+                "isTrigger": true,
+                "attribute": 5
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "球.049",
+            "transform": {
+                "translation": [
+                    618.7083740234375,
+                    0.0,
+                    20.64825439453125
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.5,
+                    1.5,
+                    1.5
+                ]
+            },
+            "file_name": "Coin",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    2.0,
+                    2.0,
+                    2.0
+                ],
+                "isTrigger": true,
+                "attribute": 5
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "球.050",
+            "transform": {
+                "translation": [
+                    624.9945678710938,
+                    0.0,
+                    20.64825439453125
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.5,
+                    1.5,
+                    1.5
+                ]
+            },
+            "file_name": "Coin",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    2.0,
+                    2.0,
+                    2.0
+                ],
+                "isTrigger": true,
+                "attribute": 5
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "球.051",
+            "transform": {
+                "translation": [
+                    631.1868896484375,
+                    0.0,
+                    20.64825439453125
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.5,
+                    1.5,
+                    1.5
+                ]
+            },
+            "file_name": "Coin",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    2.0,
+                    2.0,
+                    2.0
+                ],
+                "isTrigger": true,
+                "attribute": 5
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "球.052",
+            "transform": {
+                "translation": [
+                    614.5238647460938,
+                    0.0,
+                    20.64825439453125
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.5,
+                    1.5,
+                    1.5
+                ]
+            },
+            "file_name": "Coin",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    2.0,
+                    2.0,
+                    2.0
+                ],
+                "isTrigger": true,
+                "attribute": 5
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "球.053",
+            "transform": {
+                "translation": [
+                    608.33154296875,
+                    0.0,
+                    20.64825439453125
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.5,
+                    1.5,
+                    1.5
+                ]
+            },
+            "file_name": "Coin",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    2.0,
+                    2.0,
+                    2.0
+                ],
+                "isTrigger": true,
+                "attribute": 5
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "球.054",
+            "transform": {
+                "translation": [
+                    602.0453491210938,
+                    0.0,
+                    20.64825439453125
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.5,
+                    1.5,
+                    1.5
+                ]
+            },
+            "file_name": "Coin",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    2.0,
+                    2.0,
+                    2.0
+                ],
+                "isTrigger": true,
+                "attribute": 5
+            }
         }
     ]
 }

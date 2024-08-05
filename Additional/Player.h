@@ -80,6 +80,6 @@ private:
 	std::unique_ptr<Score> scoreUI_;
 
 	// 制限速度
-	float limitSpeed_ = 18.0f;
+	float limitSpeed_ = 20.0f;
 };
 

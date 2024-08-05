@@ -35,6 +35,8 @@ public:
 
 	void Reset();
 
+	void Take(Model* model);
+
 	Model* CreateModel(Format format, const std::string& folderName, const std::string& fileName = "", ModelType modelType = kRigid);
 	//std::unique_ptr<Model> CreateModel(Format format, const std::string& folderName, const std::string& fileName = "", ModelType modelType = kRigid);
 	Model::ModelData& GetModelData(const std::string& modelName);
@@ -56,5 +58,6 @@ private:
 	std::unordered_map<std::string, Model::ModelData> modelDataStorage_;
 	std::unordered_map<std::string, Animation> animationDataStorage_;
 	//std::vector<Model*> models_;
-	std::vector<Model*> models_;
+	std::list<Model*> models_;
+	//std::vector<Model*> models_;
 };

@@ -37,7 +37,7 @@ void SelectScene::Initialize()
 	preNum_ = CommonData::GetInstance()->stageNum_;
 
 	world_ = std::make_unique<World>();
-	world_->Initialize({ 0.0f, -9.8f, 0.0f });
+	world_->Initialize({ 0.0f, -15.0f, 0.0f });
 
 	player_ = std::make_unique<Player>();
 	player_->Initialize(camera_/*camera_.get()*/, world_.get());
@@ -149,6 +149,10 @@ void SelectScene::Update()
 
 	for (uint32_t index = 0; index < 3; index++) {
 		worldTransform_[index].UpdateMatrix();
+	}
+
+	if (Input::GetInstance()->TriggerKey(DIK_T)) {
+		SceneManager::GetInstance()->ChangeScene("TITLE");
 	}
 
 //#ifdef _DEBUG

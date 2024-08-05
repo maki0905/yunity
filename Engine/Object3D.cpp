@@ -23,6 +23,11 @@
 //	texture_ = TextureManager::GetInstance()->Load("uvChecker.png");
 //}
 
+Object3D::~Object3D()
+{
+	models_.clear();
+}
+
 void Object3D::Initialize(Model* model, World* world, Collider::Shape shape)
 {
 	model_ = std::make_unique<Model>();
