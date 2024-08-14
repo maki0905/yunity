@@ -14,9 +14,9 @@ void Player::Initialize(Camera* camera, World* world)
 	worldTransform_.translation_.y = 3.0f;
 	SetMass(2.0f);
 	SetFirictionCombine(FrictionCombine::kMaximum);
-	SetMiu(1.0f);
-	SetBounceCombine(BounceCombine::kAverage);
-	SetBounciness(0.5f);
+	SetMiu(0.0f);
+	SetBounceCombine(BounceCombine::kMaximum);
+	SetBounciness(0.0f);
 	/*worldTransform_.Initialize(RotationType::Quaternion);
 	worldTransform_.translation_.y = 3.0f;*/
 	models_["player"] = std::make_unique<Model>();
@@ -221,17 +221,24 @@ void Player::Update()
 		isActive_ = false;
 	}*/
 
-	/*if (Input::GetInstance()->PushKey(DIK_W)) {
-		worldTransform_.translation_.y += 0.1f;
+	if (Input::GetInstance()->PushKey(DIK_P)) {
+		GetWorld()->SetGravity({ 0.0f, 0.0f, 0.0f });
+	}
+	if (Input::GetInstance()->PushKey(DIK_O)) {
+		GetWorld()->SetGravity({ 0.0f, -9.8f, 0.0f });
+	}
+
+	if (Input::GetInstance()->PushKey(DIK_W)) {
+		worldTransform_.translation_.y += 5.0f;
 	}
 	if (Input::GetInstance()->PushKey(DIK_S)) {
-		worldTransform_.translation_.y -= 0.1f;
+		worldTransform_.translation_.y -= 5.0f;
 	}
 	if (Input::GetInstance()->PushKey(DIK_D)) {
-		worldTransform_.translation_.x += 0.1f;
+		worldTransform_.translation_.x += 5.0f;
 	}
 	if (Input::GetInstance()->PushKey(DIK_A)) {
-		worldTransform_.translation_.x -= 0.1f;
+		worldTransform_.translation_.x -= 5.0f;
 	}
 
 	if (Input::GetInstance()->PushKey(DIK_UP)) {
@@ -245,7 +252,7 @@ void Player::Update()
 	}
 	if (Input::GetInstance()->PushKey(DIK_LEFT)) {
 		reticleWorldTransform_.translation_.x -= 0.1f;
-	}*/
+	}
 
 	Vector3 move = { 0.0f, 0.0f, 0.0f };
 	Vector3 reticleMove = { 0.0f, 0.0f, 0.0f };

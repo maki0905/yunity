@@ -136,3 +136,49 @@ void Object3D::SetModel(const std::string& modelName, Model* model)
 {
 	models_[modelName].reset(model);
 }
+
+void Object3D::SetEnableLighting(bool onOff)
+{
+	if (model_) {
+		model_->SetEnableLighting(onOff);
+	}
+	if (models_.size()) {
+		std::vector<std::string> keys;
+		keys.reserve(models_.size());
+
+		for (const auto& model : models_) {
+			keys.push_back(model.first);
+		}
+
+		for (const auto& key : keys) {
+			models_[key]->SetEnableLighting(onOff);
+		}
+
+	}
+
+}
+
+void Object3D::SetDirectionalLight(Model::DirectionalLight directionalLight)
+{
+	
+	if (model_) {
+		model_->SetDirectionalLight(directionalLight);
+		model_->SetEnableLighting(true);
+	}
+	if (models_.size()) {
+		std::vector<std::string> keys;
+		keys.reserve(models_.size());
+
+		for (const auto& model : models_) {
+			keys.push_back(model.first);
+		}
+
+		for (const auto& key : keys) {
+			models_[key]->SetDirectionalLight(directionalLight);
+			models_[key]->SetEnableLighting(true);
+		}
+
+
+	}
+	
+}

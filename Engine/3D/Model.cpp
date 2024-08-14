@@ -205,6 +205,13 @@ void Model::SetPointLight(const PointLight& pointLight)
 	pointLightData_->intensity = pointLight.intensity;
 }
 
+void Model::SetDirectionalLight(const DirectionalLight& directionalLight)
+{
+	directionalLightData_->color = directionalLight.color;
+	directionalLightData_->direction = directionalLight.direction;
+	directionalLightData_->intensity = directionalLight.intensity;
+}
+
 //void Model::SetModelData(const std::string& fileName, const std::string format)
 //{
 //	modelData_ = *ModelManager::GetInstance()->Load(fileName, format);
@@ -501,7 +508,7 @@ void Model::InitializeDirectionalLight()
 	// デフォルト値
 	directionalLightData_->color = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
 	directionalLightData_->direction = Vector3(0.0f, -1.0f, 0.0f);
-	directionalLightData_->intensity = 0.0f;
+	directionalLightData_->intensity = 1.0f;
 
 	pointLightResource_ = CreateBufferResource(sizeof(PointLight));
 	pointLightData_ = nullptr;

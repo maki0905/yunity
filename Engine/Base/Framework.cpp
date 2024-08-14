@@ -42,7 +42,7 @@ void Framework::Initialize()
 	Audio::GetInstance()->Initialize();
 
 	SceneManager::GetInstance()->Initialize();
-	SceneManager::GetInstance()->ChangeScene("CLEAR");
+	SceneManager::GetInstance()->ChangeScene("TITLE");
 
 	CSV::GetInstance()->Initialize();
 

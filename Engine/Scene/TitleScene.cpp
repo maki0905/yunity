@@ -23,8 +23,10 @@ void TitleScene::Initialize()
 	model_.reset(ModelManager::GetInstance()->CreateModel(obj,/* ""*/"Signboard"));
 	//model_ = std::make_unique<Model>();
 	//ModelManager::GetInstance()->CreateModel(obj, "terrain");
+	Model::DirectionalLight l = { .color = {1.0f, 1.0f, 1.0f, 1.0f}, .direction = {-1.0f, -1.0f, 0.0f}, .intensity= 1.0f };
 	model_->SetCamera(camera_/*camera_.get()*/);
-	model_->SetLighting(false);
+	model_->SetEnableLighting(true);
+	model_->SetDirectionalLight(l);
 	worldTransform_.Initialize();
 	worldTransform_.translation_ = { 30.0f, -7.0f, 6.0f };
 
@@ -37,9 +39,11 @@ void TitleScene::Initialize()
 
 	player_ = std::make_unique<Player>();
 	player_->Initialize(camera_/*camera_.get()*/, world_.get());
+	player_->SetDirectionalLight(l);
 	camera_->SetTarget(nullptr);  
 
-	ObjectManager::GetInstance()->Load("title", camera_/*camera_.get()*/, world_.get());
+	ObjectManager::GetInstance()->Load("stage2", camera_/*camera_.get()*/, world_.get());
+	ObjectManager::GetInstance()->SetDirectionalLight("title", l);
 	//RenderTexture::GetInstance()->SelectPostEffect(PostEffects::kHSVFilter, true);
 	//RenderTexture::GetInstance()->SelectPostEffect(PostEffects::kGrayscale, true);
 	//RenderTexture::GetInstance()->SelectPostEffect(PostEffects::kVignetting, true);
@@ -108,6 +112,16 @@ void TitleScene::Update()
 #ifdef _DEBUG
 	ImGui::Begin("a");
 	ImGui::DragFloat3("pos", &worldTransform_.translation_.x);
+	if (ImGui::Button("Off")) {
+		model_->SetEnableLighting(false);
+		player_->SetEnableLighting(false);
+		ObjectManager::GetInstance()->SetEnableLighting("title",false);
+	}
+	if (ImGui::Button("On")) {
+		model_->SetEnableLighting(true);
+		player_->SetEnableLighting(true);
+		ObjectManager::GetInstance()->SetEnableLighting("title", true);
+	}
 	ImGui::End();
 
 #endif
@@ -121,7 +135,7 @@ void TitleScene::DrawBack()
 void TitleScene::Draw3D()
 {
 	skydome_->Draw();
-	ObjectManager::GetInstance()->Draw("title");
+	ObjectManager::GetInstance()->Draw("stage2");
 	player_->Draw();
 	model_->Draw(worldTransform_);
 	//obj_->Draw();

@@ -146,7 +146,8 @@ public:
 
 	void SetCamera(Camera* camera) { camera_ = camera; }
 	void SetPointLight(const PointLight& pointLight);
-	void SetLighting(bool flag) { materialData_->enableLighting = flag; }
+	void SetEnableLighting(bool flag) { materialData_->enableLighting = flag; }
+	void SetDirectionalLight(const DirectionalLight& directionalLight);
 	void SetBlendModeType(const BlendModeType& blendModeType) { blendModeType_ = blendModeType; }
 
 	Camera* GetCamera() { return camera_; }

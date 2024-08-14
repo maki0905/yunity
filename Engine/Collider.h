@@ -35,7 +35,6 @@ public:
 	void HitBox(Camera* camera);
 
 	WorldTransform GetWorldTransform() { return *worldTransform_; }
-	Vector3 GetColliderSize() { return size_; }
 
 	// 衝突属性(自分)を取得
 	uint32_t GetCollisionAttribute() { return collisionAttribute_; }
@@ -50,7 +49,7 @@ public:
 
 	Shape GetShape() { return shape_; }
 	void SetShape(Shape shape) { shape_ = shape; }
-	Vector3 GetHitBoxSize() { return Multiply(Multiply(0.5f, size_), worldTransform_->scale_); }
+	Vector3 GetHitBoxSize();
 	void SetHitBoxSize(Vector3 size) { size_ = size; }
 
 	Sphere* GetSphere() { return sphere_.get(); }

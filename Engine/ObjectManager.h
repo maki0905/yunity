@@ -23,7 +23,8 @@ public:
 	//std::vector<Object3D*> GetObj(const std::string& fileName, const std::string& modelName);
 	Vector3 GetPos(const std::string& fileName, const std::string& modelName);
 	void Clear(const std::string& fileName);
-
+	void SetDirectionalLight(const std::string& fileName, Model::DirectionalLight directionalLight);
+	void SetEnableLighting(const std::string& fileName, bool onOff);
 private:
 	ObjectManager() = default;
 	~ObjectManager() = default;

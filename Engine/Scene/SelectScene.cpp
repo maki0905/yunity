@@ -21,7 +21,7 @@ void SelectScene::Initialize()
 		models_[index] = std::make_unique<Model>();
 		models_[index].reset(ModelManager::GetInstance()->CreateModel(obj, "TV"));
 		models_[index]->SetCamera(camera_);
-		models_[index]->SetLighting(false);
+		models_[index]->SetEnableLighting(false);
 		worldTransform_[index].Initialize();
 		worldTransform_[index].translation_ = { 30.0f * index, 18.0f, 12.0f };
 		worldTransform_[index].rotation_.x = -21.0f * DegToRad();

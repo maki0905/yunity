@@ -129,7 +129,7 @@ PixelShaderOutput main(VertexShaderOutput input)
         float3 specularDirectionalLight = gDirectionalLight.color.rgb * gDirectionalLight.intensity * specularPow * float3(1.0f, 1.0f, 1.0f);
         float3 specularPointLight = pointLightColor.rgb * gPointLight.intensity * specularPow_PointLight * float3(1.0f, 1.0f, 1.0f);
         
-        output.color.rgb = diffuseDirectionalLight + specularDirectionalLight + diffusePointLight + specularPointLight;
+        output.color.rgb = diffuseDirectionalLight + specularDirectionalLight /*+ diffusePointLight + specularPointLight*/;
         output.color.a = gMaterial.color.a * textureColor.a;
     }
     else
@@ -142,7 +142,7 @@ PixelShaderOutput main(VertexShaderOutput input)
     float32_t3 reflectedVector = reflect(cameraToPosition, normalize(input.normal));
     float32_t4 environamentColor = gEnvironmentTexture.Sample(gSampler, reflectedVector);
     
-    output.color.rgb = environamentColor.rgb;
+    //output.color.rgb = environamentColor.rgb;
     
     return output;
 }

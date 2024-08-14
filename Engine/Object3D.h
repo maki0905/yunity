@@ -31,6 +31,8 @@ public:
 	Model* GetModel() { return model_.get(); }
 	Model* GetModel(const std::string& modelName) { return models_[modelName].get(); }
 	void SetModel(const std::string& modelName, Model* model);
+	void SetEnableLighting(bool onOff);
+	void SetDirectionalLight(Model::DirectionalLight directionalLight);
 
 protected:
 	WorldTransform worldTransform_;

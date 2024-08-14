@@ -41,7 +41,8 @@ namespace {
 		// 最近接点を求める
 		Vector3 closestPoint{ std::clamp(sphere.center.x, aabb.min.x, aabb.max.x), std::clamp(sphere.center.y, aabb.min.y, aabb.max.y), std::clamp(sphere.center.z, aabb.min.z, aabb.max.z) };
 
-		Vector3 delta = Subtract(sphere.center, closestPoint);
+		/*Vector3 delta = Subtract(sphere.center, closestPoint);*/
+		Vector3 delta = Subtract(closestPoint, sphere.center);
 		float distance = Length(delta);
 
 		float penetrationDepth = sphere.radius - distance;
@@ -202,7 +203,7 @@ void Body::OnCollision(Body* body)
 			switch (body->GetShape())
 			{
 			case Collider::Shape::kSphere:
-				pushback = GetPushback(Sphere{ body->GetMatWorldTranslation(), body->GetHitBoxSize().x * 2.0f }, AABB{ Subtract(GetMatWorldTranslation(), GetHitBoxSize()), Add(GetMatWorldTranslation(), GetHitBoxSize()) });
+				pushback = GetPushback(AABB{ Subtract(GetMatWorldTranslation(), GetHitBoxSize()), Add(GetMatWorldTranslation(), GetHitBoxSize()) }, Sphere{ body->GetMatWorldTranslation(), body->GetHitBoxSize().x * 2.0f });
 				break;
 			case Collider::Shape::kAABB:
 				pushback = GetPushback(AABB{ Subtract(GetMatWorldTranslation(), GetHitBoxSize()), Add(GetMatWorldTranslation(), GetHitBoxSize()) }, AABB{ Subtract(body->GetMatWorldTranslation(), body->GetHitBoxSize()), Add(body->GetMatWorldTranslation(), body->GetHitBoxSize()) });

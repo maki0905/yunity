@@ -226,6 +226,30 @@ void Collider::HitBox(Camera* camera)
 	HitBox_->Draw(worldTransform_HitBox_);
 }
 
+Vector3 Collider::GetHitBoxSize()
+{
+	Vector3 result;
+	switch (shape_)
+	{
+	case Collider::kSphere:
+		result = Multiply(size_, worldTransform_->scale_);
+		break;
+	case Collider::kPlane:
+		break;
+	case Collider::kAABB:
+		result = Multiply(Multiply(0.5f, size_), worldTransform_->scale_);
+		break;
+	case Collider::kCapsule:
+		break;
+	case Collider::kOBB:
+		break;
+	default:
+		break;
+	}
+
+	return  Multiply(Multiply(0.5f, size_), worldTransform_->scale_);
+}
+
 AABB Collider::GetAABB()
 {
 	return AABB(Subtract(worldTransform_->translation_, GetHitBoxSize()), Add(worldTransform_->translation_, GetHitBoxSize()));

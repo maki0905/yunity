@@ -47,14 +47,14 @@ void ObjectManager::Load(const std::string& fileName, Camera* camera, World* wor
 			newObject->SetIsTrigger(object.isTrigger);
 			newObject->SetMass(object.mass);
 			newObject->SetDrag(object.drag);
-			newObject->SetMiu(object.miu);
-			newObject->SetFirictionCombine(static_cast<Body::FrictionCombine>(object.frictionCombine));
-			newObject->SetBounciness(object.bounciness);
-			newObject->SetBounceCombine(static_cast<Body::BounceCombine>(object.bounceCombine));
 			newObject->Initialize(ModelManager::GetInstance()->CreateModel(obj, object.fileName), world, object.shape);
 			newObject->InitializeDirection();
 			newObject->SetCamera(camera);
 			world->Add(newObject);
+			newObject->SetMiu(object.miu);
+			newObject->SetFirictionCombine(static_cast<Body::FrictionCombine>(object.frictionCombine));
+			newObject->SetBounciness(object.bounciness);
+			newObject->SetBounceCombine(static_cast<Body::BounceCombine>(object.bounceCombine));
 			objects_[fileName].emplace_back(newObject);
 
 		}
@@ -91,13 +91,13 @@ void ObjectManager::Load(const std::string& fileName, Camera* camera, World* wor
 			newObject->SetIsTrigger(object.isTrigger);
 			newObject->SetMass(object.mass);
 			newObject->SetDrag(object.drag);
+			newObject->Initialize(ModelManager::GetInstance()->CreateModel(obj, object.fileName), world, object.shape);
+			newObject->SetCamera(camera);
+			world->Add(newObject);
 			newObject->SetMiu(object.miu);
 			newObject->SetFirictionCombine(static_cast<Body::FrictionCombine>(object.frictionCombine));
 			newObject->SetBounciness(object.bounciness);
 			newObject->SetBounceCombine(static_cast<Body::BounceCombine>(object.bounceCombine));
-			newObject->Initialize(ModelManager::GetInstance()->CreateModel(obj, object.fileName), world, object.shape);
-			newObject->SetCamera(camera);
-			world->Add(newObject);
 			objects_[fileName].emplace_back(newObject);
 		}
 		else if (object.serialNumber != -1) {
@@ -124,10 +124,6 @@ void ObjectManager::Load(const std::string& fileName, Camera* camera, World* wor
 			newObject->SetIsTrigger(object.isTrigger);
 			newObject->SetMass(object.mass);
 			newObject->SetDrag(object.drag);
-			newObject->SetMiu(object.miu);
-			newObject->SetFirictionCombine(static_cast<Body::FrictionCombine>(object.frictionCombine));
-			newObject->SetBounciness(object.bounciness);
-			newObject->SetBounceCombine(static_cast<Body::BounceCombine>(object.bounceCombine));
 			newObject->SetCollisionAttribute(0b1 << object.attribute);
 			if (object.empth) {
 				newObject->Initialize(world, object.shape);
@@ -139,6 +135,10 @@ void ObjectManager::Load(const std::string& fileName, Camera* camera, World* wor
 			if (Length(object.size) > 0) {
 				world->Add(newObject);
 			}
+			newObject->SetMiu(object.miu);
+			newObject->SetFirictionCombine(static_cast<Body::FrictionCombine>(object.frictionCombine));
+			newObject->SetBounciness(object.bounciness);
+			newObject->SetBounceCombine(static_cast<Body::BounceCombine>(object.bounceCombine));
 			objects_[fileName].emplace_back(newObject);
 		}
 	}
@@ -166,6 +166,23 @@ void ObjectManager::Clear(const std::string& fileName)
 	}
 	objects_[fileName].clear();
 }
+
+void ObjectManager::SetDirectionalLight(const std::string& fileName, Model::DirectionalLight directionalLight)
+{
+	for (auto& obj : objects_[fileName]) {
+		obj->SetEnableLighting(true);
+		obj->SetDirectionalLight(directionalLight);
+	}
+}
+
+void ObjectManager::SetEnableLighting(const std::string& fileName, bool onOff)
+{
+	for (auto& obj : objects_[fileName]) {
+		obj->SetEnableLighting(onOff);
+	}
+}
+
+
 
 //std::vector<Object3D*> ObjectManager::GetObj(const std::string& fileName, const std::string& modelName)
 //{

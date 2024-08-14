@@ -1645,6 +1645,42 @@
                 "isTrigger": true,
                 "attribute": 5
             }
+        },
+        {
+            "type": "EMPTY",
+            "name": "エンプティ",
+            "transform": {
+                "translation": [
+                    7.045403480529785,
+                    0.0,
+                    6.8611226081848145
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "collider": {
+                "type": "SPHERE",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    2.0,
+                    2.0,
+                    2.0
+                ],
+                "isTrigger": false,
+                "attribute": 1
+            }
         }
     ]
 }

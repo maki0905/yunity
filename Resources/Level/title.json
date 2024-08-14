@@ -43,7 +43,7 @@
                     1.0
                 ]
             },
-            "file_name": "TitleStage",
+            "file_name": "titleStage",
             "collider": {
                 "type": "BOX",
                 "center": [
@@ -62,9 +62,9 @@
             "body": {
                 "mass": 0.0,
                 "drag": 0.05,
-                "miu": 0.5,
-                "frictionCombine": 1,
-                "bounciness": 0.0,
+                "miu": 1.0,
+                "frictionCombine": 0,
+                "bounciness": 0.5,
                 "bounceCombine": 0
             }
         }
