@@ -92,6 +92,32 @@ void StageScene::Initialize()
 
 	CommonData::GetInstance()->scene_ = Scene::kStage;
 
+	spike_ = std::make_unique<Object3D>();
+	spike_->Initialize(ModelManager::GetInstance()->CreateModel(obj, "Spike"), world_.get(), Collider::Shape::kAABB);
+	spike_->SetCamera(camera_);
+	spike_->SetPosition({ 20.0f, 15.0f, 0.0f });
+	spike_->SetMass(1.0f);
+	spike_->SetIsTrigger(true);
+	stand_ = std::make_unique<Object3D>();
+	stand_->Initialize(ModelManager::GetInstance()->CreateModel(obj, "SpikeStand"), world_.get(), Collider::Shape::kAABB);
+	stand_->SetCamera(camera_);
+	stand_->SetPosition({ 20.0f, 5.0f, 0.0f });
+	stand_->SetIsTrigger(true);
+	world_->Add(spike_.get());
+	world_->Add(stand_.get());
+
+	springJoint_ = std::make_unique<SpringJoint>();
+	springJoint_->CreateSpringJoint(spike_.get(), stand_.get());
+	springJoint_->EnableSpring(1, true);
+	springJoint_->SetEquilibriumPoint(1, 10.0f);
+	springJoint_->SetStiffness(1, 1.0f);
+	springJoint_->SetDamping(1, 0.0f);
+	world_->AddJoint(springJoint_.get());
+
+	line_ = std::make_unique<PrimitiveDrawer>();
+	line_.reset(PrimitiveDrawer::Create());
+	line_->SetCamera(camera_);
+
 }
 
 void StageScene::Update()
@@ -163,6 +189,12 @@ void StageScene::Update()
 	}
 
 #ifdef _DEBUG
+	Vector3 pos = spike_->GetMatWorldTranslation();
+	ImGui::Begin("spike");
+	ImGui::DragFloat3("pos", &pos.x);
+	ImGui::End();
+	spike_->SetPosition(pos);
+
 #endif
 
 
@@ -192,6 +224,9 @@ void StageScene::Draw3D()
 	///*for (auto& object : ObjectManager::GetInstance()->GetObjects("TL1")) {
 	//	object->Draw();
 	//}*/
+	line_->Draw(spike_->GetMatWorldTranslation(), stand_->GetMatWorldTranslation(), {0.0f, 0.0f, 0.0f, 1.0f});
+	spike_->Draw();
+	stand_->Draw();
 	player_->Draw();
 	
 

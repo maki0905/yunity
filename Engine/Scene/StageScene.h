@@ -65,5 +65,11 @@ private:
 
 	std::string stageName_ = "stage1";
 
+	std::unique_ptr<Object3D> spike_;
+	std::unique_ptr<Object3D> stand_;
+	std::unique_ptr<SpringJoint> springJoint_;
+
+	std::unique_ptr<PrimitiveDrawer> line_;
+
 };
 

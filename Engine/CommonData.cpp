@@ -26,7 +26,7 @@ std::string CommonData::GetStageName()
 		result = "stage2";
 		break;
 	case 2:
-		result = "stage3";
+		result = "stage4";
 		break;
 	}
 

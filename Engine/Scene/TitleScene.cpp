@@ -42,7 +42,7 @@ void TitleScene::Initialize()
 	player_->SetDirectionalLight(l);
 	camera_->SetTarget(nullptr);  
 
-	ObjectManager::GetInstance()->Load("stage2", camera_/*camera_.get()*/, world_.get());
+	ObjectManager::GetInstance()->Load("title", camera_/*camera_.get()*/, world_.get());
 	ObjectManager::GetInstance()->SetDirectionalLight("title", l);
 	//RenderTexture::GetInstance()->SelectPostEffect(PostEffects::kHSVFilter, true);
 	//RenderTexture::GetInstance()->SelectPostEffect(PostEffects::kGrayscale, true);
@@ -135,7 +135,7 @@ void TitleScene::DrawBack()
 void TitleScene::Draw3D()
 {
 	skydome_->Draw();
-	ObjectManager::GetInstance()->Draw("stage2");
+	ObjectManager::GetInstance()->Draw("title");
 	player_->Draw();
 	model_->Draw(worldTransform_);
 	//obj_->Draw();

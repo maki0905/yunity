@@ -10,6 +10,7 @@
 #include "Object3D.h"
 #include "Sprite.h"
 #include "Score.h"
+#include "SpringJoint.h"
 
 
 class Player : public Object3D
@@ -81,5 +82,8 @@ private:
 
 	// 制限速度
 	float limitSpeed_ = 20.0f;
+
+	std::unique_ptr<SpringJoint> springJoint_;
+	std::unique_ptr<Body> apexBody_;
 };
 

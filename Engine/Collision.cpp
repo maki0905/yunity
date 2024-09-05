@@ -384,6 +384,34 @@ bool IsCollision(const Ray& ray, const AABB& aabb)
 	return false;
 }
 
+bool IsCollision(const OBB& obb1, const OBB& obb2)
+{
+	for (int i = 0; i < 3; i++) {
+		if (!TestAxis(obb1.orientations[i], obb1, obb2)) {
+			return false;
+		}
+		if (!TestAxis(obb2.orientations[i], obb1, obb2)) {
+			return false;
+		}
+	}
+
+	for (int i = 0; i < 3; i++) {
+		for (int j = 0; j < 3; j++) {
+			Vector3 asixCross = Vector3(
+				obb1.orientations[i].y * obb2.orientations[j].z - obb1.orientations[i].z * obb2.orientations[j].y,
+				obb1.orientations[i].z * obb2.orientations[j].x - obb1.orientations[i].x * obb2.orientations[j].z,
+				obb1.orientations[i].x * obb2.orientations[j].y - obb1.orientations[i].y * obb2.orientations[j].x
+				);
+
+			if (!TestAxis(asixCross, obb1, obb2)) {
+				return false;
+			}
+		}
+	}
+
+	return true;
+}
+
 bool IsCollision(const OBB& obb, const Sphere& sphere)
 {
 	Matrix4x4 W;

@@ -44,6 +44,8 @@ bool IsCollision(const AABB& aabb, const Ray& ray);
 
 bool IsCollision(const Ray& ray, const AABB& aabb);
 
+bool IsCollision(const OBB& obb1, const OBB& obb2);
+
 bool IsCollision(const OBB& obb, const Sphere& sphere);
 
 bool IsCollision(const Sphere& sphere, const OBB& obb);

@@ -71,6 +71,20 @@ void Player::Initialize(Camera* camera, World* world)
 	apex_.reset(ModelManager::GetInstance()->CreateModel(obj, "apex"));
 	apex_->SetCamera(camera_);
 	apexWorldTransform_.Initialize();
+	apexBody_ = std::make_unique<Body>();
+	apexBody_->CreateBody(world, &apexWorldTransform_);
+
+	springJoint_ = std::make_unique<SpringJoint>();
+	springJoint_->CreateSpringJoint(this, apexBody_.get());
+	springJoint_->EnableSpring(0, true);
+	springJoint_->EnableSpring(1, true);
+	springJoint_->SetEquilibriumPoint(0, 0.0f);
+	springJoint_->SetEquilibriumPoint(1, 0.0f);
+	springJoint_->SetStiffness(0, stiffness_);
+	springJoint_->SetStiffness(1, stiffness_);
+	springJoint_->SetDamping(0, dampar_);
+	springJoint_->SetDamping(1, dampar_);
+
 
 	isWire_ = false;
 	isJunp_ = true;
@@ -314,6 +328,7 @@ void Player::Update()
 					if (!isWire_) {
 						if (isHit && hit.collider->GetCollisionAttribute() != kCollisionAttributeCoin) {
 							isWire_ = true;
+							//GetWorld()->AddJoint(springJoint_.get());
 							//point_ = hit.collider->GetTranslation();
 							point_ = hit.point;
 							apexWorldTransform_.translation_ = hit.point;
@@ -328,6 +343,7 @@ void Player::Update()
 						if (apexWorldTransform_.parent_) {
 							apexWorldTransform_.parent_ = nullptr;
 						}
+						//GetWorld()->TakeJoint(springJoint_.get());
 					}
 				}
 			}
@@ -355,7 +371,7 @@ void Player::Update()
 	}
 	else {
 		AddForce(Spring(apexWorldTransform_.GetMatWorldTranslation(), GetMatWorldTranslation(), 0.0f, stiffness_, dampar_), 0);
-		//AddForce(RubberMovement(GetMatWorldTranslation(), apexWorldTransform_.GetMatWorldTranslation(), limitLength_, stiffness_, dampar_), 0);
+		AddForce(RubberMovement(GetMatWorldTranslation(), apexWorldTransform_.GetMatWorldTranslation(), limitLength_, stiffness_, dampar_), 0);
 	}
 
 	reticleWorldTransform_.UpdateMatrix();
@@ -479,6 +495,7 @@ void Player::OnCollisionEvent(Body* body)
 		}
 	}
 
+
 	if (GetNormalVector().y > 0.0f) {
 		isJunp_ = false;
 		//isFloot_ = false;
@@ -509,6 +526,9 @@ void Player::OnTriggerEvent(Body* body)
 	}
 	if (body->GetCollisionAttribute() == kCollisionAttributeCoin) {
 		scoreUI_->AddScore(10);
+	}
+	if (body->GetCollisionAttribute() == kCollisionAttributeVentilator) {
+		AddForce({ -0.3f, 0.0f, 0.0f }, 1);
 	}
 }
 

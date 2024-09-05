@@ -22,4 +22,5 @@ const uint32_t kCollisionAttributeSpike = 0b1 << 7;
 const uint32_t kCollisionAttributeTV1= 0b1 << 8;
 const uint32_t kCollisionAttributeTV2 = 0b1 << 9;
 const uint32_t kCollisionAttributeTV3 = 0b1 << 10;
+const uint32_t kCollisionAttributeVentilator = 0b1 << 11;
 

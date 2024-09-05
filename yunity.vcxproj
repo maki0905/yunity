@@ -132,6 +132,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Engine\EventTrigger.cpp" />
     <ClCompile Include="Engine\Format.cpp" />
     <ClCompile Include="Engine\LevelEditor.cpp" />
+    <ClCompile Include="Engine\Math\OBB.cpp" />
     <ClCompile Include="Engine\Object3D.cpp" />
     <ClCompile Include="Engine\ObjectManager.cpp" />
     <ClCompile Include="Engine\Physics\Body.cpp" />
