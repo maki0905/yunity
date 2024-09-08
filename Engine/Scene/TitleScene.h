@@ -34,6 +34,14 @@ private:
 	std::unique_ptr<Skydome> skydome_;
 	float k = 0.5f;
 	float i = 0.0f;
+
+	std::unique_ptr<Object3D> obj1_;
+	std::unique_ptr<Object3D> obj2_;
+
+	bool flag_ = true;
+
+	Vector3 torupu_;
+
 	//std::unique_ptr<Model> model_ = nullptr;
 };
 

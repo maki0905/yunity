@@ -709,6 +709,38 @@ Vector3 Project(const Vector3& v1, const Vector3& v2) {
 	return result;
 }
 
+Vector3 ClosestPoint(const Vector3& p1, const Vector3& p2, const Vector3& q1, const Vector3& q2)
+{
+	Vector3 direction1 = Subtract(p2, p1);
+	Vector3 direction2 = Subtract(q2, q1);
+	Vector3 diff = Subtract(p1, q1);
+
+	float a = Dot(direction1, direction1);
+	float e = Dot(direction2, direction2);
+	float f = Dot(direction2, diff);
+
+	float s = 0.0f;
+
+	float t = 0.0f;
+
+	float denom = a * e - Dot(direction1, direction2) * Dot(direction1, direction2);
+
+	if (denom != 0.0f) {
+		s = (Dot(direction1, direction2) * f - e * Dot(diff, direction1)) / denom;
+		s = std::clamp(s, 0.0f, 1.0f);
+	}
+
+	t = (Dot(direction1, direction2) * s + f) / e;
+	t = std::clamp(t, 0.0f, 1.0f);
+
+	Vector3 c1 = Add(p1, Multiply(s, direction1));
+	Vector3 c2 = Add(q1, Multiply(t, direction2));
+
+	Vector3 result = Multiply(0.5f, Add(c1, c2));
+
+	return result;
+}
+
 float ConvertToRadians(float degree)
 {
 	float result = degree * float(M_PI) / 180.0f;

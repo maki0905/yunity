@@ -147,6 +147,8 @@ Vector3 Project(const Vector3& v1, const Vector3& v2);
 // 最近接点
 // Vector3 ClosestPoint(const Vector3& point, const Segment& segment);
 
+Vector3 ClosestPoint(const Vector3& p1, const Vector3& p2, const Vector3& q1, const Vector3& q2);
+
 float ConvertToRadians(float degree);
 
 // 最短角度補間

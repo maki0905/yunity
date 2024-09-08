@@ -1,5 +1,7 @@
 #include "Body.h"
 
+#include <cmath>
+
 namespace {
 	Vector3 GetPushback(const AABB& a, const AABB& b) {
 
@@ -49,9 +51,198 @@ namespace {
 
 		Vector3 normal = delta.Normalize();
 		return Multiply(penetrationDepth, normal);
-
-		
 	}
+
+	float GetProjectionRadius(const OBB& obb, const Vector3& axis) {
+		float result;
+		result = 
+			obb.size.x * std::fabsf(Dot(obb.orientations[0], axis)) +
+			obb.size.y * std::fabsf(Dot(obb.orientations[1], axis)) +
+			obb.size.z * std::fabsf(Dot(obb.orientations[2], axis));
+		return result;
+	}
+
+	Vector3 GetPushback(const OBB& obb1, const OBB& obb2) {
+		float minPenetrationDepth = (std::numeric_limits<float>::max)();
+		Vector3 minPenetrationAxis;
+
+		Vector3 axes[15];  // 衝突判定に使用する分離軸
+		int axisCount = 0;
+
+		// OBBの各軸を分離軸に追加
+		for (int i = 0; i < 3; i++) {
+			axes[axisCount++] = obb1.orientations[i];
+			axes[axisCount++] = obb2.orientations[i];
+		}
+
+		// OBBの各軸の外積を分離軸に追加
+		for (int i = 0; i < 3; i++) {
+			for (int j = 0; j < 3; j++) {
+				Vector3 crossAxis = Cross(obb1.orientations[i], obb2.orientations[j]);
+				if (Length(crossAxis) > 1e-6) {
+					axes[axisCount++] = Normalize(crossAxis);
+				}
+			}
+		}
+
+		//Vector3 centerOffset = Subtract(obb2.center, obb1.center);
+		Vector3 centerOffset = Subtract(obb1.center, obb2.center);
+		// 各軸に対して衝突判定
+		for (int i = 0; i < axisCount; i++) {
+			Vector3 axis = axes[i];
+
+			// OBB1とOBB2の軸への投影半径を計算
+			float r1 = GetProjectionRadius(obb1, axis);
+			float r2 = GetProjectionRadius(obb2, axis);
+			float distance = std::fabs(Dot(centerOffset, axis));
+
+			// 分離軸が見つかった場合は衝突していない
+			if (distance > r1 + r2) {
+				return Vector3(0, 0, 0);  // 衝突していない場合はゼロベクトルを返す
+			}
+
+			// 貫通深度を計算
+			float penetrationDepth = (r1 + r2) - distance;
+
+			if (penetrationDepth < 0.0f) {
+				continue;
+			}
+
+			// 最小の貫通深度を保存
+			if (penetrationDepth < minPenetrationDepth) {
+				minPenetrationDepth = penetrationDepth;
+				minPenetrationAxis = Normalize(axis);
+			}
+		}
+
+		// 中心オフセットとの内積を使用して、押し返し方向を決定
+		if (Dot(centerOffset, minPenetrationAxis) < 0) {
+			minPenetrationAxis = Multiply(-1, minPenetrationAxis);
+		}
+
+		// Y軸方向の押し返しを優先
+		if (std::fabs(minPenetrationAxis.y) > std::fabs(minPenetrationAxis.x) &&
+			std::fabs(minPenetrationAxis.y) > std::fabs(minPenetrationAxis.z)) {
+			minPenetrationAxis = Vector3(0, minPenetrationAxis.y, 0);
+		}
+
+		// 押し返しベクトルを計算して返す
+		return Multiply(minPenetrationDepth, minPenetrationAxis);
+	}
+
+	//Vector3 GetPushback(const OBB& obb1, const OBB& obb2) {
+	//	float minPenetrationDepth = (std::numeric_limits<float>::max)();
+	//	Vector3 minPenetrationAxis;
+
+	//	Vector3 axes[15];
+	//	int index = 0;
+
+	//	for (int i = 0; i < 3; i++) {
+	//		axes[index++] = obb1.orientations[i];
+	//		axes[index++] = obb2.orientations[i];
+	//	}
+
+	//	for (int i = 0; i < 3; i++) {
+	//		for (int j = 0; j < 3; j++) {
+	//			Vector3 crossAxis = Vector3(
+	//				obb1.orientations[i].y * obb2.orientations[j].z - obb1.orientations[i].z * obb2.orientations[j].y,
+	//				obb1.orientations[i].z * obb2.orientations[j].x - obb1.orientations[i].x * obb2.orientations[j].z,
+	//				obb1.orientations[i].x * obb2.orientations[j].y - obb1.orientations[i].y * obb2.orientations[j].x
+	//			);
+	//			if (crossAxis.Length() > 1e-6) {
+	//				axes[index++] = crossAxis.Normalize();
+	//			}
+
+	//		}
+	//	}
+
+	//	Vector3 centerOffset = Subtract(obb2.center, obb1.center);
+
+	//	for (int i = 0; i < index; i++) {
+	//		Vector3 axis = axes[i];
+
+	//		float r1 = obb1.size.x * std::fabsf(Dot(obb1.orientations[0], axis)) + obb1.size.y * std::fabsf(Dot(obb1.orientations[1], axis)) + obb1.size.z * std::fabsf(Dot(obb1.orientations[2], axis));
+	//		float r2 = obb2.size.x * std::fabsf(Dot(obb2.orientations[0], axis)) + obb2.size.y * std::fabsf(Dot(obb2.orientations[1], axis)) + obb2.size.z * std::fabsf(Dot(obb2.orientations[2], axis));
+	//		float distance = std::fabsf(Dot(Subtract(obb2.center, obb1.center), axis));
+
+	//		if (distance > r1 + r2) {
+	//			return Vector3(0, 0, 0);
+	//		}
+
+	//		float penetrationDepth = (r1 + r2) - distance;
+
+	//		if (penetrationDepth < minPenetrationDepth) {
+	//			minPenetrationDepth = penetrationDepth;
+	//			minPenetrationAxis = axis.Normalize();
+	//		}
+
+	//	}
+
+	//	return Multiply(minPenetrationDepth, minPenetrationAxis);
+	//}
+
+	// 分離軸に基づく投影範囲を計算
+	void ProjectOBBOnAxis(const OBB& obb, const Vector3& axis, float& minProj, float& maxProj) {
+		// OBBの中心の投影
+		float centerProjection = Dot(obb.center, axis);
+		// OBBの各軸方向の半径の合計を計算
+		float extent = 
+			obb.size.x * std::fabsf(Dot(obb.orientations[0], axis)) +
+			obb.size.y * std::fabsf(Dot(obb.orientations[1], axis)) +
+			obb.size.z * std::fabsf(Dot(obb.orientations[2], axis));
+		// OBBの投影範囲を決定
+		minProj = centerProjection - extent;
+		maxProj = centerProjection + extent;
+	}
+	// OBB同士の最も近い接触点を計算する関数
+	Vector3 GetContactPoint(const OBB& obb1, const OBB& obb2) {
+		Vector3 minPenetrationAxis;
+		float minPentrationDepth = (std::numeric_limits<float>::max)();
+
+		// OBBの軸とその外積を分離軸として使用
+		Vector3 testAxes[] = {
+			obb1.orientations[0], obb1.orientations[1], obb1.orientations[2],
+			obb2.orientations[0], obb2.orientations[1], obb2.orientations[2],
+			Cross(obb1.orientations[0], obb2.orientations[0]),
+			Cross(obb1.orientations[0], obb2.orientations[1]),
+			Cross(obb1.orientations[0], obb2.orientations[2]),
+			Cross(obb1.orientations[1], obb2.orientations[0]),
+			Cross(obb1.orientations[1], obb2.orientations[1]),
+			Cross(obb1.orientations[1], obb2.orientations[2]),
+			Cross(obb1.orientations[2], obb2.orientations[0]),
+			Cross(obb1.orientations[2], obb2.orientations[1]),
+			Cross(obb1.orientations[2], obb2.orientations[2]),
+		};
+		// 各分離軸について検証
+		for (const Vector3& axis : testAxes) {
+			// 軸の長さが非常に小さい場合は無視
+			if (axis.Length() < 1e-6) {
+				continue;
+			}
+
+			// OBB1とOBB2をこの軸に投影して範囲を取得
+			float min1, max1, min2, max2;
+			ProjectOBBOnAxis(obb1, axis, min1, max1);
+			ProjectOBBOnAxis(obb2, axis, min2, max2);
+
+			// 投影範囲が分離している場合は衝突していない
+			if (max1 < min2 || max2 < min1) {
+				return Vector3();// 接触していない
+			}
+
+			// 重なりの深さを計算
+			float penetrationDepth = min(max1, max2) - max(min1, min2);
+
+			// 最小の重なりを保存
+			if (penetrationDepth < minPentrationDepth) {
+				minPentrationDepth = penetrationDepth;
+				minPenetrationAxis = Normalize(axis);
+			}
+		}
+		// 接触点は最小分離軸に基づく
+		return Multiply(minPentrationDepth, minPenetrationAxis);
+	}
+
 }
 
 void Body::CreateBody(World* world, WorldTransform* worldTransform, float mass)
@@ -106,6 +297,40 @@ void Body::Solve(float time)
 			acceleration_ = Add(gravity, airResistanceAcceleration);
 		}
 
+		if (inertiaTensor_ != 0.0f) {
+			Vector3 airResistanceTorque = Multiply(-angularDrag_, angularVelocity_);
+
+			Vector3 airResistanceAngularAcceleration = Multiply(1.0 / inertiaTensor_, airResistanceTorque);
+
+			angularAcceleration_ = Add(angularAcceleration_, airResistanceAngularAcceleration);
+			if (std::fabsf(angularAcceleration_.x * time) > std::fabs(angularVelocity_.x)) {
+				angularAcceleration_.x = angularVelocity_.x / time;
+			}
+			else if (std::fabsf(angularVelocity_.x) < 0.01f) {
+				angularAcceleration_.x = 0.0f;
+				angularVelocity_.x = 0.0f;
+			}
+			if (std::fabsf(angularAcceleration_.y * time) > std::fabs(angularVelocity_.y)) {
+				angularAcceleration_.y = angularVelocity_.y / time;
+			}
+			else if (std::fabsf(angularVelocity_.y) < 0.01f) {
+				angularAcceleration_.y = 0.0f;
+				angularVelocity_.y = 0.0f;
+			}
+			if (std::fabsf(angularAcceleration_.z * time) > std::fabs(angularVelocity_.z)) {
+				angularAcceleration_.z = angularVelocity_.z / time;
+			}
+			else if (std::fabsf(angularVelocity_.z) < 0.01f) {
+				angularAcceleration_.z = 0.0f;
+				angularVelocity_.z = 0.0f;
+			}
+
+			angularAcceleration_ = Add(angularAcceleration_, Multiply(1.0f / inertiaTensor_, torque_));
+			torque_ = { 0.0f, 0.0f, 0.0f };
+			angularVelocity_ = Add(angularVelocity_, Multiply(time, angularAcceleration_));
+			worldTransform_->rotation_ = Add(worldTransform_->rotation_, Multiply(time, angularVelocity_));
+		}
+
 		acceleration_ = Add(acceleration_, Multiply(1.0f / mass_, force_));
 
 		force_ = { 0.0f, 0.0f, 0.0f };
@@ -148,7 +373,7 @@ Vector3 Body::Spring(const Vector3& anchor, const Vector3& position, float natur
 	if (length != 0.0f)
 	{
 		Vector3 direction = Normalize(diff);
-		Vector3 restPosition = Add(anchor,Multiply(naturalLength, direction));
+		Vector3 restPosition = Add(anchor, Multiply(naturalLength, direction));
 		Vector3 displacement = Multiply(length, Subtract(position, restPosition));
 		Vector3 restoringForce = Multiply(-stiffness, displacement);
 		Vector3 dampingForce = Multiply(-dampingCoefficient, velocity_);
@@ -167,6 +392,23 @@ void Body::AddForce(const Vector3& force, uint32_t mode)
 		velocity_ = Add(velocity_, Multiply(1.0f / mass_, force));
 	}
 }
+
+void Body::AddTorque(const Vector3& torque, uint32_t mode)
+{
+	/*if (mode == 0) {
+		torque_ = Add(torque_, Multiply(DegToRad(), torque));
+	}
+	else {
+		angularVelocity_ = Add(angularVelocity_, Multiply(angularDrag_, Multiply(DegToRad(), torque)));
+	}*/
+	if (mode == 0) {
+		torque_ = Add(torque_, torque);
+	}
+	else {
+		angularVelocity_ = Add(angularVelocity_, Multiply(angularDrag_,torque));
+	}
+}
+
 
 void Body::Reset()
 {
@@ -210,6 +452,31 @@ void Body::OnCollision(Body* body)
 				break;
 			}
 
+			break;
+		case Collider::Shape::kOBB:
+			switch (body->GetShape())
+			{
+			case Collider::Shape::kSphere:
+				pushback = GetPushback(AABB{ Subtract(GetMatWorldTranslation(), GetHitBoxSize()), Add(GetMatWorldTranslation(), GetHitBoxSize()) }, Sphere{ body->GetMatWorldTranslation(), body->GetHitBoxSize().x * 2.0f });
+				break;
+			case Collider::Shape::kAABB:
+				pushback = GetPushback(AABB{ Subtract(GetMatWorldTranslation(), GetHitBoxSize()), Add(GetMatWorldTranslation(), GetHitBoxSize()) }, AABB{ Subtract(body->GetMatWorldTranslation(), body->GetHitBoxSize()), Add(body->GetMatWorldTranslation(), body->GetHitBoxSize()) });
+				break;
+			case Collider::Shape::kOBB:
+				Matrix4x4 rotateA = MakeRotateXYZMatrix(GetWorldTransform()->rotation_);
+				Vector3 orientationsA[3] = { {rotateA.m[0][0], rotateA.m[0][1], rotateA.m[0][2]}, {rotateA.m[1][0], rotateA.m[1][1], rotateA.m[1][2]}, {rotateA.m[2][0], rotateA.m[2][1], rotateA.m[2][2]} };
+				Matrix4x4 rotateB = MakeRotateXYZMatrix(body->GetWorldTransform()->rotation_);
+				Vector3 orientationsB[3] = { {rotateB.m[0][0], rotateB.m[0][1], rotateB.m[0][2]}, {rotateB.m[1][0], rotateB.m[1][1], rotateB.m[1][2]}, {rotateB.m[2][0], rotateB.m[2][1], rotateB.m[2][2]} };
+				pushback = GetPushback(OBB{ GetMatWorldTranslation(), orientationsA[0], orientationsA[1], orientationsA[2], GetHitBoxSize() }, OBB{ body->GetMatWorldTranslation(), orientationsB[0], orientationsB[1], orientationsB[2], body->GetHitBoxSize() });
+				Vector3 operationPoint = GetContactPoint(OBB{ GetMatWorldTranslation(), orientationsA[0], orientationsA[1], orientationsA[2], GetHitBoxSize() }, OBB{ body->GetMatWorldTranslation(), orientationsB[0], orientationsB[1], orientationsB[2], body->GetHitBoxSize() });
+				if (Length(operationPoint) > 0.0f) {
+					Vector3 diff = Subtract(GetMatWorldTranslation(), operationPoint);
+					Vector3 torque = Cross(diff, Multiply(mass_, world_->GetGravity()));
+					AddTorque(torque, 1);
+				}
+
+				break;
+			}
 			break;
 		}
 

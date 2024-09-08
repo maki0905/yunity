@@ -6,6 +6,8 @@
 
 class Body : public Collider {
 public:
+
+
 	enum class FrictionCombine {
 		kNone,    // 計算しない
 		kAverage, // 平均化
@@ -29,6 +31,7 @@ public:
 	Vector3 Spring(const Vector3& anchor, const Vector3& position, float naturalLength, float stiffness, float dampingCoefficient);
 
 	void AddForce(const Vector3& force, uint32_t mode);
+	void AddTorque(const Vector3& torque, uint32_t mode);
 
 	void Reset();
 
@@ -43,10 +46,19 @@ public:
 	Vector3 GetVelocity() { return velocity_; }
 	void SetVelocity(const Vector3& velocity) { velocity_ = velocity; }
 
+	Vector3 GetAngularVelocity() { return angularVelocity_; }
+	void SetAngularVelocity(const Vector3& angularVelocity) { angularVelocity_ = angularVelocity; }
+
 	float GetMass() { return mass_; }
 	void SetMass(float mass) { mass_ = mass; }
 
+	float GetInertiaTensor() { return inertiaTensor_; }
+	void SetInertiaTensor(float inertiaTensor) { inertiaTensor_ = inertiaTensor; }
+
+	float GetDrag() { return drag_; }
 	void SetDrag(float drag) { drag_ = drag; }
+	float GetAngularDrag() { return angularDrag_; }
+	void SetAngularDrag(float angularDrag) { angularDrag_ = angularDrag; }
 
 	void SetGravity(const Vector3& gravity) { gravityAcceleration_ = gravity; }
 
@@ -76,16 +88,23 @@ private:
 	WorldTransform* worldTransform_;
 	// 速度
 	Vector3 velocity_;
+	// 角速度
+	Vector3 angularVelocity_;
 	// 加速度
 	Vector3 acceleration_;
+	Vector3 angularAcceleration_;
 	// 衝撃
 	Vector3 impulse_;
 	// 力
 	Vector3 force_;
+	Vector3 torque_;
 	// 質量
 	float mass_;
+	// 慣性テンソル
+	float inertiaTensor_;
 	// 空気抵抗
 	float drag_ = 0.0005f;
+	float angularDrag_ = 0.005f;
 	// 重力加速度
 	Vector3 gravityAcceleration_;
 	// 摩擦計算方法

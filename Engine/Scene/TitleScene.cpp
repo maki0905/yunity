@@ -12,7 +12,7 @@ void TitleScene::Initialize()
 	//camera_.reset(CameraManager::GetInstance()->GetCamera());
 	camera_ = CameraManager::GetInstance()->GetCamera();
 	world_ = std::make_unique<World>();
-	world_->Initialize({ 0.0f, -15.0, 0.0f });
+	world_->Initialize({ 0.0f, /*0.0f*/-15.0f, 0.0f });
 
 	sprite_ = std::make_unique<Sprite>();
 	sprite_.reset(Sprite::Create(TextureManager::GetInstance()->Load("ScoreBackground.png"), { 0.0f, 0.0f }));
@@ -59,6 +59,26 @@ void TitleScene::Initialize()
 
 	CommonData::GetInstance()->stageNum_ = -1;
 	CommonData::GetInstance()->scene_ = Scene::kTitle;
+
+	obj1_ = std::make_unique<Object3D>();
+	obj1_->Initialize(ModelManager::GetInstance()->CreateModel(obj,/* ""*/"Cube"),world_.get(), Collider::Shape::kOBB);
+	obj1_->SetHitBoxSize({ 2.0f, 2.0f, 2.0f });
+	obj1_->SetCamera(camera_);
+	obj1_->SetCollisionAttribute(kCollisionAttributePlayer);
+	obj1_->SetPosition(Vector3{ 0.0f, 10.0f, 0.0f });
+	obj1_->SetAngularDrag(0.005f);
+	obj1_->SetInertiaTensor(48.0f);
+	obj2_ = std::make_unique<Object3D>();
+	obj2_->Initialize(ModelManager::GetInstance()->CreateModel(obj,/* ""*/"Cube"),world_.get(), Collider::Shape::kOBB);
+	obj2_->SetCamera(camera_);
+	obj2_->SetHitBoxSize({ 2.0f, 2.0f, 2.0f });
+	obj2_->SetPosition(Vector3{ 0.0f, 5.0f, 0.0f });
+	obj2_->SetCollisionAttribute(kCollisionAttributeFloor);
+
+	world_->Add(obj1_.get());
+	world_->Add(obj2_.get());
+
+
 }
 
 void TitleScene::Update()
@@ -100,7 +120,9 @@ void TitleScene::Update()
 
 	obj_->AddForce(obj_->Spring({ 0.0f, 0.0f, 0.0f }, obj_->GetMatWorldTranslation(), 0.0f, 1.0f, 0.1f), 0);*/
 
-	world_->Solve();
+	if (flag_) {
+		world_->Solve();
+	}
 
 	i += k;
 	if (i > 10.0f || i < -10.0f) {
@@ -122,6 +144,44 @@ void TitleScene::Update()
 		player_->SetEnableLighting(true);
 		ObjectManager::GetInstance()->SetEnableLighting("title", true);
 	}
+
+	ImGui::End();
+
+	Vector3 pos;
+	ImGui::Begin("obj1");
+	pos = obj1_->GetMatWorldTranslation();
+	Vector3 rotate = Multiply(RadToDeg(), obj1_->GetWorldTransform()->rotation_);
+	ImGui::DragFloat3("pos", &pos.x);
+	ImGui::DragFloat3("rotate", &rotate.x);
+	obj1_->SetPosition(pos);
+	obj1_->SetRotation(Multiply(DegToRad(), rotate));
+	if (ImGui::Button("Gravity")) {
+		obj1_->SetMass(1.0f);
+	}
+	if (ImGui::Button("Reset")) {
+		obj1_->SetMass(0.0f);
+		obj1_->SetPosition(Vector3{ 0.0f, 10.0f, 0.0f });
+		obj1_->SetRotation(Vector3{ 0.0f, 0.0f, 0.0f });
+		obj1_->SetVelocity({ 0.0f, 0.0f, 0.0f });
+		obj1_->SetAngularVelocity({ 0.0f, 0.0f, 0.0f });
+	}
+	ImGui::DragFloat3("torque", &torupu_.x);
+
+	if (ImGui::Button("AddTorque")) {
+		obj1_->AddTorque(torupu_, 1);
+	}
+	ImGui::End();
+
+	ImGui::Begin("Debug");
+	if (ImGui::Button("OnOff")) {
+		flag_ ^= true;
+	}
+	ImGui::End();
+
+	ImGui::Begin("obb2");
+	pos = obj2_->GetMatWorldTranslation();
+	ImGui::DragFloat3("pos", &pos.x);
+	obj2_->SetPosition(pos);
 	ImGui::End();
 
 #endif
@@ -138,6 +198,10 @@ void TitleScene::Draw3D()
 	ObjectManager::GetInstance()->Draw("title");
 	player_->Draw();
 	model_->Draw(worldTransform_);
+
+	obj1_->Draw();
+	obj2_->Draw();
+
 	//obj_->Draw();
 }
 

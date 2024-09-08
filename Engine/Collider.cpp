@@ -30,6 +30,7 @@ void Collider::CreateCollider(WorldTransform* worldTransform, Shape shape, Camer
 	case Collider::kCapsule:
 		break;
 	case Collider::kOBB:
+		HitBox_.reset(PrimitiveDrawer::Create(PrimitiveDrawer::Type::kBox));
 		break;
 	default:
 		break;
@@ -242,6 +243,7 @@ Vector3 Collider::GetHitBoxSize()
 	case Collider::kCapsule:
 		break;
 	case Collider::kOBB:
+		result = Multiply(size_, worldTransform_->scale_);
 		break;
 	default:
 		break;
