@@ -33,9 +33,9 @@ void CollisionManager::CheckCollisionPair(Object3D* colliderA, Object3D* collide
 		return;
 	}*/
 
-	if (colliderA->GetCollisionAttribute() == colliderB->GetCollisionAttribute()) {
+	/*if (colliderA->GetCollisionAttribute() == colliderB->GetCollisionAttribute()) {
 		return;
-	}
+	}*/
 
 	switch (colliderA->GetShape())
 	{
@@ -132,6 +132,9 @@ void CollisionManager::CheckCollisionPair(Object3D* colliderA, Object3D* collide
 					colliderB->OnTriggerEvent(colliderA);
 				}
 				else {
+					if (colliderA->GetCollisionAttribute() == kCollisionAttributeFloor && colliderB->GetCollisionAttribute() == kCollisionAttributeGoal) {
+						float a = 0.0f;
+					}
 					colliderA->OnCollision(colliderB);
 					colliderB->OnCollision(colliderA);
 					colliderA->OnCollisionEvent(colliderB);

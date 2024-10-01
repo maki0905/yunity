@@ -235,7 +235,7 @@ void Player::Update()
 		isActive_ = false;
 	}*/
 
-	if (Input::GetInstance()->PushKey(DIK_P)) {
+	/*if (Input::GetInstance()->PushKey(DIK_P)) {
 		GetWorld()->SetGravity({ 0.0f, 0.0f, 0.0f });
 	}
 	if (Input::GetInstance()->PushKey(DIK_O)) {
@@ -266,7 +266,7 @@ void Player::Update()
 	}
 	if (Input::GetInstance()->PushKey(DIK_LEFT)) {
 		reticleWorldTransform_.translation_.x -= 0.1f;
-	}
+	}*/
 
 	Vector3 move = { 0.0f, 0.0f, 0.0f };
 	Vector3 reticleMove = { 0.0f, 0.0f, 0.0f };

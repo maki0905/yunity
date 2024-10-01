@@ -55,7 +55,7 @@ namespace {
 
 	float GetProjectionRadius(const OBB& obb, const Vector3& axis) {
 		float result;
-		result = 
+		result =
 			obb.size.x * std::fabsf(Dot(obb.orientations[0], axis)) +
 			obb.size.y * std::fabsf(Dot(obb.orientations[1], axis)) +
 			obb.size.z * std::fabsf(Dot(obb.orientations[2], axis));
@@ -96,11 +96,6 @@ namespace {
 			float r2 = GetProjectionRadius(obb2, axis);
 			float distance = std::fabs(Dot(centerOffset, axis));
 
-			// 分離軸が見つかった場合は衝突していない
-			if (distance > r1 + r2) {
-				return Vector3(0, 0, 0);  // 衝突していない場合はゼロベクトルを返す
-			}
-
 			// 貫通深度を計算
 			float penetrationDepth = (r1 + r2) - distance;
 
@@ -125,7 +120,6 @@ namespace {
 			std::fabs(minPenetrationAxis.y) > std::fabs(minPenetrationAxis.z)) {
 			minPenetrationAxis = Vector3(0, minPenetrationAxis.y, 0);
 		}
-
 		// 押し返しベクトルを計算して返す
 		return Multiply(minPenetrationDepth, minPenetrationAxis);
 	}
@@ -186,7 +180,7 @@ namespace {
 		// OBBの中心の投影
 		float centerProjection = Dot(obb.center, axis);
 		// OBBの各軸方向の半径の合計を計算
-		float extent = 
+		float extent =
 			obb.size.x * std::fabsf(Dot(obb.orientations[0], axis)) +
 			obb.size.y * std::fabsf(Dot(obb.orientations[1], axis)) +
 			obb.size.z * std::fabsf(Dot(obb.orientations[2], axis));
@@ -243,6 +237,29 @@ namespace {
 		return Multiply(minPentrationDepth, minPenetrationAxis);
 	}
 
+	Body::PersistentManifold* GetNewManifold(Body* bodyA, Body* bodyB) {
+		Body::PersistentManifold* persistentManifold = new Body::PersistentManifold;
+
+		// ボディー
+		persistentManifold->bodyA = bodyA;
+		persistentManifold->bodyB = bodyB;
+
+		// 接触点での法線ベクトル
+		Matrix4x4 rotateA = MakeRotateXYZMatrix(bodyA->GetWorldTransform()->rotation_);
+		Vector3 orientationsA[3] = { {rotateA.m[0][0], rotateA.m[0][1], rotateA.m[0][2]}, {rotateA.m[1][0], rotateA.m[1][1], rotateA.m[1][2]}, {rotateA.m[2][0], rotateA.m[2][1], rotateA.m[2][2]} };
+		Matrix4x4 rotateB = MakeRotateXYZMatrix(bodyB->GetWorldTransform()->rotation_);
+		Vector3 orientationsB[3] = { {rotateB.m[0][0], rotateB.m[0][1], rotateB.m[0][2]}, {rotateB.m[1][0], rotateB.m[1][1], rotateB.m[1][2]}, {rotateB.m[2][0], rotateB.m[2][1], rotateB.m[2][2]} };
+		persistentManifold->contactNormal = GetPushback(OBB{ bodyA->GetMatWorldTranslation(), orientationsA[0], orientationsA[1], orientationsA[2], bodyA->GetHitBoxSize() }, OBB{ bodyB->GetMatWorldTranslation(), orientationsB[0], orientationsB[1], orientationsB[2], bodyB->GetHitBoxSize() }).Normalize();
+		
+		// 接触点
+		persistentManifold->contactPoint = GetContactPoint(OBB{ bodyA->GetMatWorldTranslation(), orientationsA[0], orientationsA[1], orientationsA[2], bodyA->GetHitBoxSize() }, OBB{ bodyB->GetMatWorldTranslation(), orientationsB[0], orientationsB[1], orientationsB[2], bodyB->GetHitBoxSize() });
+
+		// 位置ベクトル X 法線ベクトル
+		persistentManifold->crossNormal = Cross(Subtract(persistentManifold->contactPoint, bodyA->GetMatWorldTranslation()), persistentManifold->contactNormal);
+
+		return persistentManifold;
+	}
+
 }
 
 void Body::CreateBody(World* world, WorldTransform* worldTransform, float mass)
@@ -282,13 +299,13 @@ void Body::Solve(float time)
 			Vector3 frictionalForce = Multiply(-magnitude_, dirction);
 			acceleration_ = Multiply(1.0f / mass_, frictionalForce);
 			if (std::fabsf(acceleration_.x * time) > std::fabs(velocity_.x)) {
-				acceleration_.x = velocity_.x / time;
+				acceleration_.x = -velocity_.x / time;
 			}
 			if (std::fabsf(acceleration_.y * time) > std::fabs(velocity_.y)) {
-				acceleration_.y = velocity_.y / time;
+				acceleration_.y = -velocity_.y / time;
 			}
 			if (std::fabsf(acceleration_.z * time) > std::fabs(velocity_.z)) {
-				acceleration_.z = velocity_.z / time;
+				acceleration_.z = -velocity_.z / time;
 			}
 
 			acceleration_ = Add(acceleration_, Add(gravity, airResistanceAcceleration));
@@ -297,10 +314,27 @@ void Body::Solve(float time)
 			acceleration_ = Add(gravity, airResistanceAcceleration);
 		}
 
-		if (inertiaTensor_ != 0.0f) {
+		if (inertiaMoment_ != 0.0f) {
 			Vector3 airResistanceTorque = Multiply(-angularDrag_, angularVelocity_);
 
-			Vector3 airResistanceAngularAcceleration = Multiply(1.0 / inertiaTensor_, airResistanceTorque);
+			Vector3 airResistanceAngularAcceleration = Multiply(1.0 / inertiaMoment_, airResistanceTorque);
+
+			//if (frictionCombine_ != FrictionCombine::kNone && normalVector_.y != 0.0f) {
+			//	Vector3 dirction = angularVelocity_;
+			//	dirction.Normalize();
+
+			//	Vector3 frictionalForce = Multiply(-magnitude_, dirction);
+			//	angularAcceleration_ = Multiply(1.0f / mass_, frictionalForce);
+			//	if (std::fabsf(angularAcceleration_.x * time) > std::fabs(angularVelocity_.x)) {
+			//		angularAcceleration_.x = angularVelocity_.x / time;
+			//	}
+			//	if (std::fabsf(angularAcceleration_.y * time) > std::fabs(angularVelocity_.y)) {
+			//		angularAcceleration_.y = angularVelocity_.y / time;
+			//	}
+			//	if (std::fabsf(angularAcceleration_.z * time) > std::fabs(angularVelocity_.z)) {
+			//		angularAcceleration_.z = angularVelocity_.z / time;
+			//	}
+			//}
 
 			angularAcceleration_ = Add(angularAcceleration_, airResistanceAngularAcceleration);
 			if (std::fabsf(angularAcceleration_.x * time) > std::fabs(angularVelocity_.x)) {
@@ -325,7 +359,7 @@ void Body::Solve(float time)
 				angularVelocity_.z = 0.0f;
 			}
 
-			angularAcceleration_ = Add(angularAcceleration_, Multiply(1.0f / inertiaTensor_, torque_));
+			angularAcceleration_ = Add(angularAcceleration_, Multiply(1.0f / inertiaMoment_, torque_));
 			torque_ = { 0.0f, 0.0f, 0.0f };
 			angularVelocity_ = Add(angularVelocity_, Multiply(time, angularAcceleration_));
 			worldTransform_->rotation_ = Add(worldTransform_->rotation_, Multiply(time, angularVelocity_));
@@ -344,6 +378,48 @@ void Body::Solve(float time)
 
 	worldTransform_->UpdateMatrix();
 }
+
+void Body::SolveConstraints()
+{
+	Vector3 L = GetHitBoxSize();
+	inertiaTensor_.m[0][0] = (1.0f / 12.0f) * mass_ * (L.y * L.y + L.z * L.z);
+	inertiaTensor_.m[1][1] = (1.0f / 12.0f) * mass_ * (L.x * L.x + L.z * L.z);
+	inertiaTensor_.m[2][2] = (1.0f / 12.0f) * mass_ * (L.x * L.x + L.y * L.y);
+	inertiaTensor_.m[0][1] = inertiaTensor_.m[1][0] = 0.0f;
+	inertiaTensor_.m[0][2] = inertiaTensor_.m[2][0] = 0.0f;
+	inertiaTensor_.m[1][2] = inertiaTensor_.m[2][1] = 0.0f;
+
+	Matrix3x3 R = MakeRotateMatrix(worldTransform_->rotation_);
+	Matrix3x3 Rt = Transpose(R);
+
+	inertiaTensor_ = Multiply(Multiply(R, inertiaTensor_), Rt);
+
+	for (auto& c : persistentManifold_) {
+
+		Vector3 relativeVelocity = Subtract(c->bodyA->velocity_, c->bodyB->velocity_);
+		float velocityAlongNormal = Dot(relativeVelocity, c->contactNormal);
+		float impulseMagnitude = -0.01f * velocityAlongNormal / (1.0f / c->bodyA->mass_);
+		Vector3 impulse = Multiply(impulseMagnitude, c->contactNormal);
+		AddImpulse(impulse, c->contactPoint);
+		//AddTorque(TransformVector3(Cross(Subtract(c->contactPoint, c->bodyA->worldTransform_->GetMatWorldTranslation()), impulse), inertiaTensor), 1);
+		//angularVelocity_ = Add(angularVelocity_, TransformVector3(Cross(Subtract(c->contactPoint, c->bodyA->worldTransform_->GetMatWorldTranslation()), impulse), inertiaTensor));
+	}
+
+	/*if (pushback_.x != 0.0f) {
+		velocity_.x = -velocity_.x * restitution_;
+	}
+	if (pushback_.y != 0.0f) {
+		velocity_.y = -velocity_.y * restitution_;
+	}
+	if (pushback_.z != 0.0f) {
+		velocity_.z = -velocity_.z * restitution_;
+	}*/
+
+	worldTransform_->translation_ = Add(pushback_, worldTransform_->translation_);
+	worldTransform_->UpdateMatrix();
+	pushback_.SetZero();
+}
+
 
 Vector3 Body::RubberMovement(const Vector3& start, const Vector3& end, float limitLength, float stiffness, float dampingCoefficient)
 {
@@ -405,8 +481,23 @@ void Body::AddTorque(const Vector3& torque, uint32_t mode)
 		torque_ = Add(torque_, torque);
 	}
 	else {
-		angularVelocity_ = Add(angularVelocity_, Multiply(angularDrag_,torque));
+		angularVelocity_ = Add(angularVelocity_, Multiply(angularDrag_, torque));
 	}
+}
+
+void Body::AddForce(const Vector3& force, const Vector3& point)
+{
+	force_ = Add(force_, force);
+	torque_ = Add(torque_, Cross(Subtract(point, GetMatWorldTranslation()),force));
+
+}
+
+void Body::AddImpulse(const Vector3& impulse, const Vector3& pos)
+{
+	velocity_ = Add(velocity_, Multiply(1.0f / mass_, impulse));
+	Vector3 torque = Cross(Subtract(pos, GetMatWorldTranslation()), impulse);
+	Matrix3x3 ii = Inverse(inertiaTensor_);
+	angularVelocity_ = Add(angularVelocity_, TransformVector3(torque, ii));
 }
 
 
@@ -468,23 +559,16 @@ void Body::OnCollision(Body* body)
 				Matrix4x4 rotateB = MakeRotateXYZMatrix(body->GetWorldTransform()->rotation_);
 				Vector3 orientationsB[3] = { {rotateB.m[0][0], rotateB.m[0][1], rotateB.m[0][2]}, {rotateB.m[1][0], rotateB.m[1][1], rotateB.m[1][2]}, {rotateB.m[2][0], rotateB.m[2][1], rotateB.m[2][2]} };
 				pushback = GetPushback(OBB{ GetMatWorldTranslation(), orientationsA[0], orientationsA[1], orientationsA[2], GetHitBoxSize() }, OBB{ body->GetMatWorldTranslation(), orientationsB[0], orientationsB[1], orientationsB[2], body->GetHitBoxSize() });
-				Vector3 operationPoint = GetContactPoint(OBB{ GetMatWorldTranslation(), orientationsA[0], orientationsA[1], orientationsA[2], GetHitBoxSize() }, OBB{ body->GetMatWorldTranslation(), orientationsB[0], orientationsB[1], orientationsB[2], body->GetHitBoxSize() });
-				if (Length(operationPoint) > 0.0f) {
-					Vector3 diff = Subtract(GetMatWorldTranslation(), operationPoint);
-					Vector3 torque = Cross(diff, Multiply(mass_, world_->GetGravity()));
-					AddTorque(torque, 1);
+				if (body->mass_ != 0.0f) {
+					pushback = Multiply(0.5f, pushback);
 				}
-
+				pushback_ = Add(pushback_, pushback);
+				
+				persistentManifold_.emplace_back(GetNewManifold(this, body));
 				break;
 			}
 			break;
 		}
-
-		/*AABB a = { Subtract(GetMatWorldTranslation(), GetHitBoxSize()), Add(GetMatWorldTranslation(), GetHitBoxSize())};
-		AABB b = { Subtract(body->GetMatWorldTranslation(), body->GetHitBoxSize()), Add(body->GetMatWorldTranslation(), body->GetHitBoxSize()) };
-		Vector3 pushBack = GetPushback(a, b);*/
-		worldTransform_->translation_ = Add(pushback, worldTransform_->translation_);
-		worldTransform_->UpdateMatrix();
 
 		float miu = 0.0f;
 		switch (frictionCombine_)
@@ -513,39 +597,24 @@ void Body::OnCollision(Body* body)
 		switch (bounceCombine_)
 		{
 		case Body::BounceCombine::kNone:
-			if (pushback.x != 0.0f) {
-				velocity_.x = 0.0f;
-			}
-			if (pushback.y != 0.0f) {
-				velocity_.y = 0.0f;
-			}
+			restitution_ = e;
 			break;
 		case Body::BounceCombine::kAverage:
-			e = (bounciness_ + body->GetBounciness()) / 2.0f;
+			e = (bounciness_ + body->bounciness_) / 2.0f;
 			break;
 		case Body::BounceCombine::kMinimum:
-			e = min(bounciness_, body->GetBounciness());
+			e = min(bounciness_, body->bounciness_);
 			break;
 		case Body::BounceCombine::kMaximum:
-			e = max(bounciness_, body->GetBounciness());
+			e = max(bounciness_, body->bounciness_);
 			break;
 		case Body::BounceCombine::kMultiply:
-			e = bounciness_ * body->GetBounciness();
+			e = bounciness_ * body->bounciness_;
 			break;
 		}
-
-		if (bounceCombine_ != BounceCombine::kNone) {
-			if (pushback.x != 0.0f) {
-				velocity_.x = -velocity_.x * e;
-			}
-			if (pushback.y != 0.0f) {
-				velocity_.y = -velocity_.y * e;
-			}
-			if (pushback.z != 0.0f) {
-				velocity_.z = -velocity_.z * e;
-			}
+		if (restitution_ < e) {
+			restitution_ = e;
 		}
-
 		normalVector_ = pushback;
 		vertical_ = pushback;
 	}

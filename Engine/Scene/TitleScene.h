@@ -29,7 +29,7 @@ private:
 	std::unique_ptr<Sprite> sprite_ = nullptr;
 	std::unique_ptr<Model> model_ = nullptr;
 	std::unique_ptr<World> world_;
-	std::unique_ptr<Player> player_;
+	//std::unique_ptr<Player> player_;
 	std::unique_ptr<Object3D> obj_;
 	std::unique_ptr<Skydome> skydome_;
 	float k = 0.5f;
@@ -37,6 +37,10 @@ private:
 
 	std::unique_ptr<Object3D> obj1_;
 	std::unique_ptr<Object3D> obj2_;
+	std::unique_ptr<Object3D> obj3_;
+	std::unique_ptr<Object3D> obj4_;
+	std::unique_ptr<Object3D> obj5_;
+
 
 	bool flag_ = true;
 

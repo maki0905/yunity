@@ -9,6 +9,7 @@
 #include "Vector3.h"
 #include "Vector4.h"
 #include "Matrix4x4.h"
+#include "Matrix3x3.h"
 #include "Quaternion.h"
 #include "Transform.h"
 
@@ -180,3 +181,13 @@ Quaternion Slerp(const Quaternion& q0, const Quaternion& q1, float t);
 
 float Dot(const Quaternion& q1, const Quaternion& q2);
 
+
+Matrix3x3 MakeIdentity3x3();
+// 行列の積
+Matrix3x3 Multiply(const Matrix3x3& m1, const Matrix3x3& m2);
+// 逆行列
+Matrix3x3 Inverse(const Matrix3x3& m);
+// 転置行列
+Matrix3x3 Transpose(const Matrix3x3& m);
+Matrix3x3 MakeRotateMatrix(const Vector3& rotation);
+Vector3 TransformVector3(const Vector3& vector, const Matrix3x3& matrix);

@@ -221,6 +221,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\Math\AABB.h" />
     <ClInclude Include="Engine\Core\BackBuffer.h" />
     <ClInclude Include="Engine\Math\Capsule.h" />
+    <ClInclude Include="Engine\Math\Matrix3x3.h" />
     <ClInclude Include="Engine\Object3D.h" />
     <ClInclude Include="Engine\ObjectManager.h" />
     <ClInclude Include="Engine\Physics\Body.h" />

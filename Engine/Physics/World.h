@@ -5,7 +5,6 @@
 #include<chrono>
 
 #include "MathFunction.h"
-//#include "Body.h"
 #include "CollisionManager.h"
 
 class SpringJoint;

@@ -501,7 +501,8 @@ Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rot, const Vecto
 	Matrix4x4 rotateZ = MakeRotateZMatrix(rot.z);
 	// 回転行列の合成(X回転 * Y回転 * Z回転)
 	//Matrix4x4 rotateMatrix = Multiply(Multiply(rotateZ, rotateX), rotateY);
-	Matrix4x4 rotateMatrix = Multiply(rotateX,Multiply(rotateY, rotateZ));
+	//Matrix4x4 rotateMatrix = Multiply(rotateX,Multiply(rotateY, rotateZ));
+	 Matrix4x4 rotateMatrix = Multiply(rotateX,Multiply(rotateZ, rotateY));
 	// 平行移動行列の作成
 	Matrix4x4 translateMatrix = MakeTranslateMatrix(translate);
 
@@ -933,5 +934,99 @@ Quaternion Slerp(const Quaternion& q0, const Quaternion& q1, float t)
 float Dot(const Quaternion& q1, const Quaternion& q2)
 {
 	float result = (q1.x * q2.x) + (q1.y * q2.y) + (q1.z * q2.z) + (q1.w * q2.w);
+	return result;
+}
+
+Matrix3x3 MakeIdentity3x3()
+{
+	Matrix3x3 result;
+	for (int i = 0; i < 3; i++) {
+		for (int j = 0; j < 3; j++) {
+			if (i == j) {
+				result.m[i][j] = 1;
+			}
+			else {
+				result.m[i][j] = 0;
+			}
+		}
+	}
+	return result;
+}
+
+Matrix3x3 Multiply(const Matrix3x3& m1, const Matrix3x3& m2)
+{
+	Matrix3x3 result;
+	for (int i = 0; i < 3; i++) {
+		for (int j = 0; j < 3; j++) {
+			result.m[i][j] = 0;
+		}
+	}
+	for (int i = 0; i < 3; i++) {
+		for (int j = 0; j < 3; j++) {
+			for (int k = 0; k < 3; k++) {
+				result.m[i][j] += m1.m[i][k] * m2.m[k][j];
+			}
+		}
+	}
+	return result;
+}
+
+Matrix3x3 Inverse(const Matrix3x3& m)
+{
+	Matrix3x3 result;
+	float A = m.m[0][0] * (m.m[1][1] * m.m[2][2] - m.m[1][2] * m.m[2][1]) -
+		      m.m[0][1] * (m.m[1][0] * m.m[2][2] - m.m[1][2] * m.m[2][0]) +
+		      m.m[0][2] * (m.m[1][0] * m.m[2][1] - m.m[1][1] * m.m[2][0]);
+	if (A == 0) {
+		return MakeIdentity3x3();
+	}
+	result.m[0][0] = (1.0f / A) * (m.m[1][1] * m.m[2][2] - m.m[1][2] * m.m[2][1]);
+	result.m[0][1] = (1.0f / A) * (m.m[0][2] * m.m[2][1] - m.m[0][1] * m.m[2][2]);
+	result.m[0][2] = (1.0f / A) * (m.m[0][1] * m.m[1][2] - m.m[0][2] * m.m[1][1]);
+	
+	result.m[1][0] = (1.0f / A) * (m.m[1][2] * m.m[2][0] - m.m[1][0] * m.m[2][2]);
+	result.m[1][1] = (1.0f / A) * (m.m[0][0] * m.m[2][2] - m.m[0][2] * m.m[2][0]);
+	result.m[1][2] = (1.0f / A) * (m.m[0][2] * m.m[1][0] - m.m[0][0] * m.m[1][2]);
+	
+	result.m[2][0] = (1.0f / A) * (m.m[1][0] * m.m[2][1] - m.m[1][1] * m.m[2][0]);
+	result.m[2][1] = (1.0f / A) * (m.m[0][1] * m.m[2][0] - m.m[0][0] * m.m[2][1]);
+	result.m[2][2] = (1.0f / A) * (m.m[0][0] * m.m[1][1] - m.m[0][1] * m.m[1][0]);
+	
+	return result;
+}
+
+Matrix3x3 Transpose(const Matrix3x3& m)
+{
+	Matrix3x3 result;
+	for (int i = 0; i < 3; i++) {
+		for (int j = 0; j < 3; j++) {
+			result.m[i][j] = m.m[j][i];
+		}
+	}
+	return result;
+}
+
+Matrix3x3 MakeRotateMatrix(const Vector3& rotation)
+{
+	Matrix3x3 result = MakeIdentity3x3();
+	Matrix4x4 matrix = MakeIdentity4x4();
+	matrix = Multiply(matrix, MakeRotateXMatrix(rotation.x));
+	matrix = Multiply(matrix, MakeRotateYMatrix(rotation.y));
+	matrix = Multiply(matrix, MakeRotateZMatrix(rotation.z));
+	for (uint32_t i = 0; i < 3; i++) {
+		for (uint32_t j = 0; j < 3; j++) {
+			result.m[i][j] = matrix.m[i][j];
+		}
+	}
+	return result;
+}
+
+Vector3 TransformVector3(const Vector3& vector, const Matrix3x3& matrix)
+{
+	Vector3 result;
+	result.x = matrix.m[0][0] * vector.x + matrix.m[0][1] * vector.y + matrix.m[0][2] * vector.z;
+	result.y = matrix.m[1][0] * vector.x + matrix.m[1][1] * vector.y + matrix.m[1][2] * vector.z;
+	result.z = matrix.m[2][0] * vector.x + matrix.m[2][1] * vector.y + matrix.m[2][2] * vector.z;
+
 	return result;
 }

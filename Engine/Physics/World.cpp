@@ -44,6 +44,10 @@ void World::Solve()
 
 	collisionManager_->CheckAllCollision();
 
+	for (auto& obj : allocator_) {
+		obj->SolveConstraints();
+	}
+
 
 }
 
