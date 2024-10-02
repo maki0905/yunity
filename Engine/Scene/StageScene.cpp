@@ -92,7 +92,7 @@ void StageScene::Initialize()
 
 	CommonData::GetInstance()->scene_ = Scene::kStage;
 
-	spike_ = std::make_unique<Object3D>();
+	/*spike_ = std::make_unique<Object3D>();
 	spike_->Initialize(ModelManager::GetInstance()->CreateModel(obj, "Spike"), world_.get(), Collider::Shape::kAABB);
 	spike_->SetCamera(camera_);
 	spike_->SetPosition({ 20.0f, 15.0f, 0.0f });
@@ -116,7 +116,7 @@ void StageScene::Initialize()
 
 	line_ = std::make_unique<PrimitiveDrawer>();
 	line_.reset(PrimitiveDrawer::Create());
-	line_->SetCamera(camera_);
+	line_->SetCamera(camera_);*/
 
 }
 
@@ -189,11 +189,11 @@ void StageScene::Update()
 	}
 
 #ifdef _DEBUG
-	Vector3 pos = spike_->GetMatWorldTranslation();
+	/*Vector3 pos = spike_->GetMatWorldTranslation();
 	ImGui::Begin("spike");
 	ImGui::DragFloat3("pos", &pos.x);
 	ImGui::End();
-	spike_->SetPosition(pos);
+	spike_->SetPosition(pos);*/
 
 #endif
 
@@ -224,9 +224,9 @@ void StageScene::Draw3D()
 	///*for (auto& object : ObjectManager::GetInstance()->GetObjects("TL1")) {
 	//	object->Draw();
 	//}*/
-	line_->Draw(spike_->GetMatWorldTranslation(), stand_->GetMatWorldTranslation(), {0.0f, 0.0f, 0.0f, 1.0f});
+	/*line_->Draw(spike_->GetMatWorldTranslation(), stand_->GetMatWorldTranslation(), {0.0f, 0.0f, 0.0f, 1.0f});
 	spike_->Draw();
-	stand_->Draw();
+	stand_->Draw();*/
 	player_->Draw();
 	
 
