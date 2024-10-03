@@ -170,13 +170,13 @@ void TitleScene::Update()
 	worldTransform_.UpdateMatrix();
 
 	if (Input::GetInstance()->PushKey(DIK_A)) {
-		obj2_->AddForce({ -1.0f, 0.0f, 0.0f }, 1);
+		//obj2_->AddForce({ -1.0f, 0.0f, 0.0f }, 1);
 		obj1_->AddForce({ -1.15f, 0.0f, 0.0f }, 1);
 		//obj4_->AddForce({ -1.05f, 0.0f, 0.0f }, 1);
 		//obj5_->AddForce({ -1.1f, 0.0f, 0.0f }, 1);
 	}
 	if (Input::GetInstance()->PushKey(DIK_D)) {
-		obj2_->AddForce({ 1.0f, 0.0f, 0.0f }, 1);
+		//obj2_->AddForce({ 1.0f, 0.0f, 0.0f }, 1);
 		obj1_->AddForce({ 1.15f, 0.0f, 0.0f }, 1);
 		//obj4_->AddForce({ 1.05f, 0.0f, 0.0f }, 1);
 		//obj5_->AddForce({ 1.1f, 0.0f, 0.0f }, 1);
@@ -220,7 +220,8 @@ void TitleScene::Update()
 	}
 	Vector3 velocity = obj1_->GetVelocity();
 	ImGui::DragFloat3("velocity", &velocity.x);
-
+	Vector3 anglur = obj1_->GetAngularVelocity();
+	ImGui::DragFloat3("angularvelocity", &anglur.x);
 	ImGui::DragFloat3("torque", &torupu_.x);
 
 	if (ImGui::Button("AddTorque")) {

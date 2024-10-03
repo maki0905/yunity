@@ -238,11 +238,19 @@ namespace {
 	}
 
 	Body::PersistentManifold* GetNewManifold(Body* bodyA, Body* bodyB) {
-		Body::PersistentManifold* persistentManifold = new Body::PersistentManifold;
+		Body::PersistentManifold* persistentManifold = new Body::PersistentManifold();
 
 		// ボディー
-		persistentManifold->bodyA = bodyA;
-		persistentManifold->bodyB = bodyB;
+		/*persistentManifold->bodyA = bodyA;
+		persistentManifold->bodyB = bodyB;*/
+		persistentManifold->massA = bodyA->GetMass();
+		persistentManifold->massB = bodyB->GetMass();
+		persistentManifold->velocityA = bodyA->GetVelocity();
+		persistentManifold->velocityB = bodyB->GetVelocity();
+		persistentManifold->angularVelocityA = bodyA->GetAngularVelocity();
+		persistentManifold->angularVelocityB = bodyB->GetAngularVelocity();
+		persistentManifold->inversInertiaTensorA = bodyA->GetInertiaTensor();
+		persistentManifold->inversInertiaTensorB = bodyB->GetInertiaTensor();
 
 		// 接触点での法線ベクトル
 		Matrix4x4 rotateA = MakeRotateXYZMatrix(bodyA->GetWorldTransform()->rotation_);
@@ -319,42 +327,25 @@ void Body::Solve(float time)
 
 			Vector3 airResistanceAngularAcceleration = Multiply(1.0 / inertiaMoment_, airResistanceTorque);
 
-			//if (frictionCombine_ != FrictionCombine::kNone && normalVector_.y != 0.0f) {
-			//	Vector3 dirction = angularVelocity_;
-			//	dirction.Normalize();
-
-			//	Vector3 frictionalForce = Multiply(-magnitude_, dirction);
-			//	angularAcceleration_ = Multiply(1.0f / mass_, frictionalForce);
-			//	if (std::fabsf(angularAcceleration_.x * time) > std::fabs(angularVelocity_.x)) {
-			//		angularAcceleration_.x = angularVelocity_.x / time;
-			//	}
-			//	if (std::fabsf(angularAcceleration_.y * time) > std::fabs(angularVelocity_.y)) {
-			//		angularAcceleration_.y = angularVelocity_.y / time;
-			//	}
-			//	if (std::fabsf(angularAcceleration_.z * time) > std::fabs(angularVelocity_.z)) {
-			//		angularAcceleration_.z = angularVelocity_.z / time;
-			//	}
-			//}
-
 			angularAcceleration_ = Add(angularAcceleration_, airResistanceAngularAcceleration);
 			if (std::fabsf(angularAcceleration_.x * time) > std::fabs(angularVelocity_.x)) {
-				angularAcceleration_.x = angularVelocity_.x / time;
+				angularAcceleration_.x = -angularVelocity_.x / time;
 			}
-			else if (std::fabsf(angularVelocity_.x) < 0.01f) {
+			else if (std::fabsf(angularVelocity_.x) < 0.001f) {
 				angularAcceleration_.x = 0.0f;
 				angularVelocity_.x = 0.0f;
 			}
 			if (std::fabsf(angularAcceleration_.y * time) > std::fabs(angularVelocity_.y)) {
-				angularAcceleration_.y = angularVelocity_.y / time;
+				angularAcceleration_.y = -angularVelocity_.y / time;
 			}
-			else if (std::fabsf(angularVelocity_.y) < 0.01f) {
+			else if (std::fabsf(angularVelocity_.y) < 0.001f) {
 				angularAcceleration_.y = 0.0f;
 				angularVelocity_.y = 0.0f;
 			}
 			if (std::fabsf(angularAcceleration_.z * time) > std::fabs(angularVelocity_.z)) {
-				angularAcceleration_.z = angularVelocity_.z / time;
+				angularAcceleration_.z = -angularVelocity_.z / time;
 			}
-			else if (std::fabsf(angularVelocity_.z) < 0.01f) {
+			else if (std::fabsf(angularVelocity_.z) < 0.001f) {
 				angularAcceleration_.z = 0.0f;
 				angularVelocity_.z = 0.0f;
 			}
@@ -381,6 +372,7 @@ void Body::Solve(float time)
 
 void Body::SolveConstraints()
 {
+	
 	Vector3 L = GetHitBoxSize();
 	inertiaTensor_.m[0][0] = (1.0f / 12.0f) * mass_ * (L.y * L.y + L.z * L.z);
 	inertiaTensor_.m[1][1] = (1.0f / 12.0f) * mass_ * (L.x * L.x + L.z * L.z);
@@ -396,14 +388,31 @@ void Body::SolveConstraints()
 
 	for (auto& c : persistentManifold_) {
 
-		Vector3 relativeVelocity = Subtract(c->bodyA->velocity_, c->bodyB->velocity_);
+		//Vector3 relativeVelocity = Subtract(c->bodyA->velocity_, c->bodyB->velocity_);
+		Vector3 relativeVelocity = Subtract(c->velocityA, c->velocityB);
 		float velocityAlongNormal = Dot(relativeVelocity, c->contactNormal);
-		float impulseMagnitude = -0.01f * velocityAlongNormal / (1.0f / c->bodyA->mass_);
+		float impulseMagnitude = 0.0f;
+		if (restitution_ == 0.0f) {
+			if (c->massB != 0.0f) {
+				impulseMagnitude = -velocityAlongNormal / (1.0f / c->massA + 1.0f / c->massB);
+			}
+			else {
+				impulseMagnitude = -velocityAlongNormal / (1.0f / c->massA);
+			}
+		}
+		else {
+			if (c->massB != 0.0f) {
+				impulseMagnitude = -restitution_ * velocityAlongNormal / (1.0f / c->massA + 1.0f / c->massB);
+			}
+			else {
+				impulseMagnitude = -restitution_ * velocityAlongNormal / (1.0f / c->massA);
+			}
+		}
+		
 		Vector3 impulse = Multiply(impulseMagnitude, c->contactNormal);
 		AddImpulse(impulse, c->contactPoint);
-		//AddTorque(TransformVector3(Cross(Subtract(c->contactPoint, c->bodyA->worldTransform_->GetMatWorldTranslation()), impulse), inertiaTensor), 1);
-		//angularVelocity_ = Add(angularVelocity_, TransformVector3(Cross(Subtract(c->contactPoint, c->bodyA->worldTransform_->GetMatWorldTranslation()), impulse), inertiaTensor));
 	}
+	persistentManifold_.clear();
 
 	/*if (pushback_.x != 0.0f) {
 		velocity_.x = -velocity_.x * restitution_;
@@ -425,7 +434,6 @@ Vector3 Body::RubberMovement(const Vector3& start, const Vector3& end, float lim
 {
 	Vector3 diff = Subtract(start, end);
 	float length = Length(diff);
-	//length = 100f;
 	if (length != 0.0f)
 	{
 		if (length > limitLength) {
@@ -481,7 +489,9 @@ void Body::AddTorque(const Vector3& torque, uint32_t mode)
 		torque_ = Add(torque_, torque);
 	}
 	else {
-		angularVelocity_ = Add(angularVelocity_, Multiply(angularDrag_, torque));
+		Vector3 angularImpulse = TransformVector3(torque, Inverse(inertiaTensor_));
+		angularVelocity_ = Add(angularVelocity_, angularImpulse);
+		//angularVelocity_ = Add(angularVelocity_, Multiply(angularDrag_, torque));
 	}
 }
 
@@ -496,8 +506,8 @@ void Body::AddImpulse(const Vector3& impulse, const Vector3& pos)
 {
 	velocity_ = Add(velocity_, Multiply(1.0f / mass_, impulse));
 	Vector3 torque = Cross(Subtract(pos, GetMatWorldTranslation()), impulse);
-	Matrix3x3 ii = Inverse(inertiaTensor_);
-	angularVelocity_ = Add(angularVelocity_, TransformVector3(torque, ii));
+	Vector3 angularImpulse = TransformVector3(torque, Inverse(inertiaTensor_));
+	angularVelocity_ = Add(angularVelocity_, angularImpulse);
 }
 
 

@@ -25,8 +25,16 @@ public:
 	};
 
 	struct PersistentManifold {
-		const Body* bodyA;
-		const Body* bodyB;
+		/*Body* bodyA;
+		Body* bodyB;*/
+		float massA;
+		float massB;
+		Vector3 velocityA;
+		Vector3 velocityB;
+		Vector3 angularVelocityA;
+		Vector3 angularVelocityB;
+		Matrix3x3 inversInertiaTensorA;
+		Matrix3x3 inversInertiaTensorB;
 		Vector3 contactPoint;
 		Vector3 contactNormal;
 		Vector3 crossNormal;
@@ -95,6 +103,8 @@ public:
 	void SetBounceCombine(BounceCombine bounceCombine) { bounceCombine_ = bounceCombine; }
 
 	Vector3 GetNormalVector() { return normalVector_; }
+
+	Matrix3x3 GetInertiaTensor() { return inertiaTensor_; };
 
 private:
 
