@@ -11,7 +11,7 @@ void Player::Initialize(Camera* camera, World* world)
 	SetSize({ 2.0f, 6.0f, 2.0f });
 	Object3D::Initialize(world, Collider::Shape::kAABB);
 	worldTransform_.rotateType_ = RotationType::Quaternion;
-	worldTransform_.translation_.y = 3.0f;
+	worldTransform_.translation_.y = 40.0f;
 	SetMass(2.0f);
 	SetFirictionCombine(FrictionCombine::kMaximum);
 	SetMiu(0.0f);

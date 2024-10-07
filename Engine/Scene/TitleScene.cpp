@@ -11,24 +11,32 @@ void TitleScene::Initialize()
 {
 	//camera_.reset(CameraManager::GetInstance()->GetCamera());
 	camera_ = CameraManager::GetInstance()->GetCamera();
+	//camera_->SetTranslate({ 0.0f, 30.0f, -30.0f });
+	//camera_->SetRotate({ 45.0f * DegToRad(), 0.0f, 0.0f });
 	world_ = std::make_unique<World>();
 	world_->Initialize({ 0.0f, -15.0, 0.0f });
 
-	sprite_ = std::make_unique<Sprite>();
+	/*sprite_ = std::make_unique<Sprite>();
 	sprite_.reset(Sprite::Create(TextureManager::GetInstance()->Load("ScoreBackground.png"), { 0.0f, 0.0f }));
 	sprite_->SetSize({ 128.0f, 128.0f });
-	sprite_->SetTextureRect({ 0.0f, 576.0f}, {64.0f, 64.0f});
+	sprite_->SetTextureRect({ 0.0f, 576.0f}, {64.0f, 64.0f});*/
+
+	bottonSprite_ = std::make_unique<Sprite>();
+	bottonSprite_.reset(Sprite::Create(TextureManager::GetInstance()->Load("ABotton.png"), { 610.0f, 520.0f }));
+	bottonPushSprite_ = std::make_unique<Sprite>();
+	bottonPushSprite_.reset(Sprite::Create(TextureManager::GetInstance()->Load("ABottonPush.png"), { 610.0f, 520.0f }));
+	time_ = 0;
 
 	model_ = std::make_unique<Model>();
 	model_.reset(ModelManager::GetInstance()->CreateModel(obj,/* ""*/"Signboard"));
 	//model_ = std::make_unique<Model>();
 	//ModelManager::GetInstance()->CreateModel(obj, "terrain");
-	Model::DirectionalLight l = { .color = {1.0f, 1.0f, 1.0f, 1.0f}, .direction = {-1.0f, -1.0f, 0.0f}, .intensity= 1.0f };
+	Model::DirectionalLight l = { .color = {1.0f, 1.0f, 1.0f, 1.0f}, .direction = {1.0f, -1.0f, 0.0f}, .intensity= 1.0f };
 	model_->SetCamera(camera_/*camera_.get()*/);
 	model_->SetEnableLighting(true);
 	model_->SetDirectionalLight(l);
 	worldTransform_.Initialize();
-	worldTransform_.translation_ = { 30.0f, -7.0f, 6.0f };
+	worldTransform_.translation_ = { 25.0f, -7.0f, 6.0f };
 
 	/*obj_ = std::make_unique<Object3D>();
 	obj_->Initialize(ModelManager::GetInstance()->CreateModel(obj, "Cube"), world_.get(), Collider::kAABB);
@@ -40,10 +48,12 @@ void TitleScene::Initialize()
 	player_ = std::make_unique<Player>();
 	player_->Initialize(camera_/*camera_.get()*/, world_.get());
 	player_->SetDirectionalLight(l);
+	player_->SetMass(0.0f);
 	camera_->SetTarget(nullptr);  
 
-	ObjectManager::GetInstance()->Load("title", camera_/*camera_.get()*/, world_.get());
-	ObjectManager::GetInstance()->SetDirectionalLight("title", l);
+
+	ObjectManager::GetInstance()->Load("title1", camera_/*camera_.get()*/, world_.get());
+	ObjectManager::GetInstance()->SetDirectionalLight("title1", l);
 	//RenderTexture::GetInstance()->SelectPostEffect(PostEffects::kHSVFilter, true);
 	//RenderTexture::GetInstance()->SelectPostEffect(PostEffects::kGrayscale, true);
 	//RenderTexture::GetInstance()->SelectPostEffect(PostEffects::kVignetting, true);
@@ -59,6 +69,8 @@ void TitleScene::Initialize()
 
 	CommonData::GetInstance()->stageNum_ = -1;
 	CommonData::GetInstance()->scene_ = Scene::kTitle;
+
+	isStart_ = false;
 }
 
 void TitleScene::Update()
@@ -71,6 +83,9 @@ void TitleScene::Update()
 	Matrix4x4 rotateZ = MakeRotateZMatrix(rotate.z);
 	Matrix4x4 rotateXYZ = Multiply(rotateX, Multiply(rotateY, rotateZ));*/
 
+	if (isStart_) {
+		player_->SetMass(2.0f);
+	}
 	player_->Update();
 	if (player_->GetWorldTransform()->GetMatWorldTranslation().x >= 35.0f) {
 		SceneManager::GetInstance()->ChangeScene("SELECT");
@@ -81,6 +96,15 @@ void TitleScene::Update()
 		velocity.x *= -0.2f;
 		player_->SetVelocity(velocity);
 	}
+
+	if (Input::GetInstance()->IsControllerConnected()) {
+		if (Input::GetInstance()->GetJoystickState(0, pad_)) {
+			if ((pad_.Gamepad.wButtons & XINPUT_GAMEPAD_A) && !(prePad_.Gamepad.wButtons & XINPUT_GAMEPAD_A)) {
+				isStart_ = true;
+			}
+		}
+	}
+
 	/*if (Input::GetInstance()->IsControllerConnected()) {
 		if (Input::GetInstance()->GetJoystickState(0, pad_)) {
 			if ((pad_.Gamepad.wButtons & XINPUT_GAMEPAD_A) && !(prePad_.Gamepad.wButtons & XINPUT_GAMEPAD_A)) {
@@ -100,6 +124,8 @@ void TitleScene::Update()
 
 	obj_->AddForce(obj_->Spring({ 0.0f, 0.0f, 0.0f }, obj_->GetMatWorldTranslation(), 0.0f, 1.0f, 0.1f), 0);*/
 
+	//ObjectManager::GetInstance()->Update("title1");
+
 	world_->Solve();
 
 	i += k;
@@ -109,18 +135,25 @@ void TitleScene::Update()
 	worldTransform_.rotation_.z = i * DegToRad();
 	worldTransform_.UpdateMatrix();
 
+	time_++;
+	if (time_ % 30 == 0) {
+		time_ = 0;
+		isDraw_ ^= true;
+
+	}
+
 #ifdef _DEBUG
 	ImGui::Begin("a");
 	ImGui::DragFloat3("pos", &worldTransform_.translation_.x);
 	if (ImGui::Button("Off")) {
 		model_->SetEnableLighting(false);
 		player_->SetEnableLighting(false);
-		ObjectManager::GetInstance()->SetEnableLighting("title",false);
+		ObjectManager::GetInstance()->SetEnableLighting("title1",false);
 	}
 	if (ImGui::Button("On")) {
 		model_->SetEnableLighting(true);
 		player_->SetEnableLighting(true);
-		ObjectManager::GetInstance()->SetEnableLighting("title", true);
+		ObjectManager::GetInstance()->SetEnableLighting("title1", true);
 	}
 	ImGui::End();
 
@@ -135,7 +168,7 @@ void TitleScene::DrawBack()
 void TitleScene::Draw3D()
 {
 	skydome_->Draw();
-	ObjectManager::GetInstance()->Draw("title");
+	ObjectManager::GetInstance()->Draw("title1");
 	player_->Draw();
 	model_->Draw(worldTransform_);
 	//obj_->Draw();
@@ -143,5 +176,13 @@ void TitleScene::Draw3D()
 
 void TitleScene::DrawFront()
 {
+	if (!isStart_) {
+		if (isDraw_) {
+			bottonSprite_->Draw();
+		}
+		else {
+			bottonPushSprite_->Draw();
+		}
+	}
 }
 

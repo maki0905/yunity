@@ -11,6 +11,7 @@
 #include "EventTrigger.h"
 #include "TV.h"
 #include "Coin.h"
+#include "GiftWall.h"
 
 class ObjectManager {
 public:
@@ -25,6 +26,7 @@ public:
 	void Clear(const std::string& fileName);
 	void SetDirectionalLight(const std::string& fileName, Model::DirectionalLight directionalLight);
 	void SetEnableLighting(const std::string& fileName, bool onOff);
+	void SetActive(const std::string& fileName, uint32_t index, bool active);
 private:
 	ObjectManager() = default;
 	~ObjectManager() = default;
@@ -33,5 +35,6 @@ private:
 private:
 	//std::vector<Object3D*> objectVector_;
 	std::unordered_map<std::string, std::vector<std::unique_ptr<Object3D>>>objects_;
+	std::unordered_map<std::string, std::vector<bool>>activeObjects_;
 	//std::map<std::string, Object3D*> objects_;
 };

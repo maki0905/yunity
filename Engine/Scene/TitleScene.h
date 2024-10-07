@@ -26,7 +26,10 @@ private:
 	XINPUT_STATE prePad_;
 
 	WorldTransform worldTransform_;
-	std::unique_ptr<Sprite> sprite_ = nullptr;
+	std::unique_ptr<Sprite> bottonSprite_ = nullptr;
+	std::unique_ptr<Sprite> bottonPushSprite_ = nullptr;
+	uint32_t time_;
+	bool isDraw_;
 	std::unique_ptr<Model> model_ = nullptr;
 	std::unique_ptr<World> world_;
 	std::unique_ptr<Player> player_;
@@ -34,6 +37,7 @@ private:
 	std::unique_ptr<Skydome> skydome_;
 	float k = 0.5f;
 	float i = 0.0f;
+	bool isStart_ = false;
 	//std::unique_ptr<Model> model_ = nullptr;
 };
 

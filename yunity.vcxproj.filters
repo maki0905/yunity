@@ -414,6 +414,9 @@
     <ClCompile Include="Engine\Utility\Format.cpp">
       <Filter>Engine\Utility\Format</Filter>
     </ClCompile>
+    <ClCompile Include="Additional\GiftWall.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Math\Capsule.h">
@@ -709,6 +712,12 @@
     </ClInclude>
     <ClInclude Include="Engine\Utility\Format.h">
       <Filter>Engine\Utility\Format</Filter>
+    </ClInclude>
+    <ClInclude Include="Additional\Gift.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Additional\GiftWall.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -13,19 +13,26 @@ ObjectManager* ObjectManager::GetInstance()
 void ObjectManager::Initialize()
 {
 	objects_.clear();
+	activeObjects_.clear();
 }
 
 void ObjectManager::Update(const std::string& fileName)
 {
+	uint32_t index = 0;
 	for (auto& object : objects_[fileName]) {
-		object->Update();
+		if (activeObjects_[fileName][index++]) {
+			object->Update();
+		}
 	}
 }
 
 void ObjectManager::Draw(const std::string& fileName)
 {
+	uint32_t index = 0;
 	for (auto& object : objects_[fileName]) {
-		object->Draw();
+		if (activeObjects_[fileName][index++]) {
+			object->Draw();
+		}
 	}
 }
 
@@ -141,6 +148,13 @@ void ObjectManager::Load(const std::string& fileName, Camera* camera, World* wor
 			newObject->SetBounceCombine(static_cast<Body::BounceCombine>(object.bounceCombine));
 			objects_[fileName].emplace_back(newObject);
 		}
+
+		if (object.fileName == "GiftWall") {
+			activeObjects_[fileName].emplace_back(false);
+		}
+		else {
+			activeObjects_[fileName].emplace_back(true);
+		}
 	}
 }
 
@@ -180,6 +194,11 @@ void ObjectManager::SetEnableLighting(const std::string& fileName, bool onOff)
 	for (auto& obj : objects_[fileName]) {
 		obj->SetEnableLighting(onOff);
 	}
+}
+
+void ObjectManager::SetActive(const std::string& fileName, uint32_t index, bool active)
+{
+	activeObjects_[fileName][index] = active;
 }
 
 

@@ -34,6 +34,8 @@ public:
 	void SetEnableLighting(bool onOff);
 	void SetDirectionalLight(Model::DirectionalLight directionalLight);
 
+	void SetFileName(const std::string fileName) { fileName_ = fileName; }
+
 protected:
 	WorldTransform worldTransform_;
 	std::unordered_map<std::string, std::unique_ptr<Model>> models_;
@@ -46,4 +48,5 @@ private:
 	//WorldTransform worldTransform_;
 	bool isHit_;
 	uint32_t texture_;
+	std::string fileName_;
 };

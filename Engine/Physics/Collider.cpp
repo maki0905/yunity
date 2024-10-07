@@ -30,6 +30,7 @@ void Collider::CreateCollider(WorldTransform* worldTransform, Shape shape, Camer
 	case Collider::kCapsule:
 		break;
 	case Collider::kOBB:
+		HitBox_.reset(PrimitiveDrawer::Create(PrimitiveDrawer::Type::kBox));
 		break;
 	default:
 		break;
