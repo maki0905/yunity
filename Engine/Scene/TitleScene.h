@@ -41,10 +41,17 @@ private:
 	std::unique_ptr<Object3D> obj4_;
 	std::unique_ptr<Object3D> obj5_;
 
+	std::unique_ptr<Object3D> objs_[5];
+	std::unique_ptr<PrimitiveDrawer> lines_[4];
+	std::unique_ptr<SpringJoint> springJoints_[4];
+
 
 	bool flag_ = true;
 
 	Vector3 torupu_;
+
+	float stiffness_ = 10.0f;
+	float dampar_ = 0.1f;
 
 	//std::unique_ptr<Model> model_ = nullptr;
 };

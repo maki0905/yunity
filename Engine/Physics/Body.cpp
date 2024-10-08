@@ -410,7 +410,8 @@ void Body::SolveConstraints()
 		}
 		
 		Vector3 impulse = Multiply(impulseMagnitude, c->contactNormal);
-		AddImpulse(impulse, c->contactPoint);
+		AddForce(impulse, 1);
+		//AddImpulse(impulse, c->contactPoint);
 	}
 	persistentManifold_.clear();
 
