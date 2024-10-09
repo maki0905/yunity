@@ -72,6 +72,7 @@ public:
 	void SetAngularVelocity(const Vector3& angularVelocity) { angularVelocity_ = angularVelocity; }
 
 	float GetMass() { return mass_; }
+	float GetInverseMass() { return 1.0f / mass_; }
 	void SetMass(float mass) { mass_ = mass; }
 
 	float GetInertiaMoment() { return inertiaMoment_; }

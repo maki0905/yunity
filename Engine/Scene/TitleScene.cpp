@@ -78,8 +78,8 @@ void TitleScene::Initialize()
 	obj2_->SetHitBoxSize({ 2.0f, 2.0f, 2.0f });
 	//obj2_->SetScale({200.0f , 3.0f, 50.0f });
 	obj2_->SetScale({ 4.0, 1.0f, 4.0f });
-	obj2_->SetPosition(Vector3{ 0.0f, 5.0, 0.0f });
-	obj2_->SetCollisionAttribute(kCollisionAttributeFloor);
+	obj2_->SetPosition(Vector3{ 0.0f, 20.0, 0.0f });
+	obj2_->SetCollisionAttribute(kCollisionAttributePlayer);
 	obj2_->SetFirictionCombine(Body::FrictionCombine::kMaximum);
 	obj2_->SetMiu(1.0f);
 	
@@ -156,7 +156,7 @@ void TitleScene::Initialize()
 		pulleyObjs_[index]->SetScale({ 1.0f, 1.0f, 1.0f });
 		pulleyObjs_[index]->SetHitBoxSize({ 2.0f, 2.0f, 2.0f });
 		pulleyObjs_[index]->SetCollisionAttribute(kCollisionAttributeFloor);
-		pulleyObjs_[index]->SetMass(2.0f);
+		pulleyObjs_[index]->SetMass(20.0f);
 		world_->Add(pulleyObjs_[index].get());
 		groundAnchor_[index] = { -5.0f + index * 10.0f, 10.0f, 0.0f};
 	}
@@ -172,7 +172,8 @@ void TitleScene::Initialize()
 	world_->AddJoint(pulleyJoint_.get());
 
 	world_->Add(obj1_.get());
-	/*world_->Add(obj2_.get());
+	world_->Add(obj2_.get());
+	/*
 	world_->Add(obj3_.get());
 	world_->Add(obj4_.get());
 	world_->Add(obj5_.get());*/
@@ -269,7 +270,7 @@ void TitleScene::Update()
 	//obj1_->SetRotation(Multiply(DegToRad(), rotate));
 	obj1_->SetRotation(rotate);
 	if (ImGui::Button("Gravity")) {
-		obj1_->SetMass(50.0f);
+		obj1_->SetMass(2.0f);
 	}
 	if (ImGui::Button("Reset")) {
 		obj1_->SetMass(0.0f);
@@ -297,7 +298,7 @@ void TitleScene::Update()
 	obj2_->SetPosition(pos);
 	obj2_->SetRotation(Multiply(DegToRad(), rotate));
 	if (ImGui::Button("Gravity")) {
-		obj2_->SetMass(1.0f);
+		obj2_->SetMass(3.0f);
 	}
 	if (ImGui::Button("Reset")) {
 		obj2_->SetMass(0.0f);
@@ -392,7 +393,8 @@ void TitleScene::Draw3D()
 	model_->Draw(worldTransform_);
 
 	obj1_->Draw();
-	/*obj2_->Draw();
+	obj2_->Draw();
+	/*
 	obj3_->Draw();
 	obj4_->Draw();
 	obj5_->Draw();*/

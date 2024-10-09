@@ -21,7 +21,7 @@ void PulleyJoint::CreatePulleyJoint(Body* bodyA, Body* bodyB, Vector3 groundAnch
 
 	constant_ = lengthA_ + ratio * lengthB_;
 
-	mass_ = bodyA->GetMass() + ratio * ratio * bodyB->GetMass();
+	mass_ = bodyA->GetInverseMass() + ratio * ratio * bodyB->GetInverseMass();
 	if (mass_ > 0.0f) {
 		mass_ = 1.0f / mass_;
 	}
@@ -69,6 +69,19 @@ void PulleyJoint::SolvePosition()
 	float lengthA = Length(directionA);
 	float lengthB = Length(directionB);
 
+	if (lengthA > 10.0f * 0.005f) {
+		directionA.Normalize();
+	}
+	else {
+		directionA.SetZero();
+	}
+
+	if (lengthB > 10.0f * 0.005f) {
+		directionB.Normalize();
+	}
+	else {
+		directionB.SetZero();
+	}
 	// 位置制約エラーを計算
 	float c = constant_ - lengthA - ratio_ * lengthB;
 	float linearError = std::fabsf(c);
