@@ -3,7 +3,7 @@
 #include "Object3D.h"
 #include "DirectXCore.h"
 #include "ImGuiManager.h"
-#include "SpringJoint.h"
+#include "Joint.h"
 
 void World::Initialize(const Vector3& gravity)
 {
@@ -64,10 +64,10 @@ void World::Take(Object3D* collider)
 
 }
 
-void World::TakeJoint(SpringJoint* springJoint)
+void World::TakeJoint(Joint* joint)
 {
-	for (std::list<SpringJoint*>::iterator iterator = jointAllocator_.begin(); iterator != jointAllocator_.end();) {
-		if (*iterator == springJoint) {
+	for (std::list<Joint*>::iterator iterator = jointAllocator_.begin(); iterator != jointAllocator_.end();) {
+		if (*iterator == joint) {
 			iterator = jointAllocator_.erase(iterator);
 			continue;
 		}

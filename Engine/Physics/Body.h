@@ -106,6 +106,8 @@ public:
 
 	Matrix3x3 GetInertiaTensor() { return inertiaTensor_; };
 
+	void SetTranslation(Vector3 translation) { worldTransform_->translation_ = translation; }
+
 private:
 
 	World* world_;

@@ -9,6 +9,7 @@
 #include "World.h"
 #include "Player.h"
 #include "Skydome.h"
+#include "PulleyJoint.h"
 
 class TitleScene : public IScene
 {
@@ -44,6 +45,12 @@ private:
 	std::unique_ptr<Object3D> objs_[5];
 	std::unique_ptr<PrimitiveDrawer> lines_[4];
 	std::unique_ptr<SpringJoint> springJoints_[4];
+
+	std::unique_ptr<Object3D> pulleyObjs_[2];
+	std::unique_ptr<PrimitiveDrawer> pulleyLines_[3];
+	std::unique_ptr<PulleyJoint> pulleyJoint_;
+	Vector3 groundAnchor_[2];
+	float ratio_;
 
 
 	bool flag_ = true;

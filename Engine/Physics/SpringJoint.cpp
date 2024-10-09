@@ -2,8 +2,9 @@
 
 void SpringJoint::CreateSpringJoint(Body* bodyA, Body* bodyB)
 {
-	bodys_[0] = bodyA;
-	bodys_[1] = bodyB;
+	bodyA_ = bodyA;
+	bodyB_ = bodyB;
+	
 }
 
 void SpringJoint::EnableSpring(int index, bool onOff)
@@ -23,7 +24,7 @@ void SpringJoint::SetDamping(int index, float damping)
 
 void SpringJoint::SetEquilibriumPoint()
 {
-	Vector3 v = Subtract(bodys_[0]->GetTranslation(), bodys_[1]->GetTranslation());
+	Vector3 v = Subtract(bodyA_->GetTranslation(), bodyB_->GetTranslation());
 	v.x = std::abs(v.x);
 	v.y = std::abs(v.y);
 	v.z = std::abs(v.z);
@@ -39,7 +40,7 @@ void SpringJoint::SetEquilibriumPoint()
 
 void SpringJoint::SetEquilibriumPoint(int index)
 {
-	Vector3 v = Subtract(bodys_[0]->GetTranslation(), bodys_[1]->GetTranslation());
+	Vector3 v = Subtract(bodyA_->GetTranslation(), bodyB_->GetTranslation());
 	v.x = std::abs(v.x);
 	v.y = std::abs(v.y);
 	v.z = std::abs(v.z);
@@ -59,10 +60,10 @@ void SpringJoint::Solve()
 		if (!springEnabled_[index]) {
 			continue;
 		}
-		force = Spring(bodys_[0], bodys_[1], equilibriumPoint_[index], stiffness_[index], dampingCoefficient_[index]);
-		bodys_[0]->AddForce(force, 0);
-		force = Spring(bodys_[1], bodys_[0], equilibriumPoint_[index], stiffness_[index], dampingCoefficient_[index]);
-		bodys_[1]->AddForce(force, 0);
+		force = Spring(bodyA_, bodyB_, equilibriumPoint_[index], stiffness_[index], dampingCoefficient_[index]);
+		bodyA_->AddForce(force, 0);
+		force = Spring(bodyB_, bodyA_, equilibriumPoint_[index], stiffness_[index], dampingCoefficient_[index]);
+		bodyB_->AddForce(force, 0);
 
 	}
 
