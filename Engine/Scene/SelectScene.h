@@ -34,7 +34,7 @@ private:
 	std::unique_ptr<Sprite> sprite_ = nullptr;
 	std::unique_ptr<Model> models_[3];
 	bool isActiveTV_[3];
-	uint32_t preNum_;
+	int preNum_;
 	Easing grow_[3];
 	Easing shrink_[3];
 	uint32_t textureTV_[3];

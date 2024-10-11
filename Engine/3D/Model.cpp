@@ -117,7 +117,7 @@ void Model::Draw(const WorldTransform& worldTransform, uint32_t textureHandle)
 		commandList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		// 頂点バッファの設定
 		commandList_->IASetVertexBuffers(0, 1, &vertexBufferView_);
-		uint32_t textureCubeHandle_ = TextureManager::Load("rostock_laage_airport_4k.dds");
+		//uint32_t textureCubeHandle_ = TextureManager::Load("rostock_laage_airport_4k.dds");
 		//TextureManager::GetInstance()->SetGraphicsRootDescriptorTable(commandList_, static_cast<UINT>(Object3dRootBindings::kEnvironmentMap), textureCubeHandle_);
 	}
 
@@ -134,10 +134,10 @@ void Model::Draw(const WorldTransform& worldTransform, uint32_t textureHandle)
 	TextureManager::GetInstance()->SetGraphicsRootDescriptorTable(commandList_, static_cast<UINT>(Object3dRootBindings::kTexture), textureHandle);
 
 	if (modelType_ == ModelType::kSkin) {
-		commandList_->DrawIndexedInstanced(modelData_.indices.size(), UINT(skeleton_.joints.size()), 0, 0, 0);
+		commandList_->DrawIndexedInstanced((UINT)modelData_.indices.size(), UINT(skeleton_.joints.size()), 0, 0, 0);
 	}
 	else {
-		commandList_->DrawIndexedInstanced(modelData_.indices.size(), 1, 0, 0, 0);
+		commandList_->DrawIndexedInstanced((UINT)modelData_.indices.size(), 1, 0, 0, 0);
 	}
 }
 
@@ -169,7 +169,7 @@ void Model::Draw(const WorldTransform& worldTransform/*, const Camera& camera*/)
 		commandList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		// 頂点バッファの設定
 		commandList_->IASetVertexBuffers(0, 1, &vertexBufferView_);
-		uint32_t textureCubeHandle_ = TextureManager::Load("rostock_laage_airport_4k.dds");
+		//uint32_t textureCubeHandle_ = TextureManager::Load("rostock_laage_airport_4k.dds");
 		//TextureManager::GetInstance()->SetGraphicsRootDescriptorTable(commandList_, static_cast<UINT>(Object3dRootBindings::kEnvironmentMap), textureCubeHandle_);
 	}
 
@@ -190,10 +190,10 @@ void Model::Draw(const WorldTransform& worldTransform/*, const Camera& camera*/)
 	TextureManager::GetInstance()->SetGraphicsRootDescriptorTable(commandList_, static_cast<UINT>(Object3dRootBindings::kTexture), textureHandle_);
 
 	if (modelType_ == ModelType::kSkin) {
-		commandList_->DrawIndexedInstanced(modelData_.indices.size(), UINT(skeleton_.joints.size()), 0, 0, 0);
+		commandList_->DrawIndexedInstanced((UINT)modelData_.indices.size(), UINT(skeleton_.joints.size()), 0, 0, 0);
 	}
 	else {
-		commandList_->DrawIndexedInstanced(modelData_.indices.size(), 1, 0, 0, 0);
+		commandList_->DrawIndexedInstanced((UINT)modelData_.indices.size(), 1, 0, 0, 0);
 	}
 	
 }

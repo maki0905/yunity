@@ -51,7 +51,7 @@ public:
 	void CRTV(uint32_t index);
 	void ClearRenderTargetView(uint32_t index);
 	void OMSetRenderTargets(uint32_t index);
-	void ClearDepthStencilView(uint32_t index);
+	void ClearDepthStencilView();
 	void SetGraphicsRootDescriptorTable(RootBindings binding, uint32_t index);
 	void SetMaterial(uint32_t index);
 	void SetMaterialData(uint32_t index);

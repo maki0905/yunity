@@ -108,10 +108,8 @@ Model* ModelManager::CreateModel(Format format, const std::string& folderName, c
 
 Model::ModelData& ModelManager::GetModelData(const std::string& modelName)
 {
-	Model::ModelData modelData;
 	std::string path = modelName;
-	modelData = modelDataStorage_[path];
-	return modelData;
+	return modelDataStorage_[path];
 }
 
 Animation ModelManager::GetAnimation(Format format, const std::string& folderName, const std::string& fileName)

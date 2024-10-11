@@ -96,9 +96,7 @@ public:
 	/// 描画
 	/// </summary>
 	/// <param name="worldTransform">ワールドトランスフォーム</param>
-	/// <param name="viewProjection">ビュープロジェクション</param>
-	/// <param name="textureHandle">テクスチャハンドル</param>
-	void Draw(const WorldTransform& worldTransform, const Camera& camera);
+	void Draw(const WorldTransform& worldTransform);
 
 	void SetCamera(Camera* camera) { camera_ = camera; }
 	void SetTextureHandle(const std::string& textureName);

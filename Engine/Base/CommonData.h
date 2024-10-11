@@ -21,7 +21,7 @@ public:
 	std::string GetStageName();
 
 	bool isGoal_;
-	uint32_t stageNum_ = -1;
+	int stageNum_ = -1;
 
 	Scene scene_;
 

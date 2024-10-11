@@ -1,4 +1,4 @@
-﻿#include "CollisionManager.h"
+#include "CollisionManager.h"
 
 #include "MathFunction.h"
 #include "Collision.h"
@@ -50,15 +50,17 @@ void CollisionManager::CheckCollisionPair(Object3D* colliderA, Object3D* collide
 				Sphere(colliderA->GetColliderCenter(), colliderA->GetHitBoxSize().x * 2.0f),
 				AABB(Subtract(colliderB->GetColliderCenter(), colliderB->GetHitBoxSize()), Add(colliderB->GetColliderCenter(), colliderB->GetHitBoxSize())))) {
 
+				colliderA->SetHitBody(colliderB);
+				colliderB->SetHitBody(colliderA);
 				if (colliderA->GetIsTrigger() || colliderB->GetIsTrigger()) {
-					colliderA->OnTriggerEvent(colliderB);
-					colliderB->OnTriggerEvent(colliderA);
+					colliderA->OnTriggerEvent();
+					colliderB->OnTriggerEvent();
 				}
 				else {
 					colliderA->OnCollision(colliderB);
 					colliderB->OnCollision(colliderA);
-					colliderA->OnCollisionEvent(colliderB);
-					colliderB->OnCollisionEvent(colliderA);
+					colliderA->OnCollisionEvent();
+					colliderB->OnCollisionEvent();
 				}
 			}
 			/*if (IsCollision(
@@ -80,19 +82,19 @@ void CollisionManager::CheckCollisionPair(Object3D* colliderA, Object3D* collide
 				Sphere{colliderB->GetColliderCenter(), colliderB->GetHitBoxSize().x * 2.0f})) {
 
 				if (colliderA->GetIsTrigger() || colliderB->GetIsTrigger()) {
-					colliderA->OnTriggerEvent(colliderB);
-					colliderB->OnTriggerEvent(colliderA);
+					colliderA->OnTriggerEvent();
+					colliderB->OnTriggerEvent();
 				}
 				else {
 					if (colliderA->GetCollisionAttribute() == kCollisionAttributePlayer && colliderB->GetCollisionAttribute() == kCollisionAttributeCoin) {
-						colliderA->OnTriggerEvent(colliderB);
-						colliderB->OnTriggerEvent(colliderA);
+						colliderA->OnTriggerEvent();
+						colliderB->OnTriggerEvent();
 					}
 					else {
 						colliderA->OnCollision(colliderB);
 						colliderB->OnCollision(colliderA);
-						colliderA->OnCollisionEvent(colliderB);
-						colliderB->OnCollisionEvent(colliderA);
+						colliderA->OnCollisionEvent();
+						colliderB->OnCollisionEvent();
 					}
 				}
 			}
@@ -104,14 +106,14 @@ void CollisionManager::CheckCollisionPair(Object3D* colliderA, Object3D* collide
 				AABB(Subtract(colliderB->GetColliderCenter(), colliderB->GetHitBoxSize()), Add(colliderB->GetColliderCenter(), colliderB->GetHitBoxSize())))) {
 
 				if (colliderA->GetIsTrigger() || colliderB->GetIsTrigger()) {
-					colliderA->OnTriggerEvent(colliderB);
-					colliderB->OnTriggerEvent(colliderA);
+					colliderA->OnTriggerEvent();
+					colliderB->OnTriggerEvent();
 				}
 				else {
 					colliderA->OnCollision(colliderB);
 					colliderB->OnCollision(colliderA);
-					colliderA->OnCollisionEvent(colliderB);
-					colliderB->OnCollisionEvent(colliderA);
+					colliderA->OnCollisionEvent();
+					colliderB->OnCollisionEvent();
 				}
 			}
 

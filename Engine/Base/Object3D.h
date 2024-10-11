@@ -15,8 +15,8 @@ public:
 	virtual void Draw();
 
 	// 衝突時に呼ばれる固有の処理
-	virtual void OnCollisionEvent(Body* body);
-	virtual void OnTriggerEvent(Body* body);
+	virtual void OnCollisionEvent();
+	virtual void OnTriggerEvent();
 
 	void SetPosition(const Vector3& position) { worldTransform_.translation_ = position; }
 	void SetRotation(const Vector3& rotation) { worldTransform_.rotation_ = rotation; }
@@ -36,6 +36,9 @@ public:
 
 	void SetFileName(const std::string fileName) { fileName_ = fileName; }
 
+	Body* GetHitBody() { return hitBody_; }
+	void SetHitBody(Body* body) { hitBody_ = body; }
+
 protected:
 	WorldTransform worldTransform_;
 	std::unordered_map<std::string, std::unique_ptr<Model>> models_;
@@ -49,4 +52,5 @@ private:
 	bool isHit_;
 	uint32_t texture_;
 	std::string fileName_;
+	Body* hitBody_;
 };

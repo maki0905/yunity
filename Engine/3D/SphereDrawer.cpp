@@ -130,7 +130,7 @@ void SphereDrawer::Initialize()
 	InitializeMaterial();
 }
 
-void SphereDrawer::Draw(const WorldTransform& worldTransform, const Camera& camera)
+void SphereDrawer::Draw(const WorldTransform& worldTransform)
 {
 	assert(device_);
 	assert(commandList_);

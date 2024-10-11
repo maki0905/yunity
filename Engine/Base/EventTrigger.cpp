@@ -2,7 +2,7 @@
 
 #include "CommonData.h"
 
-void EventTrigger::OnTriggerEvent(Body* body)
+void EventTrigger::OnTriggerEvent()
 {
 	switch (serialNumber_)
 	{

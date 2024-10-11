@@ -194,7 +194,7 @@ void PostEffect::OMSetRenderTargets(uint32_t index)
 	DirectXCore::GetInstance()->GetCommandList()->OMSetRenderTargets(1, &cpuDescHandleRTV_[index], false, &dsvHandle);
 }
 
-void PostEffect::ClearDepthStencilView(uint32_t index)
+void PostEffect::ClearDepthStencilView()
 {
 	// 深度ステンシルビュー用デスクリプタヒープのハンドルを取得
 	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle =

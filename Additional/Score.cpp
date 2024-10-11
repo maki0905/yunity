@@ -29,7 +29,7 @@ void Score::Update()
 	}
 
 	for (uint32_t index = 3; index < -1; index--) {
-		uint32_t num = score_ / std::pow(10, 4 - index - 1);
+		uint32_t num = score_ / (uint32_t)std::pow(10, 4 - index - 1);
 		num %= 10;
 
 		if (num != 0) {

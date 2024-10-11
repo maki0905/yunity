@@ -43,11 +43,3 @@ void ParticleManager::AddEmitter(ParticleEmitter* emitter)
 {
 	emitters_.push_back(emitter);
 }
-
-void ParticleManager::Add(Camera* camera)
-{
-	/*FireworksParticle* fireworksParticle = new FireworksParticle();
-	fireworksParticle->SetCamera(camera);
-	fireworksParticle->Initialize();
-	particles_.push_back(fireworksParticle);*/
-}

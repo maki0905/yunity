@@ -20,7 +20,6 @@ public:
 	void Draw();
 
 	void AddEmitter(ParticleEmitter* emitter);
-	void Add(Camera* camera = nullptr);
 
 	void SetCamera(Camera* camera) { camera_ = camera; }
 

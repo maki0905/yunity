@@ -124,13 +124,15 @@ void Object3D::Draw()
 #endif
 }
 
-void Object3D::OnCollisionEvent(Body* body)
+void Object3D::OnCollisionEvent()
 {
 }
 
-void Object3D::OnTriggerEvent(Body* body)
+void Object3D::OnTriggerEvent()
 {
 }
+
+
 
 void Object3D::SetModel(const std::string& modelName, Model* model)
 {

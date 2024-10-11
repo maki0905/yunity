@@ -231,7 +231,7 @@ void PrimitiveDrawer::CreateSphere()
 		float lat = -float(std::numbers::pi) / 2.0f + kLatEvery * latIndex;// θ
 		// 経度の方向に分割しながら線を描く
 		for (uint32_t lonIndex = 0; lonIndex < kSubdivision; ++lonIndex) {
-			uint32_t start = (latIndex * kSubdivision + lonIndex) * 4;
+			//uint32_t start = (latIndex * kSubdivision + lonIndex) * 4;
 			float lon = lonIndex * kLonEvery;// φ
 
 			VertexData vertexData[4];
@@ -294,7 +294,7 @@ void PrimitiveDrawer::CreateSphere()
 
 	for (uint32_t latIndex = 0; latIndex < kSubdivision; ++latIndex) {
 		for (uint32_t lonIndex = 0; lonIndex < kSubdivision; ++lonIndex) {
-			uint32_t start = (latIndex * kSubdivision + lonIndex) * 6;
+			//uint32_t start = (latIndex * kSubdivision + lonIndex) * 6;
 			uint32_t i = (latIndex * kSubdivision + lonIndex) * 4;
 
 			uint32_t indexData[6];
@@ -305,8 +305,8 @@ void PrimitiveDrawer::CreateSphere()
 			indexData[4] = i + 3;
 			indexData[5] = i + 2;
 
-			for (uint32_t i = 0; i < 6; i++) {
-				indices_.push_back(indexData[i]);
+			for (uint32_t index = 0; index < 6; index++) {
+				indices_.push_back(indexData[index]);
 			}
 
 		}

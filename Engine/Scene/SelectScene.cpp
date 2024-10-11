@@ -71,7 +71,7 @@ void SelectScene::Update()
 			grow_[CommonData::GetInstance()->stageNum_] = { true, 0.0f, worldTransform_[CommonData::GetInstance()->stageNum_].scale_};
 		}
 
-		for (uint32_t index = 0; index < 3; index++) {
+		for (int index = 0; index < 3; index++) {
 			if (index != CommonData::GetInstance()->stageNum_) {
 				grow_[index] = { false, 0.0f };
 			}

@@ -55,19 +55,19 @@ public:
 	class XAudio2VoiceCallback : public IXAudio2VoiceCallback {
 	public:
 		// ボイス処理パスの開始時
-		STDMETHOD_(void, OnVoiceProcessingPassStart) (THIS_ UINT32 BytexRequired) {};
+		STDMETHOD_(void, OnVoiceProcessingPassStart) (THIS_ UINT32 BytexRequired) { (void)BytexRequired; };
 		// ボイス処理パスの終了時
 		STDMETHOD_(void, OnVoiceProcessingPassEnd) (THIS) {};
 		// バッファストリームの再生が終了した時
 		STDMETHOD_(void, OnStreamEnd)(THIS) {};
 		// バッファの使用開始時
-		STDMETHOD_(void, OnBufferStart)(THIS_ void* pBufferContext) {};
+		STDMETHOD_(void, OnBufferStart)(THIS_ void* pBufferContext) { (void)pBufferContext; };
 		// バッファの末尾に達した時
-		STDMETHOD_(void, OnBufferEnd)(THIS_ void* pBufferContext) {};
+		STDMETHOD_(void, OnBufferEnd)(THIS_ void* pBufferContext) { (void)pBufferContext; };
 		// 再生がループの位置に達した時
-		STDMETHOD_(void, OnLoopEnd)(THIS_ void* pBufferContex) {};
+		STDMETHOD_(void, OnLoopEnd)(THIS_ void* pBufferContex) { (void)pBufferContex; };
 		// ボイスの実行エラー時
-		STDMETHOD_(void, OnVoiceError)(THIS_ void* pBufferContext, HRESULT Error) {};
+		STDMETHOD_(void, OnVoiceError)(THIS_ void* pBufferContext, HRESULT Error) { (void)pBufferContext; (void)Error; };
 	};
 
 	static Audio* GetInstance();
