@@ -61,7 +61,7 @@ void TitleScene::Initialize()
 	CommonData::GetInstance()->scene_ = Scene::kTitle;
 
 	obj1_ = std::make_unique<Object3D>();
-	obj1_->Initialize(ModelManager::GetInstance()->CreateModel(obj,/* ""*/"Cube"),world_.get(), Collider::Shape::kOBB);
+	obj1_->Initialize(ModelManager::GetInstance()->CreateModel(obj,/* ""*/"UFO"),world_.get(), Collider::Shape::kOBB);
 	obj1_->SetHitBoxSize({ 2.0f, 2.0f, 2.0f });
 	obj1_->SetScale({4.5f, 4.5f, 4.5f });
 	obj1_->SetCamera(camera_);
