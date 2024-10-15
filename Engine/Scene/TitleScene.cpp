@@ -228,7 +228,7 @@ void TitleScene::Update()
 			Tradition::GetInstance()->Update();
 		}
 		if (!Tradition::GetInstance()->GetIn()) {
-			//SceneManager::GetInstance()->ChangeScene("GAMESTAGE");
+			SceneManager::GetInstance()->ChangeScene("GAMESTAGE");
 		}
 	}
 
