@@ -81,6 +81,8 @@ void CollisionManager::CheckCollisionPair(Object3D* colliderA, Object3D* collide
 				AABB{Subtract(colliderA->GetColliderCenter(), colliderA->GetHitBoxSize()), Add(colliderA->GetColliderCenter(), colliderA->GetHitBoxSize()) },
 				Sphere{colliderB->GetColliderCenter(), colliderB->GetHitBoxSize().x * 2.0f})) {
 
+				colliderA->SetHitBody(colliderB);
+				colliderB->SetHitBody(colliderA);
 				if (colliderA->GetIsTrigger() || colliderB->GetIsTrigger()) {
 					colliderA->OnTriggerEvent();
 					colliderB->OnTriggerEvent();
@@ -105,6 +107,8 @@ void CollisionManager::CheckCollisionPair(Object3D* colliderA, Object3D* collide
 				AABB(Subtract(colliderA->GetColliderCenter(), colliderA->GetHitBoxSize()), Add(colliderA->GetColliderCenter(), colliderA->GetHitBoxSize())),
 				AABB(Subtract(colliderB->GetColliderCenter(), colliderB->GetHitBoxSize()), Add(colliderB->GetColliderCenter(), colliderB->GetHitBoxSize())))) {
 
+				colliderA->SetHitBody(colliderB);
+				colliderB->SetHitBody(colliderA);
 				if (colliderA->GetIsTrigger() || colliderB->GetIsTrigger()) {
 					colliderA->OnTriggerEvent();
 					colliderB->OnTriggerEvent();

@@ -463,11 +463,11 @@ void Player::DrawUI()
 	scoreUI_->Draw();
 }
 
-void Player::OnCollisionEvent(Body* body)
+void Player::OnCollisionEvent()
 {
-	if (body->GetCollisionAttribute() == kCollisionAttributeTrampoline) {
+	if (GetHitBody()->GetCollisionAttribute() == kCollisionAttributeTrampoline) {
 		AABB aabb = GetAABB();
-		AABB other = body->GetAABB();
+		AABB other = GetHitBody()->GetAABB();
 		if (aabb.min.y >= other.max.y) {
 			if (aabb.min.x < other.max.x && aabb.max.x > other.min.x) {
 				AddForce({ 0.0f, 30.0f, 0.0f }, 1);
@@ -476,18 +476,18 @@ void Player::OnCollisionEvent(Body* body)
 		}
 	}
 
-	if (body->GetCollisionAttribute() == kCollisionAttributeSpike) {
+	if (GetHitBody()->GetCollisionAttribute() == kCollisionAttributeSpike) {
 		isActive_ = false;
 	}
 
-	if (body->GetCollisionAttribute() == kCollisionAttributeMoveFloorLeft || body->GetCollisionAttribute() == kCollisionAttributeMoveFloorRight) {
+	if (GetHitBody()->GetCollisionAttribute() == kCollisionAttributeMoveFloorLeft || GetHitBody()->GetCollisionAttribute() == kCollisionAttributeMoveFloorRight) {
 		AABB aabb = GetAABB();
-		AABB other = body->GetAABB();
+		AABB other = GetHitBody()->GetAABB();
 		if (aabb.min.y >= other.max.y) {
 			if (aabb.min.x < other.max.x && aabb.max.x > other.min.x) {
 				if (worldTransform_.parent_ == nullptr) {
-					worldTransform_.parent_ = body->GetWorldTransform();
-					worldTransform_.translation_ = Subtract(worldTransform_.translation_, body->GetMatWorldTranslation());
+					worldTransform_.parent_ = GetHitBody()->GetWorldTransform();
+					worldTransform_.translation_ = Subtract(worldTransform_.translation_, GetHitBody()->GetMatWorldTranslation());
 					isMoving_ = true;
 				}
 			}
@@ -513,21 +513,21 @@ void Player::OnCollisionEvent(Body* body)
 #endif
 	isHit_ = true;
 
-	collisionBody_ = body;
+	collisionBody_ = GetHitBody();
 }
 
-void Player::OnTriggerEvent(Body* body)
+void Player::OnTriggerEvent()
 {
-	if (body->GetCollisionAttribute() == kCollisionAttributeGoal) {
+	if (GetHitBody()->GetCollisionAttribute() == kCollisionAttributeGoal) {
 		CommonData::GetInstance()->isGoal_ = true;
 	}
-	if (body->GetCollisionAttribute() == kCollisionAttributeSelect) {
+	if (GetHitBody()->GetCollisionAttribute() == kCollisionAttributeSelect) {
 		isSelect_ = true;
 	}
-	if (body->GetCollisionAttribute() == kCollisionAttributeCoin) {
+	if (GetHitBody()->GetCollisionAttribute() == kCollisionAttributeCoin) {
 		scoreUI_->AddScore(10);
 	}
-	if (body->GetCollisionAttribute() == kCollisionAttributeVentilator) {
+	if (GetHitBody()->GetCollisionAttribute() == kCollisionAttributeVentilator) {
 		AddForce({ -0.3f, 0.0f, 0.0f }, 1);
 	}
 }

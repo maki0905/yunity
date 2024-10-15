@@ -25,8 +25,8 @@ public:
 	void DrawUI();
 
 	//void OnCollisionEvent(Body* body = nullptr) override;
-	virtual void OnCollisionEvent(Body* body);
-	virtual void OnTriggerEvent(Body* body);
+	void OnCollisionEvent() override;
+	void OnTriggerEvent() override;
 
 	void ResetPos(const Vector3& pos);
 

@@ -11,7 +11,7 @@ public:
 	};
 public:
 
-	virtual void OnTriggerEvent();
+	void OnTriggerEvent() override;
 
 	void SetSerialNumber(uint32_t serialNumber) { serialNumber_ = static_cast<SerialNumber>(serialNumber); }
 	void SetSerialNumber(SerialNumber serialNumber) { serialNumber_ = serialNumber; }

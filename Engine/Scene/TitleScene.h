@@ -12,6 +12,11 @@
 
 class TitleScene : public IScene
 {
+	struct Easing {
+		bool flag;
+		float t;
+		Vector3 scale;
+	};
 public:
 	void Initialize() override;
 	void Update() override;
@@ -39,5 +44,15 @@ private:
 	float i = 0.0f;
 	bool isStart_ = false;
 	//std::unique_ptr<Model> model_ = nullptr;
+	std::unique_ptr<Model> models_[3];
+	WorldTransform TVworldTransform_[3];
+	bool isActiveTV_[3];
+	int preNum_;
+	Easing grow_[3];
+	Easing shrink_[3];
+	uint32_t textureTV_[3];
+	bool isMoveCamera[2];
+	float moveCameraTimer_;
+	Vector3 oldCameraPos_;
 };
 

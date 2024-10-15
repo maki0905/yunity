@@ -6,6 +6,7 @@
 #include "ObjectManager.h"
 #include "ImGuiManager.h"
 #include "CommonData.h"
+#include "Tradition.h"
 
 void TitleScene::Initialize()
 {
@@ -71,6 +72,37 @@ void TitleScene::Initialize()
 	CommonData::GetInstance()->scene_ = Scene::kTitle;
 
 	isStart_ = false;
+
+	for (uint32_t index = 0; index < 3; index++) {
+		models_[index] = std::make_unique<Model>();
+		models_[index].reset(ModelManager::GetInstance()->CreateModel(obj, "TV"));
+		models_[index]->SetCamera(camera_);
+		models_[index]->SetEnableLighting(false);
+		TVworldTransform_[index].Initialize();
+		TVworldTransform_[index].translation_ = { 80.0f + 30.0f * index, 18.0f, 12.0f };
+		TVworldTransform_[index].rotation_.x = -15.0f * DegToRad();
+		TVworldTransform_[index].scale_ = { 0.0f, 0.0f, 0.0f };
+		isActiveTV_[index] = false;
+		grow_[index] = { false, 0.0f };
+		shrink_[index] = { false, 0.0f };
+	}
+	textureTV_[0] = TextureManager::Load("Models/TV/TV1.png");
+	textureTV_[1] = TextureManager::Load("Models/TV/TV2.png");
+	textureTV_[2] = TextureManager::Load("Models/TV/TV3.png");
+
+	preNum_ = CommonData::GetInstance()->stageNum_;
+
+	if (CommonData::GetInstance()->stageNum_ != -1) {
+		player_->SetPosition({ 30.0f * CommonData::GetInstance()->stageNum_, -3.5f, 0.0f });
+		player_->SetSelect(true);
+		TVworldTransform_[CommonData::GetInstance()->stageNum_].scale_ = { 1.0f, 1.0f, 1.0f };
+		isActiveTV_[CommonData::GetInstance()->stageNum_] = true;
+		isStart_ = true;
+	}
+	CommonData::GetInstance()->scene_ = Scene::kTitle;
+	isMoveCamera[0] = false;
+	isMoveCamera[1] = false;
+	moveCameraTimer_ = 0.0f;
 }
 
 void TitleScene::Update()
@@ -83,48 +115,147 @@ void TitleScene::Update()
 	Matrix4x4 rotateZ = MakeRotateZMatrix(rotate.z);
 	Matrix4x4 rotateXYZ = Multiply(rotateX, Multiply(rotateY, rotateZ));*/
 
-	if (isStart_) {
-		player_->SetMass(2.0f);
-	}
-	player_->Update();
-	if (player_->GetWorldTransform()->GetMatWorldTranslation().x >= 35.0f) {
-		SceneManager::GetInstance()->ChangeScene("SELECT");
-	}
-	else if (player_->GetWorldTransform()->GetMatWorldTranslation().x < -30.0f) {
-		player_->GetWorldTransform()->translation_.x = -30.0f;
-		Vector3 velocity = player_->GetVelocity();
-		velocity.x *= -0.2f;
-		player_->SetVelocity(velocity);
-	}
+	if (player_->GetSelect()) {
+		if (preNum_ != CommonData::GetInstance()->stageNum_) {
+			grow_[CommonData::GetInstance()->stageNum_] = { true, 0.0f, TVworldTransform_[CommonData::GetInstance()->stageNum_].scale_ };
+		}
 
-	if (Input::GetInstance()->IsControllerConnected()) {
-		if (Input::GetInstance()->GetJoystickState(0, pad_)) {
-			if ((pad_.Gamepad.wButtons & XINPUT_GAMEPAD_A) && !(prePad_.Gamepad.wButtons & XINPUT_GAMEPAD_A)) {
-				isStart_ = true;
+		for (int index = 0; index < 3; index++) {
+			if (index != CommonData::GetInstance()->stageNum_) {
+				grow_[index] = { false, 0.0f };
+			}
+		}
+
+		isActiveTV_[CommonData::GetInstance()->stageNum_] = true;
+
+		if (Input::GetInstance()->IsControllerConnected()) {
+			if (Input::GetInstance()->GetJoystickState(0, pad_)) {
+				if ((pad_.Gamepad.wButtons & XINPUT_GAMEPAD_A) && !(prePad_.Gamepad.wButtons & XINPUT_GAMEPAD_A)) {
+					//SceneManager::GetInstance()->ChangeScene("GAMESTAGE");
+					if (!Tradition::GetInstance()->GetIsActive()) {
+						isMoveCamera[0] = true;
+						oldCameraPos_ = camera_->GetTranslate();
+						moveCameraTimer_ = 0.0f;
+						Tradition::GetInstance()->Initialize();
+						Tradition::GetInstance()->Start();
+						camera_->SetTarget(nullptr);
+					}
+					
+				}
 			}
 		}
 	}
-
-	/*if (Input::GetInstance()->IsControllerConnected()) {
-		if (Input::GetInstance()->GetJoystickState(0, pad_)) {
-			if ((pad_.Gamepad.wButtons & XINPUT_GAMEPAD_A) && !(prePad_.Gamepad.wButtons & XINPUT_GAMEPAD_A)) {
-				SceneManager::GetInstance()->ChangeScene("SELECT");
-				RenderTexture::GetInstance()->ClearPostEffect();
+	else {
+		for (uint32_t index = 0; index < 3; index++) {
+			if (isActiveTV_[index] && !shrink_[index].flag) {
+				shrink_[index] = { true, 0.0f, TVworldTransform_[index].scale_ };
 			}
+		}
 
+	}
+
+	if (!Tradition::GetInstance()->GetIsActive()) {
+		RenderTexture::GetInstance()->SelectPostEffect(PostEffects::kRadialBlur, false);
+		if (isStart_) {
+			player_->SetMass(2.0f);
+			player_->Update();
+		}
+		//player_->Update();
+		if (player_->GetWorldTransform()->GetMatWorldTranslation().x >= 35.0f && camera_->GetTarget() == nullptr) {
+			camera_->SetTarget(player_->GetWorldTransform());
+			CommonData::GetInstance()->scene_ = Scene::kSelect;
+
+			//SceneManager::GetInstance()->ChangeScene("SELECT");
+		}
+		else if (player_->GetWorldTransform()->GetMatWorldTranslation().x < 35.0f && camera_->GetTarget() != nullptr) {
+			camera_->SetTarget(nullptr);
+			camera_->SetTranslate({ 0, 10.0f, -50.0f });
+			CommonData::GetInstance()->scene_ = Scene::kTitle;
 
 		}
-	}*/
+		/*else if (player_->GetWorldTransform()->GetMatWorldTranslation().x < -30.0f) {
+			player_->GetWorldTransform()->translation_.x = -30.0f;
+			Vector3 velocity = player_->GetVelocity();
+			velocity.x *= -0.2f;
+			player_->SetVelocity(velocity);
+		}*/
 
-	/*ImGui::Begin("Player");
-	Vector3 pos = obj_->GetWorldTransform()->translation_;
-	ImGui::DragFloat3("pos", &pos.x);
-	obj_->SetPosition(pos);
-	ImGui::End();
+		if (Input::GetInstance()->IsControllerConnected()) {
+			if (Input::GetInstance()->GetJoystickState(0, pad_)) {
+				if ((pad_.Gamepad.wButtons & XINPUT_GAMEPAD_A) && !(prePad_.Gamepad.wButtons & XINPUT_GAMEPAD_A)) {
+					isStart_ = true;
+				}
+			}
+		}
 
-	obj_->AddForce(obj_->Spring({ 0.0f, 0.0f, 0.0f }, obj_->GetMatWorldTranslation(), 0.0f, 1.0f, 0.1f), 0);*/
+		/*if (Input::GetInstance()->IsControllerConnected()) {
+			if (Input::GetInstance()->GetJoystickState(0, pad_)) {
+				if ((pad_.Gamepad.wButtons & XINPUT_GAMEPAD_A) && !(prePad_.Gamepad.wButtons & XINPUT_GAMEPAD_A)) {
+					SceneManager::GetInstance()->ChangeScene("SELECT");
+					RenderTexture::GetInstance()->ClearPostEffect();
+				}
 
-	//ObjectManager::GetInstance()->Update("title1");
+
+			}
+		}*/
+
+		/*ImGui::Begin("Player");
+		Vector3 pos = obj_->GetWorldTransform()->translation_;
+		ImGui::DragFloat3("pos", &pos.x);
+		obj_->SetPosition(pos);
+		ImGui::End();
+
+		obj_->AddForce(obj_->Spring({ 0.0f, 0.0f, 0.0f }, obj_->GetMatWorldTranslation(), 0.0f, 1.0f, 0.1f), 0);*/
+
+		//ObjectManager::GetInstance()->Update("title1");
+	}
+	else {
+		if (isMoveCamera[0]) {
+			moveCameraTimer_ += 1.0f / 30.0f;
+			moveCameraTimer_ = std::clamp(moveCameraTimer_, 0.0f, 1.0f);
+			camera_->SetTranslate(Lerp(oldCameraPos_, { oldCameraPos_.x, 20.0f, -60.0f }, moveCameraTimer_));
+			if (moveCameraTimer_ >= 1.0f) {
+				moveCameraTimer_ = 0.0f;
+				isMoveCamera[0] = false;
+				oldCameraPos_ = camera_->GetTranslate();
+				RenderTexture::GetInstance()->SelectPostEffect(PostEffects::kRadialBlur, true);
+			}
+		}
+		else {
+			moveCameraTimer_ += 1.0f / 60.0f;
+			moveCameraTimer_ = std::clamp(moveCameraTimer_, 0.0f, 1.0f);
+			camera_->SetTranslate(Lerp(oldCameraPos_, { oldCameraPos_.x, oldCameraPos_.y, 12.0f }, moveCameraTimer_));
+			Tradition::GetInstance()->Update();
+		}
+		if (!Tradition::GetInstance()->GetIn()) {
+			//SceneManager::GetInstance()->ChangeScene("GAMESTAGE");
+		}
+	}
+
+	for (uint32_t index = 0; index < 3; index++) {
+		if (grow_[index].flag) {
+			grow_[index].t += 1.0f / 60.0f;
+			if (grow_[index].t > 1.0f) {
+				grow_[index].flag = false;
+			}
+			TVworldTransform_[index].scale_ = Lerp(/*grow_[index].scale*/{ 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f, 1.0f }, std::clamp(grow_[index].t, 0.0f, 1.0f));
+		}
+		if (shrink_[index].flag) {
+			shrink_[index].t += 1.0f / 60.0f;
+			if (shrink_[index].t > 1.0f) {
+				shrink_[index].flag = false;
+				isActiveTV_[index] = false;
+			}
+			TVworldTransform_[index].scale_ = Lerp(shrink_[index].scale, { 0.0f, 0.0f, 0.0f }, std::clamp(shrink_[index].t, 0.0f, 1.0f));
+		}
+	}
+
+	preNum_ = CommonData::GetInstance()->stageNum_;
+	CommonData::GetInstance()->stageNum_ = -1;
+
+	for (uint32_t index = 0; index < 3; index++) {
+		TVworldTransform_[index].UpdateMatrix();
+	}
 
 	world_->Solve();
 
@@ -171,12 +302,18 @@ void TitleScene::Draw3D()
 	ObjectManager::GetInstance()->Draw("title1");
 	player_->Draw();
 	model_->Draw(worldTransform_);
+
+	for (uint32_t index = 0; index < 3; index++) {
+		if (isActiveTV_[index]) {
+			models_[index]->Draw(TVworldTransform_[index], textureTV_[index]);
+		}
+	}
 	//obj_->Draw();
 }
 
 void TitleScene::DrawFront()
 {
-	if (!isStart_) {
+	if (!isStart_ || preNum_ > -1) {
 		if (isDraw_) {
 			bottonSprite_->Draw();
 		}
@@ -184,5 +321,6 @@ void TitleScene::DrawFront()
 			bottonPushSprite_->Draw();
 		}
 	}
+	Tradition::GetInstance()->Draw();
 }
 

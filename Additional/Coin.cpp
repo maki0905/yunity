@@ -21,17 +21,17 @@ void Coin::Draw()
 	}
 }
 
-void Coin::OnCollisionEvent(Body* body)
+void Coin::OnCollisionEvent()
 {
-	if (body->GetCollisionAttribute() == kCollisionAttributePlayer) {
-		isActive_ = false;
-	}
-
-}
-
-void Coin::OnTriggerEvent(Body* body)
-{
-	if (body->GetCollisionAttribute() == kCollisionAttributePlayer) {
+	if (GetHitBody()->GetCollisionAttribute() == kCollisionAttributePlayer) {
 		isActive_ = false;
 	}
 }
+
+void Coin::OnTriggerEvent()
+{
+	if (GetHitBody()->GetCollisionAttribute() == kCollisionAttributePlayer) {
+		isActive_ = false;
+	}
+}
+

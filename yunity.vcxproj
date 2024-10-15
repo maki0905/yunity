@@ -132,6 +132,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Engine\Core\GraphicsCommon.cpp" />
     <ClCompile Include="Engine\Core\GraphicsPipelineManager.cpp" />
     <ClCompile Include="Engine\Base\EventTrigger.cpp" />
+    <ClCompile Include="Engine\Scene\Tradition.cpp" />
     <ClCompile Include="Engine\Utility\Format.cpp" />
     <ClCompile Include="Engine\Base\LevelEditor.cpp" />
     <ClCompile Include="Engine\Math\OBB.cpp" />
@@ -218,6 +219,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\Core\GraphicsCommon.h" />
     <ClInclude Include="Engine\Core\GraphicsPipelineManager.h" />
     <ClInclude Include="Engine\Base\EventTrigger.h" />
+    <ClInclude Include="Engine\Scene\Tradition.h" />
     <ClInclude Include="Engine\Utility\Format.h" />
     <ClInclude Include="Engine\3D\Keyframe.h" />
     <ClInclude Include="Engine\Base\LevelData.h" />
