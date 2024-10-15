@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #include <cmath>
 #include <numbers>
@@ -9,6 +9,7 @@
 #include "Vector3.h"
 #include "Vector4.h"
 #include "Matrix4x4.h"
+#include "Matrix3x3.h"
 #include "Quaternion.h"
 #include "Transform.h"
 
@@ -135,7 +136,7 @@ Matrix4x4 MakeViewMatrix(const Vector3& rotate, const Vector3& translate);
 
 Matrix4x4 MakeViewMatrix(const Quaternion& quaternion, const Vector3& translate);
 
-Vector3 MapWorldToScreen(const Vector3& worldPosition,const Matrix4x4& matView, const Matrix4x4& matProjection ,float width, float height );
+Vector3 MapWorldToScreen(const Vector3& worldPosition, const Matrix4x4& matView, const Matrix4x4& matProjection, float width, float height);
 
 Vector2 WorldToScreen(const Vector3& worldPosition, const Matrix4x4& matView, const Matrix4x4& matProjection, float width, float height);
 
@@ -146,6 +147,8 @@ Matrix4x4 DirectionToDirection(const Vector3& from, const Vector3& to);
 Vector3 Project(const Vector3& v1, const Vector3& v2);
 // 最近接点
 // Vector3 ClosestPoint(const Vector3& point, const Segment& segment);
+
+Vector3 ClosestPoint(const Vector3& p1, const Vector3& p2, const Vector3& q1, const Vector3& q2);
 
 float ConvertToRadians(float degree);
 
@@ -178,3 +181,13 @@ Quaternion Slerp(const Quaternion& q0, const Quaternion& q1, float t);
 
 float Dot(const Quaternion& q1, const Quaternion& q2);
 
+
+Matrix3x3 MakeIdentity3x3();
+// 行列の積
+Matrix3x3 Multiply(const Matrix3x3& m1, const Matrix3x3& m2);
+// 逆行列
+Matrix3x3 Inverse(const Matrix3x3& m);
+// 転置行列
+Matrix3x3 Transpose(const Matrix3x3& m);
+Matrix3x3 MakeRotateMatrix(const Vector3& rotation);
+Vector3 TransformVector3(const Vector3& vector, const Matrix3x3& matrix);

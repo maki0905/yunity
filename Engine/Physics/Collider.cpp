@@ -1,4 +1,4 @@
-﻿#include "Collider.h"
+#include "Collider.h"
 #include <cmath>
 #include "ImGuiManager.h"
 #include <algorithm>
@@ -46,7 +46,7 @@ void Collider::CreateCollider(WorldTransform* worldTransform, Shape shape, Camer
 	shape_ = shape;
 	worldTransform_ = worldTransform;
 	size_ = size;
-	
+
 	switch (shape_)
 	{
 	case Collider::kSphere:
@@ -229,7 +229,7 @@ void Collider::HitBox(Camera* camera)
 
 Vector3 Collider::GetHitBoxSize()
 {
-	Vector3 result;
+	Vector3 result = { 0.0f, 0.0f, 0.0f };
 	switch (shape_)
 	{
 	case Collider::kSphere:
@@ -243,12 +243,13 @@ Vector3 Collider::GetHitBoxSize()
 	case Collider::kCapsule:
 		break;
 	case Collider::kOBB:
+		result = Multiply(Multiply(0.5f, size_), worldTransform_->scale_);
 		break;
 	default:
 		break;
 	}
 
-	return  Multiply(Multiply(0.5f, size_), worldTransform_->scale_);
+	return  result;
 }
 
 AABB Collider::GetAABB()
