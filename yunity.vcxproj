@@ -107,6 +107,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Additional\Cloth.cpp" />
     <ClCompile Include="Additional\Coin.cpp" />
     <ClCompile Include="Additional\GiftWall.cpp" />
     <ClCompile Include="Additional\Score.cpp" />
@@ -134,6 +135,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Engine\Base\EventTrigger.cpp" />
     <ClCompile Include="Engine\Physics\Joint.cpp" />
     <ClCompile Include="Engine\Physics\PulleyJoint.cpp" />
+    <ClCompile Include="Engine\Physics\Shape.cpp" />
     <ClCompile Include="Engine\Scene\Tradition.cpp" />
     <ClCompile Include="Engine\Utility\Format.cpp" />
     <ClCompile Include="Engine\Base\LevelEditor.cpp" />
@@ -193,6 +195,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Additional\MoveFloor.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Additional\Cloth.h" />
     <ClInclude Include="Additional\Coin.h" />
     <ClInclude Include="Additional\EndObject.h" />
     <ClInclude Include="Additional\Gift.h" />
@@ -224,6 +227,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\Base\EventTrigger.h" />
     <ClInclude Include="Engine\Physics\Joint.h" />
     <ClInclude Include="Engine\Physics\PulleyJoint.h" />
+    <ClInclude Include="Engine\Physics\Shape.h" />
     <ClInclude Include="Engine\Scene\Tradition.h" />
     <ClInclude Include="Engine\Utility\Format.h" />
     <ClInclude Include="Engine\3D\Keyframe.h" />

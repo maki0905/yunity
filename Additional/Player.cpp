@@ -284,7 +284,7 @@ void Player::Update()
 			}
 
 			// 移動量
-			move = { (float)pad_.Gamepad.sThumbLX, 0,0 };
+			move = { (float)pad_.Gamepad.sThumbLX, 0,(float)pad_.Gamepad.sThumbLY };
 
 			if (Length(move) > threshold) {
 				isMoving = true;

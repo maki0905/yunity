@@ -5,7 +5,7 @@
 #include "CollisionConfig.h"
 #include "ImGuiManager.h"
 #include "Object3D.h"
-
+#include "Shape.h"
 
 void CollisionManager::CheckAllCollision() {
 
@@ -33,9 +33,9 @@ void CollisionManager::CheckCollisionPair(Object3D* colliderA, Object3D* collide
 		return;
 	}*/
 
-	/*if (colliderA->GetCollisionAttribute() == colliderB->GetCollisionAttribute()) {
+	if (colliderA->GetCollisionAttribute() == colliderB->GetCollisionAttribute()) {
 		return;
-	}*/
+	}
 
 	switch (colliderA->GetShape())
 	{
@@ -119,17 +119,46 @@ void CollisionManager::CheckCollisionPair(Object3D* colliderA, Object3D* collide
 			}
 
 			break;
+		case Collider::Shape::kOBB:
+			if (IsCollision(CreateOBB(colliderA->GetColliderCenter(), colliderA->GetWorldTransform()->rotation_, colliderA->GetHitBoxSize()),CreateOBB(colliderB->GetColliderCenter(), colliderB->GetWorldTransform()->rotation_, colliderB->GetHitBoxSize()))) {
+				colliderA->SetHitBody(colliderB);
+				colliderB->SetHitBody(colliderA);
+				if (colliderA->GetIsTrigger() || colliderB->GetIsTrigger()) {
+					colliderA->OnTriggerEvent();
+					colliderB->OnTriggerEvent();
+				}
+				else {
+					colliderA->OnCollision(colliderB);
+					colliderB->OnCollision(colliderA);
+					colliderA->OnCollisionEvent();
+					colliderB->OnCollisionEvent();
+				}
+			}
+			break;
 		}
 		break;
 	case Collider::Shape::kOBB:
 		switch (colliderB->GetShape())
 		{
+		case Collider::Shape::kAABB:
+			if (IsCollision(CreateOBB(colliderA->GetColliderCenter(), colliderA->GetWorldTransform()->rotation_, colliderA->GetHitBoxSize()), CreateOBB(colliderB->GetColliderCenter(), colliderB->GetWorldTransform()->rotation_, colliderB->GetHitBoxSize()))) {
+				colliderA->SetHitBody(colliderB);
+				colliderB->SetHitBody(colliderA);
+				if (colliderA->GetIsTrigger() || colliderB->GetIsTrigger()) {
+					colliderA->OnTriggerEvent();
+					colliderB->OnTriggerEvent();
+				}
+				else {
+					colliderA->OnCollision(colliderB);
+					colliderB->OnCollision(colliderA);
+					colliderA->OnCollisionEvent();
+					colliderB->OnCollisionEvent();
+				}
+			}
+			break;
+
 		case Collider::Shape::kOBB:
-			Matrix4x4 rotateA = MakeRotateXYZMatrix(colliderA->GetWorldTransform()->rotation_);
-			Vector3 orientationsA[3] = { {rotateA.m[0][0], rotateA.m[0][1], rotateA.m[0][2]}, {rotateA.m[1][0], rotateA.m[1][1], rotateA.m[1][2]}, {rotateA.m[2][0], rotateA.m[2][1], rotateA.m[2][2]} };
-			Matrix4x4 rotateB = MakeRotateXYZMatrix(colliderB->GetWorldTransform()->rotation_);
-			Vector3 orientationsB[3] = { {rotateB.m[0][0], rotateB.m[0][1], rotateB.m[0][2]}, {rotateB.m[1][0], rotateB.m[1][1], rotateB.m[1][2]}, {rotateB.m[2][0], rotateB.m[2][1], rotateB.m[2][2]} };
-			if (IsCollision(OBB(colliderA->GetMatWorldTranslation(), { orientationsA[0], orientationsA[1], orientationsA[2] }, colliderA->GetHitBoxSize()), OBB(colliderB->GetMatWorldTranslation(), { orientationsB[0], orientationsB[1], orientationsB[2] }, colliderB->GetHitBoxSize()))) {
+			if (IsCollision(CreateOBB(colliderA->GetColliderCenter(), colliderA->GetWorldTransform()->rotation_, colliderA->GetHitBoxSize()), CreateOBB(colliderB->GetColliderCenter(), colliderB->GetWorldTransform()->rotation_, colliderB->GetHitBoxSize()))) {
 				colliderA->SetHitBody(colliderB);
 				colliderB->SetHitBody(colliderA);
 				if (colliderA->GetIsTrigger() || colliderB->GetIsTrigger()) {

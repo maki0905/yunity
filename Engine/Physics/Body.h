@@ -3,6 +3,7 @@
 #include "Collider.h"
 #include "World.h"
 #include "WorldTransform.h"
+#include "Shape.h"
 
 class Body : public Collider {
 public:
@@ -29,6 +30,8 @@ public:
 		Body* bodyB;*/
 		float massA;
 		float massB;
+		float restitution;
+		float friction;
 		Vector3 velocityA;
 		Vector3 velocityB;
 		Vector3 angularVelocityA;

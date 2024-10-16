@@ -103,6 +103,9 @@ void TitleScene::Initialize()
 	isMoveCamera[0] = false;
 	isMoveCamera[1] = false;
 	moveCameraTimer_ = 0.0f;
+
+	cloth_ = std::make_unique<Cloth>();
+	cloth_->Initialize(world_.get());
 }
 
 void TitleScene::Update()
@@ -228,6 +231,7 @@ void TitleScene::Update()
 			Tradition::GetInstance()->Update();
 		}
 		if (!Tradition::GetInstance()->GetIn()) {
+			RenderTexture::GetInstance()->SelectPostEffect(PostEffects::kRadialBlur, false);
 			SceneManager::GetInstance()->ChangeScene("GAMESTAGE");
 		}
 	}
@@ -273,6 +277,8 @@ void TitleScene::Update()
 
 	}
 
+	cloth_->Update();
+
 #ifdef _DEBUG
 	ImGui::Begin("a");
 	ImGui::DragFloat3("pos", &worldTransform_.translation_.x);
@@ -308,6 +314,8 @@ void TitleScene::Draw3D()
 			models_[index]->Draw(TVworldTransform_[index], textureTV_[index]);
 		}
 	}
+
+	cloth_->Draw();
 	//obj_->Draw();
 }
 

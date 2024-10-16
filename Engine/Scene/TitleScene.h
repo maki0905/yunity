@@ -9,6 +9,7 @@
 #include "World.h"
 #include "Player.h"
 #include "Skydome.h"
+#include "Cloth.h"
 
 class TitleScene : public IScene
 {
@@ -54,5 +55,6 @@ private:
 	bool isMoveCamera[2];
 	float moveCameraTimer_;
 	Vector3 oldCameraPos_;
+	std::unique_ptr<Cloth> cloth_;
 };
 

@@ -2,6 +2,8 @@
 
 #include <cmath>
 
+//#include "Shape.h"
+
 namespace {
 	Vector3 GetPushback(const AABB& a, const AABB& b) {
 
@@ -387,8 +389,6 @@ void Body::SolveConstraints()
 	inertiaTensor_ = Multiply(Multiply(R, inertiaTensor_), Rt);
 
 	for (auto& c : persistentManifold_) {
-
-		//Vector3 relativeVelocity = Subtract(c->bodyA->velocity_, c->bodyB->velocity_);
 		Vector3 relativeVelocity = Subtract(c->velocityA, c->velocityB);
 		float velocityAlongNormal = Dot(relativeVelocity, c->contactNormal);
 		float impulseMagnitude = 0.0f;
@@ -397,25 +397,24 @@ void Body::SolveConstraints()
 				impulseMagnitude = -velocityAlongNormal / (1.0f / c->massA + 1.0f / c->massB);
 			}
 			else {
-				impulseMagnitude = -velocityAlongNormal / (1.0f / c->massA);
+				impulseMagnitude = -velocityAlongNormal / (1.0f / (c->massA));
 			}
 		}
 		else {
 			if (c->massB != 0.0f) {
-				impulseMagnitude = -restitution_ * velocityAlongNormal / (1.0f / c->massA + 1.0f / c->massB);
+				impulseMagnitude = -(1.0f + c->restitution) * velocityAlongNormal / (1.0f / c->massA + 1.0f / c->massB);
 			}
 			else {
-				impulseMagnitude = -restitution_ * velocityAlongNormal / (1.0f / c->massA);
+				impulseMagnitude = -(1.0f + c->restitution) * velocityAlongNormal / (1.0f / (c->massA));
 			}
 		}
 
 		Vector3 impulse = Multiply(impulseMagnitude, c->contactNormal);
 		AddForce(impulse, 1);
-		//AddImpulse(impulse, c->contactPoint);
 	}
 	persistentManifold_.clear();
 
-	if (pushback_.x != 0.0f) {
+	/*if (pushback_.x != 0.0f) {
 		velocity_.x = -velocity_.x * restitution_;
 	}
 	if (pushback_.y != 0.0f) {
@@ -423,7 +422,7 @@ void Body::SolveConstraints()
 	}
 	if (pushback_.z != 0.0f) {
 		velocity_.z = -velocity_.z * restitution_;
-	}
+	}*/
 
 	worldTransform_->translation_ = Add(pushback_, worldTransform_->translation_);
 	worldTransform_->UpdateMatrix();
@@ -538,7 +537,7 @@ void Body::OnCollision(Body* body)
 				//pushback = GetPushback(Sphere{worldTransform_->GetMatWorldTranslation(), GetHitBoxSize().x * 2.0f},);
 				break;
 			case Collider::Shape::kAABB:
-				pushback = GetPushback(Sphere{ worldTransform_->GetMatWorldTranslation(), GetHitBoxSize().x * 2.0f }, AABB{ Subtract(body->GetMatWorldTranslation(), body->GetHitBoxSize()), Add(body->GetMatWorldTranslation(), body->GetHitBoxSize()) });
+				pushback = GetPushback(Sphere{ GetColliderCenter(), GetHitBoxSize().x * 2.0f }, CreateAABB(body->GetColliderCenter(), body->GetHitBoxSize()));
 
 				break;
 			}
@@ -547,10 +546,13 @@ void Body::OnCollision(Body* body)
 			switch (body->GetShape())
 			{
 			case Collider::Shape::kSphere:
-				pushback = GetPushback(AABB{ Subtract(GetMatWorldTranslation(), GetHitBoxSize()), Add(GetMatWorldTranslation(), GetHitBoxSize()) }, Sphere{ body->GetMatWorldTranslation(), body->GetHitBoxSize().x * 2.0f });
+				pushback = GetPushback(CreateAABB(GetColliderCenter(), GetHitBoxSize()), Sphere{ body->GetColliderCenter(), body->GetHitBoxSize().x * 2.0f });
 				break;
 			case Collider::Shape::kAABB:
-				pushback = GetPushback(AABB{ Subtract(GetMatWorldTranslation(), GetHitBoxSize()), Add(GetMatWorldTranslation(), GetHitBoxSize()) }, AABB{ Subtract(body->GetMatWorldTranslation(), body->GetHitBoxSize()), Add(body->GetMatWorldTranslation(), body->GetHitBoxSize()) });
+				pushback = GetPushback(CreateAABB(GetColliderCenter(), GetHitBoxSize()), CreateAABB(body->GetColliderCenter(), body->GetHitBoxSize()));
+				break;
+			case Collider::Shape::kOBB:
+				pushback = GetPushback(CreateOBB(GetColliderCenter(), worldTransform_->rotation_, GetHitBoxSize()), CreateOBB(body->GetColliderCenter(), body->worldTransform_->rotation_, body->GetHitBoxSize()));
 				break;
 			}
 
@@ -559,17 +561,12 @@ void Body::OnCollision(Body* body)
 			switch (body->GetShape())
 			{
 			case Collider::Shape::kSphere:
-				pushback = GetPushback(AABB{ Subtract(GetMatWorldTranslation(), GetHitBoxSize()), Add(GetMatWorldTranslation(), GetHitBoxSize()) }, Sphere{ body->GetMatWorldTranslation(), body->GetHitBoxSize().x * 2.0f });
 				break;
 			case Collider::Shape::kAABB:
-				pushback = GetPushback(AABB{ Subtract(GetMatWorldTranslation(), GetHitBoxSize()), Add(GetMatWorldTranslation(), GetHitBoxSize()) }, AABB{ Subtract(body->GetMatWorldTranslation(), body->GetHitBoxSize()), Add(body->GetMatWorldTranslation(), body->GetHitBoxSize()) });
+				pushback = GetPushback(CreateOBB(GetColliderCenter(), worldTransform_->rotation_, GetHitBoxSize()), CreateOBB(body->GetColliderCenter(), body->worldTransform_->rotation_, body->GetHitBoxSize()));
 				break;
 			case Collider::Shape::kOBB:
-				Matrix4x4 rotateA = MakeRotateXYZMatrix(GetWorldTransform()->rotation_);
-				Vector3 orientationsA[3] = { {rotateA.m[0][0], rotateA.m[0][1], rotateA.m[0][2]}, {rotateA.m[1][0], rotateA.m[1][1], rotateA.m[1][2]}, {rotateA.m[2][0], rotateA.m[2][1], rotateA.m[2][2]} };
-				Matrix4x4 rotateB = MakeRotateXYZMatrix(body->GetWorldTransform()->rotation_);
-				Vector3 orientationsB[3] = { {rotateB.m[0][0], rotateB.m[0][1], rotateB.m[0][2]}, {rotateB.m[1][0], rotateB.m[1][1], rotateB.m[1][2]}, {rotateB.m[2][0], rotateB.m[2][1], rotateB.m[2][2]} };
-				pushback = GetPushback(OBB{ GetMatWorldTranslation(), orientationsA[0], orientationsA[1], orientationsA[2], GetHitBoxSize() }, OBB{ body->GetMatWorldTranslation(), orientationsB[0], orientationsB[1], orientationsB[2], body->GetHitBoxSize() });
+				pushback = GetPushback(CreateOBB(GetColliderCenter(), worldTransform_->rotation_, GetHitBoxSize()), CreateOBB(body->GetColliderCenter(), body->worldTransform_->rotation_, body->GetHitBoxSize()));
 				/*if (body->mass_ != 0.0f) {
 					pushback = Multiply(0.5f, pushback);
 				}
@@ -585,7 +582,8 @@ void Body::OnCollision(Body* body)
 			pushback = Multiply(0.5f, pushback);
 		}
 		pushback_ = Add(pushback_, pushback);
-		persistentManifold_.emplace_back(GetNewManifold(this, body));
+		PersistentManifold* persistentManifold = GetNewManifold(this, body);
+		//persistentManifold_.emplace_back(GetNewManifold(this, body));
 
 		float miu = 0.0f;
 		switch (frictionCombine_)
@@ -609,6 +607,7 @@ void Body::OnCollision(Body* body)
 			magnitude_ = miu * Length(Multiply(-mass_, world_->GetGravity()));
 			break;
 		}
+		persistentManifold->friction = magnitude_;
 
 		float e = 0.0f;
 		switch (bounceCombine_)
@@ -632,6 +631,10 @@ void Body::OnCollision(Body* body)
 		if (restitution_ < e) {
 			restitution_ = e;
 		}
+
+		persistentManifold->restitution = e;
+		persistentManifold_.emplace_back(persistentManifold);
+
 		normalVector_ = pushback;
 		vertical_ = pushback;
 	}
