@@ -3,6 +3,7 @@
 #include "Vector3.h"
 #include "Vector4.h"
 
+// ポイントライト
 struct PointLight {
 	Vector4 color = { 1.0f, 1.0f, 1.0f, 1.0f }; // ライトの色
 	Vector3 position = { 0.0f, 2.0f, 0.0f };	// ライトの位置

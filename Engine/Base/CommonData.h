@@ -11,21 +11,32 @@ enum class  Scene
 
 };
 
+/*
+* @brief 共通データクラス
+*/
 class CommonData {
 
 public:
+	/// <summary>
+	/// インスタンス取得
+	/// </summary>
+	/// <returns></returns>
 	static CommonData* GetInstance();
 
+	/// <summary>
+	/// 初期化
+	/// </summary>
 	void Initialize();
 
+	/// <summary>
+	/// ステージ名取得
+	/// </summary>
+	/// <returns></returns>
 	std::string GetStageName();
 
 	bool isGoal_;
 	int stageNum_ = -1;
-
 	Scene scene_;
-
-
 private:
 	CommonData() = default;
 	~CommonData() = default;

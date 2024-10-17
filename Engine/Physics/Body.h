@@ -5,6 +5,9 @@
 #include "WorldTransform.h"
 #include "Shape.h"
 
+/*
+* @brief ボディークラス
+*/
 class Body : public Collider {
 public:
 
@@ -44,72 +47,133 @@ public:
 	};
 
 public:
+	/// <summary>
+	/// ボディ生成
+	/// </summary>
+	/// <param name="world"></param>
+	/// <param name="worldTransform"></param>
+	/// <param name="mass"></param>
 	void CreateBody(World* world, WorldTransform* worldTransform, float mass = 0.0f);
+
+	/// <summary>
+	/// 解決
+	/// </summary>
+	/// <param name="time"></param>
 	void Solve(float time);
+
+	/// <summary>
+	/// 衝突解決
+	/// </summary>
 	void SolveConstraints();
 
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="start"></param>
+	/// <param name="end"></param>
+	/// <param name="limitLength"></param>
+	/// <param name="stiffness"></param>
+	/// <param name="dampingCoefficient"></param>
+	/// <returns></returns>
 	Vector3 RubberMovement(const Vector3& start, const Vector3& end, float limitLength, float stiffness, float dampingCoefficient);
-	Vector3 Spring(const Vector3& anchor, const Vector3& position, float naturalLength, float stiffness, float dampingCoefficient);
 
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="anchor"></param>
+	/// <param name="position"></param>
+	/// <param name="naturalLength"></param>
+	/// <param name="stiffness"></param>
+	/// <param name="dampingCoefficient"></param>
+	/// <returns></returns>
+	Vector3 Spring(const Vector3& anchor, const Vector3& position, float naturalLength, float stiffness, float dampingCoefficient);
+	
+	/// <summary>
+	/// 力の適用
+	/// </summary>
+	/// <param name="force"></param>
+	/// <param name="mode"></param>
 	void AddForce(const Vector3& force, uint32_t mode);
+
+	/// <summary>
+	/// トルクの適用
+	/// </summary>
+	/// <param name="torque"></param>
+	/// <param name="mode"></param>
 	void AddTorque(const Vector3& torque, uint32_t mode);
+
+	/// <summary>
+	/// 力の適用
+	/// </summary>
+	/// <param name="force"></param>
+	/// <param name="point"></param>
 	void AddForce(const Vector3& force, const Vector3& point);
+
+	/// <summary>
+	/// 衝突力の適用
+	/// </summary>
+	/// <param name="impulse"></param>
+	/// <param name="pos"></param>
 	void AddImpulse(const Vector3& impulse, const Vector3& pos);
 
+	/// <summary>
+	/// リセット
+	/// </summary>
 	void Reset();
 
+	/// <summary>
+	/// 衝突
+	/// </summary>
+	/// <param name="body"></param>
 	void OnCollision(Body* body);
 
 	// 衝突時に呼ばれる固有の処理
 	/*virtual void OnCollisionEvent(Body* body = nullptr) = 0;
 	virtual void OnTriggerEvent(Body* body = nullptr) = 0;*/
 
+	/// <summary>
+	/// getter
+	/// </summary>
+	/// <returns></returns>
+	
 	World* GetWorld() { return world_; }
-
 	Vector3 GetVelocity() { return velocity_; }
-	void SetVelocity(const Vector3& velocity) { velocity_ = velocity; }
-
 	Vector3 GetAcceleration() { return acceleration_; }
-
 	Vector3 GetAngularVelocity() { return angularVelocity_; }
-	void SetAngularVelocity(const Vector3& angularVelocity) { angularVelocity_ = angularVelocity; }
-
-	float GetMass() { return mass_; }
-	float GetInverseMass() { return 1.0f / mass_; }
-	void SetMass(float mass) { mass_ = mass; }
-
-	float GetInertiaMoment() { return inertiaMoment_; }
-	void SetInertiaMoment(float inertiaMoment) { inertiaMoment_ = inertiaMoment; }
-
-	float GetDrag() { return drag_; }
-	void SetDrag(float drag) { drag_ = drag; }
-	float GetAngularDrag() { return angularDrag_; }
-	void SetAngularDrag(float angularDrag) { angularDrag_ = angularDrag; }
-
-	void SetGravity(const Vector3& gravity) { gravityAcceleration_ = gravity; }
-
 	WorldTransform* GetWorldTransform() { return worldTransform_; };
 	Vector3 GetTranslation() { return worldTransform_->translation_; }
 	Vector3 GetMatWorldTranslation() { return { worldTransform_->matWorld_.m[3][0], worldTransform_->matWorld_.m[3][1], worldTransform_->matWorld_.m[3][2] }; }
-
-
 	Vector3 GetVertical() { return vertical_; }
-
+	float GetMass() { return mass_; }
+	float GetInverseMass() { return 1.0f / mass_; }
+	float GetInertiaMoment() { return inertiaMoment_; }
+	float GetDrag() { return drag_; }
+	float GetAngularDrag() { return angularDrag_; }
 	bool GetIsTrigger() { return isTrigger_; }
-	void SetIsTrigger(bool isTrigger) { isTrigger_ = isTrigger; }
-
 	float GetMiu() { return miu_; }
-	void SetMiu(float miu) { miu_ = miu; }
-	void SetFirictionCombine(FrictionCombine frictionCombine) { frictionCombine_ = frictionCombine; }
-
 	float GetBounciness() { return bounciness_; }
-	void SetBounciness(float bounciness) { bounciness_ = bounciness; }
-	void SetBounceCombine(BounceCombine bounceCombine) { bounceCombine_ = bounceCombine; }
-
 	Vector3 GetNormalVector() { return normalVector_; }
-
 	Matrix3x3 GetInertiaTensor() { return inertiaTensor_; };
 
+
+
+	/// <summary>
+	/// setter
+	/// </summary>
+	/// <param name="mass"></param>
+	
+	void SetMass(float mass) { mass_ = mass; }
+	void SetInertiaMoment(float inertiaMoment) { inertiaMoment_ = inertiaMoment; }
+	void SetDrag(float drag) { drag_ = drag; }
+	void SetAngularDrag(float angularDrag) { angularDrag_ = angularDrag; }
+	void SetVelocity(const Vector3& velocity) { velocity_ = velocity; }
+	void SetGravity(const Vector3& gravity) { gravityAcceleration_ = gravity; }
+	void SetAngularVelocity(const Vector3& angularVelocity) { angularVelocity_ = angularVelocity; }
+	void SetIsTrigger(bool isTrigger) { isTrigger_ = isTrigger; }
+	void SetMiu(float miu) { miu_ = miu; }
+	void SetFirictionCombine(FrictionCombine frictionCombine) { frictionCombine_ = frictionCombine; }
+	void SetBounciness(float bounciness) { bounciness_ = bounciness; }
+	void SetBounceCombine(BounceCombine bounceCombine) { bounceCombine_ = bounceCombine; }
 	void SetTranslation(Vector3 translation) { worldTransform_->translation_ = translation; }
 	void SetMatTranslation(Vector3 translation) { worldTransform_->matWorld_.m[3][0] = translation.x, worldTransform_->matWorld_.m[3][1] = translation.y, worldTransform_->matWorld_.m[3][2] = translation.z; }
 

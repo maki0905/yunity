@@ -10,6 +10,9 @@
 #include "Player.h"
 #include "Skydome.h"
 
+/*
+* @brief セレクトシーンクラス
+*/
 class SelectScene : public IScene
 {
 	struct Easing {
@@ -18,10 +21,29 @@ class SelectScene : public IScene
 		Vector3 scale;
 	};
 public:
+	/// <summary>
+	/// 初期化
+	/// </summary>
 	void Initialize() override;
+	
+	/// <summary>
+	/// 更新
+	/// </summary>
 	void Update() override;
+	
+	/// <summary>
+	/// 背景描画
+	/// </summary>
 	void DrawBack() override;
+	
+	/// <summary>
+	/// 3D描画
+	/// </summary>
 	void Draw3D() override;
+	
+	/// <summary>
+	/// 背景描画
+	/// </summary>
 	void DrawFront() override;
 
 private:

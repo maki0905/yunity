@@ -4,10 +4,16 @@
 #include <dxgi1_6.h>
 #include <wrl.h>
 
-
+/*
+* @brief デバイスクラス
+*/
 class Device
 {
 public:
+	/// <summary>
+	/// インスタンス取得
+	/// </summary>
+	/// <returns></returns>
 	static Device* GetInstance();
 	
 	/// <summary>
@@ -15,8 +21,12 @@ public:
 	/// </summary>
 	void Initialize();
 
+	/// <summary>
+	/// getter
+	/// </summary>
+	/// <returns></returns>
+	
 	ID3D12Device* GetDevice() { return device_.Get(); } 
-
 	IDXGIFactory7* GetDxgiFactory() { return dxgiFactory_.Get(); }
 
 private:

@@ -18,6 +18,9 @@
 class PipelineState;
 class RootSignature;
 
+/*
+* @brief 球クラス
+*/
 class SphereDrawer
 {
 	/// <summary>
@@ -42,6 +45,7 @@ public:
 		Vector3 normal;
 	};
 
+	// 
 	struct MaterialData {
 		Vector4 color;
 		uint32_t enableLighting;
@@ -49,6 +53,7 @@ public:
 		std::string textureFilePath;
 	};
 
+	// 
 	struct DirectionalLight {
 		Vector4 color; // ライトの色
 		Vector3 direction; // ライトの向き
@@ -98,20 +103,29 @@ public:
 	/// <param name="worldTransform">ワールドトランスフォーム</param>
 	void Draw(const WorldTransform& worldTransform);
 
+	/// <summary>
+	/// setter
+	/// </summary>
+
 	void SetCamera(Camera* camera) { camera_ = camera; }
 	void SetTextureHandle(const std::string& textureName);
-
 	void SetPointLight(const PointLight& pointLight);
 
-	//void SetMaterial(const Vector4& color);
 
 private:
-
-	// メッシュ生成
+	/// <summary>
+	/// メッシュ生成
+	/// </summary>
 	void CreateMesh();
 
+	/// <summary>
+	/// ライト初期化
+	/// </summary>
 	void InitializeDirectionalLight();
 
+	/// <summary>
+	/// マテリアル初期化
+	/// </summary>
 	void InitializeMaterial();
 
 private:

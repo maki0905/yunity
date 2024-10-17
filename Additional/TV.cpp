@@ -48,10 +48,10 @@ void TV::Draw()
 
 }
 
-void TV::OnTriggerEvent(Body* body)
+void TV::OnTriggerEvent()
 {
-	if (body->GetCollisionAttribute() == kCollisionAttributePlayer) {
+	if (GetHitBody()->GetCollisionAttribute() == kCollisionAttributePlayer) {
 		isActive_ = true;
 	}
-
 }
+

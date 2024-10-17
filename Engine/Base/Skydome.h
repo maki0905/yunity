@@ -7,6 +7,9 @@
 #include "WorldTransform.h"
 #include "Collider.h"
 
+/*
+* @brief スカイドームクラス
+*/
 class Skydome
 {
 public:

@@ -23,25 +23,69 @@ enum PipelineType {
 	kCount,
 };
 
+/*
+* @brief グラフィックパイプラインマネージャークラス
+*/
 class GraphicsPipelineManager {
 	/*struct GraphicsPipeline {
 		std::unordered_map<BlendModeType, PipelineState*> pso_;
 	};*/
+
+	// 
 	struct GraphicsPipeline {
 		std::unique_ptr<PipelineState> pso_[BlendModeType::kBlendCount];
 		std::unique_ptr<RootSignature> rooSignature_;
 	};
 public:
+	/// <summary>
+	/// インスタンス取得
+	/// </summary>
+	/// <returns></returns>
 	static GraphicsPipelineManager* GetInstance();
+
+	/// <summary>
+	/// 初期化
+	/// </summary>
 	void Initialize();
+
+	/// <summary>
+	/// コマンドリスト設定
+	/// </summary>
+	/// <param name="commandList"></param>
+	/// <param name="pipelineType"></param>
+	/// <param name="blendModeType"></param>
 	void SetCommandList(ID3D12GraphicsCommandList* commandList, PipelineType pipelineType, BlendModeType blendModeType);
 
 private:
+
+	/// <summary>
+	/// 3Dオブジェクト用パイプライン生成
+	/// </summary>
 	void CreateObject3d();
+
+	/// <summary>
+	/// スプライト用パイプライン生成
+	/// </summary>
 	void CreateSprite();
+
+	/// <summary>
+	/// パーティクル用パイプライン生成
+	/// </summary>
 	void CreateParticle();
+
+	/// <summary>
+	/// ライン描画用パイプライン生成
+	/// </summary>
 	void CreateLine();
+
+	/// <summary>
+	/// プリミティブ用パイプライン生成
+	/// </summary>
 	void CreatePrimitive();
+
+	/// <summary>
+	/// スキニング用パイプライン生成
+	/// </summary>
 	void CreateSkinning();
 
 private:

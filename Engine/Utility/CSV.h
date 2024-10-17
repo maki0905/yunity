@@ -9,8 +9,9 @@
 
 #include "Vector3.h"
 
-// CSVはGameSceneへ移植しました //
-
+/*
+* @brief CSVクラス
+*/
 class CSV {
 public:
 	struct Data {
@@ -19,8 +20,15 @@ public:
 	};
 
 public:
+	/// <summary>
+	/// インスタンス取得
+	/// </summary>
+	/// <returns></returns>
 	static CSV* GetInstance();
 
+	/// <summary>
+	/// 初期化
+	/// </summary>
 	void Initialize();
 
 	/// <summary>

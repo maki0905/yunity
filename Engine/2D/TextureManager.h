@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #include <array>
 #include <d3d12.h>
@@ -9,9 +9,9 @@
 #include "Core/DescriptorHeap.h"
 
 
-/// <summary>
-/// テクスチャマネージャ
-/// </summary>
+/*
+* @brief テクスチャマネージャ
+*/
 class TextureManager {
 public:
 	// デスクリプターの数

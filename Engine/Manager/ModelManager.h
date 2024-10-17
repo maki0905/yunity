@@ -15,9 +15,10 @@
 #include "Animation.h"
 #include "Format.h"
 
-/// <summary>
-/// モデルマネージャー
-/// </summary>
+
+/*
+* @brief モデルマネージャークラス
+*/
 class ModelManager {
 	struct Data {
 		Model::ModelData modelData;
@@ -25,20 +26,55 @@ class ModelManager {
 	};
 public:
 	//static Model::ModelData* Load(const std::string& fileName, const std::string format);
+
+	/// <summary>
+	/// インスタンス取得
+	/// </summary>
+	/// <returns></returns>
 	static ModelManager* GetInstance();
 
+	/// <summary>
+	/// 初期化
+	/// </summary>
 	void Initialize();
 
+	/// <summary>
+	/// ファイナライザ
+	/// </summary>
 	void Finalize();
 
+	/// <summary>
+	/// 更新
+	/// </summary>
 	void Update();
 
+	/// <summary>
+	/// リセット
+	/// </summary>
 	void Reset();
 
+	/// <summary>
+	/// 消去
+	/// </summary>
+	/// <param name="model"></param>
 	void Take(Model* model);
 
+	/// <summary>
+	/// モデル生成
+	/// </summary>
+	/// <param name="format"></param>
+	/// <param name="folderName"></param>
+	/// <param name="fileName"></param>
+	/// <param name="modelType"></param>
+	/// <returns></returns>
 	Model* CreateModel(Format format, const std::string& folderName, const std::string& fileName = "", ModelType modelType = kRigid);
 	//std::unique_ptr<Model> CreateModel(Format format, const std::string& folderName, const std::string& fileName = "", ModelType modelType = kRigid);
+
+	/// <summary>
+	/// getter
+	/// </summary>
+	/// <returns></returns>
+	
 	Model::ModelData& GetModelData(const std::string& modelName);
 	Animation GetAnimation(Format format, const std::string& folderName, const std::string& fileName = "");
 
@@ -50,8 +86,29 @@ private:
 private:
 	void LoadInternal(const std::string& fileName, const std::string format);
 	//Model::ModelData* LoadInternal(const std::string& fileName, const std::string format);
+
+	/// <summary>
+	/// モデルファイル読み込み
+	/// </summary>
+	/// <param name="format"></param>
+	/// <param name="folderName"></param>
+	/// <param name="fileName"></param>
+	/// <returns></returns>
 	Model::ModelData LoadModelFile(Format format, const std::string& folderName, const std::string& fileName = "");
+
+	/// <summary>
+	/// ノード読み込み
+	/// </summary>
+	/// <param name="node"></param>
+	/// <returns></returns>
 	Model::Node ReadNode(aiNode* node);
+
+	/// <summary>
+	/// マテリアル読み込み
+	/// </summary>
+	/// <param name="directoryPath"></param>
+	/// <param name="filename"></param>
+	/// <returns></returns>
 	Model::MaterialData LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& filename);
 private:
 	//std::unordered_map<std::string, Model::ModelData> models_;

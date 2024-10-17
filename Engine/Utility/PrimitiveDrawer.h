@@ -14,6 +14,9 @@
 class PipelineState;
 class RootSignature;
 
+/*
+* @brief プリミティブクラス
+*/
 class PrimitiveDrawer
 {
 
@@ -72,6 +75,9 @@ public:
 
 
 public:
+	/// <summary>
+	/// ファイナライザ
+	/// </summary>
 	void Finalize();
 
 	/// <summary>
@@ -81,19 +87,40 @@ public:
 	/// <param name="viewProjection">ビュープロジェクション</param>
 	void Draw(const WorldTransform& worldTransform);
 
+	/// <summary>
+	/// 描画
+	/// </summary>
+	/// <param name="start"></param>
+	/// <param name="end"></param>
+	/// <param name="color"></param>
 	void Draw(const Vector3& start, const Vector3& end, const Vector4& color = {1.0f, 1.0f, 1.0f, 1.0f});
 
+	/// <summary>
+	/// カメラ設定
+	/// </summary>
+	/// <param name="camera"></param>
 	void SetCamera(Camera* camera) { camera_ = camera; }
 
 private:
 
-	// メッシュ生成
+	/// <summary>
+	/// メッシュ生成
+	/// </summary>
 	void CreateMesh();
 
+	/// <summary>
+	/// 球生成
+	/// </summary>
 	void CreateSphere();
 
+	/// <summary>
+	/// ボックス生成
+	/// </summary>
 	void CreateBox();
 
+	/// <summary>
+	/// ライン生成
+	/// </summary>
 	void CreateLine();
 
 	/// <summary>

@@ -4,21 +4,47 @@
 
 #include "SceneFactory.h"
 
-
+/*
+* @brief シーンマネージャークラス
+*/
 class SceneManager {
 public:
 
+	/// <summary>
+	/// インスタンス取得
+	/// </summary>
+	/// <returns></returns>
 	static SceneManager* GetInstance();
 
+	/// <summary>
+	/// 初期化
+	/// </summary>
 	void Initialize();
 
+	/// <summary>
+	/// 更新
+	/// </summary>
 	void Update();
 
+	/// <summary>
+	/// 背景描画
+	/// </summary>
 	void DrawBack();
+	
+	/// <summary>
+	/// 3Dオブジェクト描画
+	/// </summary>
 	void Draw3D();
+	
+	/// <summary>
+	/// 前面描画
+	/// </summary>
 	void DrawFront();
 
-	// 次のシーン予約
+	/// <summary>
+	/// 次のシーン予約
+	/// </summary>
+	/// <param name="sceneName"></param>
 	void ChangeScene(const std::string& sceneName);
 
 private:

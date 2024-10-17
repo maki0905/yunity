@@ -24,6 +24,9 @@ enum class PostEffects {
 	kCount,
 };
 
+/*
+* @brief ポストエフェクトクラス
+*/
 class PostEffect {
 public:
 	/// <summary>
@@ -42,19 +45,79 @@ public:
 		float value;
 	};
 public:
+
+	/// <summary>
+	/// パイプライン初期化
+	/// </summary>
 	static void InitializeGraphicsPipeline();
 public:
+	/// <summary>
+	/// 初期化
+	/// </summary>
 	void Initalize();
+	
+	/// <summary>
+	/// ファイナライザ
+	/// </summary>
 	void Finalize();
+	
+	/// <summary>
+	/// RootSignature設定
+	/// </summary>
+	/// <param name="index"></param>
 	void SetGraphicsRootSignature(uint32_t index);
+	
+	/// <summary>
+	/// PipelineState設定
+	/// </summary>
+	/// <param name="index"></param>
 	void SetPipelineState(uint32_t index);
+	
+	/// <summary>
+	/// クリアカラー設定
+	/// </summary>
+	/// <param name="index"></param>
 	void CRTV(uint32_t index);
+	
+	/// <summary>
+	/// RenderTargetViewクリア
+	/// </summary>
+	/// <param name="index"></param>
 	void ClearRenderTargetView(uint32_t index);
+	
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="index"></param>
 	void OMSetRenderTargets(uint32_t index);
+	
+	/// <summary>
+	/// DepthStencilView生成
+	/// </summary>
 	void ClearDepthStencilView();
+	
+	/// <summary>
+	/// DescriptorTable設定
+	/// </summary>
+	/// <param name="binding"></param>
+	/// <param name="index"></param>
 	void SetGraphicsRootDescriptorTable(RootBindings binding, uint32_t index);
+	
+	/// <summary>
+	/// マテリアル設定
+	/// </summary>
+	/// <param name="index"></param>
 	void SetMaterial(uint32_t index);
+	
+	/// <summary>
+	/// マテリアルデータ設定
+	/// </summary>
+	/// <param name="index"></param>
 	void SetMaterialData(uint32_t index);
+	
+	/// <summary>
+	/// ImGui
+	/// </summary>
 	void Adjustment();
 
 	//private:
@@ -64,14 +127,36 @@ public:
 	//	PostEffect& operator=(const PostEffect&) = delete;
 private:
 
+	/// <summary>
+	/// Resorce生成
+	/// </summary>
 	void CreateResorce();
+	
+	/// <summary>
+	/// RTV生成
+	/// </summary>
 	void CreateRTV();
+	
+	/// <summary>
+	/// SRV生成
+	/// </summary>
 	void CreateSRV();
 
+	/// <summary>
+	/// マテリアル初期化
+	/// </summary>
 	void InitializeMaterial();
 
 	//void ClearRenderTargetView(uint32_t flag);
 
+	/// <summary>
+	/// レンダーテクスチャ生成
+	/// </summary>
+	/// <param name="width"></param>
+	/// <param name="hight"></param>
+	/// <param name="format"></param>
+	/// <param name="clearColor"></param>
+	/// <returns></returns>
 	Microsoft::WRL::ComPtr<ID3D12Resource> CreateRenderTextureResource(uint32_t width, uint32_t hight, DXGI_FORMAT format, const Vector4& clearColor);
 
 	/// <summary>

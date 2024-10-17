@@ -13,6 +13,10 @@
 
 class PipelineState;
 class RootSignature;
+
+/*
+* @brief スカイボックスクラス
+*/
 class SkyBox {
 	/// <summary>
 	/// ルートパラメータ番号
@@ -63,7 +67,11 @@ public:
 
 
 public:
+	/// <summary>
+	/// ファイナライザ
+	/// </summary>
 	void Finalize();
+
 	/// <summary>
 	/// 描画
 	/// </summary>
@@ -71,14 +79,22 @@ public:
 	/// <param name="viewProjection">ビュープロジェクション</param>
 	void Draw(const WorldTransform& worldTransform);
 
+	/// <summary>
+	/// setter
+	/// </summary>
+
 	void SetCamera(Camera* camera) { camera_ = camera; }
 	void SetTexture(const std::string& textureName);
 
 private:
-
-	// メッシュ生成
+	/// <summary>
+	/// メッシュ生成
+	/// </summary>
 	void CreateMesh();
 
+	/// <summary>
+	/// ボックス生成
+	/// </summary>
 	void CreateBox();
 
 	/// <summary>

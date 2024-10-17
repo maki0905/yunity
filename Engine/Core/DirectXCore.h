@@ -23,6 +23,9 @@ class DepthBuffer;
 class BackBuffer;
 class DescriptorHeap;
 
+/*
+* @brief DirectXCoreクラス
+*/
 class DirectXCore
 {
 public:
@@ -34,25 +37,61 @@ public:
 	};
 
 public:
+	/// <summary>
+	/// インスタンス取得
+	/// </summary>
+	/// <returns></returns>
 	static DirectXCore* GetInstance();
 
+	/// <summary>
+	/// 初期化
+	/// </summary>
 	void Initialize();
+
+	/// <summary>
+	/// ファイナライザ
+	/// </summary>
 	void Finalize();
 
+	/// <summary>
+	/// レンダーテクスチャ事前処理
+	/// </summary>
 	void PreDrawRenderTexture();
+
+	/// <summary>
+	/// レンダーテクスチャ事後処理
+	/// </summary>
 	void PostDrawRenderTexture();
 
+	/// <summary>
+	/// スワップチェーン事前処理
+	/// </summary>
 	void PreDrawSwapchain();
+
+	/// <summary>
+	/// スワップチェーン事後処理
+	/// </summary>
 	void PostDrawSwapchain();
 
+	/// <summary>
+	/// getter
+	/// </summary>
+	/// <param name="heapType"></param>
+	/// <returns></returns>
 	DescriptorHeap* GetDescriptorHeap(HeapType heapType) { return descriptorHeaps_[static_cast<int>(heapType)].get(); }
 	ID3D12GraphicsCommandList* GetCommandList() { return commandList_->GetCommandList(); }
-
 	UINT GetBackBufferCount() { return backBuffer_->GetBackBufferCount(); }
 	
 
 private:
+	/// <summary>
+	/// 固定FPS初期化
+	/// </summary>
 	void InitializeFixFPS();
+
+	/// <summary>
+	/// 固定FPS更新
+	/// </summary>
 	void UpdateFixFPS();
 
 private:

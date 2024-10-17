@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #include <memory>
 
@@ -28,10 +28,32 @@ public:
 	};
 
 public:
+	/// <summary>
+	/// コライダー生成
+	/// </summary>
+	/// <param name="worldTransform"></param>
+	/// <param name="shape"></param>
+	/// <param name="camera"></param>
 	void CreateCollider(WorldTransform* worldTransform, Shape shape, Camera* camera);
+	
+	/// <summary>
+	/// コライダー生成
+	/// </summary>
+	/// <param name="worldTransform"></param>
+	/// <param name="shape"></param>
+	/// <param name="camera"></param>
+	/// <param name="size"></param>
 	void CreateCollider(WorldTransform* worldTransform, Shape shape, Camera* camera, const Vector3& size);
-
+	
+	/// <summary>
+	/// ヒットボックス
+	/// </summary>
 	void HitBox();
+	
+	/// <summary>
+	/// ヒットボックス
+	/// </summary>
+	/// <param name="camera"></param>
 	void HitBox(Camera* camera);
 
 	WorldTransform GetWorldTransform() { return *worldTransform_; }
@@ -47,23 +69,32 @@ public:
 	// 衝突属性(自分)を設定
 	void SetCollisionMask(uint32_t collisionMask) { CollisionMask_ = collisionMask; }
 
-	Shape GetShape() { return shape_; }
-	void SetShape(Shape shape) { shape_ = shape; }
-	Vector3 GetHitBoxSize();
-	void SetHitBoxSize(Vector3 size) { size_ = size; }
+	/// <summary>
+	/// getter
+	/// </summary>
+	/// <returns></returns>
 
+	Shape GetShape() { return shape_; }
+	Vector3 GetHitBoxSize();
 	Sphere* GetSphere() { return sphere_.get(); }
 	Plane* GetPlane() { return plane_.get(); }
 	AABB GetAABB();
 	Capsule* GetCapsule() { return capsule_.get(); }
 	OBB* GetOBB() { return obb_.get(); }
-
-	void SetSize(const Vector3& size) { size_ = size; }
-	void SetCenter(const Vector3& center) { center_ = center; }
 	Vector3 GetSize() { return size_; }
 	Vector3 GetCenter() { return center_; }
-
 	Vector3 GetColliderCenter() { return Add(worldTransform_->GetMatWorldTranslation(), center_); }
+
+	/// <summary>
+	/// setter
+	/// </summary>
+	/// <returns></returns>
+
+	void SetShape(Shape shape) { shape_ = shape; }
+	void SetHitBoxSize(Vector3 size) { size_ = size; }
+	void SetSize(const Vector3& size) { size_ = size; }
+	void SetCenter(const Vector3& center) { center_ = center; }
+	
 
 private:
 

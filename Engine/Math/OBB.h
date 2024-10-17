@@ -10,6 +10,13 @@ struct OBB {
 	Vector3 size; //!< 座標軸方向の長さの半分。中心から面までの距離
 };
 
+/// <summary>
+/// 距離計算
+/// </summary>
+/// <param name="axis"></param>
+/// <param name="obb1"></param>
+/// <param name="obb2"></param>
+/// <returns></returns>
 bool TestAxis(const Vector3& axis, const OBB& obb1, const OBB& obb2);
 
 void DrawOBB(const OBB& obb, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color);

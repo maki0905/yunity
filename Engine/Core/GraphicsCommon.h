@@ -12,9 +12,20 @@ enum BlendModeType {
     kBlendCount, // 最大数
 };
 
+/*
+* @brief グラフィックコモンクラス
+*/
 class GraphicsCommon {
 public:
+    /// <summary>
+    /// インスタンス取得
+    /// </summary>
+    /// <returns></returns>
     static GraphicsCommon* GetInstance();
+
+    /// <summary>
+    /// 初期化
+    /// </summary>
     void Initialize();
 
     // StaticSampler

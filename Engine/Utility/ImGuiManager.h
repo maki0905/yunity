@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #ifdef _DEBUG
 #include <d3d12.h>
@@ -6,9 +6,16 @@
 #include <wrl.h>
 #endif // _DEBUG
 
+/*
+* @brief ImGuiマネージャークラス
+*/
 class ImGuiManager
 {
 public:
+	/// <summary>
+	/// インスタンス取得
+	/// </summary>
+	/// <returns></returns>
 	static ImGuiManager* GetInstance();
 
     /// <summary>

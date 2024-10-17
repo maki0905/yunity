@@ -3,6 +3,9 @@
 #include <d3d12.h>
 #include <wrl.h>
 
+/*
+* @brief コマンドキュークラス
+*/
 class CommandQueue
 {
 public:
@@ -15,6 +18,11 @@ public:
 	/// 待機
 	/// </summary>
 	void WaitForCommandsToFinish();
+
+	/// <summary>
+	/// getter
+	/// </summary>
+	/// <returns></returns>
 
 	ID3D12CommandQueue* GetCommandQueue() {
 		return commandQueue_.Get();

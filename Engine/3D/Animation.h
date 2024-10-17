@@ -49,8 +49,27 @@ struct AnimationData {
 
 };
 
-// Animation解析
+/// <summary>
+/// Animation解析
+/// </summary>
+/// <param name="format">フォーマット</param>
+/// <param name="folderName">フォルダー名</param>
+/// <param name="fileName">ファイル名</param>
+/// <returns>アニメーション</returns>
 Animation LoadAnimationFile(Format format, const std::string& folderName, const std::string& fileName = "");
 
+/// <summary>
+/// 値を計算
+/// </summary>
+/// <param name="keyframes">キーフレーム</param>
+/// <param name="time">タイム</param>
+/// <returns>三次元ベクトル</returns>
 Vector3 CalculateValue(const std::vector<KeyframeVector3>& keyframes, float time);
+
+/// <summary>
+/// クオータニオン計算
+/// </summary>
+/// <param name="keyframes">キーフレーム</param>
+/// <param name="time">タイム</param>
+/// <returns>クオータニオン</returns>
 Quaternion CalculateQuaternion(const std::vector<KeyframeQuaternion>& keyframes, float time);

@@ -10,6 +10,9 @@
 #include <memory>
 #include <unordered_map>
 
+/*
+* @brief シェーダーコンパイラークラス
+*/
 class ShaderCompiler
 {
 public:
@@ -38,16 +41,40 @@ public:
 	};
 
 public:
+	/// <summary>
+	/// インスタンス取得
+	/// </summary>
+	/// <returns></returns>
 	static ShaderCompiler* GetInstance();
 
+	/// <summary>
+	/// 初期化
+	/// </summary>
 	void Initialize();
 	//void DXCInitialize();
 
 	//ID3DBlob* Get(FileName name, ShaderType shaderType);
+	
+	/// <summary>
+	/// シェーダー取得
+	/// </summary>
+	/// <param name="shaderName"></param>
+	/// <param name="shaderType"></param>
+	/// <returns></returns>
 	ID3DBlob* Get(std::string shaderName, ShaderType shaderType);
 
 private:
+	/// <summary>
+	/// 全シェーダー生成
+	/// </summary>
 	void ShaderCompile();
+
+	/// <summary>
+	/// シェーダー読み込み
+	/// </summary>
+	/// <param name="filePath"></param>
+	/// <param name="profile"></param>
+	/// <returns></returns>
 	ID3DBlob* CompileShader(const std::wstring& filePath, const wchar_t* profile);
 
 	/// <summary>

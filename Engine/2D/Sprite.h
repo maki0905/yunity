@@ -9,9 +9,9 @@
 #include "PipelineState.h"
 #include "RootSignature.h"
 
-/// <summary>
-/// スプライト
-/// </summary>
+/*
+* @スプライト
+*/
 class Sprite
 {
 public:

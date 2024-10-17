@@ -21,8 +21,15 @@
 //	std::vector<ObjectData> objects;
 //};
 
+/*
+* @brief レベルエディタークラス
+*/
 class LevelEditor {
 public:
+	/// <summary>
+	/// インスタンス取得
+	/// </summary>
+	/// <returns></returns>
 	static LevelEditor* GetInstance();
 
 	/// <summary>
@@ -32,6 +39,11 @@ public:
 	LevelData* LoadFile(const std::string& fileName);
 
 private:
+	/// <summary>
+	/// オブジェクト読み込み
+	/// </summary>
+	/// <param name="levelData">レベルデータ</param>
+	/// <param name="deserialized">デシリアライズ</param>
 	void LoadObjectRecursive(LevelData* levelData, nlohmann::json deserialized);
 private:
 	LevelEditor() = default;

@@ -26,11 +26,29 @@
 #include "SkyBox.h"
 #include "ObjectManager.h"
 
+/*
+* @brief フレームワーククラス
+*/
 class Framework {
 public:
+	/// <summary>
+	/// 初期化
+	/// </summary>
 	virtual void Initialize();
+
+	/// <summary>
+	/// ファイナライザ
+	/// </summary>
 	virtual void Finalize();
+
+	/// <summary>
+	/// 更新
+	/// </summary>
 	virtual void Update();
+
+	/// <summary>
+	/// 描画
+	/// </summary>
 	virtual void Draw() = 0;
 
 protected:

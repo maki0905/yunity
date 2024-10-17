@@ -5,7 +5,9 @@
 #include "Vector3.h"
 #include "Collider.h"
 
-
+/*
+* @brief レベルエディターデータクラス
+*/
 class LevelData {
 public:
 	struct ObjectData {

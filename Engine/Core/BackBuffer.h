@@ -8,6 +8,9 @@
 
 class DescriptorHeap;
 
+/*
+* @brief バックバッファクラス
+*/
 class BackBuffer
 {
 public:
@@ -37,8 +40,12 @@ public:
 	/// <param name="swapChain"></param>
 	void ClearRenderTarget(ID3D12GraphicsCommandList* commandList, IDXGISwapChain4* swapChain);
 
-	UINT GetBackBufferCount() { return backBufferCount_; }
+	/// <summary>
+	/// getter
+	/// </summary>
+	/// <returns></returns>
 
+	UINT GetBackBufferCount() { return backBufferCount_; }
 	D3D12_CPU_DESCRIPTOR_HANDLE* GetCpuDescHandleRTV() { return rtvHandles_; }
 
 private:

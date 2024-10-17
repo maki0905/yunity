@@ -47,147 +47,563 @@ inline Vector2 Abs(const Vector2& v) {
     return Vector2(Abs(v.x), Abs(v.y));
 }
 
+/// <summary>
+/// 角度変換
+/// </summary>
+/// <returns></returns>
 float DegToRad();
+
+/// <summary>
+/// 角度変換
+/// </summary>
+/// <returns></returns>
 float RadToDeg();
 
+/// <summary>
+/// 加法
+/// </summary>
+/// <param name="v1"></param>
+/// <param name="v2"></param>
+/// <returns></returns>
 Vector2 Add(const Vector2& v1, const Vector2& v2);
+
+/// <summary>
+/// 減法
+/// </summary>
+/// <param name="v1"></param>
+/// <param name="v2"></param>
+/// <returns></returns>
 Vector2 Subtract(const Vector2& v1, const Vector2& v2);
+
+/// <summary>
+/// スカラー倍
+/// </summary>
+/// <param name="k"></param>
+/// <param name="v"></param>
+/// <returns></returns>
 Vector2 Multiply(float k, const Vector2& v);
+
+/// <summary>
+/// 正規化
+/// </summary>
+/// <param name="v"></param>
+/// <returns></returns>
 Vector2 Normalize(const Vector2& v);
 //Vector2 Multiply(const myTransform& t, const Vector2& v);
-inline float Dot(const Vector2& v1, const Vector2& v2);
-inline float DistanceSquared(const Vector2& v1, const Vector2& v2);
+
+/// <summary>
+/// 内積
+/// </summary>
+/// <param name="v1"></param>
+/// <param name="v2"></param>
+/// <returns></returns>
+float Dot(const Vector2& v1, const Vector2& v2);
+
+/// <summary>
+/// 距離二乗
+/// </summary>
+/// <param name="v1"></param>
+/// <param name="v2"></param>
+/// <returns></returns>
+float DistanceSquared(const Vector2& v1, const Vector2& v2);
+
+/// <summary>
+/// クロス積
+/// </summary>
+/// <param name="v1"></param>
+/// <param name="v2"></param>
+/// <returns></returns>
 float Cross(const Vector2& v1, const Vector2& v2);
 
-// ベクトルの加法
+/// <summary>
+/// 加法
+/// </summary>
+/// <param name="v1"></param>
+/// <param name="v2"></param>
+/// <returns></returns>
 Vector3 Add(const Vector3& v1, const Vector3& v2);
-// ベクトルの減法
+
+/// <summary>
+/// 減法
+/// </summary>
+/// <param name="v1"></param>
+/// <param name="v2"></param>
+/// <returns></returns>
 Vector3 Subtract(const Vector3& v1, const Vector3 v2);
-// スカラー倍
+
+/// <summary>
+/// スカラー倍
+/// </summary>
+/// <param name="k"></param>
+/// <param name="v"></param>
+/// <returns></returns>
 Vector3 Multiply(float k, const Vector3& v);
+
+/// <summary>
+/// 乗法
+/// </summary>
+/// <param name="v1"></param>
+/// <param name="v2"></param>
+/// <returns></returns>
 Vector3 Multiply(const Vector3& v1, const Vector3& v2);
-// 内積
+
+/// <summary>
+/// 内積
+/// </summary>
+/// <param name="v1"></param>
+/// <param name="v2"></param>
+/// <returns></returns>
 float Dot(const Vector3& v1, const Vector3& v2);
-// 長さ(ノルム)
+
+/// <summary>
+/// 長さ(ノルム)
+/// </summary>
+/// <param name="v1"></param>
+/// <returns></returns>
 float Length(const Vector3& v1);
-// 正規化
+
+/// <summary>
+/// 正規化
+/// </summary>
+/// <param name="v1"></param>
+/// <returns></returns>
 Vector3 Normalize(const Vector3& v1);
 
-// ベクトル変換
+/// <summary>
+/// ベクトル変換
+/// </summary>
+/// <param name="v"></param>
+/// <param name="m"></param>
+/// <returns></returns>
 Vector3 TransformNormal(const Vector3& v, const Matrix4x4& m);
 
-// クロス積
+/// <summary>
+/// クロス積
+/// </summary>
+/// <param name="v1"></param>
+/// <param name="v2"></param>
+/// <returns></returns>
 Vector3 Cross(const Vector3& v1, const Vector3& v2);
 
+/// <summary>
+/// 行列のx軸回転
+/// </summary>
+/// <param name="m"></param>
+/// <returns></returns>
 Vector3 GetXAxis(const Matrix4x4& m);
+
+/// <summary>
+/// 行列のy軸回転
+/// </summary>
+/// <param name="m"></param>
+/// <returns></returns>
 Vector3 GetYAxis(const Matrix4x4& m);
+
+/// <summary>
+/// 行列のz軸回転
+/// </summary>
+/// <param name="m"></param>
+/// <returns></returns>
 Vector3 GetZAxis(const Matrix4x4& m);
 
+/// <summary>
+/// 
+/// </summary>
+/// <param name="v"></param>
+/// <returns></returns>
 Vector3 ConvertToRadians(const Vector3& v);
 
-// 行列の加法
+/// <summary>
+/// 加法
+/// </summary>
+/// <param name="m1"></param>
+/// <param name="m2"></param>
+/// <returns></returns>
 Matrix4x4 Add(const Matrix4x4& m1, const Matrix4x4& m2);
-// 行列の減法
+
+/// <summary>
+/// 減法
+/// </summary>
+/// <param name="m1"></param>
+/// <param name="m2"></param>
+/// <returns></returns>
 Matrix4x4 Subtract(const Matrix4x4& m1, const Matrix4x4& m2);
-// 行列の積
+
+/// <summary>
+/// 積
+/// </summary>
+/// <param name="m1"></param>
+/// <param name="m2"></param>
+/// <returns></returns>
 Matrix4x4 Multiply(const Matrix4x4& m1, const Matrix4x4& m2);
-// 逆行列
+
+/// <summary>
+/// 逆行列
+/// </summary>
+/// <param name="m"></param>
+/// <returns></returns>
 Matrix4x4 Inverse(const Matrix4x4& m);
-// 転置行列
+
+/// <summary>
+/// 転置行列
+/// </summary>
+/// <param name="m"></param>
+/// <returns></returns>
 Matrix4x4 Transpose(const Matrix4x4& m);
-// 単位行列の作成
+
+/// <summary>
+/// 単位行列
+/// </summary>
+/// <returns></returns>
 Matrix4x4 MakeIdentity4x4();
 
-// 平行移動行列
+
+/// <summary>
+/// 平行移動行列
+/// </summary>
+/// <param name="translate"></param>
+/// <returns></returns>
 Matrix4x4 MakeTranslateMatrix(const Vector3& translate);
-// 拡大縮小行列
+
+/// <summary>
+/// 拡大縮小行列
+/// </summary>
+/// <param name="scale"></param>
+/// <returns></returns>
 Matrix4x4 MakeScaleMatrix(const Vector3& scale);
-// 座標変換
+
+/// <summary>
+/// 座標変換
+/// </summary>
+/// <param name="vector"></param>
+/// <param name="matrix"></param>
+/// <returns></returns>
 Vector3 TransformVector3(const Vector3& vector, const Matrix4x4& matrix);
 
-// X軸回転行列
+/// <summary>
+/// X軸回転行列
+/// </summary>
+/// <param name="radian"></param>
+/// <returns></returns>
 Matrix4x4 MakeRotateXMatrix(float radian);
-// Y軸回転行列
+
+/// <summary>
+/// Y軸回転行列
+/// </summary>
+/// <param name="radian"></param>
+/// <returns></returns>
 Matrix4x4 MakeRotateYMatrix(float radian);
 
-// Z軸回転行列
+
+/// <summary>
+/// Z軸回転行列
+/// </summary>
+/// <param name="radian"></param>
+/// <returns></returns>
 Matrix4x4 MakeRotateZMatrix(float radian);
 
-// XYZ回転行列
+/// <summary>
+/// XYZ回転行列
+/// </summary>
+/// <param name="rotation"></param>
+/// <returns></returns>
 Matrix4x4 MakeRotateXYZMatrix(const Vector3& rotation);
 
-// アフィン変換行列
+/// <summary>
+/// アフィン変換行列
+/// </summary>
+/// <param name="scale"></param>
+/// <param name="rot"></param>
+/// <param name="translate"></param>
+/// <returns></returns>
 Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rot, const Vector3& translate);
+
+/// <summary>
+/// アフィン変換行列
+/// </summary>
+/// <param name="scale"></param>
+/// <param name="rotateMatrix"></param>
+/// <param name="translate"></param>
+/// <returns></returns>
 Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Matrix4x4& rotateMatrix, const Vector3& translate);
+
+/// <summary>
+/// アフィン変換行列
+/// </summary>
+/// <param name="scale"></param>
+/// <param name="quaternion"></param>
+/// <param name="translate"></param>
+/// <returns></returns>
 Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Quaternion& quaternion, const Vector3& translate);
+
+/// <summary>
+/// アフィン変換行列
+/// </summary>
+/// <param name="transform"></param>
+/// <returns></returns>
 Matrix4x4 MakeAffineMatrix(const EulerTransform& transform);
 
-// 透視投射行列
+/// <summary>
+/// 透視投射行列
+/// </summary>
+/// <param name="fovY"></param>
+/// <param name="aspectRatio"></param>
+/// <param name="nearClip"></param>
+/// <param name="farClip"></param>
+/// <returns></returns>
 Matrix4x4 MakePerspectiveFovMatrix(float fovY, float aspectRatio, float nearClip, float farClip);
-// 正射影行列
+
+/// <summary>
+/// 正射影行列
+/// </summary>
+/// <param name="left"></param>
+/// <param name="top"></param>
+/// <param name="right"></param>
+/// <param name="bottom"></param>
+/// <param name="nearClip"></param>
+/// <param name="farClip"></param>
+/// <returns></returns>
 Matrix4x4 MakeOrthographicMatrix(
     float left, float top, float right, float bottom, float nearClip, float farClip);
-// ビューポート変更行列
+
+/// <summary>
+/// ビューポート変更行列
+/// </summary>
+/// <param name="left"></param>
+/// <param name="top"></param>
+/// <param name="width"></param>
+/// <param name="height"></param>
+/// <param name="minDepth"></param>
+/// <param name="maxDepth"></param>
+/// <returns></returns>
 Matrix4x4 MakeViewportMatrix(
     float left, float top, float width, float height, float minDepth, float maxDepth);
 
-// ビュー行列
+/// <summary>
+/// ビュー行列
+/// </summary>
+/// <param name="rotate"></param>
+/// <param name="translate"></param>
+/// <returns></returns>
 Matrix4x4 MakeViewMatrix(const Vector3& rotate, const Vector3& translate);
 
+
+/// <summary>
+/// ビュー行列
+/// </summary>
+/// <param name="quaternion"></param>
+/// <param name="translate"></param>
+/// <returns></returns>
 Matrix4x4 MakeViewMatrix(const Quaternion& quaternion, const Vector3& translate);
 
+
+/// <summary>
+/// ワールド座標からスクリーン座標
+/// </summary>
+/// <param name="worldPosition"></param>
+/// <param name="matView"></param>
+/// <param name="matProjection"></param>
+/// <param name="width"></param>
+/// <param name="height"></param>
+/// <returns></returns>
 Vector3 MapWorldToScreen(const Vector3& worldPosition, const Matrix4x4& matView, const Matrix4x4& matProjection, float width, float height);
 
+/// <summary>
+/// スクリーン座標からワールド座標
+/// </summary>
+/// <param name="worldPosition"></param>
+/// <param name="matView"></param>
+/// <param name="matProjection"></param>
+/// <param name="width"></param>
+/// <param name="height"></param>
+/// <returns></returns>
 Vector2 WorldToScreen(const Vector3& worldPosition, const Matrix4x4& matView, const Matrix4x4& matProjection, float width, float height);
 
+/// <summary>
+/// 行列線形補間
+/// </summary>
+/// <param name="from"></param>
+/// <param name="to"></param>
+/// <returns></returns>
 Matrix4x4 DirectionToDirection(const Vector3& from, const Vector3& to);
 
-
-// 正射影ベクトル
+/// <summary>
+/// 正射影ベクトル
+/// </summary>
+/// <param name="v1"></param>
+/// <param name="v2"></param>
+/// <returns></returns>
 Vector3 Project(const Vector3& v1, const Vector3& v2);
+
 // 最近接点
 // Vector3 ClosestPoint(const Vector3& point, const Segment& segment);
 
+/// <summary>
+/// クロースポイント
+/// </summary>
+/// <param name="p1"></param>
+/// <param name="p2"></param>
+/// <param name="q1"></param>
+/// <param name="q2"></param>
+/// <returns></returns>
 Vector3 ClosestPoint(const Vector3& p1, const Vector3& p2, const Vector3& q1, const Vector3& q2);
 
+/// <summary>
+/// 
+/// </summary>
+/// <param name="degree"></param>
+/// <returns></returns>
 float ConvertToRadians(float degree);
 
-// 最短角度補間
+/// <summary>
+/// 最短角度補間
+/// </summary>
+/// <param name="a"></param>
+/// <param name="b"></param>
+/// <param name="t"></param>
+/// <returns></returns>
 float LerpShortAngle(float a, float b, float t);
 
+
+/// <summary>
+/// 線形補間
+/// </summary>
+/// <param name="v1"></param>
+/// <param name="v2"></param>
+/// <param name="t"></param>
+/// <returns></returns>
 Vector3 Lerp(const Vector3& v1, const Vector3& v2, float t);
+
+/// <summary>
+/// 曲線補間
+/// </summary>
+/// <param name="v1"></param>
+/// <param name="v2"></param>
+/// <param name="t"></param>
+/// <returns></returns>
 Vector3 Slerp(const Vector3& v1, const Vector3& v2, float t);
 
-// 乗法単位元
+/// <summary>
+/// 乗法単位元
+/// </summary>
+/// <returns></returns>
 Quaternion IndentityQuaternion();
 
+/// <summary>
+/// 共役
+/// </summary>
+/// <param name="q"></param>
+/// <returns></returns>
 Quaternion Conjugate(const Quaternion& q);
 
+/// <summary>
+/// 逆クォータニオン
+/// </summary>
+/// <param name="q"></param>
+/// <returns></returns>
 Quaternion Inverse(const Quaternion& q);
 
+/// <summary>
+/// 正規化
+/// </summary>
+/// <param name="q"></param>
+/// <returns></returns>
 Quaternion Normalize(const Quaternion& q);
 
+/// <summary>
+/// 乗算
+/// </summary>
+/// <param name="q"></param>
+/// <param name="r"></param>
+/// <returns></returns>
 Quaternion Multiply(const Quaternion& q, const Quaternion& r);
 
+/// <summary>
+/// ノルム
+/// </summary>
+/// <param name="q"></param>
+/// <returns></returns>
 float Norm(const Quaternion& q);
 
+/// <summary>
+/// 回転クォータニオン
+/// </summary>
+/// <param name="axis"></param>
+/// <param name="angle"></param>
+/// <returns></returns>
 Quaternion MakeRotateAxisAngleQuaternion(const Vector3& axis, float angle);
 
+/// <summary>
+/// 回転ベクトル
+/// </summary>
+/// <param name="vector"></param>
+/// <param name="q"></param>
+/// <returns></returns>
 Vector3 RotateVector(const Vector3& vector, const Quaternion& q);
 
+/// <summary>
+/// 回転行列
+/// </summary>
+/// <param name="q"></param>
+/// <returns></returns>
 Matrix4x4 MakeRotateMatrix(const Quaternion& q);
 
+/// <summary>
+/// 曲線補間
+/// </summary>
+/// <param name="q0"></param>
+/// <param name="q1"></param>
+/// <param name="t"></param>
+/// <returns></returns>
 Quaternion Slerp(const Quaternion& q0, const Quaternion& q1, float t);
 
+/// <summary>
+/// 内積
+/// </summary>
+/// <param name="q1"></param>
+/// <param name="q2"></param>
+/// <returns></returns>
 float Dot(const Quaternion& q1, const Quaternion& q2);
 
-
+/// <summary>
+/// 単位行列
+/// </summary>
+/// <returns></returns>
 Matrix3x3 MakeIdentity3x3();
-// 行列の積
+
+/// <summary>
+/// 行列の積
+/// </summary>
+/// <param name="m1"></param>
+/// <param name="m2"></param>
+/// <returns></returns>
 Matrix3x3 Multiply(const Matrix3x3& m1, const Matrix3x3& m2);
-// 逆行列
+
+/// <summary>
+/// 逆行列
+/// </summary>
+/// <param name="m"></param>
+/// <returns></returns>
 Matrix3x3 Inverse(const Matrix3x3& m);
-// 転置行列
+
+/// <summary>
+/// 転置行列
+/// </summary>
+/// <param name="m"></param>
+/// <returns></returns>
 Matrix3x3 Transpose(const Matrix3x3& m);
+
+/// <summary>
+/// 回転行列
+/// </summary>
+/// <param name="rotation"></param>
+/// <returns></returns>
 Matrix3x3 MakeRotateMatrix(const Vector3& rotation);
+
+/// <summary>
+/// ベクトル変換
+/// </summary>
+/// /// <param name="vector"></param>
+/// /// <param name="matrix"></param>
+/// /// <returns></returns>
 Vector3 TransformVector3(const Vector3& vector, const Matrix3x3& matrix);

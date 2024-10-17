@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #include <d3d12.h>
 #include <wrl.h>
@@ -38,7 +38,7 @@ struct WorldTransform {
 	WorldTransform* parent_ = nullptr;
 	// ワールドの逆転置行列
 	Matrix4x4 matWorldInverseTranspose_;
-
+	// ローテートタイプ
 	RotationType rotateType_;
 
 
@@ -62,7 +62,10 @@ struct WorldTransform {
 	/// 定数バッファに転送する
 	/// </summary>
 	void TransferMatrix();
-
+	/// <summary>
+	/// ワールド座標系での位置を取得
+	/// </summary>
+	/// <returns>Vector3</returns>
 	Vector3 GetMatWorldTranslation() { return { matWorld_.m[3][0], matWorld_.m[3][1], matWorld_.m[3][2] }; }
 };
 

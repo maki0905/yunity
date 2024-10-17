@@ -12,27 +12,62 @@
 #include "Score.h"
 #include "SpringJoint.h"
 
-
+/*
+* @brief プレイヤークラス
+*/
 class Player : public Object3D
 {
 public:
+	/// <summary>
+	/// 初期化
+	/// </summary>
+	/// <param name="camera">カメラ</param>
+	/// <param name="world">所属する物理空間</param>
 	void Initialize(Camera* camera, World* world);
 
+	/// <summary>
+	/// 更新
+	/// </summary>
 	void Update() override;
 
+	/// <summary>
+	/// 描画
+	/// </summary>
 	void Draw() override;
 
+	/// <summary>
+	/// UI描画
+	/// </summary>
 	void DrawUI();
 
-	//void OnCollisionEvent(Body* body = nullptr) override;
+	/// <summary>
+	/// 衝突時のイベント
+	/// </summary>
 	void OnCollisionEvent() override;
+
+	/// <summary>
+	/// 衝突時のイベント
+	/// </summary>
 	void OnTriggerEvent() override;
 
+	/// <summary>
+	/// プレイヤーの位置変更
+	/// </summary>
+	/// <param name="pos">位置</param>
 	void ResetPos(const Vector3& pos);
 
+	/// <summary>
+	/// getter
+	/// </summary>
+
 	bool GetActive() { return isActive_; }
-	void SetSelect(bool isSelect) { isSelect_ = isSelect; }
 	bool GetSelect() { return isSelect_; }
+
+	/// <summary>
+	/// setter
+	/// </summary>
+
+	void SetSelect(bool isSelect) { isSelect_ = isSelect; }
 
 private:
 	XINPUT_STATE pad_;

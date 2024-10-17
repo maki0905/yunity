@@ -7,6 +7,9 @@
 
 class DescriptorHeap;
 
+/*
+* @brief 深度バッファ
+*/
 class DepthBuffer
 {
 public:
@@ -28,6 +31,12 @@ public:
 	/// </summary>
 	void ClearDepthView();
 
+
+	/// <summary>
+	/// getter
+	/// </summary>
+	/// <returns></returns>
+	
 	ID3D12DescriptorHeap* GetDescriptorHeap() { return dsvHeap_->GetHeapPointer(); }
 	ID3D12Resource* GetDepthStencil() { return depthStencilResource_.Get(); }
 	//D3D12_CPU_DESCRIPTOR_HANDLE GetDescriptorHandle() { return D3D12_CPU_DESCRIPTOR_HANDLE(dsvHeap_->GetHeapPointer()->GetCPUDescriptorHandleForHeapStart()); }

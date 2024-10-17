@@ -6,6 +6,9 @@
 
 #include "CommandQueue.h"
 
+/*
+* @brief スワップチェーンクラス
+*/
 class SwapChain
 {
 public:

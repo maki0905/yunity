@@ -15,15 +15,25 @@ class Object3D;
 //	WorldTransform worldTransform;
 //};
 
+/*
+* @brief コリジョンマネージャークラス
+*/
 class CollisionManager {
 public:
 	/// <summary>
 	/// 衝突判定と応答
 	/// </summary>
 	void CheckAllCollision();
-	// コライダーを取得
+	
+	/// <summary>
+	/// コライダーを取得
+	/// </summary>
+	/// <param name="collider"></param>
 	void SetCollider(Object3D* collider) { colliders_.push_back(collider); }
-	// 衝突属性(自分)を設定
+	
+	/// <summary>
+	/// 衝突属性(自分)を設定
+	/// </summary>
 	void ClearCollider() { colliders_.clear(); }
 
 private:

@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #include <d3d12.h>
 #include <wrl.h>
@@ -71,14 +71,26 @@ struct CameraForGPU {
 //	void UpdateMatrix();
 //};
 
+/*
+* @brief カメラクラス
+*/
 class Camera {
 public:
 
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
 	Camera();
 
+	/// <summary>
+	/// 
+	/// </summary>
 	void Update();
 
-	// setter
+	/// <summary>
+	/// setter
+	/// </summary>
+	
 	void SetRotate(const Vector3& rotate) { transform_.rotate = rotate; }
 	void SetTranslate(const Vector3& translate) { transform_.translate = translate; }
 	void SetFovY(float fovY) { fovAngleY_ = fovY;}
@@ -90,7 +102,10 @@ public:
 	void SetFixedAxis(const Vector3& fixedAxis) { fixedAxis_ = fixedAxis; }
 	void SetOffset(const Vector3& offset) { offset_ = offset; }
 
-	// getter
+	/// <summary>
+	/// getter
+	/// </summary>
+	/// 
 	ID3D12Resource* GetConstBuff() const { return constBuff_.Get(); }
 	ID3D12Resource* GetCameraForGPU() const { return constBuff_CameraForGPU_.Get(); }
 	const Matrix4x4& GetWorldMatrix() const { return worldMatrix_; }
@@ -103,6 +118,10 @@ public:
 	Vector3 GetFixedAxis() { return fixedAxis_; }
 	Vector3 GetOffset() { return offset_; }
 private:
+	/// <summary>
+	/// オフセット
+	/// </summary>
+	/// <returns>オフセット</returns>
 	Vector3 Offset();
 
 private:
