@@ -1,4 +1,4 @@
-﻿#include "TextureManager.h"
+#include "TextureManager.h"
 #include "DirectXTex/DirectXTex.h"
 #include "DirectXTex/d3dx12.h"
 #include <cassert>
@@ -147,7 +147,8 @@ uint32_t TextureManager::LoadInternal(const std::string& fileName) {
 
 	if (filePathW.ends_with(".dds")) { // .ddsで終わっていたらddsとみなす。
 		// DDSテクスチャのロード
-		result = LoadFromDDSFile(wfilePath, DDS_FLAGS_NONE, nullptr, scratchImg);
+		//result = LoadFromDDSFile(wfilePath, DDS_FLAGS_NONE, nullptr, scratchImg);
+		result = LoadFromDDSFile(wfilePath, DDS_FLAGS_NONE, &metadata, scratchImg);
 	}
 	else {
 		// WICテクスチャのロード

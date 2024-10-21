@@ -23,7 +23,7 @@ void TitleScene::Initialize()
 	sprite_->SetTextureRect({ 0.0f, 576.0f}, {64.0f, 64.0f});*/
 
 	bottonSprite_ = std::make_unique<Sprite>();
-	bottonSprite_.reset(Sprite::Create(TextureManager::GetInstance()->Load("ABotton.png"), { 610.0f, 520.0f }));
+	bottonSprite_.reset(Sprite::Create(TextureManager::GetInstance()->Load("ABotton.dds"), { 610.0f, 520.0f }));
 	bottonPushSprite_ = std::make_unique<Sprite>();
 	bottonPushSprite_.reset(Sprite::Create(TextureManager::GetInstance()->Load("ABottonPush.png"), { 610.0f, 520.0f }));
 	time_ = 0;
@@ -98,6 +98,9 @@ void TitleScene::Initialize()
 		TVworldTransform_[CommonData::GetInstance()->stageNum_].scale_ = { 1.0f, 1.0f, 1.0f };
 		isActiveTV_[CommonData::GetInstance()->stageNum_] = true;
 		isStart_ = true;
+	}
+	else {
+		camera_->SetTranslate({ 0, 10.0f, -50.0f });
 	}
 	CommonData::GetInstance()->scene_ = Scene::kTitle;
 	isMoveCamera[0] = false;

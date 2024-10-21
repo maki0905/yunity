@@ -70,6 +70,12 @@ public:
 	/// <returns></returns>
 	bool GetOut() { return out_; }
 
+	/// <summary>
+	/// タイムの取得
+	/// </summary>
+	/// <returns></returns>
+	float GetTime() { return time_; }
+
 private:
 	std::unique_ptr<Sprite> sprite_;
 

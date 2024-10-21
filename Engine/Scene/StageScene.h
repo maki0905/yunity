@@ -63,6 +63,7 @@ private:
 	std::unique_ptr<World> world_;
 	std::unique_ptr<PrimitiveDrawer> primitiveDrawer_;*/
 	bool isDebug_ = false;
+	bool inStage_ = false;
 
 	Camera* camera_;
 	//std::unique_ptr<Camera> camera_;
@@ -86,6 +87,13 @@ private:
 	std::vector<Object3D*> trampolines_;
 
 	std::string stageName_ = "stage1";
+
+	float moveCameraTimer_;
+	Vector3 oldCameraPos_;
+
+	std::unique_ptr<Model> start_;
+	Vector3 startPos_;
+	uint32_t textureTV_;
 
 	/*std::unique_ptr<Object3D> spike_;
 	std::unique_ptr<Object3D> stand_;

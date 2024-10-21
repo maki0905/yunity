@@ -7,6 +7,7 @@
 #include "SceneManager.h"
 #include "ModelManager.h"
 #include "CommonData.h"
+#include "Tradition.h"
 
 void StageScene::Initialize()
 {
@@ -48,6 +49,8 @@ void StageScene::Initialize()
 
 	//camera_ = std::make_unique<Camera>();
 	//camera_.reset(CameraManager::GetInstance()->GetCamera());
+	inStage_ = false;
+
 	camera_ = CameraManager::GetInstance()->GetCamera();
 	camera_->SetFixedAxis({ 0.0f, 0.0f, 1.0f });
 	debugCamera_ = std::make_unique<DebugCamera>();
@@ -84,8 +87,20 @@ void StageScene::Initialize()
 	stageName_ = CommonData::GetInstance()->GetStageName();
 	ObjectManager::GetInstance()->Load(stageName_, camera_/*camera_.get()*/, world_.get());
 	startWT_.translation_ = ObjectManager::GetInstance()->GetPos(stageName_, "startBox");
+	startPos_ = startWT_.translation_;
 	//ObjectManager::GetInstance()->Load("TL1", camera_.get(), world_.get());
 	/*trampolines_ = ObjectManager::GetInstance()->GetObjects("stage0", "Trampoline");*/
+
+	start_ = std::make_unique<Model>();
+	start_.reset(ModelManager::GetInstance()->CreateModel(obj, "TV"));
+	start_->SetCamera(camera_);
+	startWT_.translation_.y = 3.0f;
+	startWT_.translation_.z = 10.0f;
+	startWT_.scale_ = { 0.5f, 0.5f, 0.5f };
+	startWT_.UpdateMatrix();
+	textureTV_ = TextureManager::Load("Models/TV/TV.png");
+
+	ObjectManager::GetInstance()->SetActive(stageName_, 0, false);
 
 	skydome_ = std::make_unique<Skydome>();
 	skydome_->Initialize(camera_/*camera_.get()*/, {5.0f, 5.0f, 5.0f});
@@ -132,10 +147,6 @@ void StageScene::Update()
 
 	//world_->Solve();
 
-	//if (Input::GetInstance()->TriggerKey(DIK_LSHIFT)) {
-	//	isDebug_ ^= true;
-	//}
-
 	//if (isDebug_) {
 	//	debugCamera_->Update(camera_.get());
 	//	camera_->Update();
@@ -147,7 +158,19 @@ void StageScene::Update()
 	/*---------------------------------------------------------*/
 
 
-	player_->Update();
+	if (!inStage_) {
+		if (!Tradition::GetInstance()->GetOut()) {
+			inStage_ = true;
+			//camera_->SetTarget(player_->GetWorldTransform());
+		}
+		Tradition::GetInstance()->Update();
+		camera_->SetOffset(Lerp(startPos_, { startPos_.x, 5.0f, -50.0f }, std::clamp(1.0f - Tradition::GetInstance()->GetTime(), 0.0f, 1.0f)));
+		player_->SetScale(Lerp({ 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f, 1.0f }, std::clamp(1.0f - Tradition::GetInstance()->GetTime(), 0.0f, 1.0f)));
+	}
+	else {
+		player_->Update();
+
+	}
 	ObjectManager::GetInstance()->Update(stageName_);
 	///*for (auto& object : ObjectManager::GetInstance()->GetObjects("TL1")) {
 	//	object->Update();
@@ -162,9 +185,13 @@ void StageScene::Update()
 
 	if (isDebug_) {
 		debugCamera_->Update(camera_/*camera_.get()*/);
+		camera_->SetTarget(nullptr);
 		camera_->Update();
 	}
 	else {
+		if (camera_->GetTarget() == nullptr) {
+			camera_->SetTarget(player_->GetWorldTransform());
+		}
 		camera_->Update();
 	}
 
@@ -172,14 +199,14 @@ void StageScene::Update()
 	endWT_.UpdateMatrix();*/
 
 	if (!player_->GetActive()) {
-		player_->ResetPos(startWT_.translation_);
-		ObjectManager::GetInstance()->Clear(stageName_);
-		ObjectManager::GetInstance()->Load(stageName_, camera_/*camera_.get()*/, world_.get());
+		player_->ResetPos(startPos_);
+		//ObjectManager::GetInstance()->Clear(stageName_);
+		//ObjectManager::GetInstance()->Load(stageName_, camera_/*camera_.get()*/, world_.get());
 	}
 
 	if (CommonData::GetInstance()->isGoal_) {
 		CommonData::GetInstance()->isGoal_ = false;
-		SceneManager::GetInstance()->ChangeScene("SELECT");
+		SceneManager::GetInstance()->ChangeScene("TITLE");
 
 
 	}
@@ -187,6 +214,8 @@ void StageScene::Update()
 	if (Input::GetInstance()->TriggerKey(DIK_T)) {
 		SceneManager::GetInstance()->ChangeScene("TITLE");
 	}
+
+	
 
 #ifdef _DEBUG
 	/*Vector3 pos = spike_->GetMatWorldTranslation();
@@ -220,6 +249,7 @@ void StageScene::Draw3D()
 	/*start_->Draw(startWT_);
 	end_->Draw(endWT_);*/
 	skydome_->Draw();
+	start_->Draw(startWT_, textureTV_);
 	ObjectManager::GetInstance()->Draw(stageName_);
 	///*for (auto& object : ObjectManager::GetInstance()->GetObjects("TL1")) {
 	//	object->Draw();
@@ -236,4 +266,5 @@ void StageScene::Draw3D()
 void StageScene::DrawFront()
 {
 	player_->DrawUI();
+	Tradition::GetInstance()->Draw();
 }

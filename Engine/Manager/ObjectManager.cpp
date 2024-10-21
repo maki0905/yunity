@@ -149,7 +149,7 @@ void ObjectManager::Load(const std::string& fileName, Camera* camera, World* wor
 			objects_[fileName].emplace_back(newObject);
 		}
 
-		if (object.fileName == "GiftWall") {
+		if (object.fileName == "startBox") {
 			activeObjects_[fileName].emplace_back(false);
 		}
 		else {
@@ -166,7 +166,11 @@ void ObjectManager::Load(const std::string& fileName, Camera* camera, World* wor
 Vector3 ObjectManager::GetPos(const std::string& fileName, const std::string& modelName) {
 	Vector3 result = { 0.0f, 0.0f, 0.0f };
 	for (auto& obj : objects_[fileName]) {
-		if (obj->GetModel()->GetModelName() == modelName) {
+		Model* model = obj->GetModel();
+		if (model == nullptr) {
+			continue;
+		}
+		if (model->GetModelName() == modelName) {
 			result = obj->GetTranslation();
 		}
 	}

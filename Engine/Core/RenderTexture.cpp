@@ -175,6 +175,7 @@ void RenderTexture::Machining()
 					commandList_->SetGraphicsRootDescriptorTable(static_cast<UINT>(RootBindings::kDepthTexture), depthTextureGpuDescHandleSRV_);
 
 				}
+				commandList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 				commandList_->DrawInstanced(3, 1, 0, 0);
 				preIndex = index;
 			}

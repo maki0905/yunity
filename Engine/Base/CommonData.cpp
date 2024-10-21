@@ -20,7 +20,7 @@ std::string CommonData::GetStageName()
 	switch (stageNum_)
 	{
 	case 0:
-		result = "stage1";
+		result = "stage0";
 		break;
 	case 1:
 		result = "stage2";

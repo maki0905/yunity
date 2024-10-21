@@ -1,4 +1,4 @@
-﻿#include "Camera.h"
+#include "Camera.h"
 
 #include "WindowsAPI.h"
 #include <cassert>
@@ -98,13 +98,14 @@ Camera::Camera() :
 	result = constBuff_CameraForGPU_->Map(0, nullptr, (void**)&constMap_CameraForGPU_);
     assert(SUCCEEDED(result));
 
+	offset_ = { 0.0f, 5.0f, -50.0f };
 }
 
 Vector3 Camera::Offset()
 {
 	Vector3 offset = { 0.0f, 5.0f, -50.0f };
 	Matrix4x4 rotate = MakeRotateYMatrix(transform_.rotate.y);
-	offset = TransformNormal(offset, rotate);
+	offset = TransformNormal(offset_, rotate);
 	return offset;
 }
 
