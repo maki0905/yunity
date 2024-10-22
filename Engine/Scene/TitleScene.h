@@ -80,6 +80,11 @@ private:
 	Vector3 oldCameraPos_;
 	std::unique_ptr<Cloth> cloth_;
 
+	std::unique_ptr<Object3D>floor_;
+	std::unique_ptr<Object3D>anchor_;
+	std::unique_ptr<PrimitiveDrawer> sp_;
+	std::unique_ptr<SpringJoint> joint_;
+
 	std::unique_ptr<ObjectManager> objectManager_;
 };
 

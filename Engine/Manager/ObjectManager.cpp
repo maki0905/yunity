@@ -16,9 +16,9 @@ void ObjectManager::Initialize()
 	//activeObjects_.clear();
 }
 
-void ObjectManager::Update(const std::string& fileName)
+void ObjectManager::Update(/*const std::string& fileName*/)
 {
-	uint32_t index = 0;
+	//uint32_t index = 0;
 	//for (auto& object : objects_[fileName]) {
 	//	object->Update();
 	//	/*if (activeObjects_[fileName][index++]) {
@@ -33,9 +33,9 @@ void ObjectManager::Update(const std::string& fileName)
 	}
 }
 
-void ObjectManager::Draw(const std::string& fileName)
+void ObjectManager::Draw(/*const std::string& fileName*/)
 {
-	uint32_t index = 0;
+	/*uint32_t index = 0;*/
 	//for (auto& object : objects_[fileName]) {
 	//	object->Draw();
 	//	/*if (activeObjects_[fileName][index++]) {
@@ -190,7 +190,7 @@ void ObjectManager::Load(const std::string& fileName, Camera* camera, World* wor
 //	return result;
 //}
 
-void ObjectManager::Clear(const std::string& fileName)
+void ObjectManager::Clear(/*const std::string& fileName*/)
 {
 	/*for (auto& obj : objects_[fileName]) {
 		obj->GetWorld()->Take(obj.get());
@@ -208,7 +208,7 @@ void ObjectManager::Clear(const std::string& fileName)
 //
 //}
 
-void ObjectManager::SetDirectionalLight(const std::string& fileName, Model::DirectionalLight directionalLight)
+void ObjectManager::SetDirectionalLight(/*const std::string& fileName, */Model::DirectionalLight directionalLight)
 {
 	/*for (auto& obj : objects_[fileName]) {
 		obj->SetEnableLighting(true);
@@ -220,7 +220,7 @@ void ObjectManager::SetDirectionalLight(const std::string& fileName, Model::Dire
 	}
 }
 
-void ObjectManager::SetEnableLighting(const std::string& fileName, bool onOff)
+void ObjectManager::SetEnableLighting(/*const std::string& fileName,*/ bool onOff)
 {
 	/*for (auto& obj : objects_[fileName]) {
 		obj->SetEnableLighting(onOff);

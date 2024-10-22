@@ -33,13 +33,13 @@ public:
 	/// 更新
 	/// </summary>
 	/// <param name="fileName"></param>
-	void Update(const std::string& fileName);
+	void Update(/*const std::string& fileName*/);
 	
 	/// <summary>
 	/// 描画
 	/// </summary>
 	/// <param name="fileName"></param>
-	void Draw(const std::string& fileName);
+	void Draw(/*const std::string& fileName*/);
 	
 	/// <summary>
 	/// マップ読み込み
@@ -69,7 +69,7 @@ public:
 	/// クリア処理
 	/// </summary>
 	/// <param name="fileName"></param>
-	void Clear(const std::string& fileName);
+	void Clear(/*const std::string& fileName*/);
 
 	/// <summary>
 	/// リセット処理
@@ -82,14 +82,14 @@ public:
 	/// </summary>
 	/// <param name="fileName"></param>
 	/// <param name="directionalLight"></param>
-	void SetDirectionalLight(const std::string& fileName, Model::DirectionalLight directionalLight);
+	void SetDirectionalLight(/*const std::string& fileName, */Model::DirectionalLight directionalLight);
 	
 	/// <summary>
 	/// 
 	/// </summary>
 	/// <param name="fileName"></param>
 	/// <param name="onOff"></param>
-	void SetEnableLighting(const std::string& fileName, bool onOff);
+	void SetEnableLighting(/*const std::string& fileName,*/ bool onOff);
 	
 	/// <summary>
 	/// アクティブ設定

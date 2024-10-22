@@ -111,13 +111,48 @@ void TitleScene::Initialize()
 	isMoveCamera[1] = false;
 	moveCameraTimer_ = 0.0f;
 
-	cloth_ = std::make_unique<Cloth>();
-	cloth_->Initialize(world_.get());
+	/*cloth_ = std::make_unique<Cloth>();
+	cloth_->Initialize(world_.get());*/
+
+	floor_ = std::make_unique<Object3D>();
+	floor_->Initialize(ModelManager::GetInstance()->CreateModel(obj, "Cube"), world_.get(), Collider::kAABB);
+	floor_->SetTranslation({ 0.0f, 10.0f, 0.0f });
+	floor_->SetCamera(camera_);
+	floor_->SetMass(2.0f);
+	floor_->SetCollisionAttribute(kCollisionAttributeFloor);
+	floor_->SetHitBoxSize({ 2.0f, 2.0f, 2.0f });
+	world_->Add(floor_.get()); 
+
+	anchor_ = std::make_unique<Object3D>();
+	anchor_->Initialize(world_.get(), Collider::kAABB);
+	anchor_->SetTranslation({ 0.0f, 5.0f, 0.0f });
+	anchor_->SetCamera(camera_);
+	anchor_->SetMass(0.0f);
+	anchor_->SetCollisionAttribute(kCollisionAttributeSpike);
+	anchor_->SetHitBoxSize({ 2.0f, 2.0f, 2.0f });
+	world_->Add(anchor_.get());
+
+	sp_ = std::make_unique<PrimitiveDrawer>();
+	sp_.reset(PrimitiveDrawer::Create());
+    sp_->SetCamera(CameraManager::GetInstance()->GetCamera());
+
+	joint_ = std::make_unique<SpringJoint>();
+	joint_->CreateSpringJoint(floor_.get(), anchor_.get());
+	joint_->SetDamping(1, 1.0f);
+	joint_->SetStiffness(1, 20.0f);
+	joint_->EnableSpring(1, false);
+	joint_->SetEquilibriumPoint(1, 10.0f);
+	world_->AddJoint(joint_.get());
+
 }
 
 void TitleScene::Update()
 {
 	prePad_ = pad_;
+
+	if (Input::GetInstance()->TriggerKey(DIK_I)) {
+		joint_->EnableSpring(1, true);
+	}
 
 	/*Vector3 rotate{ 0.4f, 1.43f, -0.8f };
 	Matrix4x4 rotateX = MakeRotateXMatrix(rotate.x);
@@ -285,20 +320,23 @@ void TitleScene::Update()
 
 	}
 
-	cloth_->Update();
+	//cloth_->Update();
 
 #ifdef _DEBUG
 	ImGui::Begin("a");
+	Vector3 velocity = floor_->GetVelocity();
+	ImGui::DragFloat3("ve", &velocity.x);
+
 	ImGui::DragFloat3("pos", &worldTransform_.translation_.x);
 	if (ImGui::Button("Off")) {
 		model_->SetEnableLighting(false);
 		player_->SetEnableLighting(false);
-		ObjectManager::GetInstance()->SetEnableLighting("title1",false);
+		/*ObjectManager::GetInstance()->SetEnableLighting("title1",false);*/
 	}
 	if (ImGui::Button("On")) {
 		model_->SetEnableLighting(true);
 		player_->SetEnableLighting(true);
-		ObjectManager::GetInstance()->SetEnableLighting("title1", true);
+		/*ObjectManager::GetInstance()->SetEnableLighting("title1", true);*/
 	}
 	ImGui::End();
 
@@ -314,7 +352,12 @@ void TitleScene::Draw3D()
 {
 	skydome_->Draw();
 	//ObjectManager::GetInstance()->Draw("title1");
-	objectManager_->Draw("title1");
+	objectManager_->Draw(/*"title1"*/);
+
+	floor_->Draw();
+	anchor_->Draw();
+	sp_->Draw(anchor_->GetTranslation(), floor_->GetTranslation());
+
 	player_->Draw();
 	model_->Draw(worldTransform_);
 
@@ -324,7 +367,7 @@ void TitleScene::Draw3D()
 		}
 	}
 
-	cloth_->Draw();
+	//cloth_->Draw();
 	//obj_->Draw();
 }
 
