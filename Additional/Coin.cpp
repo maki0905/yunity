@@ -9,14 +9,13 @@
 
 void Coin::Update()
 {
-	if (!isActive_) {
-		GetWorld()->Take(this);
-	}
+	
+
 }
 
 void Coin::Draw()
 {
-	if (isActive_) {
+	if (!GetIsTrigger()) {
 		model_->Draw(worldTransform_);
 	}
 }
@@ -32,6 +31,7 @@ void Coin::OnTriggerEvent()
 {
 	if (GetHitBody()->GetCollisionAttribute() == kCollisionAttributePlayer) {
 		isActive_ = false;
+		SetIsTrigger(true);
 	}
 }
 

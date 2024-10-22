@@ -3,36 +3,50 @@
 #include "LevelEditor.h"
 #include "ModelManager.h"
 
-ObjectManager* ObjectManager::GetInstance()
-{
-	static ObjectManager instance;
-	return &instance;
-
-}
+//ObjectManager* ObjectManager::GetInstance()
+//{
+//	static ObjectManager instance;
+//	return &instance;
+//
+//}
 
 void ObjectManager::Initialize()
 {
 	objects_.clear();
-	activeObjects_.clear();
+	//activeObjects_.clear();
 }
 
 void ObjectManager::Update(const std::string& fileName)
 {
 	uint32_t index = 0;
-	for (auto& object : objects_[fileName]) {
-		if (activeObjects_[fileName][index++]) {
+	//for (auto& object : objects_[fileName]) {
+	//	object->Update();
+	//	/*if (activeObjects_[fileName][index++]) {
+	//		object->Update();
+	//	}*/
+	//}
+	for (auto& object : objects_) {
+		object->Update();
+		/*if (activeObjects_[fileName][index++]) {
 			object->Update();
-		}
+		}*/
 	}
 }
 
 void ObjectManager::Draw(const std::string& fileName)
 {
 	uint32_t index = 0;
-	for (auto& object : objects_[fileName]) {
-		if (activeObjects_[fileName][index++]) {
+	//for (auto& object : objects_[fileName]) {
+	//	object->Draw();
+	//	/*if (activeObjects_[fileName][index++]) {
+	//		object->Draw();
+	//	}*/
+	//}
+	for (auto& object : objects_) {
+		object->Draw();
+		/*if (activeObjects_[fileName][index++]) {
 			object->Draw();
-		}
+		}*/
 	}
 }
 
@@ -62,7 +76,8 @@ void ObjectManager::Load(const std::string& fileName, Camera* camera, World* wor
 			newObject->SetFirictionCombine(static_cast<Body::FrictionCombine>(object.frictionCombine));
 			newObject->SetBounciness(object.bounciness);
 			newObject->SetBounceCombine(static_cast<Body::BounceCombine>(object.bounceCombine));
-			objects_[fileName].emplace_back(newObject);
+			//objects_[fileName].emplace_back(newObject);
+			objects_.emplace_back(newObject);
 
 		}
 		else if (object.fileName == "TV") {
@@ -84,7 +99,8 @@ void ObjectManager::Load(const std::string& fileName, Camera* camera, World* wor
 			newObject->InitializeTexture();
 			newObject->SetCamera(camera);
 			world->Add(newObject);
-			objects_[fileName].emplace_back(newObject);
+			//objects_[fileName].emplace_back(newObject);
+			objects_.emplace_back(newObject);
 
 		}
 		else if (object.fileName == "Coin") {
@@ -105,7 +121,8 @@ void ObjectManager::Load(const std::string& fileName, Camera* camera, World* wor
 			newObject->SetFirictionCombine(static_cast<Body::FrictionCombine>(object.frictionCombine));
 			newObject->SetBounciness(object.bounciness);
 			newObject->SetBounceCombine(static_cast<Body::BounceCombine>(object.bounceCombine));
-			objects_[fileName].emplace_back(newObject);
+			//objects_[fileName].emplace_back(newObject);
+			objects_.emplace_back(newObject);
 		}
 		else if (object.serialNumber != -1) {
 			EventTrigger* newObject = new EventTrigger();
@@ -119,7 +136,8 @@ void ObjectManager::Load(const std::string& fileName, Camera* camera, World* wor
 			newObject->SetSerialNumber(object.serialNumber);
 			newObject->Initialize(world, object.shape);
 			world->Add(newObject);
-			objects_[fileName].emplace_back(newObject);
+			//objects_[fileName].emplace_back(newObject);
+			objects_.emplace_back(newObject);
 		}
 		else {
 			Object3D* newObject = new Object3D();
@@ -146,15 +164,10 @@ void ObjectManager::Load(const std::string& fileName, Camera* camera, World* wor
 			newObject->SetFirictionCombine(static_cast<Body::FrictionCombine>(object.frictionCombine));
 			newObject->SetBounciness(object.bounciness);
 			newObject->SetBounceCombine(static_cast<Body::BounceCombine>(object.bounceCombine));
-			objects_[fileName].emplace_back(newObject);
+			//objects_[fileName].emplace_back(newObject);
+			objects_.emplace_back(newObject);
 		}
 
-		if (object.fileName == "startBox") {
-			activeObjects_[fileName].emplace_back(false);
-		}
-		else {
-			activeObjects_[fileName].emplace_back(true);
-		}
 	}
 }
 
@@ -163,31 +176,45 @@ void ObjectManager::Load(const std::string& fileName, Camera* camera, World* wor
 //	return std::move(objects_[fileName]);
 //}
 
-Vector3 ObjectManager::GetPos(const std::string& fileName, const std::string& modelName) {
-	Vector3 result = { 0.0f, 0.0f, 0.0f };
-	for (auto& obj : objects_[fileName]) {
-		Model* model = obj->GetModel();
-		if (model == nullptr) {
-			continue;
-		}
-		if (model->GetModelName() == modelName) {
-			result = obj->GetTranslation();
-		}
-	}
-	return result;
-}
+//Vector3 ObjectManager::GetPos(const std::string& fileName, const std::string& modelName) {
+//	Vector3 result = { 0.0f, 0.0f, 0.0f };
+//	for (auto& obj : objects_[fileName]) {
+//		Model* model = obj->GetModel();
+//		if (model == nullptr) {
+//			continue;
+//		}
+//		if (model->GetModelName() == modelName) {
+//			result = obj->GetTranslation();
+//		}
+//	}
+//	return result;
+//}
 
 void ObjectManager::Clear(const std::string& fileName)
 {
-	for (auto& obj : objects_[fileName]) {
+	/*for (auto& obj : objects_[fileName]) {
+		obj->GetWorld()->Take(obj.get());
+	}*/
+	//objects_[fileName].clear();
+	for (auto& obj : objects_) {
 		obj->GetWorld()->Take(obj.get());
 	}
-	objects_[fileName].clear();
+	objects_.clear();
 }
+
+//void ObjectManager::Reset(const std::string& fileName)
+//{
+//
+//
+//}
 
 void ObjectManager::SetDirectionalLight(const std::string& fileName, Model::DirectionalLight directionalLight)
 {
-	for (auto& obj : objects_[fileName]) {
+	/*for (auto& obj : objects_[fileName]) {
+		obj->SetEnableLighting(true);
+		obj->SetDirectionalLight(directionalLight);
+	}*/
+	for (auto& obj : objects_) {
 		obj->SetEnableLighting(true);
 		obj->SetDirectionalLight(directionalLight);
 	}
@@ -195,15 +222,18 @@ void ObjectManager::SetDirectionalLight(const std::string& fileName, Model::Dire
 
 void ObjectManager::SetEnableLighting(const std::string& fileName, bool onOff)
 {
-	for (auto& obj : objects_[fileName]) {
+	/*for (auto& obj : objects_[fileName]) {
+		obj->SetEnableLighting(onOff);
+	}*/
+	for (auto& obj : objects_) {
 		obj->SetEnableLighting(onOff);
 	}
 }
 
-void ObjectManager::SetActive(const std::string& fileName, uint32_t index, bool active)
-{
-	activeObjects_[fileName][index] = active;
-}
+//void ObjectManager::SetActive(const std::string& fileName, uint32_t index, bool active)
+//{
+//	activeObjects_[fileName][index] = active;
+//}
 
 
 

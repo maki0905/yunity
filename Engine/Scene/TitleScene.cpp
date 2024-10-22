@@ -53,8 +53,12 @@ void TitleScene::Initialize()
 	camera_->SetTarget(nullptr);  
 
 
-	ObjectManager::GetInstance()->Load("title1", camera_/*camera_.get()*/, world_.get());
-	ObjectManager::GetInstance()->SetDirectionalLight("title1", l);
+	//ObjectManager::GetInstance()->Load("title1", camera_/*camera_.get()*/, world_.get());
+	//ObjectManager::GetInstance()->SetDirectionalLight("title1", l);
+	objectManager_ = std::make_unique<ObjectManager>();
+	objectManager_->Initialize();
+	objectManager_->Load("title1", camera_, world_.get());
+
 	//RenderTexture::GetInstance()->SelectPostEffect(PostEffects::kHSVFilter, true);
 	//RenderTexture::GetInstance()->SelectPostEffect(PostEffects::kGrayscale, true);
 	//RenderTexture::GetInstance()->SelectPostEffect(PostEffects::kVignetting, true);
@@ -145,6 +149,7 @@ void TitleScene::Update()
 						Tradition::GetInstance()->Initialize();
 						Tradition::GetInstance()->Start();
 						camera_->SetTarget(nullptr);
+						player_->SetVelocity({ 0.0f, 0.0f, 0.0f });
 					}
 					
 				}
@@ -308,7 +313,8 @@ void TitleScene::DrawBack()
 void TitleScene::Draw3D()
 {
 	skydome_->Draw();
-	ObjectManager::GetInstance()->Draw("title1");
+	//ObjectManager::GetInstance()->Draw("title1");
+	objectManager_->Draw("title1");
 	player_->Draw();
 	model_->Draw(worldTransform_);
 

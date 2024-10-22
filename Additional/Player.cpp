@@ -48,7 +48,7 @@ void Player::Initialize(Camera* camera, World* world)
 	//CreateCollider(&worldTransform_, Collider::Shape::kAABB, camera_, { 2.5f, 2.5f, 2.5f });
 	isHit_ = false;
 	SetCollisionAttribute(kCollisionAttributePlayer);
-	isActive_ = false;
+	isActive_ = true;
 
 	line_ = std::make_unique<PrimitiveDrawer>();
 	line_.reset(PrimitiveDrawer::Create());
@@ -236,7 +236,7 @@ void Player::Update()
 	}*/
 
 	if (Input::GetInstance()->PushKey(DIK_P)) {
-		GetWorld()->SetGravity({ 0.0f, 0.0f, 0.0f });
+		isActive_ = false;
 	}
 	if (Input::GetInstance()->PushKey(DIK_O)) {
 		GetWorld()->SetGravity({ 0.0f, -9.8f, 0.0f });
@@ -523,6 +523,7 @@ void Player::OnTriggerEvent()
 	}
 	if (GetHitBody()->GetCollisionAttribute() == kCollisionAttributeSelect) {
 		isSelect_ = true;
+
 	}
 	if (GetHitBody()->GetCollisionAttribute() == kCollisionAttributeCoin) {
 		scoreUI_->AddScore(10);

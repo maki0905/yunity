@@ -82,12 +82,16 @@ void StageScene::Initialize()
 	//end_->SetCamera(camera_.get());
 	//endWT_.Initialize();
 	//endWT_.translation_ = { 10.0f, 3.0f, 0.0f };
-	//player_->ResetPos(startWT_.translation_);
 
 	stageName_ = CommonData::GetInstance()->GetStageName();
-	ObjectManager::GetInstance()->Load(stageName_, camera_/*camera_.get()*/, world_.get());
-	startWT_.translation_ = ObjectManager::GetInstance()->GetPos(stageName_, "startBox");
+	//ObjectManager::GetInstance()->Load(stageName_, camera_/*camera_.get()*/, world_.get());
+	objectManager_ = std::make_unique<ObjectManager>();
+	objectManager_->Initialize();
+	objectManager_->Load(stageName_, camera_/*camera_.get()*/, world_.get());
+	
+	//startWT_.translation_ = ObjectManager::GetInstance()->GetPos(stageName_, "startBox");
 	startPos_ = startWT_.translation_;
+	player_->ResetPos(startPos_);
 	//ObjectManager::GetInstance()->Load("TL1", camera_.get(), world_.get());
 	/*trampolines_ = ObjectManager::GetInstance()->GetObjects("stage0", "Trampoline");*/
 
@@ -100,7 +104,7 @@ void StageScene::Initialize()
 	startWT_.UpdateMatrix();
 	textureTV_ = TextureManager::Load("Models/TV/TV.png");
 
-	ObjectManager::GetInstance()->SetActive(stageName_, 0, false);
+	//ObjectManager::GetInstance()->SetActive(stageName_, 0, false);
 
 	skydome_ = std::make_unique<Skydome>();
 	skydome_->Initialize(camera_/*camera_.get()*/, {5.0f, 5.0f, 5.0f});
@@ -171,7 +175,7 @@ void StageScene::Update()
 		player_->Update();
 
 	}
-	ObjectManager::GetInstance()->Update(stageName_);
+	//ObjectManager::GetInstance()->Update(stageName_);
 	///*for (auto& object : ObjectManager::GetInstance()->GetObjects("TL1")) {
 	//	object->Update();
 	//}*/
@@ -250,7 +254,7 @@ void StageScene::Draw3D()
 	end_->Draw(endWT_);*/
 	skydome_->Draw();
 	start_->Draw(startWT_, textureTV_);
-	ObjectManager::GetInstance()->Draw(stageName_);
+	//ObjectManager::GetInstance()->Draw(stageName_);
 	///*for (auto& object : ObjectManager::GetInstance()->GetObjects("TL1")) {
 	//	object->Draw();
 	//}*/

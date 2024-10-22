@@ -95,6 +95,8 @@ private:
 	Vector3 startPos_;
 	uint32_t textureTV_;
 
+	std::unique_ptr<ObjectManager> objectManager_;
+
 	/*std::unique_ptr<Object3D> spike_;
 	std::unique_ptr<Object3D> stand_;
 	std::unique_ptr<SpringJoint> springJoint_;

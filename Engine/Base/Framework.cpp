@@ -49,8 +49,6 @@ void Framework::Initialize()
 	skybox_ = std::make_unique<SkyBox>();
 	skybox_->StaticInitialize();
 
-	ObjectManager::GetInstance()->Initialize();
-
 #pragma endregion
 
 	// 各シーンの配列

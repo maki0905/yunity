@@ -22,7 +22,7 @@ public:
 	/// インスタンス取得
 	/// </summary>
 	/// <returns></returns>
-	static ObjectManager* GetInstance();
+	//static ObjectManager* GetInstance();
 
 	/// <summary>
 	/// 初期化
@@ -54,7 +54,7 @@ public:
 	/// </summary>
 	/// <param name="fileName"></param>
 	/// <returns></returns>
-	std::vector<std::unique_ptr<Object3D>> GetObjects(const std::string& fileName);
+	//std::vector<std::unique_ptr<Object3D>> GetObjects(const std::string& fileName);
 	//std::vector<Object3D*> GetObj(const std::string& fileName, const std::string& modelName);
 	
 	/// <summary>
@@ -63,13 +63,19 @@ public:
 	/// <param name="fileName"></param>
 	/// <param name="modelName"></param>
 	/// <returns></returns>
-	Vector3 GetPos(const std::string& fileName, const std::string& modelName);
+	//Vector3 GetPos(const std::string& fileName, const std::string& modelName);
 	
 	/// <summary>
-	/// クリア
+	/// クリア処理
 	/// </summary>
 	/// <param name="fileName"></param>
 	void Clear(const std::string& fileName);
+
+	/// <summary>
+	/// リセット処理
+	/// </summary>
+	/// <param name="fileName"></param>
+	void Reset(const std::string& fileName);
 	
 	/// <summary>
 	/// ディレクションライト設定
@@ -91,15 +97,18 @@ public:
 	/// <param name="fileName"></param>
 	/// <param name="index"></param>
 	/// <param name="active"></param>
-	void SetActive(const std::string& fileName, uint32_t index, bool active);
+	//void SetActive(const std::string& fileName, uint32_t index, bool active);
 private:
-	ObjectManager() = default;
+	/*ObjectManager() = default;
 	~ObjectManager() = default;
 	ObjectManager(const ObjectManager&) = delete;
-	const ObjectManager& operator=(const ObjectManager&) = delete;
+	const ObjectManager& operator=(const ObjectManager&) = delete;*/
 private:
 	//std::vector<Object3D*> objectVector_;
-	std::unordered_map<std::string, std::vector<std::unique_ptr<Object3D>>>objects_;
-	std::unordered_map<std::string, std::vector<bool>>activeObjects_;
+	/*std::unordered_map<std::string, std::vector<std::unique_ptr<Object3D>>>objects_;
+	
+	std::unordered_map<std::string, std::vector<bool>>activeObjects_;*/
 	//std::map<std::string, Object3D*> objects_;
+
+	std::vector<std::unique_ptr<Object3D>> objects_;
 };

@@ -10,6 +10,7 @@
 #include "Player.h"
 #include "Skydome.h"
 #include "Cloth.h"
+#include "ObjectManager.h"
 
 /*
 * @brief タイトルクラス
@@ -78,5 +79,7 @@ private:
 	float moveCameraTimer_;
 	Vector3 oldCameraPos_;
 	std::unique_ptr<Cloth> cloth_;
+
+	std::unique_ptr<ObjectManager> objectManager_;
 };
 
