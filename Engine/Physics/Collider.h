@@ -92,7 +92,6 @@ public:
 
 	void SetShape(Shape shape) { shape_ = shape; }
 	void SetHitBoxSize(Vector3 size) { size_ = size; }
-	void SetSize(const Vector3& size) { size_ = size; }
 	void SetCenter(const Vector3& center) { center_ = center; }
 	
 

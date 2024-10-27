@@ -1,6 +1,5 @@
 #include "ObjectManager.h"
 
-#include "LevelEditor.h"
 #include "ModelManager.h"
 
 //ObjectManager* ObjectManager::GetInstance()
@@ -13,6 +12,7 @@
 void ObjectManager::Initialize()
 {
 	objects_.clear();
+	joints_.clear();
 	//activeObjects_.clear();
 }
 
@@ -55,101 +55,58 @@ void ObjectManager::Load(const std::string& fileName, Camera* camera, World* wor
 	std::unique_ptr<LevelData> levelData = std::make_unique<LevelData>();
 	levelData.reset(LevelEditor::GetInstance()->LoadFile(fileName));
 
+	std::array<std::pair<Object3D*, LevelData::ObjectData>, 50> jointPair;
+
 	for (auto& object : levelData->objects) {
 		if (object.fileName == "MoveFloor") {
 
 			MoveFloor* newObject = new MoveFloor();
-			newObject->SetPosition(object.translation);
-			newObject->SetRotation(object.rotation);
-			newObject->SetScale(object.scaling);
-			newObject->SetSize(object.size);
-			newObject->SetCenter(object.center);
-			newObject->SetCollisionAttribute(0b1 << object.attribute);
-			newObject->SetIsTrigger(object.isTrigger);
-			newObject->SetMass(object.mass);
-			newObject->SetDrag(object.drag);
+			InitializeCommon(object, newObject);
+			InitializeCollider(object, newObject);
+			InitializePhysics(object, newObject);
 			newObject->Initialize(ModelManager::GetInstance()->CreateModel(obj, object.fileName), world, object.shape);
 			newObject->InitializeDirection();
 			newObject->SetCamera(camera);
 			world->Add(newObject);
-			newObject->SetMiu(object.miu);
-			newObject->SetFirictionCombine(static_cast<Body::FrictionCombine>(object.frictionCombine));
-			newObject->SetBounciness(object.bounciness);
-			newObject->SetBounceCombine(static_cast<Body::BounceCombine>(object.bounceCombine));
-			//objects_[fileName].emplace_back(newObject);
 			objects_.emplace_back(newObject);
 
 		}
 		else if (object.fileName == "TV") {
 			TV* newObject = new TV();
-			newObject->SetPosition(object.translation);
-			newObject->SetRotation(object.rotation);
-			newObject->SetScale(object.scaling);
-			newObject->SetSize(object.size);
-			newObject->SetCenter(object.center);
-			newObject->SetCollisionAttribute(0b1 << object.attribute);
-			newObject->SetIsTrigger(object.isTrigger);
-			newObject->SetMass(object.mass);
-			newObject->SetDrag(object.drag);
-			newObject->SetMiu(object.miu);
-			newObject->SetFirictionCombine(static_cast<Body::FrictionCombine>(object.frictionCombine));
-			newObject->SetBounciness(object.bounciness);
-			newObject->SetBounceCombine(static_cast<Body::BounceCombine>(object.bounceCombine));
+			InitializeCommon(object, newObject);
+			InitializeCollider(object, newObject);
+			InitializePhysics(object, newObject);
 			newObject->Initialize(ModelManager::GetInstance()->CreateModel(obj, object.fileName), world, object.shape);
 			newObject->InitializeTexture();
 			newObject->SetCamera(camera);
 			world->Add(newObject);
-			//objects_[fileName].emplace_back(newObject);
 			objects_.emplace_back(newObject);
 
 		}
 		else if (object.fileName == "Coin") {
 			Coin* newObject = new Coin();
-			newObject->SetPosition(object.translation);
-			newObject->SetRotation(object.rotation);
-			newObject->SetScale(object.scaling);
-			newObject->SetSize(object.size);
-			newObject->SetCenter(object.center);
-			newObject->SetCollisionAttribute(0b1 << object.attribute);
-			newObject->SetIsTrigger(object.isTrigger);
-			newObject->SetMass(object.mass);
-			newObject->SetDrag(object.drag);
+			InitializeCommon(object, newObject);
+			InitializeCollider(object, newObject);
+			InitializePhysics(object, newObject);
 			newObject->Initialize(ModelManager::GetInstance()->CreateModel(obj, object.fileName), world, object.shape);
 			newObject->SetCamera(camera);
 			world->Add(newObject);
-			newObject->SetMiu(object.miu);
-			newObject->SetFirictionCombine(static_cast<Body::FrictionCombine>(object.frictionCombine));
-			newObject->SetBounciness(object.bounciness);
-			newObject->SetBounceCombine(static_cast<Body::BounceCombine>(object.bounceCombine));
-			//objects_[fileName].emplace_back(newObject);
 			objects_.emplace_back(newObject);
+
 		}
 		else if (object.serialNumber != -1) {
 			EventTrigger* newObject = new EventTrigger();
-			newObject->SetPosition(object.translation);
-			newObject->SetRotation(object.rotation);
-			newObject->SetScale(object.scaling);
-			newObject->SetSize(object.size);
-			newObject->SetCenter(object.center);
-			newObject->SetCollisionAttribute(0b1 << object.attribute);
-			newObject->SetIsTrigger(object.isTrigger);
-			newObject->SetSerialNumber(object.serialNumber);
+			InitializeCommon(object, newObject);
+			InitializeCollider(object, newObject);
 			newObject->Initialize(world, object.shape);
 			world->Add(newObject);
-			//objects_[fileName].emplace_back(newObject);
 			objects_.emplace_back(newObject);
 		}
 		else {
 			Object3D* newObject = new Object3D();
-			newObject->SetPosition(object.translation);
-			newObject->SetRotation(object.rotation);
-			newObject->SetScale(object.scaling);
-			newObject->SetSize(object.size);
-			newObject->SetCenter(object.center);
-			newObject->SetIsTrigger(object.isTrigger);
-			newObject->SetMass(object.mass);
-			newObject->SetDrag(object.drag);
-			newObject->SetCollisionAttribute(0b1 << object.attribute);
+			InitializeCommon(object, newObject);
+			InitializeCollider(object, newObject);
+			InitializePhysics(object, newObject);
 			if (object.empth) {
 				newObject->Initialize(world, object.shape);
 			}
@@ -160,14 +117,37 @@ void ObjectManager::Load(const std::string& fileName, Camera* camera, World* wor
 			if (Length(object.size) > 0) {
 				world->Add(newObject);
 			}
-			newObject->SetMiu(object.miu);
-			newObject->SetFirictionCombine(static_cast<Body::FrictionCombine>(object.frictionCombine));
-			newObject->SetBounciness(object.bounciness);
-			newObject->SetBounceCombine(static_cast<Body::BounceCombine>(object.bounceCombine));
-			//objects_[fileName].emplace_back(newObject);
 			objects_.emplace_back(newObject);
-		}
 
+			if (object.jointPair_ > -1) {
+				if (jointPair[object.jointPair_].first == nullptr) {
+					jointPair[object.jointPair_].first = newObject;
+					jointPair[object.jointPair_].second = object;
+				}
+				else {
+					if (object.jointType_ == 0) {
+						SpringJoint* springJoint = new SpringJoint();
+						springJoint->CreateSpringJoint(jointPair[object.jointPair_].first, newObject);
+						for (uint32_t i = 0; i < 3; i++) {
+							springJoint->EnableSpring(i, object.springEnabled_[i]);
+							springJoint->SetStiffness(i, object.stiffness_[i]);
+							springJoint->SetDamping(i, object.dampingCoefficient_[i]);
+							springJoint->SetEquilibriumPoint(i, object.equilibriumPoint_[i]);
+							joints_.emplace_back(springJoint);
+						}
+					}
+					else {
+						PulleyJoint* pulleyJoint = new PulleyJoint();
+						pulleyJoint->CreatePulleyJoint(jointPair[object.jointPair_].first, newObject, jointPair[object.jointPair_].second.groundAnchor_, object.groundAnchor_, jointPair[object.jointPair_].second.anchor_, object.anchor_, object.ratio_);
+						joints_.emplace_back(pulleyJoint);
+
+
+					}
+
+
+				}
+			}
+		}
 	}
 }
 
@@ -228,6 +208,31 @@ void ObjectManager::SetEnableLighting(/*const std::string& fileName,*/ bool onOf
 	for (auto& obj : objects_) {
 		obj->SetEnableLighting(onOff);
 	}
+}
+
+void ObjectManager::InitializeCommon(const LevelData::ObjectData& objectData, Object3D* newObject)
+{
+	newObject->SetPosition(objectData.translation);
+	newObject->SetRotation(objectData.rotation);
+	newObject->SetScale(objectData.scaling);
+}
+
+void ObjectManager::InitializeCollider(const LevelData::ObjectData& objectData, Object3D* newObject)
+{
+	newObject->SetHitBoxSize(objectData.size);
+	newObject->SetCenter(objectData.center);
+	newObject->SetCollisionAttribute(0b1 << objectData.attribute);
+	newObject->SetIsTrigger(objectData.isTrigger);
+}
+
+void ObjectManager::InitializePhysics(const LevelData::ObjectData& objectData, Object3D* newObject)
+{
+	newObject->SetMass(objectData.mass);
+	newObject->SetDrag(objectData.drag);
+	newObject->SetMiu(objectData.miu);
+	newObject->SetFirictionCombine(static_cast<Body::FrictionCombine>(objectData.frictionCombine));
+	newObject->SetBounciness(objectData.bounciness);
+	newObject->SetBounceCombine(static_cast<Body::BounceCombine>(objectData.bounceCombine));
 }
 
 //void ObjectManager::SetActive(const std::string& fileName, uint32_t index, bool active)

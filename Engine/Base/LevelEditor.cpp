@@ -138,6 +138,17 @@ void LevelEditor::LoadObjectRecursive(LevelData* levelData, nlohmann::json deser
 				objectData.serialNumber = (uint32_t)eventtrigger["serialnumber"];
 			}
 
+			if (object.contains("joint")) {
+				nlohmann::json& joint = object["joint"];
+				objectData.jointPair_ = (uint32_t)joint["joints"];
+				objectData.jointType_ = (uint32_t)joint["type"];
+			}
+
+			if (object.contains("tag")) {
+				nlohmann::json& tag = object["tag"];
+				objectData.tag_ = (uint32_t)tag["tag"];
+			}
+
 		}
 
 		// EMPTY
@@ -206,6 +217,32 @@ void LevelEditor::LoadObjectRecursive(LevelData* levelData, nlohmann::json deser
 			if (object.contains("eventtrigger")) {
 				nlohmann::json& eventtrigger = object["eventtrigger"];
 				objectData.serialNumber = (uint32_t)eventtrigger["serialnumber"];
+			}
+
+			if (object.contains("joint")) {
+				nlohmann::json& joint = object["joint"];
+				objectData.jointPair_ = (uint32_t)joint["joints"];
+				objectData.jointType_ = (uint32_t)joint["type"];
+				if (objectData.jointType_) {
+					for (uint32_t i = 0; i < 3; i++) {
+						objectData.springEnabled_[i] = (int)joint["springEnabled"][i];
+						objectData.equilibriumPoint_[i] = (float)joint["equilibriumPoint"][i];
+						objectData.stiffness_[i] = (float)joint["stiffness"][i];
+						objectData.dampingCoefficient_[i] = (float)joint["dampingCoefficient"][i];
+					}
+				}
+				else {
+					objectData.groundAnchor_ = Vector3((float)joint["groundAnchor"][0], (float)joint["groundAnchor"][1], (float)joint["groundAnchor"][2]);
+					objectData.anchor_ = Vector3((float)joint["anchor"][0], (float)joint["anchor"][1], (float)joint["anchor"][2]);
+					objectData.ratio_ = (float)joint["ratio"];
+				}
+
+
+			}
+
+			if (object.contains("tag")) {
+				nlohmann::json& tag = object["tag"];
+				objectData.tag_ = (uint32_t)tag["tag"];
 			}
 
 		}

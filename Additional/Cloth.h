@@ -3,6 +3,7 @@
 #include "Object3D.h"
 #include "SpringJoint.h"
 
+
 class Cloth{
 public:
 	void Initialize(World* world);

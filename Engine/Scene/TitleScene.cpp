@@ -115,10 +115,10 @@ void TitleScene::Initialize()
 	cloth_->Initialize(world_.get());*/
 
 	floor_ = std::make_unique<Object3D>();
-	floor_->Initialize(ModelManager::GetInstance()->CreateModel(obj, "Cube"), world_.get(), Collider::kAABB);
+	floor_->Initialize(ModelManager::GetInstance()->CreateModel(obj, "Wood"), world_.get(), Collider::kAABB);
 	floor_->SetTranslation({ 0.0f, 10.0f, 0.0f });
 	floor_->SetCamera(camera_);
-	floor_->SetMass(2.0f);
+	floor_->SetMass(1.0f);
 	floor_->SetCollisionAttribute(kCollisionAttributeFloor);
 	floor_->SetHitBoxSize({ 2.0f, 2.0f, 2.0f });
 	world_->Add(floor_.get()); 
@@ -306,11 +306,11 @@ void TitleScene::Update()
 
 	world_->Solve();
 
-	i += k;
-	if (i > 10.0f || i < -10.0f) {
-		k *= -1.0f;
+	wavelength += amplitude;
+	if (wavelength > 10.0f || wavelength < -10.0f) {
+		amplitude *= -1.0f;
 	}
-	worldTransform_.rotation_.z = i * DegToRad();
+	worldTransform_.rotation_.z = wavelength * DegToRad();
 	worldTransform_.UpdateMatrix();
 
 	time_++;

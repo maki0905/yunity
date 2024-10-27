@@ -208,7 +208,7 @@ private:
 	FrictionCombine frictionCombine_;
 	// 摩擦係数
 	float miu_ = 0.0f;
-	// 動摩擦力
+	// 動摩擦力の大きさ
 	float magnitude_ = 0.0f;
 	// 反発計算方法
 	BounceCombine bounceCombine_;

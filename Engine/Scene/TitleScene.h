@@ -64,8 +64,8 @@ private:
 	std::unique_ptr<Player> player_;
 	std::unique_ptr<Object3D> obj_;
 	std::unique_ptr<Skydome> skydome_;
-	float k = 0.5f;
-	float i = 0.0f;
+	float amplitude = 0.5f;
+	float wavelength = 0.0f;
 	bool isStart_ = false;
 	//std::unique_ptr<Model> model_ = nullptr;
 	std::unique_ptr<Model> models_[3];

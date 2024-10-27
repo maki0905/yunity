@@ -126,56 +126,6 @@ namespace {
 		return Multiply(minPenetrationDepth, minPenetrationAxis);
 	}
 
-	//Vector3 GetPushback(const OBB& obb1, const OBB& obb2) {
-	//	float minPenetrationDepth = (std::numeric_limits<float>::max)();
-	//	Vector3 minPenetrationAxis;
-
-	//	Vector3 axes[15];
-	//	int index = 0;
-
-	//	for (int i = 0; i < 3; i++) {
-	//		axes[index++] = obb1.orientations[i];
-	//		axes[index++] = obb2.orientations[i];
-	//	}
-
-	//	for (int i = 0; i < 3; i++) {
-	//		for (int j = 0; j < 3; j++) {
-	//			Vector3 crossAxis = Vector3(
-	//				obb1.orientations[i].y * obb2.orientations[j].z - obb1.orientations[i].z * obb2.orientations[j].y,
-	//				obb1.orientations[i].z * obb2.orientations[j].x - obb1.orientations[i].x * obb2.orientations[j].z,
-	//				obb1.orientations[i].x * obb2.orientations[j].y - obb1.orientations[i].y * obb2.orientations[j].x
-	//			);
-	//			if (crossAxis.Length() > 1e-6) {
-	//				axes[index++] = crossAxis.Normalize();
-	//			}
-
-	//		}
-	//	}
-
-	//	Vector3 centerOffset = Subtract(obb2.center, obb1.center);
-
-	//	for (int i = 0; i < index; i++) {
-	//		Vector3 axis = axes[i];
-
-	//		float r1 = obb1.size.x * std::fabsf(Dot(obb1.orientations[0], axis)) + obb1.size.y * std::fabsf(Dot(obb1.orientations[1], axis)) + obb1.size.z * std::fabsf(Dot(obb1.orientations[2], axis));
-	//		float r2 = obb2.size.x * std::fabsf(Dot(obb2.orientations[0], axis)) + obb2.size.y * std::fabsf(Dot(obb2.orientations[1], axis)) + obb2.size.z * std::fabsf(Dot(obb2.orientations[2], axis));
-	//		float distance = std::fabsf(Dot(Subtract(obb2.center, obb1.center), axis));
-
-	//		if (distance > r1 + r2) {
-	//			return Vector3(0, 0, 0);
-	//		}
-
-	//		float penetrationDepth = (r1 + r2) - distance;
-
-	//		if (penetrationDepth < minPenetrationDepth) {
-	//			minPenetrationDepth = penetrationDepth;
-	//			minPenetrationAxis = axis.Normalize();
-	//		}
-
-	//	}
-
-	//	return Multiply(minPenetrationDepth, minPenetrationAxis);
-	//}
 
 	// 分離軸に基づく投影範囲を計算
 	void ProjectOBBOnAxis(const OBB& obb, const Vector3& axis, float& minProj, float& maxProj) {

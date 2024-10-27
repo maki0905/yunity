@@ -5,6 +5,9 @@
 #include <string>
 
 #include "Object3D.h"
+#include "Joint.h"
+#include "SpringJoint.h"
+#include "PulleyJoint.h"
 #include "Camera.h"
 #include "World.h"
 #include "MoveFloor.h"
@@ -12,6 +15,7 @@
 #include "TV.h"
 #include "Coin.h"
 #include "GiftWall.h"
+#include "LevelEditor.h"
 
 /*
 * @brief オブジェクトマネージャークラス
@@ -28,19 +32,19 @@ public:
 	/// 初期化
 	/// </summary>
 	void Initialize();
-	
+
 	/// <summary>
 	/// 更新
 	/// </summary>
 	/// <param name="fileName"></param>
 	void Update(/*const std::string& fileName*/);
-	
+
 	/// <summary>
 	/// 描画
 	/// </summary>
 	/// <param name="fileName"></param>
 	void Draw(/*const std::string& fileName*/);
-	
+
 	/// <summary>
 	/// マップ読み込み
 	/// </summary>
@@ -48,7 +52,7 @@ public:
 	/// <param name="camera"></param>
 	/// <param name="world"></param>
 	void Load(const std::string& fileName, Camera* camera, World* world);
-	
+
 	/// <summary>
 	/// 指定オブジェクト群取得
 	/// </summary>
@@ -56,7 +60,7 @@ public:
 	/// <returns></returns>
 	//std::vector<std::unique_ptr<Object3D>> GetObjects(const std::string& fileName);
 	//std::vector<Object3D*> GetObj(const std::string& fileName, const std::string& modelName);
-	
+
 	/// <summary>
 	/// 指定オブジェクト群
 	/// </summary>
@@ -64,7 +68,7 @@ public:
 	/// <param name="modelName"></param>
 	/// <returns></returns>
 	//Vector3 GetPos(const std::string& fileName, const std::string& modelName);
-	
+
 	/// <summary>
 	/// クリア処理
 	/// </summary>
@@ -76,21 +80,21 @@ public:
 	/// </summary>
 	/// <param name="fileName"></param>
 	void Reset(const std::string& fileName);
-	
+
 	/// <summary>
 	/// ディレクションライト設定
 	/// </summary>
 	/// <param name="fileName"></param>
 	/// <param name="directionalLight"></param>
 	void SetDirectionalLight(/*const std::string& fileName, */Model::DirectionalLight directionalLight);
-	
+
 	/// <summary>
 	/// 
 	/// </summary>
 	/// <param name="fileName"></param>
 	/// <param name="onOff"></param>
 	void SetEnableLighting(/*const std::string& fileName,*/ bool onOff);
-	
+
 	/// <summary>
 	/// アクティブ設定
 	/// </summary>
@@ -99,16 +103,28 @@ public:
 	/// <param name="active"></param>
 	//void SetActive(const std::string& fileName, uint32_t index, bool active);
 private:
-	/*ObjectManager() = default;
-	~ObjectManager() = default;
-	ObjectManager(const ObjectManager&) = delete;
-	const ObjectManager& operator=(const ObjectManager&) = delete;*/
-private:
-	//std::vector<Object3D*> objectVector_;
-	/*std::unordered_map<std::string, std::vector<std::unique_ptr<Object3D>>>objects_;
-	
-	std::unordered_map<std::string, std::vector<bool>>activeObjects_;*/
-	//std::map<std::string, Object3D*> objects_;
+	/// <summary>
+	/// 共通データ初期化
+	/// </summary>
+	/// <param name="objectData"></param>
+	/// <param name="newObject"></param>
+	void InitializeCommon(const LevelData::ObjectData& objectData, Object3D* newObject);
 
+	/// <summary>
+	/// コライダーデータ初期化
+	/// </summary>
+	/// <param name="objectData"></param>
+	/// <param name="newObject"></param>
+	void InitializeCollider(const LevelData::ObjectData& objectData, Object3D* newObject);
+
+	/// <summary>
+	/// 物理データ初期化
+	/// </summary>
+	/// <param name="objectData"></param>
+	/// <param name="newObject"></param>
+	void InitializePhysics(const LevelData::ObjectData& objectData, Object3D* newObject);
+private:
 	std::vector<std::unique_ptr<Object3D>> objects_;
+	std::vector<std::unique_ptr<Joint>> joints_;
+
 };
