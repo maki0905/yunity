@@ -67,7 +67,7 @@ public:
 	/// <param name="fileName"></param>
 	/// <param name="modelName"></param>
 	/// <returns></returns>
-	//Vector3 GetPos(const std::string& fileName, const std::string& modelName);
+	Vector3 GetPos(const std::string& modelName);
 
 	/// <summary>
 	/// クリア処理

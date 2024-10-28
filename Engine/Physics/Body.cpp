@@ -342,7 +342,7 @@ void Body::SolveConstraints()
 		Vector3 relativeVelocity = Subtract(c->velocityA, c->velocityB);
 		float velocityAlongNormal = Dot(relativeVelocity, c->contactNormal);
 		float impulseMagnitude = 0.0f;
-		if (restitution_ == 0.0f) {
+		if (c->restitution == 0.0f) {
 			if (c->massB != 0.0f) {
 				impulseMagnitude = -velocityAlongNormal / (1.0f / c->massA + 1.0f / c->massB);
 			}

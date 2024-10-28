@@ -97,6 +97,16 @@ private:
 
 	std::unique_ptr<ObjectManager> objectManager_;
 
+	bool isReset_;
+	bool isDebt_;
+	float upTime_;
+	float downTime_;
+	float resetTime_;
+	float sizeTime_;
+	Vector3 dieCamera_;
+	Vector3 diePos_;
+	Vector3 topPos_;
+
 	/*std::unique_ptr<Object3D> spike_;
 	std::unique_ptr<Object3D> stand_;
 	std::unique_ptr<SpringJoint> springJoint_;

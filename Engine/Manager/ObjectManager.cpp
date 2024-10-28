@@ -43,7 +43,11 @@ void ObjectManager::Draw(/*const std::string& fileName*/)
 	//	}*/
 	//}
 	for (auto& object : objects_) {
-		object->Draw();
+		if (object->GetModel() != nullptr) {
+			if (object->GetModel()->GetModelName() != "startBox") {
+				object->Draw();
+			}
+		}
 		/*if (activeObjects_[fileName][index++]) {
 			object->Draw();
 		}*/
@@ -169,6 +173,16 @@ void ObjectManager::Load(const std::string& fileName, Camera* camera, World* wor
 //	}
 //	return result;
 //}
+
+Vector3 ObjectManager::GetPos(const std::string& modelName)
+{
+	for (auto& obj : objects_) {
+		if (obj->GetModel()->GetModelName() == modelName) {
+			return obj->GetMatWorldTranslation();
+		}
+	}
+	return Vector3();
+}
 
 void ObjectManager::Clear(/*const std::string& fileName*/)
 {

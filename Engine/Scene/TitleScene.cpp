@@ -114,7 +114,7 @@ void TitleScene::Initialize()
 	/*cloth_ = std::make_unique<Cloth>();
 	cloth_->Initialize(world_.get());*/
 
-	floor_ = std::make_unique<Object3D>();
+	/*floor_ = std::make_unique<Object3D>();
 	floor_->Initialize(ModelManager::GetInstance()->CreateModel(obj, "Wood"), world_.get(), Collider::kAABB);
 	floor_->SetTranslation({ 0.0f, 10.0f, 0.0f });
 	floor_->SetCamera(camera_);
@@ -142,7 +142,96 @@ void TitleScene::Initialize()
 	joint_->SetStiffness(1, 20.0f);
 	joint_->EnableSpring(1, false);
 	joint_->SetEquilibriumPoint(1, 10.0f);
-	world_->AddJoint(joint_.get());
+	world_->AddJoint(joint_.get());*/
+
+	// obj1,2
+	//obj1_ = std::make_unique<Object3D>();
+	//obj1_->Initialize(ModelManager::GetInstance()->CreateModel(obj,/* ""*/"Grasslands"), world_.get(), Collider::Shape::kOBB);
+	//obj1_->SetHitBoxSize({ 2.0f, 2.0f, 2.0f });
+	//obj1_->SetScale({ 1.0f, 1.0f, 1.0f });
+	//obj1_->SetCamera(camera_);
+	//obj1_->SetCollisionAttribute(kCollisionAttributePlayer);
+	//obj1_->SetPosition(Vector3{ 0.0f, 20.0f, 0.0f });
+	//obj1_->SetFirictionCombine(Body::FrictionCombine::kMaximum);
+	//obj1_->SetMiu(1.0f);
+	//obj1_->SetAngularDrag(0.00005f);
+	//obj1_->SetInertiaMoment(0.01f);
+
+	//obj2_ = std::make_unique<Object3D>();
+	//obj2_->Initialize(ModelManager::GetInstance()->CreateModel(obj,/* ""*/"Wood"), world_.get(), Collider::Shape::kOBB);
+	//obj2_->SetCamera(camera_);
+	//obj2_->SetHitBoxSize({ 2.0f, 2.0f, 2.0f });
+	////obj2_->SetScale({200.0f , 3.0f, 50.0f });
+	//obj2_->SetScale({ 4.0, 1.0f, 4.0f });
+	//obj2_->SetPosition(Vector3{ 0.0f, 20.0, 0.0f });
+	//obj2_->SetCollisionAttribute(kCollisionAttributePlayer);
+	//obj2_->SetFirictionCombine(Body::FrictionCombine::kMaximum);
+	//obj2_->SetMiu(1.0f);
+
+	//world_->Add(obj1_.get());
+	//world_->Add(obj2_.get());
+
+	// springbrige
+	//for (uint32_t index = 0; index < 5; index++) {
+	//	objs_[index] = std::make_unique<Object3D>();
+	//	objs_[index]->SetPosition(Vector3{ -15.0f + 5.0f * index , 10.0f, 0.0f });
+	//	objs_[index]->Initialize(ModelManager::GetInstance()->CreateModel(obj,/* ""*/"Cube"), world_.get(), Collider::Shape::kOBB);
+	//	objs_[index]->SetCamera(camera_);
+	//	objs_[index]->SetScale({ 1.0f, 1.0f, 1.0f });
+	//	objs_[index]->SetHitBoxSize({ 2.0f, 2.0f, 2.0f });
+	//	objs_[index]->SetCollisionAttribute(kCollisionAttributeFloor);
+	//	if (index > 0 && index < 4) {
+	//		if (index % 2 == 0) {
+	//			objs_[index]->SetMass(2.0f);
+	//		}
+	//		else {
+	//			objs_[index]->SetMass(2.0f);
+	//		}
+	//	}
+	//	world_->Add(objs_[index].get());
+	//}
+
+	//for (uint32_t index = 0; index < 4; index++) {
+	//	springJoints_[index] = std::make_unique<SpringJoint>();
+	//	springJoints_[index]->CreateSpringJoint(objs_[index].get(), objs_[index + 1].get());
+	//	springJoints_[index]->EnableSpring(0, true);
+	//	springJoints_[index]->EnableSpring(1, true);
+	//	springJoints_[index]->SetEquilibriumPoint(0, 0.0f);
+	//	springJoints_[index]->SetEquilibriumPoint(1, 0.0f);
+	//	springJoints_[index]->SetStiffness(0, stiffness_);
+	//	springJoints_[index]->SetStiffness(1, stiffness_);
+	//	springJoints_[index]->SetDamping(0, dampar_);
+	//	springJoints_[index]->SetDamping(1, dampar_);
+	//	world_->AddJoint(springJoints_[index].get());
+
+	//	lines_[index] = std::make_unique<PrimitiveDrawer>();
+	//	lines_[index].reset(PrimitiveDrawer::Create());
+	//	lines_[index]->SetCamera(camera_);
+	//}
+
+	// pulley
+	//for (int index = 0; index < 2; index++) {
+	//	pulleyObjs_[index] = std::make_unique<Object3D>();
+	//	pulleyObjs_[index]->SetPosition({ -5.0f + index * 10.0f, 5.0f, 0.0f });
+	//	pulleyObjs_[index]->Initialize(ModelManager::GetInstance()->CreateModel(obj,/* ""*/"Cube"), world_.get(), Collider::Shape::kOBB);
+	//	pulleyObjs_[index]->SetCamera(camera_);
+	//	pulleyObjs_[index]->SetScale({ 1.0f, 1.0f, 1.0f });
+	//	pulleyObjs_[index]->SetHitBoxSize({ 2.0f, 2.0f, 2.0f });
+	//	pulleyObjs_[index]->SetCollisionAttribute(kCollisionAttributeFloor);
+	//	pulleyObjs_[index]->SetMass(20.0f);
+	//	world_->Add(pulleyObjs_[index].get());
+	//	groundAnchor_[index] = { -5.0f + index * 10.0f, 10.0f, 0.0f };
+	//}
+	//for (uint32_t index = 0; index < 3; index++) {
+	//	pulleyLines_[index] = std::make_unique<PrimitiveDrawer>();
+	//	pulleyLines_[index].reset(PrimitiveDrawer::Create());
+	//	pulleyLines_[index]->SetCamera(camera_);
+	//}
+
+	//ratio_ = 1.0f;
+	//pulleyJoint_ = std::make_unique<PulleyJoint>();
+	//pulleyJoint_->CreatePulleyJoint(pulleyObjs_[0].get(), pulleyObjs_[1].get(), groundAnchor_[0], groundAnchor_[1], pulleyObjs_[0]->GetTranslation(), pulleyObjs_[1]->GetTranslation(), ratio_);
+	//world_->AddJoint(pulleyJoint_.get());
 
 }
 
@@ -150,9 +239,9 @@ void TitleScene::Update()
 {
 	prePad_ = pad_;
 
-	if (Input::GetInstance()->TriggerKey(DIK_I)) {
+	/*if (Input::GetInstance()->TriggerKey(DIK_I)) {
 		joint_->EnableSpring(1, true);
-	}
+	}*/
 
 	/*Vector3 rotate{ 0.4f, 1.43f, -0.8f };
 	Matrix4x4 rotateX = MakeRotateXMatrix(rotate.x);
@@ -323,9 +412,67 @@ void TitleScene::Update()
 	//cloth_->Update();
 
 #ifdef _DEBUG
+	//Vector3 pos;
+	//ImGui::Begin("obj1");
+	//pos = obj1_->GetMatWorldTranslation();
+	////Vector3 rotate = Multiply(RadToDeg(), obj1_->GetWorldTransform()->rotation_);
+	//Vector3 rotate = obj1_->GetWorldTransform()->rotation_;
+	//ImGui::DragFloat3("pos", &pos.x);
+	//ImGui::DragFloat3("rotate", &rotate.x);
+	//obj1_->SetPosition(pos);
+	////obj1_->SetRotation(Multiply(DegToRad(), rotate));
+	//obj1_->SetRotation(rotate);
+	//if (ImGui::Button("Gravity")) {
+	//	obj1_->SetMass(2.0f);
+	//}
+	//if (ImGui::Button("Reset")) {
+	//	obj1_->SetMass(0.0f);
+	//	obj1_->SetPosition(Vector3{ 0.0f, 20.0f, 0.0f });
+	//	obj1_->SetRotation(Vector3{ 0.0f, 0.0f, 0.0f });
+	//	obj1_->SetVelocity({ 0.0f, 0.0f, 0.0f });
+	//	obj1_->SetAngularVelocity({ 0.0f, 0.0f, 0.0f });
+	//}
+	//Vector3 velocity = obj1_->GetVelocity();
+	//ImGui::DragFloat3("velocity", &velocity.x);
+	//Vector3 anglur = obj1_->GetAngularVelocity();
+	//ImGui::DragFloat3("angularvelocity", &anglur.x);
+	////ImGui::DragFloat3("torque", &torupu_.x);
+
+	///*if (ImGui::Button("AddTorque")) {
+	//	obj1_->AddTorque(torupu_, 1);
+	//}*/
+	//ImGui::End();
+
+	//ImGui::Begin("obj2");
+	//pos = obj2_->GetMatWorldTranslation();
+	//rotate = Multiply(RadToDeg(), obj2_->GetWorldTransform()->rotation_);
+	//ImGui::DragFloat3("pos", &pos.x);
+	//ImGui::DragFloat3("rotate", &rotate.x);
+	//obj2_->SetPosition(pos);
+	//obj2_->SetRotation(Multiply(DegToRad(), rotate));
+	//if (ImGui::Button("Gravity")) {
+	//	obj2_->SetMass(10.0f);
+	//}
+	//if (ImGui::Button("Reset")) {
+	//	obj2_->SetMass(0.0f);
+	//	obj2_->SetPosition(Vector3{ 0.0f, 7.0f, 0.0f });
+	//	obj2_->SetRotation(Vector3{ 0.0f, 0.0f, 0.0f });
+	//	obj2_->SetVelocity({ 0.0f, 0.0f, 0.0f });
+	//	obj2_->SetAngularVelocity({ 0.0f, 0.0f, 0.0f });
+	//}
+	///*ImGui::DragFloat3("torque", &torupu_.x);
+
+	//if (ImGui::Button("AddTorque")) {
+	//	obj2_->AddTorque(torupu_, 1);
+	//}*/
+	//velocity = obj2_->GetVelocity();
+	//ImGui::DragFloat3("velocity", &velocity.x);
+	//ImGui::End();
+
+	/*------------------------------------------------------------------------------*/
 	ImGui::Begin("a");
-	Vector3 velocity = floor_->GetVelocity();
-	ImGui::DragFloat3("ve", &velocity.x);
+	/*Vector3 velocity = floor_->GetVelocity();
+	ImGui::DragFloat3("ve", &velocity.x);*/
 
 	ImGui::DragFloat3("pos", &worldTransform_.translation_.x);
 	if (ImGui::Button("Off")) {
@@ -354,9 +501,9 @@ void TitleScene::Draw3D()
 	//ObjectManager::GetInstance()->Draw("title1");
 	objectManager_->Draw(/*"title1"*/);
 
-	floor_->Draw();
+	/*floor_->Draw();
 	anchor_->Draw();
-	sp_->Draw(anchor_->GetTranslation(), floor_->GetTranslation());
+	sp_->Draw(anchor_->GetTranslation(), floor_->GetTranslation());*/
 
 	player_->Draw();
 	model_->Draw(worldTransform_);
@@ -366,6 +513,29 @@ void TitleScene::Draw3D()
 			models_[index]->Draw(TVworldTransform_[index], textureTV_[index]);
 		}
 	}
+
+	//obj1,2
+	/*obj1_->Draw();
+	obj2_->Draw();*/
+
+	// springbrige
+	/*for (uint32_t index = 0; index < 4; index++) {
+		lines_[index]->Draw(objs_[index]->GetMatWorldTranslation(), objs_[index + 1]->GetMatWorldTranslation(), {0.0f, 0.0f, 0.0f, 1.0f});
+	}
+
+	for (uint32_t index = 0; index < 5; index++) {
+		objs_[index]->Draw();
+	}*/
+
+	// pulley
+	/*for (uint32_t index = 0; index < 2; index++) {
+		pulleyLines_[index]->Draw(pulleyObjs_[index]->GetMatWorldTranslation(), groundAnchor_[index], { 0.0f, 0.0f, 0.0f, 1.0f });
+	}
+	pulleyLines_[2]->Draw(groundAnchor_[0], groundAnchor_[1], { 0.0f, 0.0f, 0.0f, 1.0f });
+	for (uint32_t index = 0; index < 2; index++) {
+		pulleyLines_[index]->Draw(pulleyObjs_[index]->GetMatWorldTranslation(), groundAnchor_[index], { 0.0f, 0.0f, 0.0f, 1.0f });
+		pulleyObjs_[index]->Draw();
+	}*/
 
 	//cloth_->Draw();
 	//obj_->Draw();

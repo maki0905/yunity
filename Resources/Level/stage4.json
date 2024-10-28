@@ -3,57 +3,12 @@
     "objects": [
         {
             "type": "MESH",
-            "name": "立方体.009",
-            "transform": {
-                "translation": [
-                    97.8293685913086,
-                    0.0,
-                    0.0
-                ],
-                "rotation": [
-                    0.0,
-                    -0.0,
-                    0.0
-                ],
-                "scaling": [
-                    27.458911895751953,
-                    1.0,
-                    1.0
-                ]
-            },
-            "file_name": "Floor",
-            "collider": {
-                "type": "BOX",
-                "center": [
-                    0.0,
-                    0.0,
-                    0.0
-                ],
-                "size": [
-                    8.0,
-                    8.0,
-                    8.0
-                ],
-                "isTrigger": false,
-                "attribute": 1
-            },
-            "body": {
-                "mass": 0.0,
-                "drag": 0.05,
-                "miu": 1.0,
-                "frictionCombine": 0,
-                "bounciness": 0.0,
-                "bounceCombine": 0
-            }
-        },
-        {
-            "type": "MESH",
             "name": "Cube",
             "transform": {
                 "translation": [
                     0.0,
                     0.0,
-                    12.098930358886719
+                    3.6081604957580566
                 ],
                 "rotation": [
                     0.0,
@@ -70,12 +25,12 @@
         },
         {
             "type": "MESH",
-            "name": "円柱",
+            "name": "立方体",
             "transform": {
                 "translation": [
-                    124.9798355102539,
+                    7.456246852874756,
                     0.0,
-                    6.432938575744629
+                    -3.4936304092407227
                 ],
                 "rotation": [
                     0.0,
@@ -83,26 +38,134 @@
                     0.0
                 ],
                 "scaling": [
-                    1.6239049434661865,
-                    1.6239049434661865,
-                    1.6239049434661865
+                    14.476205825805664,
+                    6.724793910980225,
+                    4.371636867523193
                 ]
             },
-            "file_name": "Ventilator",
+            "file_name": "Grasslands",
             "collider": {
                 "type": "BOX",
                 "center": [
-                    -11.020000457763672,
+                    0.0,
                     0.0,
                     0.0
                 ],
                 "size": [
-                    15.0,
-                    4.069999694824219,
+                    2.0,
+                    2.0,
                     2.0
                 ],
-                "isTrigger": true,
-                "attribute": 11
+                "isTrigger": false,
+                "attribute": 1
+            }
+        },
+        {
+            "type": "EMPTY",
+            "name": "エンプティ",
+            "transform": {
+                "translation": [
+                    -7.60634708404541,
+                    0.0,
+                    7.101773738861084
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    1.058955430984497,
+                    7.0772929191589355,
+                    8.122432708740234
+                ]
+            },
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    2.0,
+                    2.0,
+                    2.0
+                ],
+                "isTrigger": false,
+                "attribute": 1
+            }
+        },
+        {
+            "type": "EMPTY",
+            "name": "エンプティ.001",
+            "transform": {
+                "translation": [
+                    14.31251335144043,
+                    9.352449417114258,
+                    7.101773738861084
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    22.880977630615234,
+                    2.2744133472442627,
+                    7.974239826202393
+                ]
+            },
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    2.0,
+                    2.0,
+                    2.0
+                ],
+                "isTrigger": false,
+                "attribute": 1
+            }
+        },
+        {
+            "type": "EMPTY",
+            "name": "エンプティ.002",
+            "transform": {
+                "translation": [
+                    14.31251335144043,
+                    -9.34356689453125,
+                    7.101773738861084
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    22.880977630615234,
+                    2.2744133472442627,
+                    7.974239826202393
+                ]
+            },
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    2.0,
+                    2.0,
+                    2.0
+                ],
+                "isTrigger": false,
+                "attribute": 1
             }
         }
     ]

@@ -88,7 +88,7 @@ void StageScene::Initialize()
 	objectManager_ = std::make_unique<ObjectManager>();
 	objectManager_->Initialize();
 	objectManager_->Load(stageName_, camera_/*camera_.get()*/, world_.get());
-	
+	startWT_.translation_ = objectManager_->GetPos("startBox");
 	//startWT_.translation_ = ObjectManager::GetInstance()->GetPos(stageName_, "startBox");
 	startPos_ = startWT_.translation_;
 	player_->ResetPos(startPos_);
@@ -98,8 +98,8 @@ void StageScene::Initialize()
 	start_ = std::make_unique<Model>();
 	start_.reset(ModelManager::GetInstance()->CreateModel(obj, "TV"));
 	start_->SetCamera(camera_);
-	startWT_.translation_.y = 3.0f;
-	startWT_.translation_.z = 10.0f;
+	startWT_.translation_.y += 1.0f;
+	startWT_.translation_.z += 3.0f;
 	startWT_.scale_ = { 0.5f, 0.5f, 0.5f };
 	startWT_.UpdateMatrix();
 	textureTV_ = TextureManager::Load("Models/TV/TV.png");
@@ -137,6 +137,10 @@ void StageScene::Initialize()
 	line_.reset(PrimitiveDrawer::Create());
 	line_->SetCamera(camera_);*/
 
+	isReset_ = false;
+	isDebt_ = false;
+	resetTime_ = 0.0f;
+	sizeTime_ = 0.0f;
 }
 
 void StageScene::Update()
@@ -170,11 +174,47 @@ void StageScene::Update()
 		Tradition::GetInstance()->Update();
 		camera_->SetOffset(Lerp(startPos_, { startPos_.x, 5.0f, -50.0f }, std::clamp(1.0f - Tradition::GetInstance()->GetTime(), 0.0f, 1.0f)));
 		player_->SetScale(Lerp({ 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f, 1.0f }, std::clamp(1.0f - Tradition::GetInstance()->GetTime(), 0.0f, 1.0f)));
+		if (player_->GetWorldTransform()->scale_.Length() == 1.0f) {
+			camera_->SetTarget(player_->GetWorldTransform());
+		}
 	}
 	else {
-		player_->Update();
+		if (!isReset_) {
+			player_->Update();
+		}
 
 	}
+
+	if (isReset_) {
+		if (resetTime_ == 1.0f) {
+
+			sizeTime_ += 1.0f / 60.0f;
+			sizeTime_ = std::clamp(sizeTime_, 0.0f, 1.0f);
+			player_->SetScale(Lerp({ 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f, 1.0f }, sizeTime_));
+
+			if (sizeTime_ == 1.0f) {
+				isReset_ = false;
+				isDebt_ = false;
+				resetTime_ = 0.0f;
+				sizeTime_ = 0.0f;
+				upTime_ = 0.0f;
+				downTime_ = 0.0f;
+			}
+
+		}
+		else {
+			resetTime_ += 1.0f / 30.0f;
+			resetTime_ = std::clamp(resetTime_, 0.0f, 1.0f);
+			camera_->SetTranslate(Lerp(dieCamera_, { startPos_.x, startPos_.y + camera_->GetOffset().y, dieCamera_.z}, resetTime_));
+			player_->SetTranslation(Lerp(diePos_, startPos_, resetTime_));
+			if (resetTime_ == 1.0f) {
+				player_->ResetPos(startPos_);
+				player_->SetIsTrigger(false);
+				camera_->SetTarget(player_->GetWorldTransform());
+			}
+		}
+	}
+
 	//ObjectManager::GetInstance()->Update(stageName_);
 	///*for (auto& object : ObjectManager::GetInstance()->GetObjects("TL1")) {
 	//	object->Update();
@@ -193,9 +233,9 @@ void StageScene::Update()
 		camera_->Update();
 	}
 	else {
-		if (camera_->GetTarget() == nullptr) {
+		/*if (camera_->GetTarget() == nullptr) {
 			camera_->SetTarget(player_->GetWorldTransform());
-		}
+		}*/
 		camera_->Update();
 	}
 
@@ -203,7 +243,50 @@ void StageScene::Update()
 	endWT_.UpdateMatrix();*/
 
 	if (!player_->GetActive()) {
-		player_->ResetPos(startPos_);
+
+		if (!isDebt_) {
+			dieCamera_ = camera_->GetTranslate();
+			diePos_ = player_->GetMatWorldTranslation();
+			camera_->SetTarget(nullptr);
+			player_->AddForce({0.0f, 10.0f, -1.0f}, 1);
+			player_->SetIsTrigger(true);
+			isDebt_ = true;
+			player_->SetVelocity({ 0.0f, 0.0f, 0.0f });
+		}
+		else {
+			if (upTime_ < 1.0f) {
+				upTime_ += 1.0f / 15.0f;
+				upTime_ = std::clamp(upTime_, 0.0f, 1.0f);
+				float t = 1.0f - std::powf(1.0f - upTime_, 5);
+				Vector3 pos = Slerp(diePos_, { diePos_.x, diePos_.y + 10.0f, diePos_.z - 10.0f }, t);
+				pos.x = diePos_.x;
+				//player_->SetTranslation(Slerp(diePos_, { diePos_.x, diePos_.y + 10.0f, diePos_.z - 2.0f }, upTime_));
+				player_->SetTranslation(pos);
+				if (upTime_ == 1.0f) {
+					topPos_ = player_->GetTranslation();
+				}
+			}
+			else if (downTime_ < 1.0f) {
+				downTime_ += 1.0f / 30.0f;
+				downTime_ = std::clamp(downTime_, 0.0f, 1.0f);
+				Vector3 pos = Slerp(topPos_, { topPos_.x, topPos_.y - 20.0f, topPos_.z - 10.0f }, downTime_);
+				pos.x = topPos_.x;
+				//player_->SetTranslation(Slerp(topPos_, { topPos_.x, topPos_.y - 20.0f, topPos_.z - 2.0f }, downTime_));
+				player_->SetTranslation(pos);
+			}
+			else {
+				isReset_ = true;
+				diePos_ = player_->GetTranslation();
+				player_->SetIsTrigger(false);
+				//player_->SetTranslation(startPos_);
+				player_->SetScale({ 0.0f, 0.0f, 0.0f });
+			}
+		}
+
+		/*if (player_->GetTranslation().y < -10.0f) {
+			isReset_ = true;
+			player_->SetIsTrigger(false);
+		}*/
 		//ObjectManager::GetInstance()->Clear(stageName_);
 		//ObjectManager::GetInstance()->Load(stageName_, camera_/*camera_.get()*/, world_.get());
 	}
@@ -253,6 +336,7 @@ void StageScene::Draw3D()
 	/*start_->Draw(startWT_);
 	end_->Draw(endWT_);*/
 	skydome_->Draw();
+	objectManager_->Draw();
 	start_->Draw(startWT_, textureTV_);
 	//ObjectManager::GetInstance()->Draw(stageName_);
 	///*for (auto& object : ObjectManager::GetInstance()->GetObjects("TL1")) {
