@@ -115,7 +115,12 @@ void ObjectManager::Load(const std::string& fileName, Camera* camera, World* wor
 				newObject->Initialize(world, object.shape);
 			}
 			else {
-				newObject->Initialize(ModelManager::GetInstance()->CreateModel(obj, object.fileName), world, object.shape);
+				if (object.fileName == "Wood") {
+					newObject->Initialize(ModelManager::GetInstance()->CreateModel(obj, object.fileName), world, object.shape);
+				}
+				else {
+					newObject->Initialize(ModelManager::GetInstance()->CreateModel(obj, object.fileName), world, object.shape);
+				}
 			}
 			newObject->SetCamera(camera);
 			if (Length(object.size) > 0) {
@@ -137,12 +142,14 @@ void ObjectManager::Load(const std::string& fileName, Camera* camera, World* wor
 							springJoint->SetStiffness(i, object.stiffness_[i]);
 							springJoint->SetDamping(i, object.dampingCoefficient_[i]);
 							springJoint->SetEquilibriumPoint(i, object.equilibriumPoint_[i]);
+							world->AddJoint(springJoint);
 							joints_.emplace_back(springJoint);
 						}
 					}
 					else {
 						PulleyJoint* pulleyJoint = new PulleyJoint();
 						pulleyJoint->CreatePulleyJoint(jointPair[object.jointPair_].first, newObject, jointPair[object.jointPair_].second.groundAnchor_, object.groundAnchor_, jointPair[object.jointPair_].second.anchor_, object.anchor_, object.ratio_);
+						world->AddJoint(pulleyJoint);
 						joints_.emplace_back(pulleyJoint);
 
 

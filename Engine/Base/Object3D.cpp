@@ -34,7 +34,7 @@ void Object3D::Initialize(Model* model, World* world, Collider::Shape shape)
 	model_.reset(model);
 	worldTransform_.Initialize();
 	worldTransform_.UpdateMatrix();
-	CreateBody(world, &worldTransform_, 0.0f);
+	CreateBody(world, &worldTransform_, GetMass());
 	CreateCollider(&worldTransform_, shape, CameraManager::GetInstance()->GetCamera());
 
 	/*if (model_->GetModelName() == "Trampoline") {

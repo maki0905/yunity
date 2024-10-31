@@ -145,17 +145,16 @@ void TitleScene::Initialize()
 	world_->AddJoint(joint_.get());*/
 
 	// obj1,2
-	//obj1_ = std::make_unique<Object3D>();
-	//obj1_->Initialize(ModelManager::GetInstance()->CreateModel(obj,/* ""*/"Grasslands"), world_.get(), Collider::Shape::kOBB);
-	//obj1_->SetHitBoxSize({ 2.0f, 2.0f, 2.0f });
-	//obj1_->SetScale({ 1.0f, 1.0f, 1.0f });
-	//obj1_->SetCamera(camera_);
-	//obj1_->SetCollisionAttribute(kCollisionAttributePlayer);
-	//obj1_->SetPosition(Vector3{ 0.0f, 20.0f, 0.0f });
-	//obj1_->SetFirictionCombine(Body::FrictionCombine::kMaximum);
-	//obj1_->SetMiu(1.0f);
-	//obj1_->SetAngularDrag(0.00005f);
-	//obj1_->SetInertiaMoment(0.01f);
+	obj1_ = std::make_unique<Object3D>();
+	obj1_->Initialize(ModelManager::GetInstance()->CreateModel(obj,/* ""*/"Coin"), world_.get(), Collider::Shape::kAABB);
+	obj1_->SetHitBoxSize({ 2.0f, 2.0f, 2.0f });
+	obj1_->SetScale({ 1.0f, 1.0f, 1.0f });
+	obj1_->SetCamera(camera_);
+	obj1_->SetCollisionAttribute(kCollisionAttributeTrampoline);
+	obj1_->SetPosition(Vector3{ 0.0f, 20.0f, 0.0f });
+	obj1_->SetFirictionCombine(Body::FrictionCombine::kAverage);
+	obj1_->SetMiu(1.0f);
+	obj1_->SetAngularDrag(0.00005f);
 
 	//obj2_ = std::make_unique<Object3D>();
 	//obj2_->Initialize(ModelManager::GetInstance()->CreateModel(obj,/* ""*/"Wood"), world_.get(), Collider::Shape::kOBB);
@@ -412,36 +411,36 @@ void TitleScene::Update()
 	//cloth_->Update();
 
 #ifdef _DEBUG
-	//Vector3 pos;
-	//ImGui::Begin("obj1");
-	//pos = obj1_->GetMatWorldTranslation();
-	////Vector3 rotate = Multiply(RadToDeg(), obj1_->GetWorldTransform()->rotation_);
-	//Vector3 rotate = obj1_->GetWorldTransform()->rotation_;
-	//ImGui::DragFloat3("pos", &pos.x);
-	//ImGui::DragFloat3("rotate", &rotate.x);
-	//obj1_->SetPosition(pos);
-	////obj1_->SetRotation(Multiply(DegToRad(), rotate));
-	//obj1_->SetRotation(rotate);
-	//if (ImGui::Button("Gravity")) {
-	//	obj1_->SetMass(2.0f);
-	//}
-	//if (ImGui::Button("Reset")) {
-	//	obj1_->SetMass(0.0f);
-	//	obj1_->SetPosition(Vector3{ 0.0f, 20.0f, 0.0f });
-	//	obj1_->SetRotation(Vector3{ 0.0f, 0.0f, 0.0f });
-	//	obj1_->SetVelocity({ 0.0f, 0.0f, 0.0f });
-	//	obj1_->SetAngularVelocity({ 0.0f, 0.0f, 0.0f });
-	//}
-	//Vector3 velocity = obj1_->GetVelocity();
-	//ImGui::DragFloat3("velocity", &velocity.x);
-	//Vector3 anglur = obj1_->GetAngularVelocity();
-	//ImGui::DragFloat3("angularvelocity", &anglur.x);
-	////ImGui::DragFloat3("torque", &torupu_.x);
+	Vector3 pos;
+	ImGui::Begin("obj1");
+	pos = obj1_->GetMatWorldTranslation();
+	//Vector3 rotate = Multiply(RadToDeg(), obj1_->GetWorldTransform()->rotation_);
+	Vector3 rotate = obj1_->GetWorldTransform()->rotation_;
+	ImGui::DragFloat3("pos", &pos.x);
+	ImGui::DragFloat3("rotate", &rotate.x);
+	obj1_->SetPosition(pos);
+	//obj1_->SetRotation(Multiply(DegToRad(), rotate));
+	obj1_->SetRotation(rotate);
+	if (ImGui::Button("Gravity")) {
+		obj1_->SetMass(0.1f);
+	}
+	if (ImGui::Button("Reset")) {
+		obj1_->SetMass(0.0f);
+		obj1_->SetPosition(Vector3{ 0.0f, 20.0f, 0.0f });
+		obj1_->SetRotation(Vector3{ 0.0f, 0.0f, 0.0f });
+		obj1_->SetVelocity({ 0.0f, 0.0f, 0.0f });
+		obj1_->SetAngularVelocity({ 0.0f, 0.0f, 0.0f });
+	}
+	Vector3 velocity = obj1_->GetVelocity();
+	ImGui::DragFloat3("velocity", &velocity.x);
+	Vector3 anglur = obj1_->GetAngularVelocity();
+	ImGui::DragFloat3("angularvelocity", &anglur.x);
+	//ImGui::DragFloat3("torque", &torupu_.x);
 
-	///*if (ImGui::Button("AddTorque")) {
-	//	obj1_->AddTorque(torupu_, 1);
-	//}*/
-	//ImGui::End();
+	/*if (ImGui::Button("AddTorque")) {
+		obj1_->AddTorque(torupu_, 1);
+	}*/
+	ImGui::End();
 
 	//ImGui::Begin("obj2");
 	//pos = obj2_->GetMatWorldTranslation();
@@ -515,6 +514,7 @@ void TitleScene::Draw3D()
 	}
 
 	//obj1,2
+	obj1_->Draw();
 	/*obj1_->Draw();
 	obj2_->Draw();*/
 

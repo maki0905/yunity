@@ -12,7 +12,7 @@ void Player::Initialize(Camera* camera, World* world)
 	Object3D::Initialize(world, Collider::Shape::kAABB);
 	worldTransform_.rotateType_ = RotationType::Quaternion;
 	worldTransform_.translation_.y = 40.0f;
-	SetMass(0.5f);
+	SetMass(2.0f);
 	SetFirictionCombine(FrictionCombine::kAverage);
 	SetMiu(2.0f);
 	SetBounceCombine(BounceCombine::kMaximum);
@@ -332,7 +332,7 @@ void Player::Update()
 							//point_ = hit.collider->GetTranslation();
 							point_ = hit.point;
 							apexWorldTransform_.translation_ = hit.point;
-							if (hit.collider->GetCollisionAttribute() == kCollisionAttributeMoveFloorLeft || hit.collider->GetCollisionAttribute() == kCollisionAttributeMoveFloorRight) {
+							if (hit.collider->GetCollisionAttribute() == kCollisionAttributeMoveFloor) {
 								apexWorldTransform_.parent_ = hit.collider->GetWorldTransform();
 								apexWorldTransform_.translation_ = Subtract(apexWorldTransform_.translation_, hit.collider->GetMatWorldTranslation());
 							}
@@ -396,7 +396,7 @@ void Player::Update()
 				worldTransform_.parent_ = nullptr;
 			}
 			else if (collisionBody_) {
-				if (collisionBody_->GetCollisionAttribute() != kCollisionAttributeMoveFloorLeft || collisionBody_->GetCollisionAttribute() != kCollisionAttributeMoveFloorRight) {
+				if (collisionBody_->GetCollisionAttribute() != kCollisionAttributeMoveFloor) {
 					Matrix4x4 invers = Inverse(worldTransform_.parent_->matWorld_);
 					Matrix4x4 lMat = Multiply(worldTransform_.matWorld_, invers);
 					Vector3 t = { lMat.m[3][0], lMat.m[3][1], lMat.m[3][2] };
@@ -480,7 +480,7 @@ void Player::OnCollisionEvent()
 		isActive_ = false;
 	}
 
-	if (GetHitBody()->GetCollisionAttribute() == kCollisionAttributeMoveFloorLeft || GetHitBody()->GetCollisionAttribute() == kCollisionAttributeMoveFloorRight) {
+	if (GetHitBody()->GetCollisionAttribute() == kCollisionAttributeMoveFloor) {
 		AABB aabb = GetAABB();
 		AABB other = GetHitBody()->GetAABB();
 		if (aabb.min.y >= other.max.y) {
@@ -527,9 +527,6 @@ void Player::OnTriggerEvent()
 	}
 	if (GetHitBody()->GetCollisionAttribute() == kCollisionAttributeCoin) {
 		scoreUI_->AddScore(10);
-	}
-	if (GetHitBody()->GetCollisionAttribute() == kCollisionAttributeVentilator) {
-		AddForce({ -0.3f, 0.0f, 0.0f }, 1);
 	}
 }
 

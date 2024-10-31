@@ -2,7 +2,7 @@
 
 void MoveFloor::InitializeDirection()
 {
-	if (GetCollisionAttribute() == kCollisionAttributeMoveFloorLeft) {
+	if (GetCollisionAttribute() == kCollisionAttributeMoveFloor) {
 		amplitude_ = -0.08f;
 	}
 	else {

@@ -181,6 +181,7 @@ void StageScene::Update()
 	else {
 		if (!isReset_) {
 			player_->Update();
+			objectManager_->Update();
 		}
 
 	}
@@ -214,6 +215,7 @@ void StageScene::Update()
 			}
 		}
 	}
+	
 
 	//ObjectManager::GetInstance()->Update(stageName_);
 	///*for (auto& object : ObjectManager::GetInstance()->GetObjects("TL1")) {
