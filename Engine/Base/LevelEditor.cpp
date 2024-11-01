@@ -146,7 +146,7 @@ void LevelEditor::LoadObjectRecursive(LevelData* levelData, nlohmann::json deser
 
 			if (object.contains("tag")) {
 				nlohmann::json& tag = object["tag"];
-				objectData.tag_ = (uint32_t)tag["tag"];
+				objectData.tag_ = static_cast<Tag>((uint32_t)tag["tag"]);
 			}
 
 		}
@@ -242,7 +242,7 @@ void LevelEditor::LoadObjectRecursive(LevelData* levelData, nlohmann::json deser
 
 			if (object.contains("tag")) {
 				nlohmann::json& tag = object["tag"];
-				objectData.tag_ = (uint32_t)tag["tag"];
+				objectData.tag_ = static_cast<Tag>(tag);
 			}
 
 		}

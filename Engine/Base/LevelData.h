@@ -4,6 +4,7 @@
 #include <string>
 #include "Vector3.h"
 #include "Collider.h"
+#include "Tag.h"
 
 /*
 * @brief レベルエディターデータクラス
@@ -37,7 +38,7 @@ public:
 		Vector3 groundAnchor_;
 		Vector3 anchor_;
 		float ratio_;
-		int tag_ = 0;
+		Tag tag_ = Tag::kDefalt;
 	};
 
 

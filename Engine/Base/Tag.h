@@ -1,7 +1,7 @@
 #pragma once
 
 enum class Tag {
-	kdefalt,
+	kDefalt,
 	kCoin,
 	kMoveFloor,
 	kTV,

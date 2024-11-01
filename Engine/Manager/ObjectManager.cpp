@@ -62,7 +62,104 @@ void ObjectManager::Load(const std::string& fileName, Camera* camera, World* wor
 	std::array<std::pair<Object3D*, LevelData::ObjectData>, 50> jointPair;
 
 	for (auto& object : levelData->objects) {
-		if (object.fileName == "MoveFloor") {
+		if (object.tag_ == Tag::kMoveFloor) {
+
+			MoveFloor* newObject = new MoveFloor();
+			InitializeCommon(object, newObject);
+			InitializeCollider(object, newObject);
+			InitializePhysics(object, newObject);
+			newObject->Initialize(ModelManager::GetInstance()->CreateModel(obj, object.fileName), world, object.shape);
+			newObject->InitializeDirection();
+			newObject->SetCamera(camera);
+			world->Add(newObject);
+			objects_.emplace_back(newObject);
+
+		}
+		else if (object.tag_ == Tag::kTV) {
+			TV* newObject = new TV();
+			InitializeCommon(object, newObject);
+			InitializeCollider(object, newObject);
+			InitializePhysics(object, newObject);
+			newObject->Initialize(ModelManager::GetInstance()->CreateModel(obj, object.fileName), world, object.shape);
+			newObject->InitializeTexture();
+			newObject->SetCamera(camera);
+			world->Add(newObject);
+			objects_.emplace_back(newObject);
+
+		}
+		else if (object.tag_ == Tag::kCoin) {
+			Coin* newObject = new Coin();
+			InitializeCommon(object, newObject);
+			InitializeCollider(object, newObject);
+			InitializePhysics(object, newObject);
+			newObject->Initialize(ModelManager::GetInstance()->CreateModel(obj, object.fileName), world, object.shape);
+			newObject->SetCamera(camera);
+			world->Add(newObject);
+			objects_.emplace_back(newObject);
+
+		}
+		else if (object.serialNumber != -1) {
+			EventTrigger* newObject = new EventTrigger();
+			InitializeCommon(object, newObject);
+			InitializeCollider(object, newObject);
+			newObject->Initialize(world, object.shape);
+			world->Add(newObject);
+			objects_.emplace_back(newObject);
+		}
+		else {
+			Object3D* newObject = new Object3D();
+			InitializeCommon(object, newObject);
+			InitializeCollider(object, newObject);
+			InitializePhysics(object, newObject);
+			if (object.empth) {
+				newObject->Initialize(world, object.shape);
+			}
+			else {
+				if (object.fileName == "Wood") {
+					newObject->Initialize(ModelManager::GetInstance()->CreateModel(obj, object.fileName), world, object.shape);
+				}
+				else {
+					newObject->Initialize(ModelManager::GetInstance()->CreateModel(obj, object.fileName), world, object.shape);
+				}
+			}
+			newObject->SetCamera(camera);
+			if (Length(object.size) > 0) {
+				world->Add(newObject);
+			}
+			objects_.emplace_back(newObject);
+
+			if (object.jointPair_ > -1) {
+				if (jointPair[object.jointPair_].first == nullptr) {
+					jointPair[object.jointPair_].first = newObject;
+					jointPair[object.jointPair_].second = object;
+				}
+				else {
+					if (object.jointType_ == 0) {
+						SpringJoint* springJoint = new SpringJoint();
+						springJoint->CreateSpringJoint(jointPair[object.jointPair_].first, newObject);
+						for (uint32_t i = 0; i < 3; i++) {
+							springJoint->EnableSpring(i, object.springEnabled_[i]);
+							springJoint->SetStiffness(i, object.stiffness_[i]);
+							springJoint->SetDamping(i, object.dampingCoefficient_[i]);
+							springJoint->SetEquilibriumPoint(i, object.equilibriumPoint_[i]);
+							world->AddJoint(springJoint);
+							joints_.emplace_back(springJoint);
+						}
+					}
+					else {
+						PulleyJoint* pulleyJoint = new PulleyJoint();
+						pulleyJoint->CreatePulleyJoint(jointPair[object.jointPair_].first, newObject, jointPair[object.jointPair_].second.groundAnchor_, object.groundAnchor_, jointPair[object.jointPair_].second.anchor_, object.anchor_, object.ratio_);
+						world->AddJoint(pulleyJoint);
+						joints_.emplace_back(pulleyJoint);
+
+
+					}
+
+
+				}
+			}
+		}
+		/*if (object.fileName == "MoveFloor") {
 
 			MoveFloor* newObject = new MoveFloor();
 			InitializeCommon(object, newObject);
@@ -158,7 +255,8 @@ void ObjectManager::Load(const std::string& fileName, Camera* camera, World* wor
 
 				}
 			}
-		}
+		}*/
+		
 	}
 }
 

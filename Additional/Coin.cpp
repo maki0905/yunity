@@ -9,7 +9,9 @@
 
 void Coin::Update()
 {
-	
+	if (!isActive_) {
+		GetWorld()->Take(this);
+	}
 
 }
 
