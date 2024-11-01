@@ -14,6 +14,7 @@
 #include "ObjectManager.h"
 #include "Skydome.h"
 #include "Coin.h"
+#include "SpringBoard.h"
 
 /*
 * @brief ステージシーンクラス
@@ -106,6 +107,17 @@ private:
 	Vector3 dieCamera_;
 	Vector3 diePos_;
 	Vector3 topPos_;
+
+	// ジャンプ台
+	static const uint32_t springBoardCount_ = 2;
+	std::array<std::unique_ptr<SpringBoard>, springBoardCount_> springTops_;
+	std::array<std::unique_ptr<Object3D>, springBoardCount_> springAnchores_;
+	std::array<std::unique_ptr<PrimitiveDrawer>, springBoardCount_> springLines_;
+
+	// 吊り橋
+	static const uint32_t bridgeCount_ = 9;
+	std::array<std::unique_ptr<Object3D>, bridgeCount_> bridge_;
+	std::array<std::unique_ptr<PrimitiveDrawer>, bridgeCount_ - 1> bridgeLines_;
 
 	/*std::unique_ptr<Object3D> spike_;
 	std::unique_ptr<Object3D> stand_;
