@@ -16,3 +16,10 @@ protected:
 	Body* bodyB_;
 
 };
+
+enum class JointType {
+	kDefalt,
+	kSpring,
+	kPulley,
+	kJointTypeCount
+};

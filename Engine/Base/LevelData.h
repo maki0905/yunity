@@ -5,6 +5,7 @@
 #include "Vector3.h"
 #include "Collider.h"
 #include "Tag.h"
+#include "Joint.h"
 
 /*
 * @brief レベルエディターデータクラス
@@ -30,7 +31,7 @@ public:
 		uint32_t bounceCombine;
 		int serialNumber = -1;
 		int jointPair_ = -1;
-		int jointType_ = 0;
+		JointType jointType_ = JointType::kDefalt;
 		bool springEnabled_[3];
 		float equilibriumPoint_[3];
 		float stiffness_[3];

@@ -84,6 +84,7 @@ void Object3D::Initialize(World* world, Collider::Shape shape)
 {
 	camera_ = CameraManager::GetInstance()->GetCamera();
 	worldTransform_.Initialize();
+	worldTransform_.UpdateMatrix();
 	CreateBody(world, &worldTransform_, 0.0f);
 	CreateCollider(&worldTransform_, shape, camera_);
 }

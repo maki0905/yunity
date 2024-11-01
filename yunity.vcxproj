@@ -109,7 +109,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
   <ItemGroup>
     <ClCompile Include="Additional\Cloth.cpp" />
     <ClCompile Include="Additional\Coin.cpp" />
-    <ClCompile Include="Additional\GiftWall.cpp" />
     <ClCompile Include="Additional\Score.cpp" />
     <ClCompile Include="Additional\StartObject.cpp" />
     <ClCompile Include="Additional\TV.cpp" />
@@ -198,8 +197,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Additional\Cloth.h" />
     <ClInclude Include="Additional\Coin.h" />
     <ClInclude Include="Additional\EndObject.h" />
-    <ClInclude Include="Additional\Gift.h" />
-    <ClInclude Include="Additional\GiftWall.h" />
     <ClInclude Include="Additional\Score.h" />
     <ClInclude Include="Additional\StartObject.h" />
     <ClInclude Include="Additional\TV.h" />

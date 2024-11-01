@@ -30,11 +30,6 @@ public:
 private:
 	float time_;
 	bool isActive_;
-	bool preIsActive_;
 	bool change_;
-	bool isGrow_;
-	float growTime_;
-	const float second_ = 1.0f / 60.0f;
 	uint32_t textureHandle_[2];
-	WorldTransform modelWorldTransform_;
 };

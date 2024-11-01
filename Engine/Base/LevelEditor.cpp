@@ -141,7 +141,7 @@ void LevelEditor::LoadObjectRecursive(LevelData* levelData, nlohmann::json deser
 			if (object.contains("joint")) {
 				nlohmann::json& joint = object["joint"];
 				objectData.jointPair_ = (uint32_t)joint["joints"];
-				objectData.jointType_ = (uint32_t)joint["type"];
+				objectData.jointType_ = static_cast<JointType>((uint32_t)joint["type"]);
 			}
 
 			if (object.contains("tag")) {
@@ -222,8 +222,8 @@ void LevelEditor::LoadObjectRecursive(LevelData* levelData, nlohmann::json deser
 			if (object.contains("joint")) {
 				nlohmann::json& joint = object["joint"];
 				objectData.jointPair_ = (uint32_t)joint["joints"];
-				objectData.jointType_ = (uint32_t)joint["type"];
-				if (objectData.jointType_) {
+				objectData.jointType_ = static_cast<JointType>((uint32_t)joint["type"]);
+				if (objectData.jointType_ == JointType::kSpring) {
 					for (uint32_t i = 0; i < 3; i++) {
 						objectData.springEnabled_[i] = (int)joint["springEnabled"][i];
 						objectData.equilibriumPoint_[i] = (float)joint["equilibriumPoint"][i];
@@ -231,7 +231,7 @@ void LevelEditor::LoadObjectRecursive(LevelData* levelData, nlohmann::json deser
 						objectData.dampingCoefficient_[i] = (float)joint["dampingCoefficient"][i];
 					}
 				}
-				else {
+				else if(objectData.jointType_ == JointType::kPulley){
 					objectData.groundAnchor_ = Vector3((float)joint["groundAnchor"][0], (float)joint["groundAnchor"][1], (float)joint["groundAnchor"][2]);
 					objectData.anchor_ = Vector3((float)joint["anchor"][0], (float)joint["anchor"][1], (float)joint["anchor"][2]);
 					objectData.ratio_ = (float)joint["ratio"];

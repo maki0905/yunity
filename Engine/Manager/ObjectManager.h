@@ -14,7 +14,6 @@
 #include "EventTrigger.h"
 #include "TV.h"
 #include "Coin.h"
-#include "GiftWall.h"
 #include "LevelEditor.h"
 
 /*
@@ -126,5 +125,6 @@ private:
 private:
 	std::vector<std::unique_ptr<Object3D>> objects_;
 	std::vector<std::unique_ptr<Joint>> joints_;
+	World* world_;
 
 };
