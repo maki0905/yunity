@@ -1,6 +1,6 @@
 #pragma once
 #include "Object3D.h"
-
+#include "Tag.h"
 /*
 * @brief 動く床のクラス
 */
@@ -10,7 +10,7 @@ public:
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void InitializeDirection();
+	void InitializeDirection(Tag type);
 
 	/// <summary>
 	/// 更新

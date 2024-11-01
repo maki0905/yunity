@@ -3,7 +3,8 @@
 enum class Tag {
 	kDefalt,
 	kCoin,
-	kMoveFloor,
+	kMoveFloor_L,
+	kMoveFloor_R,
 	kTV,
 	kTagCount
 };

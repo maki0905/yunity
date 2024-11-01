@@ -1,11 +1,12 @@
 #include "MoveFloor.h"
 
-void MoveFloor::InitializeDirection()
+
+void MoveFloor::InitializeDirection(Tag type)
 {
-	if (GetCollisionAttribute() == kCollisionAttributeMoveFloor) {
+	if (type == Tag::kMoveFloor_L) {
 		amplitude_ = -0.08f;
 	}
-	else {
+	else if(type == Tag::kMoveFloor_R){
 		amplitude_ = 0.08f;
 	}
 }

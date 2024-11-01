@@ -110,8 +110,8 @@
             "transform": {
                 "translation": [
                     70.6065444946289,
-                    13.832508087158203,
-                    34.257286071777344
+                    13.832500457763672,
+                    34.257301330566406
                 ],
                 "rotation": [
                     0.0,
@@ -1503,6 +1503,9 @@
                 ],
                 "isTrigger": false,
                 "attribute": 4
+            },
+            "tag": {
+                "tag": 3
             }
         },
         {
@@ -1540,6 +1543,9 @@
                 ],
                 "isTrigger": false,
                 "attribute": 4
+            },
+            "tag": {
+                "tag": 2
             }
         },
         {
@@ -1994,411 +2000,6 @@
                 "miu": 0.5,
                 "frictionCombine": 0,
                 "bounciness": 0.20000000298023224,
-                "bounceCombine": 0
-            }
-        },
-        {
-            "type": "MESH",
-            "name": "立方体.017",
-            "transform": {
-                "translation": [
-                    397.4505920410156,
-                    -0.07364451885223389,
-                    26.765148162841797
-                ],
-                "rotation": [
-                    0.0,
-                    -0.0,
-                    0.0
-                ],
-                "scaling": [
-                    2.950998544692993,
-                    6.333220481872559,
-                    1.86909019947052
-                ]
-            },
-            "file_name": "Wood",
-            "collider": {
-                "type": "BOX",
-                "center": [
-                    0.0,
-                    0.0,
-                    0.0
-                ],
-                "size": [
-                    2.0,
-                    2.0,
-                    2.0
-                ],
-                "isTrigger": false,
-                "attribute": 2
-            },
-            "body": {
-                "mass": 0.0,
-                "drag": 0.05,
-                "miu": 0.04999999701976776,
-                "frictionCombine": 1,
-                "bounciness": 0.0,
-                "bounceCombine": 0
-            }
-        },
-        {
-            "type": "MESH",
-            "name": "立方体.018",
-            "transform": {
-                "translation": [
-                    517.1163940429688,
-                    -0.07364500313997269,
-                    26.765148162841797
-                ],
-                "rotation": [
-                    0.0,
-                    -0.0,
-                    0.0
-                ],
-                "scaling": [
-                    2.950998544692993,
-                    6.333220481872559,
-                    1.86909019947052
-                ]
-            },
-            "file_name": "Wood",
-            "collider": {
-                "type": "BOX",
-                "center": [
-                    0.0,
-                    0.0,
-                    0.0
-                ],
-                "size": [
-                    2.0,
-                    2.0,
-                    2.0
-                ],
-                "isTrigger": false,
-                "attribute": 2
-            },
-            "body": {
-                "mass": 0.0,
-                "drag": 0.05,
-                "miu": 0.04999999701976776,
-                "frictionCombine": 1,
-                "bounciness": 0.0,
-                "bounceCombine": 0
-            }
-        },
-        {
-            "type": "MESH",
-            "name": "立方体.019",
-            "transform": {
-                "translation": [
-                    412.44769287109375,
-                    -0.07364451885223389,
-                    26.765148162841797
-                ],
-                "rotation": [
-                    0.0,
-                    -0.0,
-                    0.0
-                ],
-                "scaling": [
-                    2.950998544692993,
-                    6.333220481872559,
-                    1.86909019947052
-                ]
-            },
-            "file_name": "Wood",
-            "collider": {
-                "type": "BOX",
-                "center": [
-                    0.0,
-                    0.0,
-                    0.0
-                ],
-                "size": [
-                    2.0,
-                    2.0,
-                    2.0
-                ],
-                "isTrigger": false,
-                "attribute": 2
-            },
-            "body": {
-                "mass": 0.009999999776482582,
-                "drag": 0.05,
-                "miu": 0.04999999701976776,
-                "frictionCombine": 1,
-                "bounciness": 0.0,
-                "bounceCombine": 0
-            }
-        },
-        {
-            "type": "MESH",
-            "name": "立方体.020",
-            "transform": {
-                "translation": [
-                    427.1187744140625,
-                    -0.07364451885223389,
-                    26.765148162841797
-                ],
-                "rotation": [
-                    0.0,
-                    -0.0,
-                    0.0
-                ],
-                "scaling": [
-                    2.950998544692993,
-                    6.333220481872559,
-                    1.86909019947052
-                ]
-            },
-            "file_name": "Wood",
-            "collider": {
-                "type": "BOX",
-                "center": [
-                    0.0,
-                    0.0,
-                    0.0
-                ],
-                "size": [
-                    2.0,
-                    2.0,
-                    2.0
-                ],
-                "isTrigger": false,
-                "attribute": 2
-            },
-            "body": {
-                "mass": 0.009999999776482582,
-                "drag": 0.05,
-                "miu": 0.04999999701976776,
-                "frictionCombine": 1,
-                "bounciness": 0.0,
-                "bounceCombine": 0
-            }
-        },
-        {
-            "type": "MESH",
-            "name": "立方体.021",
-            "transform": {
-                "translation": [
-                    442.12237548828125,
-                    -0.07364451885223389,
-                    26.765148162841797
-                ],
-                "rotation": [
-                    0.0,
-                    -0.0,
-                    0.0
-                ],
-                "scaling": [
-                    2.950998544692993,
-                    6.333220481872559,
-                    1.86909019947052
-                ]
-            },
-            "file_name": "Wood",
-            "collider": {
-                "type": "BOX",
-                "center": [
-                    0.0,
-                    0.0,
-                    0.0
-                ],
-                "size": [
-                    2.0,
-                    2.0,
-                    2.0
-                ],
-                "isTrigger": false,
-                "attribute": 2
-            },
-            "body": {
-                "mass": 0.009999999776482582,
-                "drag": 0.05,
-                "miu": 0.04999999701976776,
-                "frictionCombine": 1,
-                "bounciness": 0.0,
-                "bounceCombine": 0
-            }
-        },
-        {
-            "type": "MESH",
-            "name": "立方体.022",
-            "transform": {
-                "translation": [
-                    457.193359375,
-                    -0.07364451885223389,
-                    26.765148162841797
-                ],
-                "rotation": [
-                    0.0,
-                    -0.0,
-                    0.0
-                ],
-                "scaling": [
-                    2.950998544692993,
-                    6.333220481872559,
-                    1.86909019947052
-                ]
-            },
-            "file_name": "Wood",
-            "collider": {
-                "type": "BOX",
-                "center": [
-                    0.0,
-                    0.0,
-                    0.0
-                ],
-                "size": [
-                    2.0,
-                    2.0,
-                    2.0
-                ],
-                "isTrigger": false,
-                "attribute": 2
-            },
-            "body": {
-                "mass": 0.009999999776482582,
-                "drag": 0.05,
-                "miu": 0.04999999701976776,
-                "frictionCombine": 1,
-                "bounciness": 0.0,
-                "bounceCombine": 0
-            }
-        },
-        {
-            "type": "MESH",
-            "name": "立方体.023",
-            "transform": {
-                "translation": [
-                    472.7303771972656,
-                    -0.07364451885223389,
-                    26.765148162841797
-                ],
-                "rotation": [
-                    0.0,
-                    -0.0,
-                    0.0
-                ],
-                "scaling": [
-                    2.950998544692993,
-                    6.333220481872559,
-                    1.86909019947052
-                ]
-            },
-            "file_name": "Wood",
-            "collider": {
-                "type": "BOX",
-                "center": [
-                    0.0,
-                    0.0,
-                    0.0
-                ],
-                "size": [
-                    2.0,
-                    2.0,
-                    2.0
-                ],
-                "isTrigger": false,
-                "attribute": 2
-            },
-            "body": {
-                "mass": 0.009999999776482582,
-                "drag": 0.05,
-                "miu": 0.04999999701976776,
-                "frictionCombine": 1,
-                "bounciness": 0.0,
-                "bounceCombine": 0
-            }
-        },
-        {
-            "type": "MESH",
-            "name": "立方体.024",
-            "transform": {
-                "translation": [
-                    487.9343566894531,
-                    -0.07364451885223389,
-                    26.765148162841797
-                ],
-                "rotation": [
-                    0.0,
-                    -0.0,
-                    0.0
-                ],
-                "scaling": [
-                    2.950998544692993,
-                    6.333220481872559,
-                    1.86909019947052
-                ]
-            },
-            "file_name": "Wood",
-            "collider": {
-                "type": "BOX",
-                "center": [
-                    0.0,
-                    0.0,
-                    0.0
-                ],
-                "size": [
-                    2.0,
-                    2.0,
-                    2.0
-                ],
-                "isTrigger": false,
-                "attribute": 2
-            },
-            "body": {
-                "mass": 0.009999999776482582,
-                "drag": 0.05,
-                "miu": 0.04999999701976776,
-                "frictionCombine": 1,
-                "bounciness": 0.0,
-                "bounceCombine": 0
-            }
-        },
-        {
-            "type": "MESH",
-            "name": "立方体.025",
-            "transform": {
-                "translation": [
-                    502.3553771972656,
-                    -0.07364451885223389,
-                    26.765148162841797
-                ],
-                "rotation": [
-                    0.0,
-                    -0.0,
-                    0.0
-                ],
-                "scaling": [
-                    2.950998544692993,
-                    6.333220481872559,
-                    1.86909019947052
-                ]
-            },
-            "file_name": "Wood",
-            "collider": {
-                "type": "BOX",
-                "center": [
-                    0.0,
-                    0.0,
-                    0.0
-                ],
-                "size": [
-                    2.0,
-                    2.0,
-                    2.0
-                ],
-                "isTrigger": false,
-                "attribute": 2
-            },
-            "body": {
-                "mass": 0.009999999776482582,
-                "drag": 0.05,
-                "miu": 0.04999999701976776,
-                "frictionCombine": 1,
-                "bounciness": 0.0,
                 "bounceCombine": 0
             }
         },
@@ -2922,7 +2523,7 @@
             "transform": {
                 "translation": [
                     28.64948272705078,
-                    18.272369384765625,
+                    15.689327239990234,
                     11.18075942993164
                 ],
                 "rotation": [
@@ -2953,7 +2554,7 @@
                 "attribute": 8
             },
             "tag": {
-                "tag": 3
+                "tag": 4
             }
         },
         {
@@ -2962,8 +2563,8 @@
             "transform": {
                 "translation": [
                     56.283355712890625,
-                    18.272369384765625,
-                    11.18075942993164
+                    15.622426986694336,
+                    11.180800437927246
                 ],
                 "rotation": [
                     0.0,
@@ -2993,7 +2594,7 @@
                 "attribute": 9
             },
             "tag": {
-                "tag": 3
+                "tag": 4
             }
         },
         {
@@ -3002,7 +2603,7 @@
             "transform": {
                 "translation": [
                     77.07014465332031,
-                    18.272369384765625,
+                    15.649667739868164,
                     11.18075942993164
                 ],
                 "rotation": [
@@ -3033,7 +2634,7 @@
                 "attribute": 10
             },
             "tag": {
-                "tag": 3
+                "tag": 4
             }
         },
         {

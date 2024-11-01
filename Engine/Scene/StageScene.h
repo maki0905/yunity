@@ -118,6 +118,9 @@ private:
 	static const uint32_t bridgeCount_ = 9;
 	std::array<std::unique_ptr<Object3D>, bridgeCount_> bridge_;
 	std::array<std::unique_ptr<PrimitiveDrawer>, bridgeCount_ - 1> bridgeLines_;
+	std::array<std::unique_ptr<SpringJoint>, bridgeCount_ - 1> bridgesJoint_;
+	const float stiffness_ = 10.0f;
+	const float dampar_ = 0.1f;
 
 	/*std::unique_ptr<Object3D> spike_;
 	std::unique_ptr<Object3D> stand_;

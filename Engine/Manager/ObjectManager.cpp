@@ -64,14 +64,14 @@ void ObjectManager::Load(const std::string& fileName, Camera* camera, World* wor
 	world_ = world;
 
 	for (auto& object : levelData->objects) {
-		if (object.tag_ == Tag::kMoveFloor) {
+		if (object.tag_ == Tag::kMoveFloor_L || object.tag_ == Tag::kMoveFloor_R) {
 
 			MoveFloor* newObject = new MoveFloor();
 			InitializeCommon(object, newObject);
 			InitializeCollider(object, newObject);
 			InitializePhysics(object, newObject);
 			newObject->Initialize(ModelManager::GetInstance()->CreateModel(obj, object.fileName), world, object.shape);
-			newObject->InitializeDirection();
+			newObject->InitializeDirection(object.tag_);
 			newObject->SetCamera(camera);
 			world->Add(newObject);
 			objects_.emplace_back(newObject);

@@ -11,44 +11,7 @@
 
 void StageScene::Initialize()
 {
-	//world_ = std::make_unique<World>();
-	//world_->Initialize();
-
-	//camera_ = std::make_unique<Camera>();
-	//debugCamera_ = std::make_unique<DebugCamera>();
-	//isDebug_ = false;
-
-	////player_ = std::make_unique<Player>();
-	////player_->Initialize(camera_.get());
-
-	//blockManager_ = std::make_unique<BlockManager>();
-	//blockManager_->Initialize(camera_.get(), world_.get());
-
-	//start_ = std::make_unique<Model>();
-	//start_.reset(ModelManager::GetInstance()->CreateModel(obj, "startBox"));
-	//start_->SetCamera(camera_.get());
-	//worldTransform_start_.Initialize();
-	//worldTransform_start_.translation_ = { -20.0f, 5.0f, 0.0f };
-	//worldTransform_start_.UpdateMatrix(RotationType::Euler);
-
-	//end_ = std::make_unique<Model>();
-	//start_.reset(ModelManager::GetInstance()->CreateModel(obj, "startBox"));
-	//end_->SetCamera(camera_.get());
-	//worldTransform_end_.Initialize();
-	//worldTransform_end_.translation_ = { 50.0f, 3.0f, 0.0f };
-	//worldTransform_end_.UpdateMatrix(RotationType::Euler);
-
-	//world_->Add(player_.get());
-
-	////player_->SetTranslation(worldTransform_start_.translation_);
-
-	//primitiveDrawer_.reset(PrimitiveDrawer::Create(PrimitiveDrawer::Type::kBox));
-	//primitiveDrawer_->SetCamera(camera_.get());
-
-	/*---------------------------------------------------------*/
-
-	//camera_ = std::make_unique<Camera>();
-	//camera_.reset(CameraManager::GetInstance()->GetCamera());
+	
 	inStage_ = false;
 
 	camera_ = CameraManager::GetInstance()->GetCamera();
@@ -111,32 +74,6 @@ void StageScene::Initialize()
 
 	CommonData::GetInstance()->scene_ = Scene::kStage;
 
-	/*spike_ = std::make_unique<Object3D>();
-	spike_->Initialize(ModelManager::GetInstance()->CreateModel(obj, "Spike"), world_.get(), Collider::Shape::kAABB);
-	spike_->SetCamera(camera_);
-	spike_->SetPosition({ 20.0f, 15.0f, 0.0f });
-	spike_->SetMass(1.0f);
-	spike_->SetIsTrigger(true);
-	stand_ = std::make_unique<Object3D>();
-	stand_->Initialize(ModelManager::GetInstance()->CreateModel(obj, "SpikeStand"), world_.get(), Collider::Shape::kAABB);
-	stand_->SetCamera(camera_);
-	stand_->SetPosition({ 20.0f, 5.0f, 0.0f });
-	stand_->SetIsTrigger(true);
-	world_->Add(spike_.get());
-	world_->Add(stand_.get());
-
-	springJoint_ = std::make_unique<SpringJoint>();
-	springJoint_->CreateSpringJoint(spike_.get(), stand_.get());
-	springJoint_->EnableSpring(1, true);
-	springJoint_->SetEquilibriumPoint(1, 10.0f);
-	springJoint_->SetStiffness(1, 1.0f);
-	springJoint_->SetDamping(1, 0.0f);
-	world_->AddJoint(springJoint_.get());
-
-	line_ = std::make_unique<PrimitiveDrawer>();
-	line_.reset(PrimitiveDrawer::Create());
-	line_->SetCamera(camera_);*/
-
 	isReset_ = false;
 	isDebt_ = false;
 	resetTime_ = 0.0f;
@@ -176,6 +113,40 @@ void StageScene::Initialize()
 		springLines_[i]->SetCamera(camera_);
 	}
 
+	for (uint32_t i = 0; i < bridgeCount_; i++) {
+		bridge_[i] = std::make_unique<Object3D>();
+		bridge_[i]->SetPosition(Vector3{ 397.45f + i * 15.0f,  26.765f, 0.0f });
+		if (i > 0 && i < bridgeCount_ - 1) {
+			bridge_[i]->SetMass(2.0f);
+		}
+		bridge_[i]->Initialize(ModelManager::GetInstance()->CreateModel(obj,/* ""*/"Wood"), world_.get(), Collider::Shape::kAABB);
+		bridge_[i]->SetCamera(camera_);
+		bridge_[i]->SetScale({ 3.0f, 2.0f ,6.4f });
+		bridge_[i]->SetHitBoxSize({ 2.0f, 2.0f, 2.0f });
+		bridge_[i]->SetCollisionAttribute(kCollisionAttributeTrampoline);
+		world_->Add(bridge_[i].get());
+
+
+
+		if (i > 0) {
+			bridgesJoint_[i - 1] = std::make_unique<SpringJoint>();
+			bridgesJoint_[i - 1]->CreateSpringJoint(bridge_[i - 1].get(), bridge_[i].get());
+			bridgesJoint_[i - 1]->EnableSpring(0, true);
+			bridgesJoint_[i - 1]->EnableSpring(1, true);
+			bridgesJoint_[i - 1]->SetEquilibriumPoint(0, 0.0f);
+			bridgesJoint_[i - 1]->SetEquilibriumPoint(1, 0.0f);
+			bridgesJoint_[i - 1]->SetStiffness(0, stiffness_);
+			bridgesJoint_[i - 1]->SetStiffness(1, stiffness_);
+			bridgesJoint_[i - 1]->SetDamping(0, dampar_);
+			bridgesJoint_[i - 1]->SetDamping(1, dampar_);
+			world_->AddJoint(bridgesJoint_[i - 1].get());
+
+			bridgeLines_[i - 1] = std::make_unique<PrimitiveDrawer>();
+			bridgeLines_[i - 1].reset(PrimitiveDrawer::Create());
+			bridgeLines_[i - 1]->SetCamera(camera_);
+		}
+
+	}
 	
 }
 
@@ -381,6 +352,12 @@ void StageScene::Draw3D()
 	for (uint32_t i = 0; i < springBoardCount_; i++) {
 		springLines_[i]->Draw(springTops_[i]->GetMatWorldTranslation(), springAnchores_[i]->GetMatWorldTranslation(), { 0.0f, 0.0f, 0.0f, 1.0f });
 		springTops_[i]->Draw();
+	}
+	for (uint32_t i = 0; i < bridgeCount_; i++) {
+		if (i > 0) {
+			bridgeLines_[i - 1]->Draw(bridge_[i - 1]->GetMatWorldTranslation(), bridge_[i]->GetMatWorldTranslation(), { 0.0f, 0.0f, 0.0f, 1.0f });
+		}
+		bridge_[i]->Draw();
 	}
 	start_->Draw(startWT_, textureTV_);
 	//ObjectManager::GetInstance()->Draw(stageName_);
