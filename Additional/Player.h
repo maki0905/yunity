@@ -11,6 +11,7 @@
 #include "Sprite.h"
 #include "Score.h"
 #include "SpringJoint.h"
+#include "FixedJoint.h"
 
 /*
 * @brief プレイヤークラス
@@ -120,5 +121,7 @@ private:
 
 	std::unique_ptr<SpringJoint> springJoint_;
 	std::unique_ptr<Body> apexBody_;
+
+	std::unique_ptr<FixedJoint> fixedJoint_;
 };
 

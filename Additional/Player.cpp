@@ -76,8 +76,8 @@ void Player::Initialize(Camera* camera, World* world)
 
 	springJoint_ = std::make_unique<SpringJoint>();
 	springJoint_->CreateSpringJoint(this, apexBody_.get());
-	springJoint_->EnableSpring(0, true);
-	springJoint_->EnableSpring(1, true);
+	springJoint_->EnableSpring(0, false);
+	springJoint_->EnableSpring(1, false);
 	springJoint_->SetEquilibriumPoint(0, 0.0f);
 	springJoint_->SetEquilibriumPoint(1, 0.0f);
 	springJoint_->SetStiffness(0, stiffness_);
@@ -97,6 +97,8 @@ void Player::Initialize(Camera* camera, World* world)
 
 	scoreUI_ = std::make_unique<Score>();
 	scoreUI_->Initialize();
+
+	fixedJoint_ = std::make_unique<FixedJoint>();
 
 }
 
@@ -332,14 +334,17 @@ void Player::Update()
 							//point_ = hit.collider->GetTranslation();
 							point_ = hit.point;
 							apexWorldTransform_.translation_ = hit.point;
-							if (hit.collider->GetCollisionAttribute() == kCollisionAttributeMoveFloor) {
-								apexWorldTransform_.parent_ = hit.collider->GetWorldTransform();
-								apexWorldTransform_.translation_ = Subtract(apexWorldTransform_.translation_, hit.collider->GetMatWorldTranslation());
+							apexBody_->SetMatTranslation(hit.point);
+							if (hit.collider->GetCollisionAttribute() == kCollisionAttributeMoveFloor || hit.collider->GetCollisionAttribute() == kCollisionAttributeTrampoline) {
+								fixedJoint_->CreateFixedJoint(hit.collider, apexBody_.get());
+								/*apexWorldTransform_.parent_ = hit.collider->GetWorldTransform();
+								apexWorldTransform_.translation_ = Subtract(apexWorldTransform_.translation_, hit.collider->GetMatWorldTranslation());*/
 							}
 						}
 					}
 					else {
 						isWire_ = false;
+						fixedJoint_->Clear();
 						if (apexWorldTransform_.parent_) {
 							apexWorldTransform_.parent_ = nullptr;
 						}
@@ -368,14 +373,17 @@ void Player::Update()
 
 	if (!isWire_) {
 		apexWorldTransform_.translation_ = worldTransform_.translation_;
+		apexBody_->SetTranslation(worldTransform_.translation_);
 	}
 	else {
 		AddForce(Spring(apexWorldTransform_.GetMatWorldTranslation(), GetMatWorldTranslation(), 0.0f, stiffness_, dampar_), 0);
 		AddForce(RubberMovement(GetMatWorldTranslation(), apexWorldTransform_.GetMatWorldTranslation(), limitLength_, stiffness_, dampar_), 0);
+		fixedJoint_->Solve();
 	}
 
 	reticleWorldTransform_.UpdateMatrix();
 	apexWorldTransform_.UpdateMatrix();
+	apexBody_->GetWorldTransform()->UpdateMatrix();
 
 	Vector2 pos = WorldToScreen({ reticleWorldTransform_.matWorld_.m[3][0], reticleWorldTransform_.matWorld_.m[3][1], reticleWorldTransform_.matWorld_.m[3][2] }, camera_->GetViewMatrix(), camera_->GetProjectionMatrix(), 1280.0f, 720.0f);
 	reticle_->SetPosition(pos);
@@ -447,8 +455,8 @@ void Player::Draw()
 	if (CommonData::GetInstance()->scene_ == Scene::kStage) {
 		reticle3D_->Draw(reticleWorldTransform_, TextureManager::GetInstance()->Load("pink1x1.png"));
 		if (isWire_) {
-			line_->Draw(worldTransform_.translation_, apexWorldTransform_.GetMatWorldTranslation(), { 0.0f, 0.0f, 0.0f, 1.0f });
-			apex_->Draw(apexWorldTransform_, TextureManager::GetInstance()->Load("purple1x1.png"));
+			line_->Draw(worldTransform_.translation_,apexBody_->GetMatWorldTranslation()/* apexWorldTransform_.GetMatWorldTranslation()*/, { 0.0f, 0.0f, 0.0f, 1.0f });
+			apex_->Draw(*apexBody_->GetWorldTransform()/*apexWorldTransform_*/, TextureManager::GetInstance()->Load("purple1x1.png"));
 		}
 	}
 #ifdef _DEBUG

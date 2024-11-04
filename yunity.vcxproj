@@ -133,6 +133,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Engine\Core\GraphicsCommon.cpp" />
     <ClCompile Include="Engine\Core\GraphicsPipelineManager.cpp" />
     <ClCompile Include="Engine\Base\EventTrigger.cpp" />
+    <ClCompile Include="Engine\Physics\FixedJoint.cpp" />
     <ClCompile Include="Engine\Physics\Joint.cpp" />
     <ClCompile Include="Engine\Physics\PulleyJoint.cpp" />
     <ClCompile Include="Engine\Physics\Shape.cpp" />
@@ -225,6 +226,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\Core\GraphicsCommon.h" />
     <ClInclude Include="Engine\Core\GraphicsPipelineManager.h" />
     <ClInclude Include="Engine\Base\EventTrigger.h" />
+    <ClInclude Include="Engine\Physics\FixedJoint.h" />
     <ClInclude Include="Engine\Physics\Joint.h" />
     <ClInclude Include="Engine\Physics\PulleyJoint.h" />
     <ClInclude Include="Engine\Physics\Shape.h" />
