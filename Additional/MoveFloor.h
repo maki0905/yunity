@@ -18,6 +18,7 @@ public:
 	virtual void Update();
 private:
 	float amplitude_ = 0.08f;
+	const float secound_ = 1.0f / 60.0f;
 	float time_ = 0.0f;
 	float cycle_ = 5.0f;
 };

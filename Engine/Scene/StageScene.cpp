@@ -28,35 +28,20 @@ void StageScene::Initialize()
 
 	world_ = std::make_unique<World>();
 	world_->Initialize({0.0f, -15.0f, 0.0f});
-	//world_->Initialize();
 
 	player_ = std::make_unique<Player>();
 	player_->Initialize(camera_/*camera_.get()*/, world_.get());
 	camera_->SetTarget(player_->GetWorldTransform());
 
-	//start_ = std::make_unique<Model>();
-	////start_.reset(ModelManager::GetInstance()->CreateModel(obj, "startBox"));
-	//start_.reset(ModelManager::GetInstance()->CreateModel(obj, "Cube"));
-	//start_->SetCamera(camera_.get());
 	startWT_.Initialize();
-	//startWT_.translation_.y = 6.0f;
-	//end_ = std::make_unique<Model>();
-	//end_.reset(ModelManager::GetInstance()->CreateModel(obj, "endBox"));
-	//end_->SetCamera(camera_.get());
-	//endWT_.Initialize();
-	//endWT_.translation_ = { 10.0f, 3.0f, 0.0f };
 
 	stageName_ = CommonData::GetInstance()->GetStageName();
-	//ObjectManager::GetInstance()->Load(stageName_, camera_/*camera_.get()*/, world_.get());
 	objectManager_ = std::make_unique<ObjectManager>();
 	objectManager_->Initialize();
 	objectManager_->Load(stageName_, camera_/*camera_.get()*/, world_.get());
 	startWT_.translation_ = objectManager_->GetPos("startBox");
-	//startWT_.translation_ = ObjectManager::GetInstance()->GetPos(stageName_, "startBox");
 	startPos_ = startWT_.translation_;
 	player_->ResetPos(startPos_);
-	//ObjectManager::GetInstance()->Load("TL1", camera_.get(), world_.get());
-	/*trampolines_ = ObjectManager::GetInstance()->GetObjects("stage0", "Trampoline");*/
 
 	start_ = std::make_unique<Model>();
 	start_.reset(ModelManager::GetInstance()->CreateModel(obj, "TV"));
@@ -66,8 +51,6 @@ void StageScene::Initialize()
 	startWT_.scale_ = { 0.5f, 0.5f, 0.5f };
 	startWT_.UpdateMatrix();
 	textureTV_ = TextureManager::Load("Models/TV/TV.png");
-
-	//ObjectManager::GetInstance()->SetActive(stageName_, 0, false);
 
 	skydome_ = std::make_unique<Skydome>();
 	skydome_->Initialize(camera_/*camera_.get()*/, {5.0f, 5.0f, 5.0f});
@@ -87,14 +70,14 @@ void StageScene::Initialize()
 			pos = {103.0f, 2.5f, 0.0f};
 		}
 		else {
-			pos = {257.6f, -4.5f, 0.0f};
+			pos = {257.6f, -4.5f, -1.0f};
 		}
 
 		springTops_[i]->Initialize(ModelManager::GetInstance()->CreateModel(obj, "Wood"), world_.get(), Collider::kAABB);
 		springTops_[i]->SetTranslation(pos);
 		springTops_[i]->SetMass(1.0f);
 		springTops_[i]->SetHitBoxSize({ 2.0f, 2.0f, 2.0f });
-		springTops_[i]->SetScale({ 2.5f, 1.0f, 3.5f });
+		springTops_[i]->SetScale({ 3.5f, 1.0f, 4.5f });
 		springTops_[i]->SetCamera(camera_);
 		springTops_[i]->SetCollisionAttribute(kCollisionAttributeTrampoline);
 		springTops_[i]->SetFixedPosition(pos);
@@ -152,30 +135,10 @@ void StageScene::Initialize()
 
 void StageScene::Update()
 {
-	//player_->Update();
-
-	///*if (player_->GetTranslation().x > worldTransform_end_.translation_.x) {
-	//	player_->SetTranslation(worldTransform_start_.translation_);
-	//}*/
-
-	//blockManager_->Update(world_.get());
-
-	//world_->Solve();
-
-	//if (isDebug_) {
-	//	debugCamera_->Update(camera_.get());
-	//	camera_->Update();
-	//}
-	//else {
-	//	camera_->Update();
-	//}
-
-	/*---------------------------------------------------------*/
 
 	if (!inStage_) {
 		if (!Tradition::GetInstance()->GetOut()) {
 			inStage_ = true;
-			//camera_->SetTarget(player_->GetWorldTransform());
 		}
 		Tradition::GetInstance()->Update();
 		camera_->SetOffset(Lerp(startPos_, { startPos_.x, 5.0f, -50.0f }, std::clamp(1.0f - Tradition::GetInstance()->GetTime(), 0.0f, 1.0f)));
@@ -222,11 +185,6 @@ void StageScene::Update()
 		}
 	}
 	
-
-	//ObjectManager::GetInstance()->Update(stageName_);
-	///*for (auto& object : ObjectManager::GetInstance()->GetObjects("TL1")) {
-	//	object->Update();
-	//}*/
 	world_->Solve();
 
 	for (uint32_t i = 0; i < springBoardCount_; i++) {
@@ -245,14 +203,8 @@ void StageScene::Update()
 		camera_->Update();
 	}
 	else {
-		/*if (camera_->GetTarget() == nullptr) {
-			camera_->SetTarget(player_->GetWorldTransform());
-		}*/
 		camera_->Update();
 	}
-
-	/*startWT_.UpdateMatrix();
-	endWT_.UpdateMatrix();*/
 
 	if (!player_->GetActive()) {
 
@@ -272,7 +224,6 @@ void StageScene::Update()
 				float t = 1.0f - std::powf(1.0f - upTime_, 5);
 				Vector3 pos = Slerp(diePos_, { diePos_.x, diePos_.y + 10.0f, diePos_.z - 10.0f }, t);
 				pos.x = diePos_.x;
-				//player_->SetTranslation(Slerp(diePos_, { diePos_.x, diePos_.y + 10.0f, diePos_.z - 2.0f }, upTime_));
 				player_->SetTranslation(pos);
 				if (upTime_ == 1.0f) {
 					topPos_ = player_->GetTranslation();
@@ -283,24 +234,15 @@ void StageScene::Update()
 				downTime_ = std::clamp(downTime_, 0.0f, 1.0f);
 				Vector3 pos = Slerp(topPos_, { topPos_.x, topPos_.y - 20.0f, topPos_.z - 10.0f }, downTime_);
 				pos.x = topPos_.x;
-				//player_->SetTranslation(Slerp(topPos_, { topPos_.x, topPos_.y - 20.0f, topPos_.z - 2.0f }, downTime_));
 				player_->SetTranslation(pos);
 			}
 			else {
 				isReset_ = true;
 				diePos_ = player_->GetTranslation();
 				player_->SetIsTrigger(false);
-				//player_->SetTranslation(startPos_);
 				player_->SetScale({ 0.0f, 0.0f, 0.0f });
 			}
 		}
-
-		/*if (player_->GetTranslation().y < -10.0f) {
-			isReset_ = true;
-			player_->SetIsTrigger(false);
-		}*/
-		//ObjectManager::GetInstance()->Clear(stageName_);
-		//ObjectManager::GetInstance()->Load(stageName_, camera_/*camera_.get()*/, world_.get());
 	}
 
 	if (CommonData::GetInstance()->isGoal_) {
@@ -317,11 +259,7 @@ void StageScene::Update()
 	
 
 #ifdef _DEBUG
-	/*Vector3 pos = spike_->GetMatWorldTranslation();
-	ImGui::Begin("spike");
-	ImGui::DragFloat3("pos", &pos.x);
-	ImGui::End();
-	spike_->SetPosition(pos);*/
+	
 
 #endif
 
@@ -334,19 +272,7 @@ void StageScene::DrawBack()
 
 void StageScene::Draw3D()
 {
-	/*player_->Draw();
-	blockManager_->Draw();
-	primitiveDrawer_->Draw(worldTransform_start_);
-	start_->Draw(worldTransform_start_);
-	end_->Draw(worldTransform_end_);*/
-	//primitiveDrawer_->Draw(worldTransform_start_);
 
-	/*---------------------------------------------------------*/
-
-	//skybox_->Draw(skyboxWorldTransform_);
-	//start_->Draw(startWT_);
-	/*start_->Draw(startWT_);
-	end_->Draw(endWT_);*/
 	skydome_->Draw();
 	objectManager_->Draw();
 	for (uint32_t i = 0; i < springBoardCount_; i++) {
@@ -360,13 +286,6 @@ void StageScene::Draw3D()
 		bridge_[i]->Draw();
 	}
 	start_->Draw(startWT_, textureTV_);
-	//ObjectManager::GetInstance()->Draw(stageName_);
-	///*for (auto& object : ObjectManager::GetInstance()->GetObjects("TL1")) {
-	//	object->Draw();
-	//}*/
-	/*line_->Draw(spike_->GetMatWorldTranslation(), stand_->GetMatWorldTranslation(), {0.0f, 0.0f, 0.0f, 1.0f});
-	spike_->Draw();
-	stand_->Draw();*/
 	player_->Draw();
 	
 

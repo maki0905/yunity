@@ -337,8 +337,6 @@ void Player::Update()
 							apexBody_->SetMatTranslation(hit.point);
 							if (hit.collider->GetCollisionAttribute() == kCollisionAttributeMoveFloor || hit.collider->GetCollisionAttribute() == kCollisionAttributeTrampoline) {
 								fixedJoint_->CreateFixedJoint(hit.collider, apexBody_.get());
-								/*apexWorldTransform_.parent_ = hit.collider->GetWorldTransform();
-								apexWorldTransform_.translation_ = Subtract(apexWorldTransform_.translation_, hit.collider->GetMatWorldTranslation());*/
 							}
 						}
 					}
@@ -348,7 +346,6 @@ void Player::Update()
 						if (apexWorldTransform_.parent_) {
 							apexWorldTransform_.parent_ = nullptr;
 						}
-						//GetWorld()->TakeJoint(springJoint_.get());
 					}
 				}
 			}

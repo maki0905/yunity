@@ -15,7 +15,7 @@ void MoveFloor::Update()
 {
 	worldTransform_.translation_.x += amplitude_;
 
-	time_ += 2.0f / 60.0f;
+	time_ += secound_;
 	if (cycle_ < time_) {
 		amplitude_ *= -1.0f;
 		time_ = 0.0f;
