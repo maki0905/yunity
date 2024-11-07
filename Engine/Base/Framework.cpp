@@ -85,18 +85,6 @@ void Framework::Update()
 
 	Input::GetInstance()->Update();
 
-	// シーンのチェック
-	/*prevSceneNo_ = currentSceneNo_;
-	currentSceneNo_ = sceneArr_[currentSceneNo_]->GetSceneNo();*/
-
-	// シーン変更チェック
-	/*if (prevSceneNo_ != currentSceneNo_) {
-		sceneArr_[currentSceneNo_]->Initialize();
-	}*/
-
-	// 更新
-	//sceneArr_[currentSceneNo_]->Update();
-
 	SceneManager::GetInstance()->Update();
 	ModelManager::GetInstance()->Update();
 	//RenderTexture::GetInstance()->GetPostEffect()->Adjustment();
