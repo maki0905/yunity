@@ -298,13 +298,13 @@ void Player::Update()
 				// 移動量に速さを反映
 				move = Multiply(speed, move);
 
-				AddForce(move, 1);
+				AddForce(move, Body::ForceMode::kImpulse);
 			}
 
 			if ((pad_.Gamepad.wButtons & XINPUT_GAMEPAD_A) && !(prePad_.Gamepad.wButtons & XINPUT_GAMEPAD_A)) {
 				if (!isJunp_) {
 					isJunp_ = true;
-					AddForce({ 0.0f, 25.0f, 0.0f }, 1);
+					AddForce({ 0.0f, 25.0f, 0.0f }, Body::ForceMode::kImpulse);
 				}
 			}
 
@@ -373,8 +373,8 @@ void Player::Update()
 		apexBody_->SetTranslation(worldTransform_.translation_);
 	}
 	else {
-		AddForce(Spring(apexWorldTransform_.GetMatWorldTranslation(), GetMatWorldTranslation(), 0.0f, stiffness_, dampar_), 0);
-		AddForce(RubberMovement(GetMatWorldTranslation(), apexWorldTransform_.GetMatWorldTranslation(), limitLength_, stiffness_, dampar_), 0);
+		AddForce(Spring(apexWorldTransform_.GetMatWorldTranslation(), GetMatWorldTranslation(), 0.0f, stiffness_, dampar_), Body::ForceMode::kForce);
+		AddForce(RubberMovement(GetMatWorldTranslation(), apexWorldTransform_.GetMatWorldTranslation(), limitLength_, stiffness_, dampar_), Body::ForceMode::kForce);
 		fixedJoint_->Solve();
 	}
 
@@ -475,7 +475,7 @@ void Player::OnCollisionEvent()
 		AABB other = GetHitBody()->GetAABB();
 		if (aabb.min.y >= other.max.y) {
 			if (aabb.min.x < other.max.x && aabb.max.x > other.min.x) {
-				AddForce({ 0.0f, 30.0f, 0.0f }, 1);
+				AddForce({ 0.0f, 30.0f, 0.0f }, Body::ForceMode::kImpulse);
 			}
 
 		}

@@ -251,7 +251,7 @@ void Body::Solve(float time)
 			gravity = gravityAcceleration_;
 		}
 
-		if (frictionCombine_ != FrictionCombine::kNone && normalVector_.y != 0.0f) {
+		/*if (frictionCombine_ != FrictionCombine::kNone && normalVector_.y != 0.0f) {
 			Vector3 dirction = velocity_;
 			dirction.y = 0.0f;
 			dirction.Normalize();
@@ -272,7 +272,9 @@ void Body::Solve(float time)
 		}
 		else {
 			acceleration_ = Add(gravity, airResistanceAcceleration);
-		}
+		}*/
+
+		acceleration_ = Add(gravity, airResistanceAcceleration);
 
 		if (inertiaMoment_ != 0.0f) {
 			Vector3 airResistanceTorque = Multiply(-angularDrag_, angularVelocity_);
@@ -322,7 +324,7 @@ void Body::Solve(float time)
 	worldTransform_->UpdateMatrix();
 }
 
-void Body::SolveConstraints()
+void Body::SolveConstraints(/*float time*/)
 {
 
 	Vector3 L = GetHitBoxSize();
@@ -339,6 +341,7 @@ void Body::SolveConstraints()
 	inertiaTensor_ = Multiply(Multiply(R, inertiaTensor_), Rt);
 
 	for (auto& c : persistentManifold_) {
+		// 反発
 		Vector3 relativeVelocity = Subtract(c->velocityA, c->velocityB);
 		float velocityAlongNormal = Dot(relativeVelocity, c->contactNormal);
 		float impulseMagnitude = 0.0f;
@@ -360,7 +363,17 @@ void Body::SolveConstraints()
 		}
 
 		Vector3 impulse = Multiply(impulseMagnitude, c->contactNormal);
-		AddForce(impulse, 1);
+		AddForce(impulse, ForceMode::kImpulse);
+
+		// 摩擦
+		Vector3 tangentVelocity = Subtract(relativeVelocity, Multiply(velocityAlongNormal, c->contactNormal));
+		Vector3 frictionForce = Multiply(-magnitude_ * impulseMagnitude, tangentVelocity);
+		float maxStaticFriction = magnitude_ * impulseMagnitude;
+		if (Length(frictionForce) > maxStaticFriction) {
+			frictionForce = Normalize(frictionForce);
+			frictionForce = Multiply(maxStaticFriction, frictionForce);
+		}
+		AddForce(frictionForce, ForceMode::kForce);
 	}
 	persistentManifold_.clear();
 
@@ -417,9 +430,9 @@ Vector3 Body::Spring(const Vector3& anchor, const Vector3& position, float natur
 	return { 0.0f, 0.0f, 0.0f };
 }
 
-void Body::AddForce(const Vector3& force, uint32_t mode)
+void Body::AddForce(const Vector3& force, ForceMode mode)
 {
-	if (mode == 0) {
+	if (mode == ForceMode::kForce) {
 		force_ = Add(force_, force);
 	}
 	else {
@@ -427,7 +440,7 @@ void Body::AddForce(const Vector3& force, uint32_t mode)
 	}
 }
 
-void Body::AddTorque(const Vector3& torque, uint32_t mode)
+void Body::AddTorque(const Vector3& torque, ForceMode mode)
 {
 	/*if (mode == 0) {
 		torque_ = Add(torque_, Multiply(DegToRad(), torque));
@@ -435,7 +448,7 @@ void Body::AddTorque(const Vector3& torque, uint32_t mode)
 	else {
 		angularVelocity_ = Add(angularVelocity_, Multiply(angularDrag_, Multiply(DegToRad(), torque)));
 	}*/
-	if (mode == 0) {
+	if (mode == ForceMode::kForce) {
 		torque_ = Add(torque_, torque);
 	}
 	else {

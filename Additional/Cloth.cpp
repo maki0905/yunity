@@ -60,26 +60,26 @@ void Cloth::Update()
 	float force = 10.0f;
 	if (Input::GetInstance()->TriggerKey(DIK_3)) {
 		for (uint32_t index = 0; index < 4; index++) {
-			points_[index * 4]->AddForce({ force, 0.0f, 0.0f }, 1);
-			points_[index * 4 + 1]->AddForce({ force * 0.8f, 0.0f, 0.0f }, 1);
-			points_[index * 4 + 2]->AddForce({ force * 0.5f, 0.0f, 0.0f }, 1);
+			points_[index * 4]->AddForce({ force, 0.0f, 0.0f }, Body::ForceMode::kImpulse);
+			points_[index * 4 + 1]->AddForce({ force * 0.8f, 0.0f, 0.0f }, Body::ForceMode::kImpulse);
+			points_[index * 4 + 2]->AddForce({ force * 0.5f, 0.0f, 0.0f }, Body::ForceMode::kImpulse);
 		}
 	}
 	if (Input::GetInstance()->TriggerKey(DIK_4)) {
 		for (uint32_t index = 0; index < 4; index++) {
-			points_[index * 4]->AddForce({ -force, 0.0f, 0.0f }, 1);
-			points_[index * 4 + 1]->AddForce({ -force * 0.8f, 0.0f, 0.0f }, 1);
-			points_[index * 4 + 2]->AddForce({ -force * 0.5f, 0.0f, 0.0f }, 1);
+			points_[index * 4]->AddForce({ -force, 0.0f, 0.0f }, Body::ForceMode::kImpulse);
+			points_[index * 4 + 1]->AddForce({ -force * 0.8f, 0.0f, 0.0f }, Body::ForceMode::kImpulse);
+			points_[index * 4 + 2]->AddForce({ -force * 0.5f, 0.0f, 0.0f }, Body::ForceMode::kImpulse);
 		}
 	}
 	if (Input::GetInstance()->PushKey(DIK_5)) {
 		for (uint32_t index = 0; index < 4; index++) {
-			points_[index * 4]->AddForce({ 5.0f, 0.0f, 0.0f }, 0);
+			points_[index * 4]->AddForce({ 5.0f, 0.0f, 0.0f }, Body::ForceMode::kForce);
 		}
 	}
 	if (Input::GetInstance()->PushKey(DIK_6)) {
 		for (uint32_t index = 0; index < 4; index++) {
-			points_[index * 4]->AddForce({ -5.0f, 0.0f, 0.0f }, 0);
+			points_[index * 4]->AddForce({ -5.0f, 0.0f, 0.0f }, Body::ForceMode::kForce);
 		}
 	}
 }

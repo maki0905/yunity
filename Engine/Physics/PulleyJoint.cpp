@@ -52,8 +52,8 @@ void PulleyJoint::SolveVelocity()
 	Vector3 forceB = Multiply(-ratio_ * impulse, directionB_);
 
 	// ボディに適用
-	bodyA_->AddForce(forceA, 1);
-	bodyB_->AddForce(forceB, 1);
+	bodyA_->AddForce(forceA, Body::ForceMode::kImpulse);
+	bodyB_->AddForce(forceB, Body::ForceMode::kImpulse);
 }
 
 void PulleyJoint::SolvePosition()

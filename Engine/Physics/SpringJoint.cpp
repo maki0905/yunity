@@ -61,9 +61,9 @@ void SpringJoint::Solve()
 			continue;
 		}
 		force = Spring(bodyA_, bodyB_, equilibriumPoint_[index], stiffness_[index], dampingCoefficient_[index]);
-		bodyA_->AddForce(force, 0);
+		bodyA_->AddForce(force, Body::ForceMode::kForce);
 		force = Spring(bodyB_, bodyA_, equilibriumPoint_[index], stiffness_[index], dampingCoefficient_[index]);
-		bodyB_->AddForce(force, 0);
+		bodyB_->AddForce(force, Body::ForceMode::kForce);
 
 	}
 

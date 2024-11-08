@@ -212,7 +212,7 @@ void StageScene::Update()
 			dieCamera_ = camera_->GetTranslate();
 			diePos_ = player_->GetMatWorldTranslation();
 			camera_->SetTarget(nullptr);
-			player_->AddForce({0.0f, 10.0f, -1.0f}, 1);
+			player_->AddForce({0.0f, 10.0f, -1.0f}, Body::ForceMode::kImpulse);
 			player_->SetIsTrigger(true);
 			isDebt_ = true;
 			player_->SetVelocity({ 0.0f, 0.0f, 0.0f });

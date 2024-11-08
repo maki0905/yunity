@@ -10,7 +10,10 @@
 */
 class Body : public Collider {
 public:
-
+	enum class ForceMode {
+		kForce,
+		kImpulse,
+	};
 
 	enum class FrictionCombine {
 		kNone,    // 計算しない
@@ -64,7 +67,7 @@ public:
 	/// <summary>
 	/// 衝突解決
 	/// </summary>
-	void SolveConstraints();
+	void SolveConstraints(/*float time*/);
 
 	/// <summary>
 	/// 
@@ -93,14 +96,14 @@ public:
 	/// </summary>
 	/// <param name="force"></param>
 	/// <param name="mode"></param>
-	void AddForce(const Vector3& force, uint32_t mode);
+	void AddForce(const Vector3& force, ForceMode mode);
 
 	/// <summary>
 	/// トルクの適用
 	/// </summary>
 	/// <param name="torque"></param>
 	/// <param name="mode"></param>
-	void AddTorque(const Vector3& torque, uint32_t mode);
+	void AddTorque(const Vector3& torque, ForceMode mode);
 
 	/// <summary>
 	/// 力の適用
