@@ -220,6 +220,41 @@ namespace {
 		return persistentManifold;
 	}
 
+	// 二つのAABB間の貫通深度を計算
+	Vector3 CalculatePenetrationDepth(const AABB& a, const AABB& b) {
+		Vector3 penetrationDepth;
+		// x軸の貫通深度
+		if (a.max.x > b.min.x && b.max.x > a.min.x) {
+			float overlapX1 = a.max.x - b.min.x;
+			float overlapX2 = b.max.x - a.min.x;
+			penetrationDepth.x = min(overlapX1, overlapX2);
+		}
+		else {
+			penetrationDepth.x = 0.0f; // 重なっていない場合
+		}
+
+		// y軸の貫通深度
+		if (a.max.y > b.min.y && b.max.y > a.min.y) {
+			float overlapY1 = a.max.y - b.min.y;
+			float overlapY2 = b.max.y - a.min.y;
+			penetrationDepth.y = min(overlapY1, overlapY2);
+		}
+		else {
+			penetrationDepth.y = 0.0f; // 重なっていない場合
+		}
+
+		// z軸の貫通深度
+		if (a.max.z > b.min.z && b.max.z > a.min.z) {
+			float overlapZ1 = a.max.z - b.min.z;
+			float overlapZ2 = b.max.z - a.min.z;
+			penetrationDepth.z = min(overlapZ1, overlapZ2);
+		}
+		else {
+			penetrationDepth.z = 0.0f; // 重なっていない場合
+		}
+		return penetrationDepth;
+	}
+
 }
 
 void Body::CreateBody(World* world, WorldTransform* worldTransform, float mass)
@@ -365,6 +400,28 @@ void Body::SolveConstraints(/*float time*/)
 		Vector3 impulse = Multiply(impulseMagnitude, c->contactNormal);
 		AddForce(impulse, ForceMode::kImpulse);
 
+		//Vector3 penetrationDepth = c->penetrationDepth;
+
+		//float minDepth = min(penetrationDepth.x, min(penetrationDepth.y, penetrationDepth.z));
+		//Vector3 correction;
+
+		//if (minDepth > 0.0f) {
+		//	// 最小の貫通深度に対応する軸方向の補正を行う
+		//	if (minDepth == penetrationDepth.x) {
+		//		correction = Multiply(penetrationDepth.x, Vector3(1, 0, 0));
+		//	}
+		//	else if (minDepth == penetrationDepth.y) {
+		//		correction = Multiply(penetrationDepth.y, Vector3(0, 1, 0));
+		//	}
+		//	else {
+		//		correction = Multiply(penetrationDepth.z, Vector3(0, 0, 1));
+		//	}
+
+		//	// 接触法線に沿った補正
+		//	correction = Multiply(minDepth, c->contactNormal);
+		//	worldTransform_->translation_ = Add(correction, worldTransform_->translation_);
+		//}
+
 		// 摩擦
 		Vector3 tangentVelocity = Subtract(relativeVelocity, Multiply(velocityAlongNormal, c->contactNormal));
 		Vector3 frictionForce = Multiply(-magnitude_ * impulseMagnitude, tangentVelocity);
@@ -376,16 +433,6 @@ void Body::SolveConstraints(/*float time*/)
 		AddForce(frictionForce, ForceMode::kForce);
 	}
 	persistentManifold_.clear();
-
-	/*if (pushback_.x != 0.0f) {
-		velocity_.x = -velocity_.x * restitution_;
-	}
-	if (pushback_.y != 0.0f) {
-		velocity_.y = -velocity_.y * restitution_;
-	}
-	if (pushback_.z != 0.0f) {
-		velocity_.z = -velocity_.z * restitution_;
-	}*/
 
 	worldTransform_->translation_ = Add(pushback_, worldTransform_->translation_);
 	worldTransform_->UpdateMatrix();
@@ -491,6 +538,7 @@ void Body::OnCollision(Body* body)
 		resolve = Multiply(-1.0f, resolve);
 		worldTransform_->translation_ = Add(worldTransform_->translation_, resolve);*/
 		Vector3 pushback = { 0.0f, 0.0f, 0.0f };
+		Vector3 penetrationDepth = { 0.0f, 0.0f, 0.0f };
 		switch (GetShape())
 		{
 		case Collider::Shape::kSphere:
@@ -513,6 +561,7 @@ void Body::OnCollision(Body* body)
 				break;
 			case Collider::Shape::kAABB:
 				pushback = GetPushback(CreateAABB(GetColliderCenter(), GetHitBoxSize()), CreateAABB(body->GetColliderCenter(), body->GetHitBoxSize()));
+				penetrationDepth = CalculatePenetrationDepth(CreateAABB(GetColliderCenter(), GetHitBoxSize()), CreateAABB(body->GetColliderCenter(), body->GetHitBoxSize()));
 				break;
 			case Collider::Shape::kOBB:
 				pushback = GetPushback(CreateOBB(GetColliderCenter(), worldTransform_->rotation_, GetHitBoxSize()), CreateOBB(body->GetColliderCenter(), body->worldTransform_->rotation_, body->GetHitBoxSize()));
@@ -546,6 +595,7 @@ void Body::OnCollision(Body* body)
 		}
 		pushback_ = Add(pushback_, pushback);
 		PersistentManifold* persistentManifold = GetNewManifold(this, body);
+		persistentManifold->penetrationDepth = penetrationDepth;
 		//persistentManifold_.emplace_back(GetNewManifold(this, body));
 
 		float miu = 0.0f;

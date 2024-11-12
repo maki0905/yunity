@@ -32,12 +32,11 @@ public:
 	};
 
 	struct PersistentManifold {
-		/*Body* bodyA;
-		Body* bodyB;*/
 		float massA;
 		float massB;
 		float restitution;
 		float friction;
+		Vector3 penetrationDepth;
 		Vector3 velocityA;
 		Vector3 velocityB;
 		Vector3 angularVelocityA;

@@ -26,11 +26,14 @@ void StageScene::Initialize()
 	skybox_->SetCamera(camera_/*camera_.get()*/);
 	skybox_->SetTexture("rostock_laage_airport_4k.dds");
 
+	Model::DirectionalLight l = { .color = {1.0f, 1.0f, 1.0f, 1.0f}, .direction = {1.0f, -1.0f, 0.0f}, .intensity = 1.0f };
+
 	world_ = std::make_unique<World>();
 	world_->Initialize({0.0f, -15.0f, 0.0f});
 
 	player_ = std::make_unique<Player>();
 	player_->Initialize(camera_/*camera_.get()*/, world_.get());
+	player_->SetDirectionalLight(l);
 	camera_->SetTarget(player_->GetWorldTransform());
 
 	startWT_.Initialize();
@@ -39,6 +42,7 @@ void StageScene::Initialize()
 	objectManager_ = std::make_unique<ObjectManager>();
 	objectManager_->Initialize();
 	objectManager_->Load(stageName_, camera_/*camera_.get()*/, world_.get());
+	objectManager_->SetDirectionalLight(l);
 	startWT_.translation_ = objectManager_->GetPos("startBox");
 	startPos_ = startWT_.translation_;
 	player_->ResetPos(startPos_);
@@ -64,7 +68,7 @@ void StageScene::Initialize()
 
 	for (uint32_t i = 0; i < springBoardCount_; i++) {
 		springTops_[i] = std::make_unique<SpringBoard>();
-		springAnchores_[i] = std::make_unique<Object3D>();
+		springAnchors_[i] = std::make_unique<Object3D>();
 		Vector3 pos;
 		if (i == 0) {
 			pos = {103.0f, 2.5f, 0.0f};
@@ -77,19 +81,20 @@ void StageScene::Initialize()
 		springTops_[i]->SetTranslation(pos);
 		springTops_[i]->SetMass(1.0f);
 		springTops_[i]->SetHitBoxSize({ 2.0f, 2.0f, 2.0f });
-		springTops_[i]->SetScale({ 3.5f, 1.0f, 4.5f });
+		springTops_[i]->SetScale({ 5.5f, 1.0f, 4.5f });
 		springTops_[i]->SetCamera(camera_);
 		springTops_[i]->SetCollisionAttribute(kCollisionAttributeTrampoline);
 		springTops_[i]->SetFixedPosition(pos);
+		springTops_[i]->SetDirectionalLight(l);
 		world_->Add(springTops_[i].get());
 
-		springAnchores_[i]->Initialize(world_.get(), Collider::kAABB);
-		springAnchores_[i]->SetTranslation({ pos.x, pos.y - 1.0f, pos.z });
-		springAnchores_[i]->SetCamera(camera_);
-		springAnchores_[i]->SetCollisionAttribute(kCollisionAttributeFloor);
-		world_->Add(springAnchores_[i].get());
+		springAnchors_[i]->Initialize(world_.get(), Collider::kAABB);
+		springAnchors_[i]->SetTranslation({ pos.x, pos.y - 1.0f, pos.z });
+		springAnchors_[i]->SetCamera(camera_);
+		springAnchors_[i]->SetCollisionAttribute(kCollisionAttributeFloor);
+		world_->Add(springAnchors_[i].get());
 
-		springTops_[i]->SetSpringJoint(springAnchores_[i].get());
+		springTops_[i]->SetSpringJoint(springAnchors_[i].get());
 
 		springLines_[i] = std::make_unique<PrimitiveDrawer>();
 		springLines_[i].reset(PrimitiveDrawer::Create());
@@ -107,6 +112,7 @@ void StageScene::Initialize()
 		bridge_[i]->SetScale({ 3.0f, 2.0f ,6.4f });
 		bridge_[i]->SetHitBoxSize({ 2.0f, 2.0f, 2.0f });
 		bridge_[i]->SetCollisionAttribute(kCollisionAttributeTrampoline);
+		bridge_[i]->SetDirectionalLight(l);
 		world_->Add(bridge_[i].get());
 
 
@@ -120,8 +126,8 @@ void StageScene::Initialize()
 			bridgesJoint_[i - 1]->SetEquilibriumPoint(1, 0.0f);
 			bridgesJoint_[i - 1]->SetStiffness(0, stiffness_);
 			bridgesJoint_[i - 1]->SetStiffness(1, stiffness_);
-			bridgesJoint_[i - 1]->SetDamping(0, dampar_);
-			bridgesJoint_[i - 1]->SetDamping(1, dampar_);
+			bridgesJoint_[i - 1]->SetDamping(0, damper_);
+			bridgesJoint_[i - 1]->SetDamping(1, damper_);
 			world_->AddJoint(bridgesJoint_[i - 1].get());
 
 			bridgeLines_[i - 1] = std::make_unique<PrimitiveDrawer>();
@@ -276,7 +282,7 @@ void StageScene::Draw3D()
 	skydome_->Draw();
 	objectManager_->Draw();
 	for (uint32_t i = 0; i < springBoardCount_; i++) {
-		springLines_[i]->Draw(springTops_[i]->GetMatWorldTranslation(), springAnchores_[i]->GetMatWorldTranslation(), { 0.0f, 0.0f, 0.0f, 1.0f });
+		springLines_[i]->Draw(springTops_[i]->GetMatWorldTranslation(), springAnchors_[i]->GetMatWorldTranslation(), { 0.0f, 0.0f, 0.0f, 1.0f });
 		springTops_[i]->Draw();
 	}
 	for (uint32_t i = 0; i < bridgeCount_; i++) {

@@ -96,6 +96,8 @@ private:
 	Vector3 startPos_;
 	uint32_t textureTV_;
 
+	Vector3 endPos_ = { 570.0f, 35.0f, 10.0f };
+
 	std::unique_ptr<ObjectManager> objectManager_;
 
 	bool isReset_;
@@ -111,7 +113,7 @@ private:
 	// ジャンプ台
 	static const uint32_t springBoardCount_ = 2;
 	std::array<std::unique_ptr<SpringBoard>, springBoardCount_> springTops_;
-	std::array<std::unique_ptr<Object3D>, springBoardCount_> springAnchores_;
+	std::array<std::unique_ptr<Object3D>, springBoardCount_> springAnchors_;
 	std::array<std::unique_ptr<PrimitiveDrawer>, springBoardCount_> springLines_;
 
 	// 吊り橋
@@ -119,8 +121,8 @@ private:
 	std::array<std::unique_ptr<Object3D>, bridgeCount_> bridge_;
 	std::array<std::unique_ptr<PrimitiveDrawer>, bridgeCount_ - 1> bridgeLines_;
 	std::array<std::unique_ptr<SpringJoint>, bridgeCount_ - 1> bridgesJoint_;
-	const float stiffness_ = 10.0f;
-	const float dampar_ = 0.1f;
+	const float stiffness_ = 5.0f;
+	const float damper_ = 0.1f;
 
 	/*std::unique_ptr<Object3D> spike_;
 	std::unique_ptr<Object3D> stand_;

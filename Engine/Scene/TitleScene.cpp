@@ -38,6 +38,7 @@ void TitleScene::Initialize()
 	objectManager_ = std::make_unique<ObjectManager>();
 	objectManager_->Initialize();
 	objectManager_->Load("title1", camera_, world_.get());
+	objectManager_->SetDirectionalLight(l);
 
 	
 	skydome_ = std::make_unique<Skydome>();

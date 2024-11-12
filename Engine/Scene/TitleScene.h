@@ -95,7 +95,7 @@ private:
 	std::unique_ptr<PrimitiveDrawer> lines_[4];
 	std::unique_ptr<SpringJoint> springJoints_[4];
 	float stiffness_ = 10.0f;
-	float dampar_ = 0.1f;*/
+	float damper_ = 0.1f;*/
 
 	// pulley
 	/*std::unique_ptr<Object3D> pulleyObjs_[2];
