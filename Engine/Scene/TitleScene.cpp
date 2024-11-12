@@ -68,7 +68,7 @@ void TitleScene::Initialize()
 
 	preNum_ = CommonData::GetInstance()->stageNum_;
 
-	if (CommonData::GetInstance()->stageNum_ != -1) {
+	/*if (CommonData::GetInstance()->stageNum_ != -1) {
 		player_->SetPosition({ 30.0f * CommonData::GetInstance()->stageNum_, -3.5f, 0.0f });
 		player_->SetSelect(true);
 		TVworldTransform_[CommonData::GetInstance()->stageNum_].scale_ = { 1.0f, 1.0f, 1.0f };
@@ -77,7 +77,8 @@ void TitleScene::Initialize()
 	}
 	else {
 		camera_->SetTranslate({ 0, 10.0f, -50.0f });
-	}
+	}*/
+	camera_->SetTranslate({ 0, 10.0f, -50.0f });
 	CommonData::GetInstance()->scene_ = Scene::kTitle;
 	isMoveCamera[0] = false;
 	isMoveCamera[1] = false;

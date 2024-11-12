@@ -79,11 +79,6 @@ private:
 
 	std::unique_ptr<World> world_;
 
-	/*std::unique_ptr<Model> start_;
-	WorldTransform startWT_;
-	std::unique_ptr<Model> end_;
-	WorldTransform endWT_;*/
-	WorldTransform startWT_;
 	std::vector<Object3D*> floors_;
 	std::vector<Object3D*> trampolines_;
 
@@ -93,10 +88,12 @@ private:
 	Vector3 oldCameraPos_;
 
 	std::unique_ptr<Model> start_;
+	WorldTransform startWT_;
+	std::unique_ptr<Model> end_;
+	WorldTransform endWT_;
 	Vector3 startPos_;
-	uint32_t textureTV_;
-
 	Vector3 endPos_ = { 570.0f, 35.0f, 10.0f };
+	uint32_t textureTV_;
 
 	std::unique_ptr<ObjectManager> objectManager_;
 
@@ -109,6 +106,12 @@ private:
 	Vector3 dieCamera_;
 	Vector3 diePos_;
 	Vector3 topPos_;
+
+	bool isGoal_;
+	bool isClear_;
+	float time_;
+	Vector3 playerPos_;
+	Vector3 cameraPos_;
 
 	// ジャンプ台
 	static const uint32_t springBoardCount_ = 2;

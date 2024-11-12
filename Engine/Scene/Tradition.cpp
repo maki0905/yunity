@@ -18,6 +18,7 @@ void Tradition::Initialize()
 	out_ = false;
 	time_ = 0.0f;
 	second_ = 1.0f / 60.0f;
+	isActive_ = false;
 }
 
 void Tradition::Update()

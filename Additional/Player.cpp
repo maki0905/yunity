@@ -525,6 +525,7 @@ void Player::OnTriggerEvent()
 {
 	if (GetHitBody()->GetCollisionAttribute() == kCollisionAttributeGoal) {
 		CommonData::GetInstance()->isGoal_ = true;
+		SetVelocity({ 0.0f, 0.0f, 0.0f });
 	}
 	if (GetHitBody()->GetCollisionAttribute() == kCollisionAttributeSelect) {
 		isSelect_ = true;

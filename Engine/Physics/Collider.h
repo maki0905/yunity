@@ -83,7 +83,7 @@ public:
 	OBB* GetOBB() { return obb_.get(); }
 	Vector3 GetSize() { return size_; }
 	Vector3 GetCenter() { return center_; }
-	Vector3 GetColliderCenter() { return Add(worldTransform_->GetMatWorldTranslation(), center_); }
+	Vector3 GetColliderCenter() { return Add(worldTransform_->GetMatWorldTranslation(), Multiply(worldTransform_->scale_, center_)); }
 
 	/// <summary>
 	/// setter

@@ -44,7 +44,10 @@ void ObjectManager::Draw(/*const std::string& fileName*/)
 	//}
 	for (auto& object : objects_) {
 		if (object->GetModel() != nullptr) {
-			if (object->GetModel()->GetModelName() != "startBox") {
+			if (object->GetModel()->GetModelName() == "GoalPost") {
+				object->Draw();
+			}
+			else if (object->GetModel()->GetModelName() != "startBox") {
 				object->Draw();
 			}
 		}
@@ -110,6 +113,9 @@ void ObjectManager::Load(const std::string& fileName, Camera* camera, World* wor
 		}
 		else {
 			Object3D* newObject = new Object3D();
+			if (object.fileName == "GoalPost") {
+				Vector3 pos = object.center;
+			}
 			InitializeCommon(object, newObject);
 			InitializeCollider(object, newObject);
 			InitializePhysics(object, newObject);

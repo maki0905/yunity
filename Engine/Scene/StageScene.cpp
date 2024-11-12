@@ -8,11 +8,17 @@
 #include "ModelManager.h"
 #include "CommonData.h"
 #include "Tradition.h"
+#include "RenderTexture.h"
 
 void StageScene::Initialize()
 {
 	
 	inStage_ = false;
+
+	isGoal_ = false;
+	isClear_ = false;
+	playerPos_ = { 0.0f, 0.0f, 0.0f };
+	cameraPos_ = { 0.0f, 0.0f, 0.0f };
 
 	camera_ = CameraManager::GetInstance()->GetCamera();
 	camera_->SetFixedAxis({ 0.0f, 0.0f, 1.0f });
@@ -47,6 +53,8 @@ void StageScene::Initialize()
 	startPos_ = startWT_.translation_;
 	player_->ResetPos(startPos_);
 
+	player_->ResetPos({ 500.0f, endPos_.y, 0.0f });
+
 	start_ = std::make_unique<Model>();
 	start_.reset(ModelManager::GetInstance()->CreateModel(obj, "TV"));
 	start_->SetCamera(camera_);
@@ -55,6 +63,14 @@ void StageScene::Initialize()
 	startWT_.scale_ = { 0.5f, 0.5f, 0.5f };
 	startWT_.UpdateMatrix();
 	textureTV_ = TextureManager::Load("Models/TV/TV.png");
+
+	end_ = std::make_unique<Model>();
+	end_.reset(ModelManager::GetInstance()->CreateModel(obj, "TV"));
+	end_->SetCamera(camera_);
+	endWT_.Initialize();
+	endWT_.translation_ = endPos_;
+	endWT_.scale_ = { 1.5f, 1.5f, 1.5f };
+	endWT_.UpdateMatrix();
 
 	skydome_ = std::make_unique<Skydome>();
 	skydome_->Initialize(camera_/*camera_.get()*/, {5.0f, 5.0f, 5.0f});
@@ -157,6 +173,7 @@ void StageScene::Update()
 		if (!isReset_) {
 			player_->Update();
 			objectManager_->Update();
+			
 		}
 
 	}
@@ -252,8 +269,48 @@ void StageScene::Update()
 	}
 
 	if (CommonData::GetInstance()->isGoal_) {
-		CommonData::GetInstance()->isGoal_ = false;
-		SceneManager::GetInstance()->ChangeScene("TITLE");
+		if (!isGoal_) {
+			if (Length(playerPos_) == 0.0f) {
+				playerPos_ = player_->GetMatWorldTranslation();
+			}
+			time_ += 1.0f / 120.0f;
+			time_ = std::clamp(time_, 0.0f, 1.0f);
+			player_->SetPosition(Lerp(playerPos_, { endPos_.x, playerPos_.y, 0.0f }, time_));
+			if (time_ == 1.0f) {
+				isGoal_ = true;
+				cameraPos_ = camera_->GetTranslate();
+				camera_->SetTarget(nullptr);
+				Tradition::GetInstance()->Initialize();
+				Tradition::GetInstance()->Start();
+				time_ = 0.0f;
+			}
+			
+		}
+		else if (!isClear_) {
+			time_ += 1.0f / 30.0f;
+			time_ = std::clamp(time_, 0.0f, 1.0f);
+			camera_->SetTranslate(Lerp(cameraPos_, { cameraPos_.x, endPos_.y, -60.0f }, time_));
+			if (time_ == 1.0f) {
+				isClear_ = true;
+				time_ = 0.0f;
+				cameraPos_ = camera_->GetTranslate();
+				RenderTexture::GetInstance()->SelectPostEffect(PostEffects::kRadialBlur, true);
+			}
+
+		}
+		else {
+			time_ += 1.0f / 60.0f;
+			time_ = std::clamp(time_, 0.0f, 1.0f);
+			camera_->SetTranslate(Lerp(cameraPos_, endPos_, time_));
+			Tradition::GetInstance()->Update();
+
+			if (!Tradition::GetInstance()->GetIn()) {
+				CommonData::GetInstance()->isGoal_ = false;
+				SceneManager::GetInstance()->ChangeScene("TITLE");
+				player_->SetSelect(false);
+				Tradition::GetInstance()->Initialize();
+			}
+		}
 
 
 	}
@@ -292,6 +349,7 @@ void StageScene::Draw3D()
 		bridge_[i]->Draw();
 	}
 	start_->Draw(startWT_, textureTV_);
+	end_->Draw(endWT_, textureTV_);
 	player_->Draw();
 	
 
