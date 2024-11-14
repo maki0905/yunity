@@ -68,7 +68,6 @@ protected:
 	UINT numSamplers_;
 	UINT numInitializedStaticSamplers_ = 0;
 	std::unique_ptr<RootParameter[]> parameterArray_;
-	//std::vector<RootParameter*> parameters_;
 	std::unique_ptr<D3D12_STATIC_SAMPLER_DESC[]> samplerArray_;
 
 };

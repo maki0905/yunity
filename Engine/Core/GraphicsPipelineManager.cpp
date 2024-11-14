@@ -6,10 +6,8 @@
 
 void GraphicsPipelineManager::Initialize()
 {
-	//device_ = Device::GetInstance()->GetDevice();
 	graphicsCommon_ = GraphicsCommon::GetInstance();
 	for (uint32_t pipelineType = 0; pipelineType < PipelineType::kCount; pipelineType++) {
-		//graphicsPipelines_[pipelineType] = new GraphicsPipeline();
 		graphicsPipelines_[pipelineType] = std::make_unique<GraphicsPipeline>();
 	}
 
@@ -30,7 +28,6 @@ void GraphicsPipelineManager::SetCommandList(ID3D12GraphicsCommandList* commandL
 
 void GraphicsPipelineManager::CreateObject3d()
 {
-	//graphicsPipelines_[PipelineType::kObject3d]->rooSignature_ = new RootSignature(Device::GetInstance()->GetDevice(), static_cast<UINT>(Object3dRootBindings::kCount), 1);
 	graphicsPipelines_[PipelineType::kObject3d]->rooSignature_ = std::make_unique<RootSignature>(Device::GetInstance()->GetDevice(), static_cast<UINT>(Object3dRootBindings::kCount), 1);
 	D3D12_STATIC_SAMPLER_DESC staticSamplers = graphicsCommon_->StaticSampler;
 	staticSamplers.ShaderRegister = 0;
@@ -45,7 +42,6 @@ void GraphicsPipelineManager::CreateObject3d()
 	graphicsPipelines_[PipelineType::kObject3d]->rooSignature_->GetParameter(static_cast<UINT>(Object3dRootBindings::kLight)).InitializeAsConstantBuffer(1, D3D12_SHADER_VISIBILITY_PIXEL);
 	graphicsPipelines_[PipelineType::kObject3d]->rooSignature_->GetParameter(static_cast<UINT>(Object3dRootBindings::kCamera)).InitializeAsConstantBuffer(2, D3D12_SHADER_VISIBILITY_PIXEL);
 	graphicsPipelines_[PipelineType::kObject3d]->rooSignature_->GetParameter(static_cast<UINT>(Object3dRootBindings::kPointLight)).InitializeAsConstantBuffer(3, D3D12_SHADER_VISIBILITY_PIXEL);
-	//graphicsPipelines_[PipelineType::kObject3d]->rooSignature_->GetParameter(static_cast<UINT>(Object3dRootBindings::kEnvironmentMap)).InitializeAsDescriptorRange(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 1, D3D12_SHADER_VISIBILITY_PIXEL);
 	graphicsPipelines_[PipelineType::kObject3d]->rooSignature_->Finalize(D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
 
 	// InputLayout
@@ -63,18 +59,6 @@ void GraphicsPipelineManager::CreateObject3d()
 
 	// DepthStencilStateの設定
 	D3D12_DEPTH_STENCIL_DESC depthStencilDesc = GraphicsPipelineManager::graphicsCommon_->DepthStateReadWrite;
-
-	//// BlendState
-	//D3D12_BLEND_DESC blendDesc{};
-	//// すべての色要素を書き込む
-	//blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
-	//blendDesc.RenderTarget[0].BlendEnable = TRUE;
-	//blendDesc.RenderTarget[0].SrcBlend = D3D12_BLEND_SRC_ALPHA;
-	//blendDesc.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;
-	//blendDesc.RenderTarget[0].DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
-	//blendDesc.RenderTarget[0].SrcBlendAlpha = D3D12_BLEND_ONE;
-	//blendDesc.RenderTarget[0].BlendOpAlpha = D3D12_BLEND_OP_ADD;
-	//blendDesc.RenderTarget[0].DestBlendAlpha = D3D12_BLEND_ZERO;
 
 	for (uint32_t blendModeType = 0; blendModeType < BlendModeType::kBlendCount; blendModeType++) {
 		//graphicsPipelines_[PipelineType::kObject3d]->pso_[blendModeType] = new PipelineState(Device::GetInstance()->GetDevice(), graphicsPipelines_[PipelineType::kObject3d]->rooSignature_);
@@ -99,7 +83,6 @@ void GraphicsPipelineManager::CreateSprite()
 
 void GraphicsPipelineManager::CreateParticle()
 {
-	//graphicsPipelines_[PipelineType::kParticle]->rooSignature_ = new RootSignature(Device::GetInstance()->GetDevice(), static_cast<int>(ParticleRootBindings::kCount), 1);
 	graphicsPipelines_[PipelineType::kParticle]->rooSignature_ = std::make_unique<RootSignature>(Device::GetInstance()->GetDevice(), static_cast<int>(ParticleRootBindings::kCount), 1);
 
 	D3D12_STATIC_SAMPLER_DESC staticSamplers = graphicsCommon_->StaticSampler;
@@ -107,7 +90,6 @@ void GraphicsPipelineManager::CreateParticle()
 	staticSamplers.ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
 	graphicsPipelines_[PipelineType::kParticle]->rooSignature_->InitializeStaticSampler(0, staticSamplers, D3D12_SHADER_VISIBILITY_PIXEL);
 
-	//rootSignature_->GetParameter(static_cast<size_t>(RootBindings::kWorldTransform)).InitializeAsConstantBuffer(0, D3D12_SHADER_VISIBILITY_VERTEX);
 	graphicsPipelines_[PipelineType::kParticle]->rooSignature_->GetParameter(static_cast<size_t>(ParticleRootBindings::kWorldTransform)).InitializeAsDescriptorRange(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 0, 1, D3D12_SHADER_VISIBILITY_VERTEX);
 	graphicsPipelines_[PipelineType::kParticle]->rooSignature_->GetParameter(static_cast<size_t>(ParticleRootBindings::kViewProjection)).InitializeAsConstantBuffer(1, D3D12_SHADER_VISIBILITY_VERTEX);
 	graphicsPipelines_[PipelineType::kParticle]->rooSignature_->GetParameter(static_cast<size_t>(ParticleRootBindings::kTexture)).InitializeAsDescriptorRange(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 0, 1, D3D12_SHADER_VISIBILITY_PIXEL);
@@ -149,14 +131,12 @@ void GraphicsPipelineManager::CreateParticle()
 
 void GraphicsPipelineManager::CreateLine()
 {
-	/*graphicsPipelines_[PipelineType::kLine]->rooSignature_ = new RootSignature(Device::GetInstance()->GetDevice(), static_cast<int>(LineRootBindings::kCount), 1);*/
 	graphicsPipelines_[PipelineType::kLine]->rooSignature_ = std::make_unique<RootSignature>(Device::GetInstance()->GetDevice(), static_cast<int>(LineRootBindings::kCount), 1);
 	D3D12_STATIC_SAMPLER_DESC staticSamplers = graphicsCommon_->StaticSampler;
 	staticSamplers.ShaderRegister = 0;
 	staticSamplers.ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
 	graphicsPipelines_[PipelineType::kLine]->rooSignature_->InitializeStaticSampler(0, staticSamplers, D3D12_SHADER_VISIBILITY_PIXEL);
 
-	//rootSignature_->GetParameter(static_cast<size_t>(RootBindings::kWorldTransform)).InitializeAsConstantBuffer(0, D3D12_SHADER_VISIBILITY_VERTEX);
 	graphicsPipelines_[PipelineType::kLine]->rooSignature_->GetParameter(static_cast<size_t>(LineRootBindings::kViewProjection)).InitializeAsConstantBuffer(static_cast<int>(LineRootBindings::kViewProjection));
 
 	graphicsPipelines_[PipelineType::kLine]->rooSignature_->Finalize(D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);

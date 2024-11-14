@@ -39,8 +39,6 @@ public:
 	
 	ID3D12DescriptorHeap* GetDescriptorHeap() { return dsvHeap_->GetHeapPointer(); }
 	ID3D12Resource* GetDepthStencil() { return depthStencilResource_.Get(); }
-	//D3D12_CPU_DESCRIPTOR_HANDLE GetDescriptorHandle() { return D3D12_CPU_DESCRIPTOR_HANDLE(dsvHeap_->GetHeapPointer()->GetCPUDescriptorHandleForHeapStart()); }
-
 
 private:
 
@@ -55,8 +53,6 @@ private:
 	Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> commandList_;
 
 	Microsoft::WRL::ComPtr<ID3D12Resource> depthStencilResource_;
-
-	//Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> dsvHeap_;
 
 	DescriptorHeap* dsvHeap_ = nullptr;
 

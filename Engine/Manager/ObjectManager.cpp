@@ -2,46 +2,22 @@
 
 #include "ModelManager.h"
 
-//ObjectManager* ObjectManager::GetInstance()
-//{
-//	static ObjectManager instance;
-//	return &instance;
-//
-//}
-
 void ObjectManager::Initialize()
 {
 	objects_.clear();
 	joints_.clear();
-	//activeObjects_.clear();
 }
 
-void ObjectManager::Update(/*const std::string& fileName*/)
+void ObjectManager::Update()
 {
-	//uint32_t index = 0;
-	//for (auto& object : objects_[fileName]) {
-	//	object->Update();
-	//	/*if (activeObjects_[fileName][index++]) {
-	//		object->Update();
-	//	}*/
-	//}
 	for (auto& object : objects_) {
 		object->Update();
-		/*if (activeObjects_[fileName][index++]) {
-			object->Update();
-		}*/
 	}
 }
 
-void ObjectManager::Draw(/*const std::string& fileName*/)
+void ObjectManager::Draw()
 {
-	/*uint32_t index = 0;*/
-	//for (auto& object : objects_[fileName]) {
-	//	object->Draw();
-	//	/*if (activeObjects_[fileName][index++]) {
-	//		object->Draw();
-	//	}*/
-	//}
+	
 	for (auto& object : objects_) {
 		if (object->GetModel() != nullptr) {
 			if (object->GetModel()->GetModelName() == "GoalPost") {
@@ -51,9 +27,6 @@ void ObjectManager::Draw(/*const std::string& fileName*/)
 				object->Draw();
 			}
 		}
-		/*if (activeObjects_[fileName][index++]) {
-			object->Draw();
-		}*/
 	}
 }
 
@@ -61,8 +34,6 @@ void ObjectManager::Load(const std::string& fileName, Camera* camera, World* wor
 {
 	std::unique_ptr<LevelData> levelData = std::make_unique<LevelData>();
 	levelData.reset(LevelEditor::GetInstance()->LoadFile(fileName));
-
-	//std::array<std::pair<Object3D*, LevelData::ObjectData>, 50> jointPair;
 
 	world_ = world;
 
@@ -135,56 +106,10 @@ void ObjectManager::Load(const std::string& fileName, Camera* camera, World* wor
 				world->Add(newObject);
 			}
 			objects_.emplace_back(newObject);
-
-			/*if (object.jointPair_ > -1) {
-				if (jointPair[object.jointPair_].first == nullptr) {
-					jointPair[object.jointPair_].first = newObject;
-					jointPair[object.jointPair_].second = object;
-				}
-				else {
-					if (object.jointType_ == JointType::kSpring) {
-						SpringJoint* springJoint = new SpringJoint();
-						springJoint->CreateSpringJoint(jointPair[object.jointPair_].first, newObject);
-						for (uint32_t i = 0; i < 3; i++) {
-							springJoint->EnableSpring(i, object.springEnabled_[i]);
-							springJoint->SetStiffness(i, object.stiffness_[i]);
-							springJoint->SetDamping(i, object.dampingCoefficient_[i]);
-							springJoint->SetEquilibriumPoint(i, object.equilibriumPoint_[i]);
-						}
-						world->AddJoint(springJoint);
-						joints_.emplace_back(springJoint);
-					}
-					else if(object.jointType_ == JointType::kPulley){
-						PulleyJoint* pulleyJoint = new PulleyJoint();
-						pulleyJoint->CreatePulleyJoint(jointPair[object.jointPair_].first, newObject, jointPair[object.jointPair_].second.groundAnchor_, object.groundAnchor_, jointPair[object.jointPair_].second.anchor_, object.anchor_, object.ratio_);
-						world->AddJoint(pulleyJoint);
-						joints_.emplace_back(pulleyJoint);
-					}
-				}
-			}*/
 		}
 	}
 
 }
-
-//std::vector<std::unique_ptr<Object3D>> ObjectManager::GetObjects(const std::string& fileName)
-//{
-//	return std::move(objects_[fileName]);
-//}
-
-//Vector3 ObjectManager::GetPos(const std::string& fileName, const std::string& modelName) {
-//	Vector3 result = { 0.0f, 0.0f, 0.0f };
-//	for (auto& obj : objects_[fileName]) {
-//		Model* model = obj->GetModel();
-//		if (model == nullptr) {
-//			continue;
-//		}
-//		if (model->GetModelName() == modelName) {
-//			result = obj->GetTranslation();
-//		}
-//	}
-//	return result;
-//}
 
 Vector3 ObjectManager::GetPos(const std::string& modelName)
 {
@@ -196,12 +121,8 @@ Vector3 ObjectManager::GetPos(const std::string& modelName)
 	return Vector3();
 }
 
-void ObjectManager::Clear(/*const std::string& fileName*/)
+void ObjectManager::Clear()
 {
-	/*for (auto& obj : objects_[fileName]) {
-		obj->GetWorld()->Take(obj.get());
-	}*/
-	//objects_[fileName].clear();
 	for (auto& obj : objects_) {
 		obj->GetWorld()->Take(obj.get());
 	}
@@ -213,29 +134,16 @@ void ObjectManager::Clear(/*const std::string& fileName*/)
 	joints_.clear();
 }
 
-//void ObjectManager::Reset(const std::string& fileName)
-//{
-//
-//
-//}
-
-void ObjectManager::SetDirectionalLight(/*const std::string& fileName, */Model::DirectionalLight directionalLight)
+void ObjectManager::SetDirectionalLight(Model::DirectionalLight directionalLight)
 {
-	/*for (auto& obj : objects_[fileName]) {
-		obj->SetEnableLighting(true);
-		obj->SetDirectionalLight(directionalLight);
-	}*/
 	for (auto& obj : objects_) {
 		obj->SetEnableLighting(true);
 		obj->SetDirectionalLight(directionalLight);
 	}
 }
 
-void ObjectManager::SetEnableLighting(/*const std::string& fileName,*/ bool onOff)
+void ObjectManager::SetEnableLighting(bool onOff)
 {
-	/*for (auto& obj : objects_[fileName]) {
-		obj->SetEnableLighting(onOff);
-	}*/
 	for (auto& obj : objects_) {
 		obj->SetEnableLighting(onOff);
 	}
@@ -266,20 +174,3 @@ void ObjectManager::InitializePhysics(const LevelData::ObjectData& objectData, O
 	newObject->SetBounceCombine(static_cast<Body::BounceCombine>(objectData.bounceCombine));
 }
 
-//void ObjectManager::SetActive(const std::string& fileName, uint32_t index, bool active)
-//{
-//	activeObjects_[fileName][index] = active;
-//}
-
-
-
-//std::vector<Object3D*> ObjectManager::GetObj(const std::string& fileName, const std::string& modelName)
-//{
-//	std::vector<Object3D*> result;
-//	for (auto& obj : objects_[fileName]) {
-//		if (obj->GetModel()->GetModelName() == modelName) {
-//			result.push_back(obj);
-//		}
-//	}
-//	return result;
-//}

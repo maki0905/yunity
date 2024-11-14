@@ -143,9 +143,6 @@ void SkyBox::Draw(const WorldTransform& worldTransform)
 	TextureManager::GetInstance()->SetGraphicsRootDescriptorTable(commandList_, static_cast<UINT>(RootBindings::kTexture), textureHandle_);
 
 	commandList_->DrawIndexedInstanced(static_cast<UINT>(indices_.size()), 1, 0, 0, 0);
-
-	//commandList_->DrawIndexedInstanced(16 * 16 * 6, 1, 0, 0, 0);
-	//commandList_->DrawIndexedInstanced(24, 1, 0, 0, 0);
 }
 
 void SkyBox::SetTexture(const std::string& textureName)

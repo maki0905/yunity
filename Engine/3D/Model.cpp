@@ -31,7 +31,6 @@ void Model::PostDraw()
 Model::~Model()
 {
 	ModelManager::GetInstance()->Take(this);
-	Finalize();
 }
 
 
@@ -62,31 +61,6 @@ void Model::Initialize(const std::string& name, const ModelType& modelType, cons
 		SkinClusterUpdate();
 		break;
 	}
-}
-
-void Model::Finalize()
-{
-	/*if (commandList_) {
-		commandList_->Release();
-		commandList_ = nullptr;
-	}*/
-
-	//// リソースの解放処理
-	//vertexResource_.Reset();
-	//indexResource_.Reset();
-	//directionalLightResource_.Reset();
-	//materialResource_.Reset();
-	//pointLightResource_.Reset();
-	//nodeResource_.Reset();
-
-	// その他の動的に割り当てたメモリの解放
-	/*vertexData_ = nullptr;
-	mappedIndex_ = nullptr;
-	directionalLightData_ = nullptr;
-	materialData_ = nullptr;
-	pointLightData_ = nullptr;
-	nodeData_ = nullptr;*/
-
 }
 
 void Model::Draw(const WorldTransform& worldTransform, uint32_t textureHandle)
@@ -212,11 +186,6 @@ void Model::SetDirectionalLight(const DirectionalLight& directionalLight)
 	directionalLightData_->intensity = directionalLight.intensity;
 }
 
-//void Model::SetModelData(const std::string& fileName, const std::string format)
-//{
-//	modelData_ = *ModelManager::GetInstance()->Load(fileName, format);
-//}
-
 void Model::SetAnimation(std::string name, const Animation& animation, AnimationCommon::AnimationMode mode)
 {
 	std::string path = name;
@@ -240,44 +209,7 @@ void Model::StopAnimation()
 {
 	isAnimation_ = false;
 
-	//for (auto& name : animationNames_) {
-	//	if (animations_[name].animationCommon.state == AnimationCommon::kStopped) {
-	//		continue;
-	//	}
-
-	//	animations_[name].animationCommon.time = 0.5f;
-
-	//	if (animations_[name].animationCommon.state == AnimationCommon::kLooping) {
-	//		animations_[name].animationCommon.time = std::fmod(animations_[name].animationCommon.time, animations_[name].animation.duration);
-
-	//	}
-	//	else if (animations_[name].animationCommon.time > animations_[name].animation.duration) {
-	//		animations_[name].animationCommon.state = AnimationCommon::kStopped;
-	//		animations_[name].animationCommon.time = 0.0f;
-	//	}
-
-	//	for (Joint& joint : skeleton_.joints) {
-	//		// 対象のJointのAnimationがあれば、値の適用を行う。下記のif文はC++17から可能になった初期化付きif文
-	//		if (auto it = animations_[name].animation.nodeAnimations.find(joint.name); it != animations_[name].animation.nodeAnimations.end()) {
-	//			const NodeAnimation& rootNodeAnimation = (*it).second;
-	//			joint.transform.translate = CalculateValue(rootNodeAnimation.translate, animations_[name].animationCommon.time);
-	//			joint.transform.rotate = CalculateQuaternion(rootNodeAnimation.rotate, animations_[name].animationCommon.time);
-	//			if (rootNodeAnimation.scale.size() == 0) {
-	//				joint.transform.scale = Vector3(1.0f, 1.0f, 1.0f);
-	//			}
-	//			else {
-	//				joint.transform.scale = CalculateValue(rootNodeAnimation.scale, animations_[name].animationCommon.time);
-	//			}
-	//		}
-	//	}
-
-	//	// 現在の骨ごとのLocal情報を基にSkeletonSpaceの情報を更新
-	//	SkeletonUpdate();
-	//	// SkeletonSpaceの情報を基に、SkinClusterのMatrixPaletteを更新する
-	//	SkinClusterUpdate();
-
-
-	//}
+	
 
 	for (auto& name : animationNames_) {
 		if (animations_[name].animationCommon.state == AnimationCommon::kStopped) {
@@ -285,15 +217,6 @@ void Model::StopAnimation()
 		}
 		animations_[name].animationCommon.state = AnimationCommon::kStopped;
 	}
-
-
-	//Node rootNode = ModelManager::GetInstance()->GetModelData(modelName_).rootNode;
-	//Skeleton skeleton = CreateSkelton(rootNode);
-	//skeleton_ = skeleton;
-	//// 現在の骨ごとのLocal情報を基にSkeletonSpaceの情報を更新
-	//SkeletonUpdate();
-	//// SkeletonSpaceの情報を基に、SkinClusterのMatrixPaletteを更新する
-	//SkinClusterUpdate();
 }
 
 void Model::StopAnimation(std::string name)
@@ -311,18 +234,6 @@ void Model::TransitionAnimation(const std::string& from, const std::string& to, 
 	transitionTime_ = 0.0f;
 }
 
-void Model::PlayingAnimation()
-{
-	//animationTime_ += 1.0f / 60.0f;
-	//animationTime_ = std::fmod(animationTime_, animation_.duration);
-	//NodeAnimation& rootNodeAnimation = animation_.nodeAnimations[modelData_.rootNode.name];
-	//Vector3 translate = CalculateValue(rootNodeAnimation.translate, animationTime_);
-	//Quaternion rotate = CalculateQuaternion(rootNodeAnimation.rotate, animationTime_);
-	////Vector3 scale = CalculateValue(rootNodeAnimation.scale, animationTime_);
-	//Vector3 scale = Vector3(1.0f, 1.0f, 1.0f);
-	//Matrix4x4 localMatrix = MakeAffineMatrix(scale, rotate, translate);
-	//*nodeData_ = localMatrix;
-}
 
 void Model::SkeletonUpdate()
 {
@@ -432,28 +343,6 @@ void Model::ApplyAnimation()
 		}
 
 	}
-
-	//// アニメーションの時間を進める(設定)
-	//animationTime_ += 1.0f / 60.0f;
-	//animationTime_ = std::fmod(animationTime_, animation_.duration);
-	//for (Joint& joint : skeleton_.joints) {
-	//	// 対象のJointのAnimationがあれば、値の適用を行う。下記のif文はC++17から可能になった初期化付きif文
-	//	if (auto it = animation_.nodeAnimations.find(joint.name); it != animation_.nodeAnimations.end()) {
-	//		const NodeAnimation& rootNodeAnimation = (*it).second;
-	//		joint.transform.translate = CalculateValue(rootNodeAnimation.translate, animationTime_);
-	//		joint.transform.rotate = CalculateQuaternion(rootNodeAnimation.rotate, animationTime_);
-	//		if (rootNodeAnimation.scale.size() == 0) {
-	//			joint.transform.scale = Vector3(1.0f, 1.0f, 1.0f);
-	//		}
-	//		else {
-	//			joint.transform.scale = CalculateValue(rootNodeAnimation.scale, animationTime_);
-	//		}
-	//	}
-	//}
-	//// 現在の骨ごとのLocal情報を基にSkeletonSpaceの情報を更新
-	//SkeletonUpdate();
-	//// SkeletonSpaceの情報を基に、SkinClusterのMatrixPaletteを更新する
-	//SkinClusterUpdate();
 }
 
 void Model::SkinClusterUpdate()
@@ -464,11 +353,6 @@ void Model::SkinClusterUpdate()
 		skinCluster_.mappedPalette[jointIndex].skeletonSpaceInverseTransposeMatrix = Transpose(Inverse(skinCluster_.mappedPalette[jointIndex].skeletonSpaceMatrix));
 	}
 }
-
-//void T::SetMaterial(const Vector4& color)
-//{
-//	color;
-//}
 
 void Model::CreateMesh()
 {	

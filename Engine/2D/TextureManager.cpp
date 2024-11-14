@@ -33,14 +33,6 @@ void TextureManager::Initialize(std::string directoryPath) {
 
 void TextureManager::ResetAll() {
 
-	//// デスクリプタヒープを生成
-	//D3D12_DESCRIPTOR_HEAP_DESC descHeapDesc = {};
-	//descHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
-	//descHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE; // シェーダから見えるように
-	//descHeapDesc.NumDescriptors = kNumDescriptors; // シェーダーリソースビュー1つ
-	//result = device_->CreateDescriptorHeap(&descHeapDesc, IID_PPV_ARGS(&descriptorHeap_)); // 生成
-	//assert(SUCCEEDED(result));
-
 	srvHeap_ = DirectXCore::GetInstance()->GetDescriptorHeap(DirectXCore::HeapType::kSRV);
 
 	indexNextDescriptorHeap_ = 0;
@@ -65,8 +57,6 @@ void TextureManager::SetGraphicsRootDescriptorTable(
 	ID3D12GraphicsCommandList* commandList, UINT rootParamIndex,
 	uint32_t textureHandle) { // デスクリプタヒープの配列
 	assert(textureHandle < textures_.size());
-	/*ID3D12DescriptorHeap* ppHeaps[] = { descriptorHeap_.Get() };
-	commandList->SetDescriptorHeaps(_countof(ppHeaps), ppHeaps);*/
 
 	// デスクリプタヒープの配列をセットするコマンド
 	ID3D12DescriptorHeap* ppHeaps[] = { /*srvHeap_.Get()*/ srvHeap_->GetHeapPointer() };
@@ -189,24 +179,10 @@ uint32_t TextureManager::LoadInternal(const std::string& fileName) {
 	texresDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
 
 	// ヒーププロパティ
-	/*D3D12_HEAP_PROPERTIES heapProps{};
-	heapProps.Type = D3D12_HEAP_TYPE_CUSTOM;
-	heapProps.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_WRITE_BACK;
-	heapProps.MemoryPoolPreference = D3D12_MEMORY_POOL_L0;
-	heapProps.CreationNodeMask = 1;
-	heapProps.VisibleNodeMask = 1;*/
 	D3D12_HEAP_PROPERTIES heapProps{};
 	heapProps.Type = D3D12_HEAP_TYPE_DEFAULT;
 
 	// テクスチャ用バッファの生成
-	//result = device_->CreateCommittedResource(
-	//	&heapProps, 
-	//	D3D12_HEAP_FLAG_NONE, 
-	//	&texresDesc,
-	//	D3D12_RESOURCE_STATE_COPY_DEST, // テクスチャ用指定
-	//	nullptr, 
-	//	IID_PPV_ARGS(&texture.resource));
-	//assert(SUCCEEDED(result));
 	result = Device::GetInstance()->GetDevice()->CreateCommittedResource(
 		&heapProps, // Heapの設定
 		D3D12_HEAP_FLAG_NONE, // Heapの特殊な設定。特になし。
@@ -217,25 +193,10 @@ uint32_t TextureManager::LoadInternal(const std::string& fileName) {
 	assert(SUCCEEDED(result));
 
 	// テクスチャバッファにデータ転送
-	//for (size_t i = 0; i < metadata.mipLevels; i++) {
-	//	const Image* img = scratchImg.GetImage(i, 0, 0); // 生データ抽出
-	//	result = texture.resource->WriteToSubresource(
-	//		(UINT)i,
-	//		nullptr,              // 全領域へコピー
-	//		img->pixels,          // 元データアドレス
-	//		(UINT)img->rowPitch,  // 1ラインサイズ
-	//		(UINT)img->slicePitch // 1枚サイズ
-	//	);
-	//	assert(SUCCEEDED(result));
-	//}
 
 	DescriptorHandle srvHandle = srvHeap_->Alloc();
 
 	// シェーダリソースビュー作成
-	/*texture.cpuDescHandleSRV =  descriptorHeap_->GetCPUDescriptorHandleForHeapStart();
-	texture.cpuDescHandleSRV.ptr += size * indexNextDescriptorHeap_;
-	texture.gpuDescHandleSRV = descriptorHeap_->GetGPUDescriptorHandleForHeapStart();
-	texture.gpuDescHandleSRV.ptr += size * indexNextDescriptorHeap_;*/
 	texture.cpuDescHandleSRV = srvHandle.GetCPUHandle();
 	texture.gpuDescHandleSRV = srvHandle.GetGPUHandle();
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{}; // 設定構造体

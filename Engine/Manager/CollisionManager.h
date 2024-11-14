@@ -47,12 +47,6 @@ private:
 	/// <param name="colliderB">コライダーB</param>
 	void CheckCollisionPair(Object3D* colliderA, Object3D* colliderB);
 
-	//void Discrimination(HitBoxData dataA, HitBoxData dataB);
-
 	Sphere sphere[2];
-	/*Capsule capsule[2];
-	Plane plane[2];
-	AABB aabb[2];
-	OBB obb[2];*/
 
 };

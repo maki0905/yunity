@@ -190,8 +190,6 @@ private:
 	// 加速度
 	Vector3 acceleration_;
 	Vector3 angularAcceleration_;
-	// 衝撃
-	Vector3 impulse_;
 	// 力
 	Vector3 force_;
 	Vector3 torque_;

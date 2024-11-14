@@ -85,10 +85,6 @@ protected:
 	std::unique_ptr<Model> model_;
 	Camera* camera_;
 private:
-	//Camera* camera_;
-	//Model* model_;
-	//std::map<std::string, Model*> models_;
-	//WorldTransform worldTransform_;
 	bool isHit_;
 	uint32_t texture_;
 	std::string fileName_;

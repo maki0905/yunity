@@ -25,7 +25,6 @@ class ModelManager {
 		Animation animation;
 	};
 public:
-	//static Model::ModelData* Load(const std::string& fileName, const std::string format);
 
 	/// <summary>
 	/// インスタンス取得
@@ -37,11 +36,6 @@ public:
 	/// 初期化
 	/// </summary>
 	void Initialize();
-
-	/// <summary>
-	/// ファイナライザ
-	/// </summary>
-	void Finalize();
 
 	/// <summary>
 	/// 更新
@@ -85,7 +79,6 @@ private:
 	ModelManager& operator=(const ModelManager&) = delete;
 private:
 	void LoadInternal(const std::string& fileName, const std::string format);
-	//Model::ModelData* LoadInternal(const std::string& fileName, const std::string format);
 
 	/// <summary>
 	/// モデルファイル読み込み
@@ -111,10 +104,7 @@ private:
 	/// <returns></returns>
 	Model::MaterialData LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& filename);
 private:
-	//std::unordered_map<std::string, Model::ModelData> models_;
 	std::unordered_map<std::string, Model::ModelData> modelDataStorage_;
 	std::unordered_map<std::string, Animation> animationDataStorage_;
-	//std::vector<Model*> models_;
 	std::list<Model*> models_;
-	//std::vector<Model*> models_;
 };

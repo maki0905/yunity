@@ -84,8 +84,6 @@ public:
 	/// </summary>
 	void PostDraw();
 
-	//void OMSetREnderTargets(ID3D12DescriptorHeap* dsvHeap_);
-
 	/// <summary>
 	/// ClearRenderTargetView設定
 	/// </summary>

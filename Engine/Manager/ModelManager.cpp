@@ -6,11 +6,6 @@
 
 #include "MathFunction.h"
 
-//Model::ModelData* ModelManager::Load(const std::string& fileName, const std::string format)
-//{
-//	return ModelManager::GetInstance()->LoadInternal(fileName, format);
-//}
-
 ModelManager* ModelManager::GetInstance()
 {
 	static ModelManager instance;
@@ -24,23 +19,10 @@ void ModelManager::Initialize()
 	models_.clear();
 }
 
-void ModelManager::Finalize()
-{
-	/*for (auto& model : models_) {
-		if (model) {
-			delete model;
-			model = nullptr;
-		}
-	}
-	models_.clear();*/
-
-}
-
 void ModelManager::Update()
 {
 	for (auto& model : models_) {
 		if (model->IsAnimation()) {
-			//model->PlayingAnimation();
 			model->ApplyAnimation();
 		}
 	}
@@ -64,12 +46,7 @@ void ModelManager::Take(Model* model)
 
 Model* ModelManager::CreateModel(Format format, const std::string& folderName, const std::string& fileName, ModelType modelType)
 {
-	/*std::unique_ptr<Model> model;
-	model = std::make_unique<Model>();*/
-	/*std::unique_ptr<Model> model = std::make_unique<Model>();*/
 	Model* model = new Model();
-	//LoadInternal(fileName, format);
-	//std::string path = folderName + "/" + fileName;
 	std::string path = folderName;
 	if (fileName.size() != 0) {
 		path = path + "/" + fileName;
@@ -79,32 +56,9 @@ Model* ModelManager::CreateModel(Format format, const std::string& folderName, c
 		modelDataStorage_[path] = LoadModelFile(format, folderName, fileName);
 	}
 	model->Initialize(path, modelType, modelDataStorage_[path]);
-	//Model* modePtr = model.get();
 	models_.emplace_back(model);
 	return models_.back();
 }
-
-//std::unique_ptr<Model> ModelManager::CreateModel(Format format, const std::string& folderName, const std::string& fileName, ModelType modelType)
-//{
-//	/*std::unique_ptr<Model> model;
-//	model = std::make_unique<Model>();*/
-//	std::unique_ptr<Model> model = std::make_unique<Model>();
-//	//Model* model = new Model();
-//	//LoadInternal(fileName, format);
-//	//std::string path = folderName + "/" + fileName;
-//	std::string path = folderName;
-//	if (fileName.size() != 0) {
-//		path = path + "/" + fileName;
-//	}
-//	auto itr = modelDataStorage_.find(path);
-//	if (itr == modelDataStorage_.end()) {
-//		modelDataStorage_[path] = LoadModelFile(format, folderName, fileName);
-//	}
-//	model->Initialize(path, modelType, modelDataStorage_[path]);
-//	Model* modePtr = model.get();
-//	models_.emplace_back(std::move(model));
-//	return models_.back().get();
-//}
 
 Model::ModelData& ModelManager::GetModelData(const std::string& modelName)
 {
@@ -210,14 +164,6 @@ Model::Node ModelManager::ReadNode(aiNode* node)
 	result.transform.rotate = { rotate.x, -rotate.y, -rotate.z, rotate.w }; // x軸を反転、さらに回転方向が逆なので軸を反転させる
 	result.transform.translate = { -translate.x, translate.y, translate.z }; // x軸を反転
 	result.localMatrix = MakeAffineMatrix(result.transform.scale, result.transform.rotate, result.transform.translate);
-	/*aiMatrix4x4 aiLocalMatrix = node->mTransformation;
-	aiLocalMatrix.Transpose();
-
-	for (uint32_t i = 0; i < 4; i++) {
-		for (uint32_t j = 0; j < 4; j++) {
-			result.localMatrix.m[i][j] = aiLocalMatrix[i][j];
-		}
-	}*/
 
 	result.name = node->mName.C_Str();
 	result.children.resize(node->mNumChildren);

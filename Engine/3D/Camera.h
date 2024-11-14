@@ -16,61 +16,6 @@ struct CameraForGPU {
 	Vector3 worldPosition;
 };
 
- ///<summary>
- ///ビュープロジェクション変換データ
- ///</summary>
-//struct Camera {
-//	// 定数バッファ
-//	Microsoft::WRL::ComPtr<ID3D12Resource> constBuff_;
-//	// マッピング済みアドレス
-//	ConstBufferDataViewProjection* constMap_ = nullptr;
-//
-//	Microsoft::WRL::ComPtr<ID3D12Resource> cameraForGPU_;
-//	CameraForGPU* cameraForGPUMap_ = nullptr;
-//
-//#pragma region ビュー行列の設定
-//	// ローカル座標
-//	Vector3 translation_ = { 0, 10.0f, -50.0f }; // 座標
-//	// 回転
-//	Vector3 rotation_ = { /*std::numbers::pi_v<float> / 3.0f*/0, /*std::numbers::pi_v<float>*/0, 0 }; // 回転
-//	Quaternion quaternion_ = {0.0f, 0.0f, 0.0f, 1.0f}; // クォータニオン
-//	
-//#pragma endregion
-//
-//#pragma region 射影行列の設定
-//	// 垂直方向視野角
-//	float fovAngleY = ConvertToRadians(45.0f);
-//	// ビューポートのアスペクト比
-//	float aspectRatio = (float)16 / 9;
-//	// 深度限界（手前側）
-//	float nearZ = 10.0f;
-//	// 深度限界（奥側）
-//	float farZ = 1000.0f;
-//#pragma endregion
-//
-//	// ビュー行列
-//	Matrix4x4 matView;
-//	// 射影行列
-//	Matrix4x4 matProjection;
-//
-//	/// <summary>
-//	/// 初期化
-//	/// </summary>
-//	void Initialize();
-//	/// <summary>
-//	/// 定数バッファ生成
-//	/// </summary>
-//	//void CreateConstBuffer();
-//	/// <summary>
-//	/// マッピングする
-//	/// </summary>
-//	void Map();
-//	/// <summary>
-//	/// 行列を更新する
-//	/// </summary>
-//	void UpdateMatrix();
-//};
-
 /*
 * @brief カメラクラス
 */

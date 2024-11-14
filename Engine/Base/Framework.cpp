@@ -29,15 +29,9 @@ void Framework::Initialize()
 	primitive_ = std::make_unique<PrimitiveDrawer>();
 	primitive_->StaticInitialize();
 
-	/*particle_ = new ParticleDrawer();
-	particle_->StaticInitialize();*/
-
 	// テクスチャマネージャー
 	TextureManager::GetInstance()->Initialize();
 	TextureManager::Load("white1x1.png");
-
-	///*sphere_ = new SphereDrawer();
-	//sphere_->StaticInitialize();*/
 
 	Audio::GetInstance()->Initialize();
 
@@ -51,14 +45,6 @@ void Framework::Initialize()
 
 #pragma endregion
 
-	// 各シーンの配列
-	/*sceneArr_[TITLE] = std::make_unique<TitleScene>();
-	sceneArr_[GAME_STAGE] = std::make_unique<StageScene>();
-	sceneArr_[CLEAR] = std::make_unique<ClearScene>();*/
-
-	// 初期シーンの設定
-	/*currentSceneNo_ = GAME_STAGE;
-	sceneArr_[currentSceneNo_]->Initialize();*/
 }
 
 void Framework::Finalize()
@@ -66,16 +52,8 @@ void Framework::Finalize()
 	skybox_->Finalize();
 	primitive_->Finalize();
 	sprite_->Finalize();
-	model_->Finalize();
-	ModelManager::GetInstance()->Finalize();
 	ImGuiManager::GetInstance()->Finalize();
 	WindowsAPI::GetInstance()->TerminateGameWindow();
-	/*imguiManager_->Finalize();
-	skybox_->Finalize();
-	primitive_->Finalize();
-	sprite_->Finalize();
-	directXCore_->Finalize();
-	windowsAPI_->TerminateGameWindow();*/
 }
 
 void Framework::Update()
@@ -87,7 +65,6 @@ void Framework::Update()
 
 	SceneManager::GetInstance()->Update();
 	ModelManager::GetInstance()->Update();
-	//RenderTexture::GetInstance()->GetPostEffect()->Adjustment();
 
 	// ImGui受付終了
 	ImGuiManager::GetInstance()->End();

@@ -23,15 +23,8 @@ void BackBuffer::Create(IDXGISwapChain4* swapChain)
 
 	backBufferCount_ = swapChainDesc.BufferCount;
 
-
-	//D3D12_DESCRIPTOR_HEAP_DESC heapDesc{};
-	//heapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV; // レンダーターゲットビュー
-	//heapDesc.NumDescriptors = swapChainDesc.BufferCount;
-	//result = device_->CreateDescriptorHeap(&heapDesc, IID_PPV_ARGS(&rtvDescriptorHeap_));
-	//assert(SUCCEEDED(result));
 	rtvDescriptorHeap_ = DirectXCore::GetInstance()->GetDescriptorHeap(DirectXCore::HeapType::kRTV);
 
-	//const uint32_t desriptorSizeRTV = device_->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 	const uint32_t desriptorSizeRTV = rtvDescriptorHeap_->GetDescriptorSize();
 	// 裏表の２つ分について
 	backBuffers_.resize(swapChainDesc.BufferCount);

@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #include "Input.h"
 #include "Camera.h"
@@ -20,11 +20,5 @@ public:
 
 	// 更新
 	void Update(Camera* camera);
-
-	/// <summary>
-	/// ビュープロジェクションを取得
-	/// </summary>
-	/// <returns>ビュープロジェクション</returns>
-	//const ViewProjection& GetViewProjection() { return viewProjection_; }
 
 };

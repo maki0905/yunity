@@ -96,12 +96,5 @@ private:
 	std::unordered_map<std::string, ID3DBlob*> vsblob_;
 	std::unordered_map<std::string, ID3DBlob*> psblob_;
 
-	/*ID3DBlob* vsblob_[static_cast<size_t>(FileName::kCount)];
-	ID3DBlob* psblob_[static_cast<size_t>(FileName::kCount)];*/
-
-	/*ID3DBlob* basicVS_ = nullptr;
-	ID3DBlob* basicPS_ = nullptr;*/
-
-
 };
 

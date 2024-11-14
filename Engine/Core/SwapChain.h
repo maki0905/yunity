@@ -22,13 +22,6 @@ public:
 	}
 
 private:
-
-	/*Microsoft::WRL::ComPtr<ID3D12CommandQueue> commandQueue_;
-	Microsoft::WRL::ComPtr<IDXGIFactory7> dxgiFactory_;
-	Microsoft::WRL::ComPtr<IDXGISwapChain4> swapChain_;*/
-	//std::unique_ptr<CommandQueue> commandQueue_;
-	//ID3D12CommandQueue* commandQueue_;
-	//IDXGIFactory7* dxgiFactory_;
 	Microsoft::WRL::ComPtr<IDXGISwapChain4> swapChain_;
 
 };

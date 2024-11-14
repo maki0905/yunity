@@ -109,7 +109,6 @@ private:
 	uint32_t offReticle_;
 
 	bool isMoving_;
-	Body* collisionBody_;
 
 	bool isSelect_;
 
@@ -123,5 +122,6 @@ private:
 	std::unique_ptr<Body> apexBody_;
 
 	std::unique_ptr<FixedJoint> fixedJoint_;
+	std::unique_ptr<FixedJoint> playerFixedJoint_;
 };
 

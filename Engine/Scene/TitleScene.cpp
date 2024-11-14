@@ -23,14 +23,14 @@ void TitleScene::Initialize()
 	model_ = std::make_unique<Model>();
 	model_.reset(ModelManager::GetInstance()->CreateModel(obj,/* ""*/"Signboard"));
 	Model::DirectionalLight l = { .color = {1.0f, 1.0f, 1.0f, 1.0f}, .direction = {1.0f, -1.0f, 0.0f}, .intensity= 1.0f };
-	model_->SetCamera(camera_/*camera_.get()*/);
+	model_->SetCamera(camera_);
 	model_->SetEnableLighting(true);
 	model_->SetDirectionalLight(l);
 	worldTransform_.Initialize();
 	worldTransform_.translation_ = { 25.0f, -7.0f, 6.0f };
 
 	player_ = std::make_unique<Player>();
-	player_->Initialize(camera_/*camera_.get()*/, world_.get());
+	player_->Initialize(camera_, world_.get());
 	player_->SetDirectionalLight(l);
 	player_->SetMass(0.0f);
 	camera_->SetTarget(nullptr);  
@@ -42,7 +42,7 @@ void TitleScene::Initialize()
 
 	
 	skydome_ = std::make_unique<Skydome>();
-	skydome_->Initialize(camera_/*camera_.get()*/, { 5.0f, 5.0f, 5.0f });
+	skydome_->Initialize(camera_, { 5.0f, 5.0f, 5.0f });
 
 	CommonData::GetInstance()->stageNum_ = -1;
 	CommonData::GetInstance()->scene_ = Scene::kTitle;
@@ -67,27 +67,11 @@ void TitleScene::Initialize()
 	textureTV_[2] = TextureManager::Load("Models/TV/TV3.png");
 
 	preNum_ = CommonData::GetInstance()->stageNum_;
-
-	/*if (CommonData::GetInstance()->stageNum_ != -1) {
-		player_->SetPosition({ 30.0f * CommonData::GetInstance()->stageNum_, -3.5f, 0.0f });
-		player_->SetSelect(true);
-		TVworldTransform_[CommonData::GetInstance()->stageNum_].scale_ = { 1.0f, 1.0f, 1.0f };
-		isActiveTV_[CommonData::GetInstance()->stageNum_] = true;
-		isStart_ = true;
-	}
-	else {
-		camera_->SetTranslate({ 0, 10.0f, -50.0f });
-	}*/
 	camera_->SetTranslate({ 0, 10.0f, -50.0f });
 	CommonData::GetInstance()->scene_ = Scene::kTitle;
 	isMoveCamera[0] = false;
 	isMoveCamera[1] = false;
 	moveCameraTimer_ = 0.0f;
-
-	/*cloth_ = std::make_unique<Cloth>();
-	cloth_->Initialize(world_.get());*/
-
-
 }
 
 void TitleScene::Update()
@@ -110,7 +94,6 @@ void TitleScene::Update()
 		if (Input::GetInstance()->IsControllerConnected()) {
 			if (Input::GetInstance()->GetJoystickState(0, pad_)) {
 				if ((pad_.Gamepad.wButtons & XINPUT_GAMEPAD_A) && !(prePad_.Gamepad.wButtons & XINPUT_GAMEPAD_A)) {
-					//SceneManager::GetInstance()->ChangeScene("GAMESTAGE");
 					if (!Tradition::GetInstance()->GetIsActive()) {
 						isMoveCamera[0] = true;
 						oldCameraPos_ = camera_->GetTranslate();
@@ -190,7 +173,7 @@ void TitleScene::Update()
 			if (grow_[index].t > 1.0f) {
 				grow_[index].flag = false;
 			}
-			TVworldTransform_[index].scale_ = Lerp(/*grow_[index].scale*/{ 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f, 1.0f }, std::clamp(grow_[index].t, 0.0f, 1.0f));
+			TVworldTransform_[index].scale_ = Lerp({ 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f, 1.0f }, std::clamp(grow_[index].t, 0.0f, 1.0f));
 		}
 		if (shrink_[index].flag) {
 			shrink_[index].t += 1.0f / 60.0f;
@@ -225,24 +208,18 @@ void TitleScene::Update()
 
 	}
 
-	//cloth_->Update();
-
 #ifdef _DEBUG
 	
 	ImGui::Begin("a");
-	/*Vector3 velocity = floor_->GetVelocity();
-	ImGui::DragFloat3("ve", &velocity.x);*/
 
 	ImGui::DragFloat3("pos", &worldTransform_.translation_.x);
 	if (ImGui::Button("Off")) {
 		model_->SetEnableLighting(false);
 		player_->SetEnableLighting(false);
-		/*ObjectManager::GetInstance()->SetEnableLighting("title1",false);*/
 	}
 	if (ImGui::Button("On")) {
 		model_->SetEnableLighting(true);
 		player_->SetEnableLighting(true);
-		/*ObjectManager::GetInstance()->SetEnableLighting("title1", true);*/
 	}
 	ImGui::End();
 
@@ -257,7 +234,7 @@ void TitleScene::DrawBack()
 void TitleScene::Draw3D()
 {
 	skydome_->Draw();
-	objectManager_->Draw(/*"title1"*/);
+	objectManager_->Draw();
 
 	player_->Draw();
 	model_->Draw(worldTransform_);

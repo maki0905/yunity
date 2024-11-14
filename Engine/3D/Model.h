@@ -151,11 +151,6 @@ public:
 	void Initialize(const std::string& name, const ModelType& modelType, const ModelData& modelData);
 
 	/// <summary>
-	/// ファイナライザ
-	/// </summary>
-	void Finalize();
-
-	/// <summary>
 	/// 描画
 	/// </summary>
 	/// <param name="worldTransform">ワールドトランスフォーム</param>
@@ -218,11 +213,6 @@ public:
 	/// <param name="to">終点</param>
 	/// <param name="time">タイム</param>
 	void TransitionAnimation(const std::string& from, const std::string& to, float time);
-
-	/// <summary>
-	/// 
-	/// </summary>
-	void PlayingAnimation();
 
 	/// <summary>
 	/// スケルトン更新

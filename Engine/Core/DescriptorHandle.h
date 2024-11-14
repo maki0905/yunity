@@ -30,22 +30,6 @@ public:
         : cpuHandle_(cpuHandle)
     {}
 
-
-    /*DescriptorHandle operator+ (INT OffsetScaledByDescriptorSize) const
-    {
-        DescriptorHandle ret = *this;
-        ret += OffsetScaledByDescriptorSize;
-        return ret;
-    }*/
-
-   /* void operator += (INT OffsetScaledByDescriptorSize)
-    {
-        if (cpuHandle_.ptr != D3D12_GPU_VIRTUAL_ADDRESS_UNKNOWN)
-            cpuHandle_.ptr += OffsetScaledByDescriptorSize;
-        if (gpuHandle_.ptr != D3D12_GPU_VIRTUAL_ADDRESS_UNKNOWN)
-            gpuHandle_.ptr += OffsetScaledByDescriptorSize;
-    }*/
-
 	/// <summary>
 	/// getter
 	/// </summary>

@@ -53,10 +53,6 @@ void GameManager::Draw()
 
 #pragma region 前景描画
 
-	/*sprite_->PreDraw(DirectXCore::GetInstance()->GetCommandList());
-	SceneManager::GetInstance()->DrawFront();
-	sprite_->PostDraw();*/
-
 	DirectXCore::GetInstance()->PostDrawRenderTexture();
 #pragma endregion
 
@@ -85,7 +81,6 @@ void GameManager::Run()
 		Draw();
 		
 	}
-	//imguiManager_->Finalize();
 }
 
 

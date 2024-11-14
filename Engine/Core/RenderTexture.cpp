@@ -17,7 +17,6 @@ PipelineState* RenderTexture::pipelineState_ = nullptr;
 
 void RenderTexture::InitializeGraphicsPipeline()
 {
-	//rootSignature_ = new RootSignature(Device::GetInstance()->GetDevice(), static_cast<int>(RootBindings::kCount), 2);
 	rootSignature_ = new RootSignature(Device::GetInstance()->GetDevice(), static_cast<int>(RootBindings::kCount), 1);
 
 	D3D12_STATIC_SAMPLER_DESC staticSamplers[2];
@@ -44,8 +43,6 @@ void RenderTexture::InitializeGraphicsPipeline()
 
 
 	rootSignature_->InitializeStaticSampler(0, staticSamplers[0], D3D12_SHADER_VISIBILITY_PIXEL);
-
-	//rootSignature_->InitializeStaticSampler(1, staticSamplers[1], D3D12_SHADER_VISIBILITY_PIXEL);
 
 	rootSignature_->GetParameter(static_cast<size_t>(RootBindings::kTexture)).InitializeAsDescriptorRange(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 0, 1, D3D12_SHADER_VISIBILITY_PIXEL);
 
@@ -224,26 +221,10 @@ bool RenderTexture::CheckPostEffect()
 }
 
 
-//void RenderTexture::OMSetREnderTargets(ID3D12DescriptorHeap* dsvHeap_)
-//{
-//	// 深度ステンシルビュー用デスクリプタヒープのハンドルを取得
-//	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle =
-//		D3D12_CPU_DESCRIPTOR_HANDLE(dsvHeap_->GetCPUDescriptorHandleForHeapStart());
-//	// レンダーターゲットをセット
-//	commandList_->OMSetRenderTargets(1, &depthTextureCpuDescHandleSRV_, false, &dsvHandle);
-//}
-
 void RenderTexture::ClearRenderTargetView()
 {
 	float clearColor[] = { kRenderTargetClearValue.x, kRenderTargetClearValue.y, kRenderTargetClearValue.z, kRenderTargetClearValue.w };
 	commandList_->ClearRenderTargetView(cpuDescHandleRTV_, clearColor, 0, nullptr);
-	/*if (postEffectFlag_[static_cast<uint32_t>(PostEffects::kOutline)]) {
-		postEffect_->ClearRenderTargetView();
-	}
-	else {
-		float clearColor[] = { kRenderTargetClearValue.x, kRenderTargetClearValue.y, kRenderTargetClearValue.z, kRenderTargetClearValue.w };
-		commandList_->ClearRenderTargetView(cpuDescHandleRTV_, clearColor, 0, nullptr);
-	}*/
 }
 
 void RenderTexture::OMSetRenderTargets()
@@ -251,14 +232,6 @@ void RenderTexture::OMSetRenderTargets()
 	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle =
 		D3D12_CPU_DESCRIPTOR_HANDLE(depthBuffe_->GetDescriptorHeap()->GetCPUDescriptorHandleForHeapStart());
 	commandList_->OMSetRenderTargets(1, &cpuDescHandleRTV_, false, &dsvHandle);
-	/*if (postEffectFlag_[static_cast<uint32_t>(PostEffects::kOutline)]) {
-		postEffect_->OMSetRenderTargets();
-	}
-	else {
-		D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle =
-			D3D12_CPU_DESCRIPTOR_HANDLE(depthBuffe_->GetDescriptorHeap()->GetCPUDescriptorHandleForHeapStart());
-		commandList_->OMSetRenderTargets(1, &cpuDescHandleRTV_, false, &dsvHandle);
-	}*/
 }
 
 void RenderTexture::ClearDepthStencilView()
@@ -268,16 +241,6 @@ void RenderTexture::ClearDepthStencilView()
 		D3D12_CPU_DESCRIPTOR_HANDLE(depthBuffe_->GetDescriptorHeap()->GetCPUDescriptorHandleForHeapStart());
 	// 深度バッファのクリア
 	commandList_->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
-	//if (postEffectFlag_[static_cast<uint32_t>(PostEffects::kOutline)]) {
-	//	postEffect_->ClearDepthStencilView();
-	//}
-	//else {
-	//	// 深度ステンシルビュー用デスクリプタヒープのハンドルを取得
-	//	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle =
-	//		D3D12_CPU_DESCRIPTOR_HANDLE(depthBuffe_->GetDescriptorHeap()->GetCPUDescriptorHandleForHeapStart());
-	//	// 深度バッファのクリア
-	//	commandList_->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
-	//}
 }
 
 

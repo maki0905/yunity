@@ -286,29 +286,6 @@ void Body::Solve(float time)
 			gravity = gravityAcceleration_;
 		}
 
-		/*if (frictionCombine_ != FrictionCombine::kNone && normalVector_.y != 0.0f) {
-			Vector3 dirction = velocity_;
-			dirction.y = 0.0f;
-			dirction.Normalize();
-
-			Vector3 frictionalForce = Multiply(-magnitude_, dirction);
-			acceleration_ = Multiply(1.0f / mass_, frictionalForce);
-			if (std::fabsf(acceleration_.x * time) > std::fabs(velocity_.x)) {
-				acceleration_.x = -velocity_.x / time;
-			}
-			if (std::fabsf(acceleration_.y * time) > std::fabs(velocity_.y)) {
-				acceleration_.y = -velocity_.y / time;
-			}
-			if (std::fabsf(acceleration_.z * time) > std::fabs(velocity_.z)) {
-				acceleration_.z = -velocity_.z / time;
-			}
-
-			acceleration_ = Add(acceleration_, Add(gravity, airResistanceAcceleration));
-		}
-		else {
-			acceleration_ = Add(gravity, airResistanceAcceleration);
-		}*/
-
 		acceleration_ = Add(gravity, airResistanceAcceleration);
 
 		if (inertiaMoment_ != 0.0f) {
@@ -400,31 +377,9 @@ void Body::SolveConstraints(/*float time*/)
 		Vector3 impulse = Multiply(impulseMagnitude, c->contactNormal);
 		AddForce(impulse, ForceMode::kImpulse);
 
-		//Vector3 penetrationDepth = c->penetrationDepth;
-
-		//float minDepth = min(penetrationDepth.x, min(penetrationDepth.y, penetrationDepth.z));
-		//Vector3 correction;
-
-		//if (minDepth > 0.0f) {
-		//	// 最小の貫通深度に対応する軸方向の補正を行う
-		//	if (minDepth == penetrationDepth.x) {
-		//		correction = Multiply(penetrationDepth.x, Vector3(1, 0, 0));
-		//	}
-		//	else if (minDepth == penetrationDepth.y) {
-		//		correction = Multiply(penetrationDepth.y, Vector3(0, 1, 0));
-		//	}
-		//	else {
-		//		correction = Multiply(penetrationDepth.z, Vector3(0, 0, 1));
-		//	}
-
-		//	// 接触法線に沿った補正
-		//	correction = Multiply(minDepth, c->contactNormal);
-		//	worldTransform_->translation_ = Add(correction, worldTransform_->translation_);
-		//}
-
 		// 摩擦
 		Vector3 tangentVelocity = Subtract(relativeVelocity, Multiply(velocityAlongNormal, c->contactNormal));
-		Vector3 frictionForce = Multiply(-magnitude_ * impulseMagnitude, tangentVelocity);
+		Vector3 frictionForce = Multiply(-magnitude_ /** impulseMagnitude*/, tangentVelocity);
 		float maxStaticFriction = magnitude_ * impulseMagnitude;
 		if (Length(frictionForce) > maxStaticFriction) {
 			frictionForce = Normalize(frictionForce);
@@ -489,19 +444,12 @@ void Body::AddForce(const Vector3& force, ForceMode mode)
 
 void Body::AddTorque(const Vector3& torque, ForceMode mode)
 {
-	/*if (mode == 0) {
-		torque_ = Add(torque_, Multiply(DegToRad(), torque));
-	}
-	else {
-		angularVelocity_ = Add(angularVelocity_, Multiply(angularDrag_, Multiply(DegToRad(), torque)));
-	}*/
 	if (mode == ForceMode::kForce) {
 		torque_ = Add(torque_, torque);
 	}
 	else {
 		Vector3 angularImpulse = TransformVector3(torque, Inverse(inertiaTensor_));
 		angularVelocity_ = Add(angularVelocity_, angularImpulse);
-		//angularVelocity_ = Add(angularVelocity_, Multiply(angularDrag_, torque));
 	}
 }
 
@@ -532,11 +480,6 @@ void Body::OnCollision(Body* body)
 {
 	if (mass_) {
 
-		/*Vector3 dirction = Normalize(Subtract(worldTransform_->translation_, body->GetTranslation()));
-		Vector3 resolve = Multiply(dirction, GetHitBoxSize());
-		resolve = Multiply(resolve, Normalize(velocity_));
-		resolve = Multiply(-1.0f, resolve);
-		worldTransform_->translation_ = Add(worldTransform_->translation_, resolve);*/
 		Vector3 pushback = { 0.0f, 0.0f, 0.0f };
 		Vector3 penetrationDepth = { 0.0f, 0.0f, 0.0f };
 		switch (GetShape())
@@ -545,7 +488,6 @@ void Body::OnCollision(Body* body)
 			switch (body->GetShape())
 			{
 			case Collider::Shape::kSphere:
-				//pushback = GetPushback(Sphere{worldTransform_->GetMatWorldTranslation(), GetHitBoxSize().x * 2.0f},);
 				break;
 			case Collider::Shape::kAABB:
 				pushback = GetPushback(Sphere{ GetColliderCenter(), GetHitBoxSize().x * 2.0f }, CreateAABB(body->GetColliderCenter(), body->GetHitBoxSize()));
@@ -579,12 +521,6 @@ void Body::OnCollision(Body* body)
 				break;
 			case Collider::Shape::kOBB:
 				pushback = GetPushback(CreateOBB(GetColliderCenter(), worldTransform_->rotation_, GetHitBoxSize()), CreateOBB(body->GetColliderCenter(), body->worldTransform_->rotation_, body->GetHitBoxSize()));
-				/*if (body->mass_ != 0.0f) {
-					pushback = Multiply(0.5f, pushback);
-				}
-				pushback_ = Add(pushback_, pushback);
-
-				persistentManifold_.emplace_back(GetNewManifold(this, body));*/
 				break;
 			}
 			break;
@@ -596,7 +532,6 @@ void Body::OnCollision(Body* body)
 		pushback_ = Add(pushback_, pushback);
 		PersistentManifold* persistentManifold = GetNewManifold(this, body);
 		persistentManifold->penetrationDepth = penetrationDepth;
-		//persistentManifold_.emplace_back(GetNewManifold(this, body));
 
 		float miu = 0.0f;
 		switch (frictionCombine_)

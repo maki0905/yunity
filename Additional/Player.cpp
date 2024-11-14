@@ -99,176 +99,13 @@ void Player::Initialize(Camera* camera, World* world)
 	scoreUI_->Initialize();
 
 	fixedJoint_ = std::make_unique<FixedJoint>();
+	playerFixedJoint_ = std::make_unique<FixedJoint>();
 
 }
 
 void Player::Update()
 {
-	/*Vector3 move = { 0.0f, 0.0f, 0.0f };
-	Quaternion moveQuaternion = worldTransform_.quaternion_;
-
-	if (Input::GetInstance()->PushKey(DIK_A)) {
-		move.x = -1.0f;
-	}
-	if (Input::GetInstance()->PushKey(DIK_D)) {
-		move.x = 1.0f;
-	}
-
-	if (Input::GetInstance()->TriggerKey(DIK_P)) {
-		if (!isCrouching_) {
-			model_->TransitionAnimation("walk", "sneakWalk", 0.5f);
-			model_->PlayAnimation("sneakWalk", AnimationCommon::kLooping);
-		}
-		else {
-			model_->TransitionAnimation("sneakWalk", "walk", 0.5f);
-			model_->PlayAnimation("walk", AnimationCommon::kLooping);
-		}
-		isCrouching_ ^= true;
-	}
-
-	move = Normalize(move);
-
-	if (move.x != 0.0f) {
-		Vector3 cross = Normalize(Cross({ 0.0f, 0.0f, 1.0f }, move));
-		float dot = Dot({ 0.0f, 0.0f, 1.0f }, move);
-		moveQuaternion = MakeRotateAxisAngleQuaternion(cross, std::acos(dot));
-	}*/
-
-	/*if (move.x != 0.0f) {
-		if (isCrouching_) {
-			model_->PlayAnimation("sneakWalk", AnimationCommon::kLooping);
-			model_->StopAnimation("walk");
-		}
-		else {
-			model_->PlayAnimation("walk", AnimationCommon::kLooping);
-			model_->StopAnimation("sneakWalk");
-		}
-	}
-	else {
-		model_->StopAnimation();
-	}*/
-
-	// 移動量に速さを反映
-	/*move = Multiply(0.3f, move);*/
-
-	// ジョイスティック状態取得
-	//if (Input::GetInstance()->IsControllerConnected()) {
-	//	if (Input::GetInstance()->GetJoystickState(0, pad_)) {
-
-	//		const float threshold = 0.7f;
-	//		bool isMoving = false;
-
-	//		// 速さ
-	//		const float speed = 0.3f;
-
-	//		// 移動量
-	//		move = { (float)pad_.Gamepad.sThumbLX, 0,0};
-
-	//		if (Length(move) > threshold) {
-	//			isMoving = true;
-	//		}
-
-	//		if (isMoving) {
-
-	//			move = Normalize(move);
-	//			Vector3 cross = Normalize(Cross({ 0.0f, 0.0f, 1.0f }, move));
-	//			float dot = Dot({ 0.0f, 0.0f, 1.0f }, move);
-	//			moveQuaternion = MakeRotateAxisAngleQuaternion(cross, std::acos(dot));
-
-	//			// 移動量に速さを反映
-	//			move = Multiply(speed, move);
-	//		}
-
-	//		if ((pad_.Gamepad.wButtons & XINPUT_GAMEPAD_A) && !(prePad_.Gamepad.wButtons & XINPUT_GAMEPAD_A)) {
-	//			isCrouching_ ^= true;
-	//		}
-
-	//		if (move.x != 0.0f) {
-	//			if (isCrouching_) {
-	//				model_->PlayAnimation("sneakWalk", AnimationCommon::kLooping);
-	//				model_->StopAnimation("walk");
-	//			}
-	//			else {
-	//				model_->PlayAnimation("walk", AnimationCommon::kLooping);
-	//				model_->StopAnimation("sneakWalk");
-	//			}
-	//		}
-	//		else {
-	//			model_->StopAnimation();
-	//		}
-
-	//	}
-	//}
-
-
-
-
-	/*worldTransform_.translation_ = Add(worldTransform_.translation_, move);
-	worldTransform_.quaternion_ = Slerp(worldTransform_.quaternion_, moveQuaternion, 1.0f);
-	worldTransform_.quaternion_ = Normalize(worldTransform_.quaternion_);*/
-
-	//worldTransform_.UpdateMatrix();
-
-	/*Vector3 cameraTranslation = camera_->GetTranslate();
-	cameraTranslation = Add(cameraTranslation, move);
-	camera_->SetTranslate(cameraTranslation);*/
-
 	prePad_ = pad_;
-	/*Vector3 move = { 0.0f, 0.0f, 0.0f };
-	Quaternion moveQuaternion = worldTransform_.quaternion_;
-	Vector3 cross = Normalize(Cross({ 0.0f, 0.0f, 1.0f }, move));
-	float dot = Dot({ 0.0f, 0.0f, 1.0f }, move);
-	moveQuaternion = MakeRotateAxisAngleQuaternion(cross, std::acos(dot));*/
-	//worldTransform_.quaternion_ = Slerp(worldTransform_.quaternion_, moveQuaternion, 1.0f);
-	//body_->AddForce(body_->RubberMovement(worldTransform_.translation_, { 0.0f, 0.0f, 0.0f }, limitLength_, stiffness_, dampar_), 0);
-
-	/*if (Input::GetInstance()->TriggerKey(DIK_UP)) {
-		AddForce({ 0.0f, 15.0f, 0.0f }, 1);
-
-	}
-	if (Input::GetInstance()->PushKey(DIK_RIGHT)) {
-		worldTransform_.translation_.x += 0.1f;
-	}
-	if (Input::GetInstance()->PushKey(DIK_LEFT)) {
-		worldTransform_.translation_.x -= 0.1f;
-	}
-
-	if (worldTransform_.translation_.y < -2.0f) {
-		isActive_ = false;
-	}*/
-
-	if (Input::GetInstance()->PushKey(DIK_P)) {
-		isActive_ = false;
-	}
-	if (Input::GetInstance()->PushKey(DIK_O)) {
-		GetWorld()->SetGravity({ 0.0f, -9.8f, 0.0f });
-	}
-
-	if (Input::GetInstance()->PushKey(DIK_W)) {
-		worldTransform_.translation_.y += 5.0f;
-	}
-	if (Input::GetInstance()->PushKey(DIK_S)) {
-		worldTransform_.translation_.y -= 5.0f;
-	}
-	if (Input::GetInstance()->PushKey(DIK_D)) {
-		worldTransform_.translation_.x += 5.0f;
-	}
-	if (Input::GetInstance()->PushKey(DIK_A)) {
-		worldTransform_.translation_.x -= 5.0f;
-	}
-
-	if (Input::GetInstance()->PushKey(DIK_UP)) {
-		reticleWorldTransform_.translation_.y += 0.1f;
-	}
-	if (Input::GetInstance()->PushKey(DIK_DOWN)) {
-		reticleWorldTransform_.translation_.y -= 0.1f;
-	}
-	if (Input::GetInstance()->PushKey(DIK_RIGHT)) {
-		reticleWorldTransform_.translation_.x += 0.1f;
-	}
-	if (Input::GetInstance()->PushKey(DIK_LEFT)) {
-		reticleWorldTransform_.translation_.x -= 0.1f;
-	}
 
 	Vector3 move = { 0.0f, 0.0f, 0.0f };
 	Vector3 reticleMove = { 0.0f, 0.0f, 0.0f };
@@ -282,7 +119,7 @@ void Player::Update()
 			// 速さ
 			float speed = 1.0f;
 			if (!isHit_ && !isWire_) {
-				speed = 0.0f;
+				speed = 0.1f;
 			}
 
 			// 移動量
@@ -304,7 +141,8 @@ void Player::Update()
 			if ((pad_.Gamepad.wButtons & XINPUT_GAMEPAD_A) && !(prePad_.Gamepad.wButtons & XINPUT_GAMEPAD_A)) {
 				if (!isJunp_) {
 					isJunp_ = true;
-					AddForce({ 0.0f, 25.0f, 0.0f }, Body::ForceMode::kImpulse);
+					AddForce({ 0.0f, 28.0f, 0.0f }, Body::ForceMode::kImpulse);
+					GetWorld()->TakeJoint(playerFixedJoint_.get());
 				}
 			}
 
@@ -389,33 +227,14 @@ void Player::Update()
 		isActive_ = false;
 	}
 
-	if (isMoving_) {
-		if (worldTransform_.parent_) {
-			if (!isHit_) {
-
-				Matrix4x4 invers = Inverse(worldTransform_.parent_->matWorld_);
-				Matrix4x4 lMat = Multiply(worldTransform_.matWorld_, invers);
-				Vector3 t = { lMat.m[3][0], lMat.m[3][1], lMat.m[3][2] };
-				Vector3 t2 = worldTransform_.parent_->GetMatWorldTranslation();
-				worldTransform_.translation_ = Add(t, t2);
-				worldTransform_.parent_ = nullptr;
-			}
-			else if (collisionBody_) {
-				if (collisionBody_->GetCollisionAttribute() != kCollisionAttributeMoveFloor) {
-					Matrix4x4 invers = Inverse(worldTransform_.parent_->matWorld_);
-					Matrix4x4 lMat = Multiply(worldTransform_.matWorld_, invers);
-					Vector3 t = { lMat.m[3][0], lMat.m[3][1], lMat.m[3][2] };
-					Vector3 t2 = worldTransform_.parent_->GetMatWorldTranslation();
-					worldTransform_.translation_ = Add(t, t2);
-					worldTransform_.parent_ = nullptr;
-				}
-			}
-		}
+	if (!isMoving_) {
+		GetWorld()->TakeJoint(playerFixedJoint_.get());
 	}
 
 	isHit_ = false;
 	isFloot_ = true;
 	isSelect_ = false;
+	isMoving_ = false;
 
 	scoreUI_->Update();
 
@@ -488,13 +307,11 @@ void Player::OnCollisionEvent()
 	if (GetHitBody()->GetCollisionAttribute() == kCollisionAttributeMoveFloor) {
 		AABB aabb = GetAABB();
 		AABB other = GetHitBody()->GetAABB();
-		if (aabb.min.y >= other.max.y) {
-			if (aabb.min.x < other.max.x && aabb.max.x > other.min.x) {
-				if (worldTransform_.parent_ == nullptr) {
-					worldTransform_.parent_ = GetHitBody()->GetWorldTransform();
-					worldTransform_.translation_ = Subtract(worldTransform_.translation_, GetHitBody()->GetMatWorldTranslation());
-					isMoving_ = true;
-				}
+		if (aabb.min.y >= (other.max.y + other.min.y) / 2.0f) {
+			if (aabb.min.x + 1.0f < other.max.x && aabb.max.x + 1.0f > other.min.x) {
+				playerFixedJoint_->CreateFixedJoint(GetHitBody(), this);
+				GetWorld()->AddJoint(playerFixedJoint_.get());
+				isMoving_ = true;
 			}
 
 		}
@@ -503,12 +320,7 @@ void Player::OnCollisionEvent()
 
 	if (GetNormalVector().y > 0.0f) {
 		isJunp_ = false;
-		//isFloot_ = false;
 	}
-	/*if (GetVertical().y > 0.0f) {
-		isJunp_ = false;
-		isFloot_ = false;
-	}*/
 
 #ifdef _DEBUG
 	ImGui::Begin("Player");
@@ -517,8 +329,6 @@ void Player::OnCollisionEvent()
 
 #endif
 	isHit_ = true;
-
-	collisionBody_ = GetHitBody();
 }
 
 void Player::OnTriggerEvent()

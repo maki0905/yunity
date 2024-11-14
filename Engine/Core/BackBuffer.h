@@ -49,11 +49,7 @@ public:
 	D3D12_CPU_DESCRIPTOR_HANDLE* GetCpuDescHandleRTV() { return rtvHandles_; }
 
 private:
-	//Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> commandList_;
-	//ID3D12GraphicsCommandList* commandList_;
 	std::vector<Microsoft::WRL::ComPtr<ID3D12Resource>> backBuffers_;
-	//Microsoft::WRL::ComPtr<IDXGISwapChain4> swapChain_;
-	//IDXGISwapChain4* swapChain_;
 	DescriptorHeap* rtvDescriptorHeap_ = nullptr;
 	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandles_[2];
 	UINT backBufferCount_ = 0;

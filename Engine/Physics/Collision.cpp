@@ -165,7 +165,6 @@ bool IsCollision(const Triangle& triangle, const Segment& segment)
 	Vector3 v1 = Subtract(triangle.vertices[1], triangle.vertices[0]);
 	Vector3 v2 = Subtract(triangle.vertices[2], triangle.vertices[1]);
 	Vector3 normal = Normalize(Cross(v1, v2));
-	/*float distance = (normal.x * triangle.vertices[0].x) + (normal.y * triangle.vertices[0].y) + (normal.z * triangle.vertices[0].z);*/
 	float distance = Dot(triangle.vertices[0], normal);
 	float dot = Dot(normal, segment.diff);
 	// 垂直=平行であるので、衝突しているはずがない
@@ -208,7 +207,6 @@ bool IsCollision(const Segment& segment, const Triangle& triangle)
 	Vector3 v1 = Subtract(triangle.vertices[1], triangle.vertices[0]);
 	Vector3 v2 = Subtract(triangle.vertices[2], triangle.vertices[1]);
 	Vector3 normal = Normalize(Cross(v1, v2));
-	/*float distance = (normal.x * triangle.vertices[0].x) + (normal.y * triangle.vertices[0].y) + (normal.z * triangle.vertices[0].z);*/
 	float distance = Dot(triangle.vertices[0], normal);
 	float dot = Dot(normal, segment.diff);
 	// 垂直=平行であるので、衝突しているはずがない
@@ -324,10 +322,6 @@ bool IsCollision(const Segment& segment, const AABB& aabb)
 	float tmin = std::max(std::max(tNearX, tNearY), tNearZ);
 	// AABBとの衝突点(貫通点)のtが大きい方
 	float tmax = std::min(std::min(tFarX, tFarY), tFarZ);
-	//float segmentLength = Length(Subtract(segment.diff, segment.origin));
-	/*if (tmin <= tmax) {
-		return true;
-	}*/
 	if (tmin < tmax && tmin < 1.0f && tmax > 0.0f) {
 
 
@@ -356,7 +350,6 @@ bool IsCollision(const AABB& aabb, const Ray& ray)
 	float tmin = std::max(std::max(tNearX, tNearY), tNearZ);
 	// AABBとの衝突点(貫通点)のtが大きい方
 	float tmax = std::min(std::min(tFarX, tFarY), tFarZ);
-	//float segmentLength = Length(Subtract(segment.diff, segment.origin));
 	if (tmin <= tmax) {
 		return true;
 	}
@@ -376,7 +369,6 @@ bool IsCollision(const Ray& ray, const AABB& aabb)
 	float tmin = std::max(std::max(tNearX, tNearY), tNearZ);
 	// AABBとの衝突点(貫通点)のtが大きい方
 	float tmax = std::min(std::min(tFarX, tFarY), tFarZ);
-	//float segmentLength = Length(Subtract(segment.diff, segment.origin));
 	if (tmin <= tmax) {
 		return true;
 	}

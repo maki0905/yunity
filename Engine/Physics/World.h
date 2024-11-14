@@ -43,7 +43,7 @@ public:
 	/// ジョイント追加
 	/// </summary>
 	/// <param name="joint"></param>
-	void AddJoint(Joint* joint) { jointAllocator_.push_back(joint); };
+	void AddJoint(Joint* joint);
 	
 	/// <summary>
 	/// ジョイント削除

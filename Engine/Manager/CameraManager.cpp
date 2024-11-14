@@ -8,8 +8,6 @@ CameraManager* CameraManager::GetInstance()
 
 void CameraManager::Initialize()
 {
-    /*camera_ = std::make_unique<Camera>();
-    debugCamera_ = std::make_unique<DebugCamera>();*/
 	camera_ = std::make_unique<Camera>();
 	debugCamera_ = new DebugCamera();
 	isDebug_ = false;
@@ -17,9 +15,6 @@ void CameraManager::Initialize()
 
 void CameraManager::Finalize()
 {
-	/*if (camera_) {
-		delete camera_;
-	}*/
 	if (debugCamera_) {
 		delete debugCamera_;
 	}

@@ -29,7 +29,7 @@ void StageScene::Initialize()
 	skyboxWorldTransform_.scale_ = { 100.0f, 100.0f, 100.0f };
 	skybox_ = std::make_unique<SkyBox>();
 	skybox_.reset(SkyBox::Create());
-	skybox_->SetCamera(camera_/*camera_.get()*/);
+	skybox_->SetCamera(camera_);
 	skybox_->SetTexture("rostock_laage_airport_4k.dds");
 
 	Model::DirectionalLight l = { .color = {1.0f, 1.0f, 1.0f, 1.0f}, .direction = {1.0f, -1.0f, 0.0f}, .intensity = 1.0f };
@@ -38,7 +38,7 @@ void StageScene::Initialize()
 	world_->Initialize({0.0f, -15.0f, 0.0f});
 
 	player_ = std::make_unique<Player>();
-	player_->Initialize(camera_/*camera_.get()*/, world_.get());
+	player_->Initialize(camera_, world_.get());
 	player_->SetDirectionalLight(l);
 	camera_->SetTarget(player_->GetWorldTransform());
 
@@ -47,13 +47,11 @@ void StageScene::Initialize()
 	stageName_ = CommonData::GetInstance()->GetStageName();
 	objectManager_ = std::make_unique<ObjectManager>();
 	objectManager_->Initialize();
-	objectManager_->Load(stageName_, camera_/*camera_.get()*/, world_.get());
+	objectManager_->Load(stageName_, camera_, world_.get());
 	objectManager_->SetDirectionalLight(l);
 	startWT_.translation_ = objectManager_->GetPos("startBox");
 	startPos_ = startWT_.translation_;
 	player_->ResetPos(startPos_);
-
-	player_->ResetPos({ 500.0f, endPos_.y, 0.0f });
 
 	start_ = std::make_unique<Model>();
 	start_.reset(ModelManager::GetInstance()->CreateModel(obj, "TV"));
@@ -73,7 +71,7 @@ void StageScene::Initialize()
 	endWT_.UpdateMatrix();
 
 	skydome_ = std::make_unique<Skydome>();
-	skydome_->Initialize(camera_/*camera_.get()*/, {5.0f, 5.0f, 5.0f});
+	skydome_->Initialize(camera_, {5.0f, 5.0f, 5.0f});
 
 	CommonData::GetInstance()->scene_ = Scene::kStage;
 
@@ -97,7 +95,7 @@ void StageScene::Initialize()
 		springTops_[i]->SetTranslation(pos);
 		springTops_[i]->SetMass(1.0f);
 		springTops_[i]->SetHitBoxSize({ 2.0f, 2.0f, 2.0f });
-		springTops_[i]->SetScale({ 5.5f, 1.0f, 4.5f });
+		springTops_[i]->SetScale({ 6.5f, 1.0f, 8.5f });
 		springTops_[i]->SetCamera(camera_);
 		springTops_[i]->SetCollisionAttribute(kCollisionAttributeTrampoline);
 		springTops_[i]->SetFixedPosition(pos);
@@ -221,7 +219,7 @@ void StageScene::Update()
 	}
 
 	if (isDebug_) {
-		debugCamera_->Update(camera_/*camera_.get()*/);
+		debugCamera_->Update(camera_);
 		camera_->SetTarget(nullptr);
 		camera_->Update();
 	}
@@ -351,9 +349,6 @@ void StageScene::Draw3D()
 	start_->Draw(startWT_, textureTV_);
 	end_->Draw(endWT_, textureTV_);
 	player_->Draw();
-	
-
-	//player_->Draw();
 }
 
 void StageScene::DrawFront()

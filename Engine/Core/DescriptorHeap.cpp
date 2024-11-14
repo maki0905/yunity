@@ -47,7 +47,6 @@ DescriptorHandle DescriptorHeap::Alloc(uint32_t count)
 	gpuHandle.ptr += (count * descriptorSize_);
 	nextFreeHandle_->SetCPUHandle(cpuHandle);
 	nextFreeHandle_->SetGPUHandle(gpuHandle);
-	//nextFreeHandle_ += count * descriptorSize_;
 	freeDescriptors_ -= count;
 	return ret;
 }

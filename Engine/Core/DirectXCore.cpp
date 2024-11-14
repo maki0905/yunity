@@ -76,7 +76,6 @@ void DirectXCore::Finalize()
 
 void DirectXCore::PreDrawRenderTexture()
 {
-	//commandList_->BarrierChange(RenderTexture::GetInstance()->GetResource(), D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_RENDER_TARGET);
 	RenderTexture::GetInstance()->OMSetRenderTargets();
 	RenderTexture::GetInstance()->ClearRenderTargetView();
 	RenderTexture::GetInstance()->ClearDepthStencilView();
@@ -111,11 +110,9 @@ void DirectXCore::PostDrawSwapchain()
 
 
 	// コマンドリストの実行
-	//ID3D12CommandList* cmdLists[] = { commandList_->GetCommandList() }; // コマンドリストの配列
 	Microsoft::WRL::ComPtr<ID3D12CommandList> cmdLists[] = { commandList_->GetCommandList() };
 	ID3D12CommandList* rawCmdLists[] = { cmdLists[0].Get() };
 	commandQueue_->GetCommandQueue()->ExecuteCommandLists(1, rawCmdLists);
-	//commandQueue_->GetCommandQueue()->ExecuteCommandLists(1, commandList_->GetCommandLists());
 
 	// バッファをフリップ
 	result = swapChain_->GetSwapChain()->Present(1, 0);

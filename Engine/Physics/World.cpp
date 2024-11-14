@@ -17,7 +17,6 @@ void World::Initialize(const Vector3& gravity)
 
 void World::Solve()
 {
-	//deltaTime_ = DirectXCore::GetInstance()->GetDeletTime();
 	float time = 0.0f;
 	if (!isFixedTime_) {
 		auto currentTime = std::chrono::high_resolution_clock::now();
@@ -62,6 +61,20 @@ void World::Take(Object3D* collider)
 		iterator++;
 	}
 
+}
+
+void World::AddJoint(Joint* joint)
+{
+	bool duplicationCheck = true;
+	for (std::list<Joint*>::iterator iterator = jointAllocator_.begin(); iterator != jointAllocator_.end();) {
+		if (*iterator == joint) {
+			duplicationCheck = false;
+		}
+		iterator++;
+	}
+	if (duplicationCheck) {
+		jointAllocator_.emplace_back(joint);
+	}
 }
 
 void World::TakeJoint(Joint* joint)

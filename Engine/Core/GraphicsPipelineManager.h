@@ -94,9 +94,7 @@ private:
 	GraphicsPipelineManager(const GraphicsPipelineManager&) = delete;
 	GraphicsPipelineManager& operator=(const GraphicsPipelineManager&) = delete;
 private:
-	//Microsoft::WRL::ComPtr<ID3D12Device> device_;
 	GraphicsCommon* graphicsCommon_;
 	std::unique_ptr<GraphicsPipeline> graphicsPipelines_[PipelineType::kCount];
-	//GraphicsPipeline* graphicsPipelines_[PipelineType::kCount];
 
 };

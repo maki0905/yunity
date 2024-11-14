@@ -32,40 +32,6 @@ void ShaderCompiler::Initialize()
 	ShaderCompile();
 }
 
-//void Shader::DXCInitialize()
-//{
-//	HRESULT result = S_FALSE;
-//	result = DxcCreateInstance(CLSID_DxcUtils, IID_PPV_ARGS(&dxcUtils_));
-//	assert(SUCCEEDED(result));
-//	result = DxcCreateInstance(CLSID_DxcCompiler, IID_PPV_ARGS(&dxcCompiler_));
-//	assert(SUCCEEDED(result));
-//
-//	result = dxcUtils_->CreateDefaultIncludeHandler(&includeHandler_);
-//	assert(SUCCEEDED(result));
-//
-//	ShaderCompile();
-//
-//}
-
-//ID3DBlob* ShaderCompiler::Get(FileName name, ShaderType shaderType)
-//{
-//	ID3DBlob* result = nullptr;
-//	switch (shaderType)
-//	{
-//	case ShaderCompiler::ShaderType::kVS:
-//		result = vsblob_[static_cast<size_t>(name)];
-//		break;
-//	case ShaderCompiler::ShaderType::kPS:
-//		result = psblob_[static_cast<size_t>(name)];
-//		break;
-//	default:
-//		break;
-//	}
-//
-//	return result;
-//
-//}
-
 ID3DBlob* ShaderCompiler::Get(std::string shaderName, ShaderType shaderType)
 {
 	ID3DBlob* result = nullptr;
