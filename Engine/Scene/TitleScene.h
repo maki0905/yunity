@@ -80,30 +80,6 @@ private:
 	Vector3 oldCameraPos_;
 	std::unique_ptr<Cloth> cloth_;
 
-	/*std::unique_ptr<Object3D>floor_;
-	std::unique_ptr<Object3D>anchor_;
-	std::unique_ptr<PrimitiveDrawer> sp_;
-	std::unique_ptr<SpringJoint> joint_;*/
-
-	// obj1,2
-	std::unique_ptr<Object3D> obj1_;
-	/*std::unique_ptr<Object3D> obj1_;
-	std::unique_ptr<Object3D> obj2_;*/
-
-	// springbrige
-	/*std::unique_ptr<Object3D> objs_[5];
-	std::unique_ptr<PrimitiveDrawer> lines_[4];
-	std::unique_ptr<SpringJoint> springJoints_[4];
-	float stiffness_ = 10.0f;
-	float damper_ = 0.1f;*/
-
-	// pulley
-	/*std::unique_ptr<Object3D> pulleyObjs_[2];
-	std::unique_ptr<PrimitiveDrawer> pulleyLines_[3];
-	std::unique_ptr<PulleyJoint> pulleyJoint_;
-	Vector3 groundAnchor_[2];
-	float ratio_;*/
-
 	std::unique_ptr<ObjectManager> objectManager_;
 };
 

@@ -19,6 +19,12 @@
 class Player : public Object3D
 {
 public:
+	enum class UI {
+		kScore,
+		kReticle
+	};
+
+public:
 	/// <summary>
 	/// 初期化
 	/// </summary>
@@ -58,6 +64,11 @@ public:
 	void ResetPos(const Vector3& pos);
 
 	/// <summary>
+	/// リザルト
+	/// </summary>
+	bool Result();
+
+	/// <summary>
 	/// getter
 	/// </summary>
 
@@ -69,6 +80,8 @@ public:
 	/// </summary>
 
 	void SetSelect(bool isSelect) { isSelect_ = isSelect; }
+	void SetDisplayUI(bool flag, UI ui);
+	void SetInGame(bool flag) { inGame_ = flag; }
 
 private:
 	XINPUT_STATE pad_;
@@ -79,6 +92,7 @@ private:
 
 	//Camera* camera_;
 
+	bool inGame_;
 
 	float stiffness_;
 	float dampar_;
@@ -113,7 +127,11 @@ private:
 	bool isSelect_;
 
 	// スコア
+	bool isScore_;
+	bool isReticle_;
 	std::unique_ptr<Score> scoreUI_;
+	float lerpTime_;
+	float displayTime_;
 
 	// 制限速度
 	float limitSpeed_ = 20.0f;
@@ -123,5 +141,7 @@ private:
 
 	std::unique_ptr<FixedJoint> fixedJoint_;
 	std::unique_ptr<FixedJoint> playerFixedJoint_;
+
+
 };
 

@@ -94,7 +94,7 @@ public:
 	/// <param name="worldTransform">ワールドトランスフォーム</param>
 	/// <param name="viewProjection">ビュープロジェクション</param>
 	/// <param name="textureHandle">テクスチャハンドル</param>
-	void Draw(/*WorldTransform* worldTransform,*/ std::list<Particle*> particles);
+	void Draw(std::list<Particle*> particles);
 
 	Vector4 GetMatrial() { return materialData_->color; }
 
@@ -148,7 +148,6 @@ private:
 	const uint32_t kNumMaxInstance = 100;
 
 	Microsoft::WRL::ComPtr<ID3D12Resource> instancingResource_;
-	//WorldTransform* instancingData_;
 	ParticleForCPU* instancingData_;
 
 	D3D12_CPU_DESCRIPTOR_HANDLE instancingSrvHandleCPU_;

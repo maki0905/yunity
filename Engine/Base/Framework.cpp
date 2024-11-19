@@ -36,7 +36,6 @@ void Framework::Initialize()
 	Audio::GetInstance()->Initialize();
 
 	SceneManager::GetInstance()->Initialize();
-	SceneManager::GetInstance()->ChangeScene("TITLE");
 
 	CSV::GetInstance()->Initialize();
 
@@ -68,4 +67,22 @@ void Framework::Update()
 
 	// ImGui受付終了
 	ImGuiManager::GetInstance()->End();
+}
+
+void Framework::Run()
+{
+	// ゲームの初期化
+	Initialize();
+
+	// ゲームループ
+	while (true) {
+		// 毎フレーム更新
+		Update();
+		if (IsEndRequest()) {
+			break;
+		}
+		// 描画
+		Draw();
+	}
+	Finalize();
 }

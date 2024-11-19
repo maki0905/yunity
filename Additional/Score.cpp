@@ -9,6 +9,13 @@ void Score::Initialize()
 	scoreBackground_.reset(Sprite::Create(TextureManager::GetInstance()->Load("ScoreBack.png"), { 84.0f, 84.0f }));
 	scoreBackground_->SetAnchorPoint({ 0.5f, 0.5f });
 	scoreBackground_->SetSize({ 120.0f, 120.0f });
+
+	hiScore_ = std::make_unique<Sprite>();
+	hiScore_.reset(Sprite::Create(TextureManager::GetInstance()->Load("hiscore.png"), { 640.0f, 360.0f }));
+	hiScore_->SetAnchorPoint({ 0.5f, 0.5f });
+	hiScore_->SetSize({ 120.0f, 30.0f });
+	isHiScore_ = false;
+
 	//scoreBackground_
 	for (uint32_t index = 0; index < 4; index++) {
 		scoreNumber_[index] = std::make_unique<Sprite>();
@@ -19,6 +26,7 @@ void Score::Initialize()
 	}
 	score_ = 0;
 	digit_ = 1;
+	lerpTime_ = 0.0f;
 }
 
 void Score::Update()
@@ -38,18 +46,27 @@ void Score::Update()
 				digit_ = 1;
 			}
 		}
-		scoreNumber_[/*3 -*/ index]->SetTextureRect({ 0.0f, 64.0f * (float)num }, { 64.0f, 64.0f });
+		scoreNumber_[index]->SetTextureRect({ 0.0f, 64.0f * (float)num }, { 64.0f, 64.0f });
 	}
 
+	if (isHiScore_) {
+		lerpTime_ += deltaTime_;
+		if (lerpTime_ < 1.0f) {
+			hiScore_->SetSize(Lerp(minHiScoreSize_, maxHiScoreSize_, lerpTime_));
+		}
+		else if (lerpTime_ < 2.0f) {
+			hiScore_->SetSize(Lerp(maxHiScoreSize_, minHiScoreSize_, lerpTime_ - 1.0f));
+		}
+		else {
+			lerpTime_ = 0.0f;
+		}
+	}
 }
 
 void Score::Draw()
 {
+	scoreBackground_->SetPosition(pos_);
 	scoreBackground_->Draw();
-
-	/*for (uint32_t index = 0; index < 1; index++) {
-		scoreNumber_[index]->Draw();
-	}*/
 
 	switch (digit_)
 	{
@@ -82,6 +99,11 @@ void Score::Draw()
 		scoreNumber_[0]->SetPosition({ pos_.x - 48.0f, pos_.y });
 		scoreNumber_[0]->Draw();
 		break;
+	}
+
+	if (isHiScore_) {
+		hiScore_->SetPosition({ pos_.x, pos_.y + 60.0f });
+		hiScore_->Draw();
 	}
 	
 }

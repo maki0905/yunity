@@ -17,35 +17,21 @@ void Player::Initialize(Camera* camera, World* world)
 	SetMiu(2.0f);
 	SetBounceCombine(BounceCombine::kMaximum);
 	SetBounciness(0.0f);
-	/*worldTransform_.Initialize(RotationType::Quaternion);
-	worldTransform_.translation_.y = 3.0f;*/
 	models_["player"] = std::make_unique<Model>();
 	models_["player"].reset(ModelManager::GetInstance()->CreateModel(obj, "Player"));
 	models_["player"]->SetCamera(camera);
 
-	/*model_.reset(ModelManager::GetInstance()->CreateModel(obj, "startBox"));
-	model_->SetCamera(camera);*/
-	/*model_.reset(ModelManager::GetInstance()->CreateModel(gltf, "human", "sneakWalk", ModelType::kSkin));
-	model_->SetCamera(camera);*/
-	/*model_.reset(ModelManager::GetInstance()->CreateModel(gltf, "human", "sneakWalk", ModelType::kSkin));
-	model_->SetCamera(camera);
-	model_->SetAnimation("walk", ModelManager::GetInstance()->GetAnimation(gltf, "human", "walk"));
-	model_->SetAnimation("sneakWalk", ModelManager::GetInstance()->GetAnimation(gltf, "human", "sneakWalk"));*/
 	camera_ = camera;
 
 	isCrouching_ = false;
-	//model_->PlayAnimation("walk", AnimationCommon::kLooping);
 
 	stiffness_ = 1.0f;
 	dampar_ = 0.1f;
 	mass_ = 1.0f;
 	limitLength_ = 15.0f;
 
-	/*CreateBody(world, &worldTransform_, 2.0f);*/
-
 	world->Add(this);
 
-	//CreateCollider(&worldTransform_, Collider::Shape::kAABB, camera_, { 2.5f, 2.5f, 2.5f });
 	isHit_ = false;
 	SetCollisionAttribute(kCollisionAttributePlayer);
 	isActive_ = true;
@@ -97,6 +83,10 @@ void Player::Initialize(Camera* camera, World* world)
 
 	scoreUI_ = std::make_unique<Score>();
 	scoreUI_->Initialize();
+	isScore_ = false;
+	isReticle_ = false;
+	lerpTime_ = 0.0f;
+	displayTime_ = 0.0f;
 
 	fixedJoint_ = std::make_unique<FixedJoint>();
 	playerFixedJoint_ = std::make_unique<FixedJoint>();
@@ -109,132 +99,139 @@ void Player::Update()
 
 	Vector3 move = { 0.0f, 0.0f, 0.0f };
 	Vector3 reticleMove = { 0.0f, 0.0f, 0.0f };
-	// ジョイスティック状態取得
-	if (Input::GetInstance()->IsControllerConnected()) {
-		if (Input::GetInstance()->GetJoystickState(0, pad_)) {
 
-			// プレイヤーの動き
-			const float threshold = 0.7f;
-			bool isMoving = false;
-			// 速さ
-			float speed = 1.0f;
-			if (!isHit_ && !isWire_) {
-				speed = 0.1f;
-			}
+	
+	if (!CommonData::GetInstance()->isGoal_ || inGame_) {
+		// ジョイスティック状態取得
+		if (Input::GetInstance()->IsControllerConnected()) {
+			if (Input::GetInstance()->GetJoystickState(0, pad_)) {
 
-			// 移動量
-			move = { (float)pad_.Gamepad.sThumbLX, 0,(float)pad_.Gamepad.sThumbLY };
-
-			if (Length(move) > threshold) {
-				isMoving = true;
-			}
-
-			if (isMoving) {
-
-				move.Normalize();
-				// 移動量に速さを反映
-				move = Multiply(speed, move);
-
-				AddForce(move, Body::ForceMode::kImpulse);
-			}
-
-			if ((pad_.Gamepad.wButtons & XINPUT_GAMEPAD_A) && !(prePad_.Gamepad.wButtons & XINPUT_GAMEPAD_A)) {
-				if (!isJunp_) {
-					isJunp_ = true;
-					AddForce({ 0.0f, 28.0f, 0.0f }, Body::ForceMode::kImpulse);
-					GetWorld()->TakeJoint(playerFixedJoint_.get());
+				// プレイヤーの動き
+				const float threshold = 0.7f;
+				bool isMoving = false;
+				// 速さ
+				float speed = 1.0f;
+				if (!isHit_ && !isWire_) {
+					speed = 0.1f;
 				}
-			}
 
-			// レティクルの動き
-			reticleMove = { (float)pad_.Gamepad.sThumbRX, (float)pad_.Gamepad.sThumbRY, 0.0f };
-			reticleMove = Multiply(0.8f, reticleMove.Normalize());
-			reticleWorldTransform_.translation_ = Add(reticleWorldTransform_.translation_, reticleMove);
+				// 移動量
+				move = { (float)pad_.Gamepad.sThumbLX, 0,(float)pad_.Gamepad.sThumbLY };
 
-			bool isHit = false;
-			RayCastHit hit;
-			Vector3 direction = Subtract({ reticleWorldTransform_.matWorld_.m[3][0], reticleWorldTransform_.matWorld_.m[3][1], reticleWorldTransform_.matWorld_.m[3][2] }, worldTransform_.translation_);
-			float lenght = Length(direction);
-			if (lenght > limitLength_) {
-				lenght = limitLength_;
-			}
-			direction.Normalize();
-			isHit = RayCast(worldTransform_.translation_, direction, &hit, lenght, GetWorld(), kCollisionAttributePlayer);
+				if (Length(move) > threshold) {
+					isMoving = true;
+				}
+
+				if (isMoving) {
+
+					move.Normalize();
+					// 移動量に速さを反映
+					move = Multiply(speed, move);
+
+					AddForce(move, Body::ForceMode::kImpulse);
+				}
+
+				if ((pad_.Gamepad.wButtons & XINPUT_GAMEPAD_A) && !(prePad_.Gamepad.wButtons & XINPUT_GAMEPAD_A)) {
+					if (!isJunp_) {
+						isJunp_ = true;
+						AddForce({ 0.0f, 28.0f, 0.0f }, Body::ForceMode::kImpulse);
+						GetWorld()->TakeJoint(playerFixedJoint_.get());
+					}
+				}
+
+				// レティクルの動き
+				reticleMove = { (float)pad_.Gamepad.sThumbRX, (float)pad_.Gamepad.sThumbRY, 0.0f };
+				reticleMove = Multiply(0.8f, reticleMove.Normalize());
+				reticleWorldTransform_.translation_ = Add(reticleWorldTransform_.translation_, reticleMove);
+
+				bool isHit = false;
+				RayCastHit hit;
+				Vector3 direction = Subtract({ reticleWorldTransform_.matWorld_.m[3][0], reticleWorldTransform_.matWorld_.m[3][1], reticleWorldTransform_.matWorld_.m[3][2] }, worldTransform_.translation_);
+				float lenght = Length(direction);
+				if (lenght > limitLength_) {
+					lenght = limitLength_;
+				}
+				direction.Normalize();
+				isHit = RayCast(worldTransform_.translation_, direction, &hit, lenght, GetWorld(), kCollisionAttributePlayer);
 
 
-			// ワイヤー
-			if (CommonData::GetInstance()->scene_ == Scene::kStage) {
-				if ((pad_.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) && !(prePad_.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER)) {
-					if (!isWire_) {
-						if (isHit && hit.collider->GetCollisionAttribute() != kCollisionAttributeCoin) {
-							isWire_ = true;
-							//GetWorld()->AddJoint(springJoint_.get());
-							//point_ = hit.collider->GetTranslation();
-							point_ = hit.point;
-							apexWorldTransform_.translation_ = hit.point;
-							apexBody_->SetMatTranslation(hit.point);
-							if (hit.collider->GetCollisionAttribute() == kCollisionAttributeMoveFloor || hit.collider->GetCollisionAttribute() == kCollisionAttributeTrampoline) {
-								fixedJoint_->CreateFixedJoint(hit.collider, apexBody_.get());
+				// ワイヤー
+				if (CommonData::GetInstance()->scene_ == Scene::kStage) {
+					if ((pad_.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) && !(prePad_.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER)) {
+						if (!isWire_) {
+							if (isHit && hit.collider->GetCollisionAttribute() != kCollisionAttributeCoin) {
+								isWire_ = true;
+								//GetWorld()->AddJoint(springJoint_.get());
+								//point_ = hit.collider->GetTranslation();
+								point_ = hit.point;
+								apexWorldTransform_.translation_ = hit.point;
+								apexBody_->SetMatTranslation(hit.point);
+								if (hit.collider->GetCollisionAttribute() == kCollisionAttributeMoveFloor || hit.collider->GetCollisionAttribute() == kCollisionAttributeTrampoline) {
+									fixedJoint_->CreateFixedJoint(hit.collider, apexBody_.get());
+								}
+							}
+						}
+						else {
+							isWire_ = false;
+							fixedJoint_->Clear();
+							if (apexWorldTransform_.parent_) {
+								apexWorldTransform_.parent_ = nullptr;
 							}
 						}
 					}
-					else {
-						isWire_ = false;
-						fixedJoint_->Clear();
-						if (apexWorldTransform_.parent_) {
-							apexWorldTransform_.parent_ = nullptr;
-						}
-					}
 				}
-			}
 
-			if (isHit) {
-				reticle_->SetTextureHandle(onReticle_);
-			}
-			else {
-				reticle_->SetTextureHandle(offReticle_);
-			}
+				if (isHit) {
+					reticle_->SetTextureHandle(onReticle_);
+				}
+				else {
+					reticle_->SetTextureHandle(offReticle_);
+				}
 
 
+			}
 		}
-	}
 
-	if (Length(reticleWorldTransform_.translation_) > limitLength_) {
-		Vector3 dir = reticleWorldTransform_.translation_.Normalize();
-		reticleWorldTransform_.translation_ = Multiply(limitLength_, dir);
-	}
+		if (Length(reticleWorldTransform_.translation_) > limitLength_) {
+			Vector3 dir = reticleWorldTransform_.translation_.Normalize();
+			reticleWorldTransform_.translation_ = Multiply(limitLength_, dir);
+		}
 
-	//camera_->SetTranslate({ GetMatWorldTranslation().x, GetMatWorldTranslation().y, camera_->GetTranslate().z });
+		if (!isWire_) {
+			apexWorldTransform_.translation_ = worldTransform_.translation_;
+			apexBody_->SetTranslation(worldTransform_.translation_);
+		}
+		else {
+			AddForce(Spring(apexWorldTransform_.GetMatWorldTranslation(), GetMatWorldTranslation(), 0.0f, stiffness_, dampar_), Body::ForceMode::kForce);
+			AddForce(RubberMovement(GetMatWorldTranslation(), apexWorldTransform_.GetMatWorldTranslation(), limitLength_, stiffness_, dampar_), Body::ForceMode::kForce);
+			fixedJoint_->Solve();
+		}
 
-	if (!isWire_) {
-		apexWorldTransform_.translation_ = worldTransform_.translation_;
-		apexBody_->SetTranslation(worldTransform_.translation_);
+		reticleWorldTransform_.UpdateMatrix();
+		apexWorldTransform_.UpdateMatrix();
+		apexBody_->GetWorldTransform()->UpdateMatrix();
+
+		Vector2 pos = WorldToScreen({ reticleWorldTransform_.matWorld_.m[3][0], reticleWorldTransform_.matWorld_.m[3][1], reticleWorldTransform_.matWorld_.m[3][2] }, camera_->GetViewMatrix(), camera_->GetProjectionMatrix(), 1280.0f, 720.0f);
+		reticle_->SetPosition(pos);
+
+		if (worldTransform_.translation_.y < -12.0f) {
+			isActive_ = false;
+		}
+
+		if (!isMoving_) {
+			GetWorld()->TakeJoint(playerFixedJoint_.get());
+		}
+
+		isHit_ = false;
+		isFloot_ = true;
+		isSelect_ = false;
+		isMoving_ = false;
+
 	}
 	else {
-		AddForce(Spring(apexWorldTransform_.GetMatWorldTranslation(), GetMatWorldTranslation(), 0.0f, stiffness_, dampar_), Body::ForceMode::kForce);
-		AddForce(RubberMovement(GetMatWorldTranslation(), apexWorldTransform_.GetMatWorldTranslation(), limitLength_, stiffness_, dampar_), Body::ForceMode::kForce);
-		fixedJoint_->Solve();
+		isReticle_ = false;
 	}
-
-	reticleWorldTransform_.UpdateMatrix();
-	apexWorldTransform_.UpdateMatrix();
-	apexBody_->GetWorldTransform()->UpdateMatrix();
-
-	Vector2 pos = WorldToScreen({ reticleWorldTransform_.matWorld_.m[3][0], reticleWorldTransform_.matWorld_.m[3][1], reticleWorldTransform_.matWorld_.m[3][2] }, camera_->GetViewMatrix(), camera_->GetProjectionMatrix(), 1280.0f, 720.0f);
-	reticle_->SetPosition(pos);
-
-	if (worldTransform_.translation_.y < -12.0f) {
-		isActive_ = false;
-	}
-
-	if (!isMoving_) {
-		GetWorld()->TakeJoint(playerFixedJoint_.get());
-	}
-
-	isHit_ = false;
-	isFloot_ = true;
-	isSelect_ = false;
-	isMoving_ = false;
+	
 
 	scoreUI_->Update();
 
@@ -265,14 +262,13 @@ void Player::Update()
 void Player::Draw()
 {
 	models_["player"]->Draw(worldTransform_);
-	//model_->Draw(worldTransform_);
-	//raticle_->Draw(reticleWorldTransform_, TextureManager::GetInstance()->Load("uvChecker.png"));
-	//model_->Draw(worldTransform_, TextureManager::GetInstance()->Load("uvChecker.png"));
-	if (CommonData::GetInstance()->scene_ == Scene::kStage) {
-		reticle3D_->Draw(reticleWorldTransform_, TextureManager::GetInstance()->Load("pink1x1.png"));
-		if (isWire_) {
-			line_->Draw(worldTransform_.translation_,apexBody_->GetMatWorldTranslation()/* apexWorldTransform_.GetMatWorldTranslation()*/, { 0.0f, 0.0f, 0.0f, 1.0f });
-			apex_->Draw(*apexBody_->GetWorldTransform()/*apexWorldTransform_*/, TextureManager::GetInstance()->Load("purple1x1.png"));
+	if (isReticle_) {
+		if (CommonData::GetInstance()->scene_ == Scene::kStage) {
+			reticle3D_->Draw(reticleWorldTransform_, TextureManager::GetInstance()->Load("pink1x1.png"));
+			if (isWire_) {
+				line_->Draw(worldTransform_.translation_, apexBody_->GetMatWorldTranslation(), { 0.0f, 0.0f, 0.0f, 1.0f });
+				apex_->Draw(*apexBody_->GetWorldTransform(), TextureManager::GetInstance()->Load("purple1x1.png"));
+			}
 		}
 	}
 #ifdef _DEBUG
@@ -283,8 +279,12 @@ void Player::Draw()
 
 void Player::DrawUI()
 {
-	reticle_->Draw();
-	scoreUI_->Draw();
+	if (isReticle_) {
+		reticle_->Draw();
+	}
+	if (isScore_) {
+		scoreUI_->Draw();
+	}
 }
 
 void Player::OnCollisionEvent()
@@ -355,4 +355,45 @@ void Player::ResetPos(const Vector3& pos)
 	isWire_ = false;
 	isActive_ = true;
 	scoreUI_->Reset();
+}
+
+bool Player::Result()
+{
+	if (lerpTime_ != 1.0f) {
+		lerpTime_ += 1.0f / 30.0f;
+		lerpTime_ = std::clamp(lerpTime_, 0.0f, 1.0f);
+		scoreUI_->SetPosition(Lerp(Vector2(84.0f, 84.0f), Vector2(640.0f, 360.0f), lerpTime_));
+	}
+	else if(displayTime_ != 1.0f){
+		displayTime_ += 1.0f / 120.0f;
+		displayTime_ = std::clamp(displayTime_, 0.0f, 1.0f);
+		scoreUI_->SetDisplayHiScore(true);
+		if (scoreUI_->GetScore() > CommonData::GetInstance()->hiScore_) {
+			CommonData::GetInstance()->hiScore_ = scoreUI_->GetScore();
+			scoreUI_->SetDisplayHiScore(true);
+
+		}
+	}
+	else {
+		scoreUI_->SetDisplayHiScore(false);
+		isScore_ = false;
+		return true;
+	}
+	return false;
+
+}
+
+void Player::SetDisplayUI(bool flag, UI ui)
+{
+	switch (ui)
+	{
+	case Player::UI::kScore:
+		isScore_ = flag;
+		break;
+	case Player::UI::kReticle:
+		isReticle_ = flag;
+		break;
+	default:
+		break;
+	}
 }

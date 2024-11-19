@@ -4,19 +4,11 @@
 #include "Device.h"
 #include "Input.h"
 
-GameManager::GameManager()
-{
-	Framework::Initialize();
-	
-}
-
-GameManager::~GameManager()
-{
-	//Framework::Finalize();
-}
 
 void GameManager::Initialize()
 {
+	Framework::Initialize();
+	SceneManager::GetInstance()->ChangeScene("TITLE");
 	CameraManager::GetInstance()->Initialize();
 }
 
@@ -28,7 +20,11 @@ void GameManager::Finalize()
 
 void GameManager::Update()
 {
+	Framework::Update();
 	CameraManager::GetInstance()->Update();
+	if (WindowsAPI::GetInstance()->ProcessMessage()) {
+		endRequest_ = true;
+	}
 }
 
 void GameManager::Draw()
@@ -66,21 +62,6 @@ void GameManager::Draw()
 	ImGuiManager::GetInstance()->Draw();
 
 	DirectXCore::GetInstance()->PostDrawSwapchain();
-}
-
-void GameManager::Run()
-{
-	// ウィンドウの×ボタンが押されるまでループ
-	while (true) {
-		if (WindowsAPI::GetInstance()->ProcessMessage()) {
-			break;
-		}
-
-		Framework::Update();
-		Update();
-		Draw();
-		
-	}
 }
 
 

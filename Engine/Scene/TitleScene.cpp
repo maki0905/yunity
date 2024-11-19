@@ -33,6 +33,7 @@ void TitleScene::Initialize()
 	player_->Initialize(camera_, world_.get());
 	player_->SetDirectionalLight(l);
 	player_->SetMass(0.0f);
+	player_->SetInGame(true);
 	camera_->SetTarget(nullptr);  
 
 	objectManager_ = std::make_unique<ObjectManager>();

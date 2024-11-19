@@ -51,7 +51,21 @@ public:
 	/// </summary>
 	virtual void Draw() = 0;
 
+	/// <summary>
+	/// 終了チェック
+	/// </summary>
+	/// <returns></returns>
+	virtual bool IsEndRequest() { return endRequest_; }
+
+	/// <summary>
+	/// 実行
+	/// </summary>
+	void Run();
+
+	virtual ~Framework() = default;
+
 protected:
+	bool endRequest_;
 	// シーンを保持するメンバ変数
 	std::unique_ptr<IScene> sceneArr_[COUNT];
 

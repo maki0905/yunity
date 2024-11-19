@@ -86,6 +86,7 @@ private:
 	Vector3 topPos_;
 
 	bool isGoal_;
+	bool isScore_;
 	bool isClear_;
 	float time_;
 	Vector3 playerPos_;

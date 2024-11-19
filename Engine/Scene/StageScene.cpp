@@ -161,10 +161,12 @@ void StageScene::Update()
 			inStage_ = true;
 		}
 		Tradition::GetInstance()->Update();
-		camera_->SetOffset(Lerp(startPos_, { startPos_.x, 5.0f, -50.0f }, std::clamp(1.0f - Tradition::GetInstance()->GetTime(), 0.0f, 1.0f)));
+		camera_->SetOffset(Lerp({0.0f, 0.0f, 0.0f}/*startPos_*/, { 0.0/*startPos_.x*/, 5.0f, -50.0f }, std::clamp(1.0f - Tradition::GetInstance()->GetTime(), 0.0f, 1.0f)));
 		player_->SetScale(Lerp({ 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f, 1.0f }, std::clamp(1.0f - Tradition::GetInstance()->GetTime(), 0.0f, 1.0f)));
-		if (player_->GetWorldTransform()->scale_.Length() == 1.0f) {
-			camera_->SetTarget(player_->GetWorldTransform());
+		if (player_->GetWorldTransform()->scale_.x == 1.0f) {
+			//camera_->SetTarget(player_->GetWorldTransform());
+			player_->SetDisplayUI(true, Player::UI::kScore);
+			player_->SetDisplayUI(true, Player::UI::kReticle);
 		}
 	}
 	else {
@@ -285,15 +287,29 @@ void StageScene::Update()
 			
 		}
 		else if (!isClear_) {
-			time_ += 1.0f / 30.0f;
+			if (player_->Result()) {
+				time_ += 1.0f / 30.0f;
+				time_ = std::clamp(time_, 0.0f, 1.0f);
+				camera_->SetTranslate(Lerp(cameraPos_, { cameraPos_.x, endPos_.y, -60.0f }, time_));
+				if (time_ == 1.0f) {
+					isClear_ = true;
+					time_ = 0.0f;
+					cameraPos_ = camera_->GetTranslate();
+					RenderTexture::GetInstance()->SelectPostEffect(PostEffects::kRadialBlur, true);
+				}
+			}
+			
+			/*time_ += 1.0f / 30.0f;
 			time_ = std::clamp(time_, 0.0f, 1.0f);
 			camera_->SetTranslate(Lerp(cameraPos_, { cameraPos_.x, endPos_.y, -60.0f }, time_));
 			if (time_ == 1.0f) {
-				isClear_ = true;
-				time_ = 0.0f;
-				cameraPos_ = camera_->GetTranslate();
-				RenderTexture::GetInstance()->SelectPostEffect(PostEffects::kRadialBlur, true);
-			}
+				if (player_->Result()) {
+					isClear_ = true;
+					time_ = 0.0f;
+					cameraPos_ = camera_->GetTranslate();
+					RenderTexture::GetInstance()->SelectPostEffect(PostEffects::kRadialBlur, true);
+				}
+			}*/
 
 		}
 		else {
@@ -301,6 +317,7 @@ void StageScene::Update()
 			time_ = std::clamp(time_, 0.0f, 1.0f);
 			camera_->SetTranslate(Lerp(cameraPos_, endPos_, time_));
 			Tradition::GetInstance()->Update();
+			
 
 			if (!Tradition::GetInstance()->GetIn()) {
 				CommonData::GetInstance()->isGoal_ = false;

@@ -20,10 +20,7 @@ void ObjectManager::Draw()
 	
 	for (auto& object : objects_) {
 		if (object->GetModel() != nullptr) {
-			if (object->GetModel()->GetModelName() == "GoalPost") {
-				object->Draw();
-			}
-			else if (object->GetModel()->GetModelName() != "startBox") {
+			if (object->GetModel()->GetModelName() != "startBox") {
 				object->Draw();
 			}
 		}

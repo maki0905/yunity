@@ -10,16 +10,6 @@ class GameManager : public Framework
 {
 public:
 	/// <summary>
-	/// コンストラクタ
-	/// </summary>
-	GameManager();
-
-	/// <summary>
-	/// デストラクタ
-	/// </summary>
-	~GameManager();
-
-	/// <summary>
 	/// 初期化
 	/// </summary>
 	void Initialize() override;
@@ -38,12 +28,6 @@ public:
 	/// 描画
 	/// </summary>
 	void Draw() override;
-
-	/// <summary>
-	/// ゲームループ
-	/// </summary>
-	void Run();
-private:
 	
 };
 

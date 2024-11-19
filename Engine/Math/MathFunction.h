@@ -464,6 +464,14 @@ float ConvertToRadians(float degree);
 /// <returns></returns>
 float LerpShortAngle(float a, float b, float t);
 
+/// <summary>
+/// 線形補間
+/// </summary>
+/// <param name="v1"></param>
+/// <param name="v2"></param>
+/// <param name="t"></param>
+/// <returns></returns>
+Vector2 Lerp(const Vector2& v1, const Vector2& v2, float t);
 
 /// <summary>
 /// 線形補間

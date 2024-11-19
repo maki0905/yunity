@@ -37,6 +37,7 @@ public:
 	bool isGoal_;
 	int stageNum_ = -1;
 	Scene scene_;
+	uint32_t hiScore_ = 0;
 private:
 	CommonData() = default;
 	~CommonData() = default;
