@@ -19,18 +19,28 @@
 /*
 * @brief オブジェクトマネージャークラス
 */
-class ObjectManager {
-public:
-	/// <summary>
-	/// インスタンス取得
-	/// </summary>
-	/// <returns></returns>
-	//static ObjectManager* GetInstance();
+class BaseObjectManager {
+protected:
+	struct JointData {
+		Object3D* objA;
+		Object3D* objB;
+		LevelData::ObjectData objectDataA;
+		LevelData::ObjectData objectDataB;
+	};
 
+	struct SpringJointLine {
+		Object3D* objA;
+		Object3D* objB;
+		std::unique_ptr<PrimitiveDrawer> line;
+		bool isActive_;
+	};
+
+public:
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Initialize();
+	/// <param name="camera">カメラ</param>
+	void Initialize(Camera* camera = nullptr);
 
 	/// <summary>
 	/// 更新
@@ -50,7 +60,7 @@ public:
 	/// <param name="fileName"></param>
 	/// <param name="camera"></param>
 	/// <param name="world"></param>
-	void Load(const std::string& fileName, Camera* camera, World* world);
+	virtual void Load(const std::string& fileName, Camera* camera, World* world);
 
 	/// <summary>
 	/// 指定オブジェクト群取得
@@ -101,7 +111,13 @@ public:
 	/// <param name="index"></param>
 	/// <param name="active"></param>
 	//void SetActive(const std::string& fileName, uint32_t index, bool active);
-private:
+
+protected:
+	/// <summary>
+	/// 基本オブジェクト生成
+	/// </summary>
+	void CreateBasicObject(const LevelData::ObjectData& objectData, Camera* camera, World* world);
+
 	/// <summary>
 	/// 共通データ初期化
 	/// </summary>
@@ -122,9 +138,12 @@ private:
 	/// <param name="objectData"></param>
 	/// <param name="newObject"></param>
 	void InitializePhysics(const LevelData::ObjectData& objectData, Object3D* newObject);
-private:
+
+protected:
 	std::vector<std::unique_ptr<Object3D>> objects_;
 	std::vector<std::unique_ptr<Joint>> joints_;
 	World* world_;
-
+	static const uint32_t jointNumber_ = 100;
+	std::array<JointData, jointNumber_> jointData_;
+	std::array<SpringJointLine, jointNumber_> springLines_;
 };

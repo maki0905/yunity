@@ -142,6 +142,25 @@ void LevelEditor::LoadObjectRecursive(LevelData* levelData, nlohmann::json deser
 				nlohmann::json& joint = object["joint"];
 				objectData.jointPair_ = (uint32_t)joint["joints"];
 				objectData.jointType_ = static_cast<JointType>((uint32_t)joint["type"]);
+
+				// springJoint
+				for (uint32_t i = 0; i < 3; i++) {
+					objectData.springEnabled_[i] = (int)joint["springEnabled"][i];
+					objectData.equilibriumPoint_[i] = (float)joint["equilibriumPoint"][i];
+					objectData.stiffness_[i] = (float)joint["stiffness"][i];
+					objectData.dampingCoefficient_[i] = (float)joint["dampingCoefficient"][i];
+				}
+
+				// pulleyJoint
+				objectData.groundAnchor_.x = (float)joint["groundAnchor"][0];
+				objectData.groundAnchor_.y = (float)joint["groundAnchor"][1];
+				objectData.groundAnchor_.z = (float)joint["groundAnchor"][2];
+				objectData.anchor_.x = (float)joint["anchor"][0];
+				objectData.anchor_.y = (float)joint["anchor"][1];
+				objectData.anchor_.z = (float)joint["anchor"][2];
+				objectData.ratio_ = (float)joint["ratio"];
+
+				
 			}
 
 			if (object.contains("tag")) {

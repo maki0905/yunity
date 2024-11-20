@@ -360,7 +360,7 @@
     <ClCompile Include="Engine\Base\Object3D.cpp">
       <Filter>Engine\base\Object</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Manager\ObjectManager.cpp">
+    <ClCompile Include="Engine\Manager\BaseObjectManager.cpp">
       <Filter>Engine\base\Object</Filter>
     </ClCompile>
     <ClCompile Include="Additional\TV.cpp">
@@ -433,6 +433,9 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Physics\FixedJoint.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Additional\ObjectManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -701,7 +704,7 @@
     <ClInclude Include="Engine\Core\RenderTexture.h">
       <Filter>Engine\base\RenderTexture</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Manager\ObjectManager.h">
+    <ClInclude Include="Engine\Manager\BaseObjectManager.h">
       <Filter>Engine\base\Object</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Base\Object3D.h">
@@ -759,6 +762,9 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Core\ResourceLeakChecker.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Additional\ObjectManager.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>

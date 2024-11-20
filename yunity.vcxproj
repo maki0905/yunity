@@ -109,6 +109,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
   <ItemGroup>
     <ClCompile Include="Additional\Cloth.cpp" />
     <ClCompile Include="Additional\Coin.cpp" />
+    <ClCompile Include="Additional\ObjectManager.cpp" />
     <ClCompile Include="Additional\Score.cpp" />
     <ClCompile Include="Additional\SpringBoard.cpp" />
     <ClCompile Include="Additional\StartObject.cpp" />
@@ -142,7 +143,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Engine\Base\LevelEditor.cpp" />
     <ClCompile Include="Engine\Math\OBB.cpp" />
     <ClCompile Include="Engine\Base\Object3D.cpp" />
-    <ClCompile Include="Engine\Manager\ObjectManager.cpp" />
+    <ClCompile Include="Engine\Manager\BaseObjectManager.cpp" />
     <ClCompile Include="Engine\Physics\Body.cpp" />
     <ClCompile Include="Engine\Physics\SpringJoint.cpp" />
     <ClCompile Include="Engine\Physics\World.cpp" />
@@ -199,6 +200,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Additional\Cloth.h" />
     <ClInclude Include="Additional\Coin.h" />
     <ClInclude Include="Additional\EndObject.h" />
+    <ClInclude Include="Additional\ObjectManager.h" />
     <ClInclude Include="Additional\Score.h" />
     <ClInclude Include="Additional\SpringBoard.h" />
     <ClInclude Include="Additional\StartObject.h" />
@@ -240,7 +242,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\Core\BackBuffer.h" />
     <ClInclude Include="Engine\Math\Capsule.h" />
     <ClInclude Include="Engine\Base\Object3D.h" />
-    <ClInclude Include="Engine\Manager\ObjectManager.h" />
+    <ClInclude Include="Engine\Manager\BaseObjectManager.h" />
     <ClInclude Include="Engine\Physics\Body.h" />
     <ClInclude Include="Engine\Physics\SpringJoint.h" />
     <ClInclude Include="Engine\Physics\RayCast.h" />

@@ -49,7 +49,7 @@ public:
 	void DrawFront() override;
 
 private:
-	/*std::unique_ptr<Camera>*/ Camera* camera_;
+	Camera* camera_;
 
 	XINPUT_STATE pad_;
 	XINPUT_STATE prePad_;
@@ -67,7 +67,6 @@ private:
 	float amplitude = 0.5f;
 	float wavelength = 0.0f;
 	bool isStart_ = false;
-	//std::unique_ptr<Model> model_ = nullptr;
 	std::unique_ptr<Model> models_[3];
 	WorldTransform TVworldTransform_[3];
 	bool isActiveTV_[3];

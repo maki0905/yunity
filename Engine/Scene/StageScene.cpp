@@ -46,7 +46,7 @@ void StageScene::Initialize()
 
 	stageName_ = CommonData::GetInstance()->GetStageName();
 	objectManager_ = std::make_unique<ObjectManager>();
-	objectManager_->Initialize();
+	objectManager_->Initialize(camera_);
 	objectManager_->Load(stageName_, camera_, world_.get());
 	objectManager_->SetDirectionalLight(l);
 	startWT_.translation_ = objectManager_->GetPos("startBox");
@@ -161,10 +161,9 @@ void StageScene::Update()
 			inStage_ = true;
 		}
 		Tradition::GetInstance()->Update();
-		camera_->SetOffset(Lerp({0.0f, 0.0f, 0.0f}/*startPos_*/, { 0.0/*startPos_.x*/, 5.0f, -50.0f }, std::clamp(1.0f - Tradition::GetInstance()->GetTime(), 0.0f, 1.0f)));
+		camera_->SetOffset(Lerp({0.0f, 0.0f, 0.0f}, { 0.0, 5.0f, -50.0f }, std::clamp(1.0f - Tradition::GetInstance()->GetTime(), 0.0f, 1.0f)));
 		player_->SetScale(Lerp({ 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f, 1.0f }, std::clamp(1.0f - Tradition::GetInstance()->GetTime(), 0.0f, 1.0f)));
 		if (player_->GetWorldTransform()->scale_.x == 1.0f) {
-			//camera_->SetTarget(player_->GetWorldTransform());
 			player_->SetDisplayUI(true, Player::UI::kScore);
 			player_->SetDisplayUI(true, Player::UI::kReticle);
 		}
