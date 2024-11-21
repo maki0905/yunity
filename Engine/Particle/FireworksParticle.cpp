@@ -4,6 +4,7 @@ void FireworksParticle::Initialize(const Vector3& position)
 {
 	isActive_ = true;
 	particleDrawer_.reset(ParticleDrawer::Create("circle.png"));
+	particleDrawer_->Initialize("circle.png");
 	particleDrawer_->SetCamera(camera_);
 	particles_.clear();
 
@@ -14,37 +15,37 @@ void FireworksParticle::Initialize(const Vector3& position)
 		particle->particleForCPU.color = { rng.NextFloatRange(0.0f, 1.0f),rng.NextFloatRange(0.0f, 1.0f),rng.NextFloatRange(0.0f, 1.0f), 1.0f };
 		particle->lifeTime = 5.0f;
 		particles_.push_back(particle);*/
-		Particle* particle = new Particle();
-		particle->transform.translate = position;
+		Particle particle;
+		particle.transform.translate = position;
 		/*particle->velocity = { 
 			float(0.01f * cosf((36.0f * float(i)) * std::numbers::pi_v<float> / 180.0f)) - 0.01f * sinf((36.0f * float(i)) * std::numbers::pi_v<float> / 180.0f)), 
 			float(0.01f * sinf((36.0f * float(i)) * std::numbers::pi_v<float> / 180.0f)) + 0.01f * cosf((36.0f * float(i)) * std::numbers::pi_v<float> / 180.0f)), 
 			0.0f 
 		};*/
 
-		particle->velocity = { 
+		particle.velocity = { 
 			float(0.05f * std::cosf(36.0f * i * std::numbers::pi_v<float> / 180.0f) - 0.05f * std::sinf(36.0f * i * std::numbers::pi_v<float> / 180.0f)),
 			float(0.05f * std::sinf(36.0f * i * std::numbers::pi_v<float> / 180.0f) + 0.05f * std::cosf(36.0f * i * std::numbers::pi_v<float> / 180.0f)),
 			0.0f 
 		};
-		particle->particleForCPU.color = { rng.NextFloatRange(0.0f, 1.0f), rng.NextFloatRange(0.0f, 1.0f) , rng.NextFloatRange(0.0f, 1.0f) , 1.0f };
-		particle->lifeTime = 5.0f;
+		particle.particleForCPU.color = { rng.NextFloatRange(0.0f, 1.0f), rng.NextFloatRange(0.0f, 1.0f) , rng.NextFloatRange(0.0f, 1.0f) , 1.0f };
+		particle.lifeTime = 5.0f;
 		particles_.push_back(particle);
 	}
 }
 
-void FireworksParticle::Peculiar()
+void FireworksParticle::Update()
 {
 	for (auto& particle : particles_) {
-		particle->transform.translate = Add(particle->transform.translate, particle->velocity);
-		particle->particleForCPU.color.w = 1.0f - (particle->currentTime / particle->lifeTime);
-		particle->BillboardMatrix(*camera_);
+		particle.transform.translate = Add(particle.transform.translate, particle.velocity);
+		particle.particleForCPU.color.w = 1.0f - (particle.currentTime / particle.lifeTime);
+		particle.BillboardMatrix(*camera_);
 	}
-
+	BaseParticle::Update();
 }
 
-void FireworksParticle::Draw()
-{
-	particleDrawer_->Draw(particles_);
-}
 
+//void FireworksParticle::Draw()
+//{
+//	particleDrawer_->Draw(particles_);
+//}

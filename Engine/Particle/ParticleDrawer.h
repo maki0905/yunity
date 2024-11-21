@@ -72,7 +72,7 @@ public:
 	/// 3Dモデル生成
 	/// </summary>
 	/// <returns></returns>
-	static ParticleDrawer* Create(const std::string& modelname);
+	static ParticleDrawer* Create(const std::string& filename);
 
 	/// <summary>
 	/// グラフィックスパイプライン生成
@@ -86,7 +86,7 @@ public:
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Initialize(const std::string& modelname);
+	void Initialize(const std::string& filename = nullptr);
 
 	/// <summary>
 	/// 描画
@@ -94,12 +94,14 @@ public:
 	/// <param name="worldTransform">ワールドトランスフォーム</param>
 	/// <param name="viewProjection">ビュープロジェクション</param>
 	/// <param name="textureHandle">テクスチャハンドル</param>
-	void Draw(std::list<Particle*> particles);
+	void Draw(std::list<Particle> particles);
 
 	Vector4 GetMatrial() { return materialData_->color; }
 
 	void SetCamera(Camera* camera) { camera_ = camera; }
 	void SetMaterial(const Vector4& color);
+
+	void SetTextuer(const std::string& filename) { textureHandle_ = TextureManager::Load(filename); }
 
 private:
 

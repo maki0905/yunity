@@ -39,10 +39,12 @@ void GameManager::Draw()
 #pragma region 3D描画
 	skybox_->PreDraw(DirectXCore::GetInstance()->GetCommandList());
 	model_->PreDraw(DirectXCore::GetInstance()->GetCommandList());
+	particleDrawer_->PreDraw(DirectXCore::GetInstance()->GetCommandList());
 	primitive_->PreDraw(DirectXCore::GetInstance()->GetCommandList());
 	// 描画
 	SceneManager::GetInstance()->Draw3D();
 	primitive_->PostDraw();
+	particleDrawer_->PostDraw();
 	model_->PostDraw();
 	skybox_->PostDraw();
 #pragma endregion

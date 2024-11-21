@@ -18,14 +18,17 @@ void Framework::Initialize()
 	// Input
 	Input::GetInstance()->Initialize();
 
-
+	// モデルマネージャー
 	ModelManager::GetInstance()->Initialize();
 
+	// モデル
 	model_ = std::make_unique<Model>();
 
+	// スプライト
 	sprite_ = std::make_unique<Sprite>();
 	sprite_->StaticInitialize();
 
+	// 基本形状
 	primitive_ = std::make_unique<PrimitiveDrawer>();
 	primitive_->StaticInitialize();
 
@@ -33,14 +36,22 @@ void Framework::Initialize()
 	TextureManager::GetInstance()->Initialize();
 	TextureManager::Load("white1x1.png");
 
+	// オーディオ
 	Audio::GetInstance()->Initialize();
 
+	// シーンマネージャー
 	SceneManager::GetInstance()->Initialize();
 
+	// CSV
 	CSV::GetInstance()->Initialize();
 
+	// Skybox
 	skybox_ = std::make_unique<SkyBox>();
 	skybox_->StaticInitialize();
+
+	// パーティクル
+	particleDrawer_ = std::make_unique<ParticleDrawer>();
+	particleDrawer_->StaticInitialize();
 
 #pragma endregion
 

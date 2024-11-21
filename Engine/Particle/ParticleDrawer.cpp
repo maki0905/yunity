@@ -122,18 +122,22 @@ void ParticleDrawer::InitializeGraphicsPipeline()
 }
 
 
-void ParticleDrawer::Initialize(const std::string& modelname)
+void ParticleDrawer::Initialize(const std::string& filename)
 {
 	CreateMesh();
-	textureHandle_ = TextureManager::Load(modelname);
+	if (filename.size() != 0) {
+		textureHandle_ = TextureManager::Load(filename);
+	}
 	CreateSRV();
 	InitializeMaterial();
 }
 
-void ParticleDrawer::Draw(/*WorldTransform* worldTransform,*/std::list<Particle*> particles)
+void ParticleDrawer::Draw(std::list<Particle> particles)
 {
 	assert(device_);
 	assert(commandList_);
+
+	GraphicsPipelineManager::GetInstance()->SetCommandList(commandList_, PipelineType::kParticle, BlendModeType::kNone);
 
 	uint32_t numInstance = 0;
 	
@@ -149,8 +153,9 @@ void ParticleDrawer::Draw(/*WorldTransform* worldTransform,*/std::list<Particle*
 	//	}*/
 	//}
 
-	for (uint32_t index = 0; Particle* particle : particles) {
-		instancingData_[index] = particle->particleForCPU;
+	for (uint32_t index = 0; auto& particle : particles) {
+		instancingData_[index].world = particle.particleForCPU.world;
+		instancingData_[index].color = particle.particleForCPU.color;
 		//instancingData_[index] = particle->color;
 		index++;
 		++numInstance;

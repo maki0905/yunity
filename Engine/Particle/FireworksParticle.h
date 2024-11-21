@@ -6,13 +6,9 @@
 
 class FireworksParticle : public BaseParticle {
 public:
-	void Initialize(const Vector3& position) override;
-	void Peculiar() override;
-	void Draw() override;
-
-
-
+	void Initialize(const Vector3& position);
+	void Update() override;
+	//void Draw() override;
 private:
 	Random::RandomNumberGenerator rng;
-	std::unique_ptr<ParticleDrawer> particleDrawer_;
 };

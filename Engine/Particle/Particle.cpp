@@ -12,8 +12,6 @@ void Particle::AffineMatrix()
 
 void Particle::BillboardMatrix(const Camera& camera)
 {
-	//Matrix4x4 backToFrontMatrix = MakeRotateYMatrix(std::numbers::pi_v<float>);
-	//Matrix4x4 billboardMatrix = Multiply(backToFrontMatrix,camera.matView);
 	Matrix4x4 billboardMatrix = Inverse(camera.GetViewMatrix());
 	billboardMatrix.m[3][0] = 0.0f;
 	billboardMatrix.m[3][1] = 0.0f;

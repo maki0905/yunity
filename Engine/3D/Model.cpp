@@ -115,7 +115,7 @@ void Model::Draw(const WorldTransform& worldTransform, uint32_t textureHandle)
 	}
 }
 
-void Model::Draw(const WorldTransform& worldTransform/*, const Camera& camera*/)
+void Model::Draw(const WorldTransform& worldTransform)
 {
 	assert(commandList_);
 	assert(worldTransform.constBuff_.Get());

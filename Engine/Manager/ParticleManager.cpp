@@ -19,11 +19,11 @@ void ParticleManager::Update()
 	}
 
 	for (std::list<BaseParticle*>::iterator particleIterator = particles_.begin(); particleIterator != particles_.end();) {
-		if (!(*particleIterator)->isActive_) {
+		if (!(*particleIterator)->GetIsActive()) {
 			particleIterator = particles_.erase(particleIterator);
 			continue;
 		}
-		(*particleIterator)->Updata();
+		(*particleIterator)->Update();
 		// 次のイテレーターへ
 		++particleIterator;
 	}

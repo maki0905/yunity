@@ -73,11 +73,23 @@ void TitleScene::Initialize()
 	isMoveCamera[0] = false;
 	isMoveCamera[1] = false;
 	moveCameraTimer_ = 0.0f;
+
+	pflag_ = false;
+	particle_ = std::make_unique<FireworksParticle>();
+	particle_->SetCamera(camera_);
+	particle_->Initialize({ 0.0f, 5.0f, 0.0f });
 }
 
 void TitleScene::Update()
 {
 	prePad_ = pad_;
+
+	if (Input::GetInstance()->TriggerKey(DIK_0)) {
+		pflag_ = true;
+	}
+	if (pflag_) {
+		particle_->Update();
+	}
 
 	if (player_->GetSelect()) {
 		if (preNum_ != CommonData::GetInstance()->stageNum_) {
@@ -244,6 +256,10 @@ void TitleScene::Draw3D()
 		if (isActiveTV_[index]) {
 			models_[index]->Draw(TVworldTransform_[index], textureTV_[index]);
 		}
+	}
+
+	if (pflag_) {
+		particle_->Draw();
 	}
 }
 

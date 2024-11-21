@@ -77,4 +77,5 @@ protected:
 	std::unique_ptr<Sprite> sprite_ = nullptr;
 	std::unique_ptr<PrimitiveDrawer> primitive_ = nullptr;
 	std::unique_ptr<SkyBox> skybox_ = nullptr;
+	std::unique_ptr<ParticleDrawer> particleDrawer_ = nullptr;
 };
