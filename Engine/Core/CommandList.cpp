@@ -9,13 +9,13 @@
 #pragma comment(lib, "d3d12")
 #pragma comment(lib, "dxgi.lib")
 
-void CommandList::Create()
+void yunity::CommandList::Create()
 {
 	CreateAllocator();
 	CreateList();
 }
 
-void CommandList::BarrierChange(IDXGISwapChain4* swapChain, D3D12_RESOURCE_STATES before, D3D12_RESOURCE_STATES after)
+void yunity::CommandList::BarrierChange(IDXGISwapChain4* swapChain, D3D12_RESOURCE_STATES before, D3D12_RESOURCE_STATES after)
 {
 	HRESULT result = S_FALSE;
 
@@ -39,7 +39,7 @@ void CommandList::BarrierChange(IDXGISwapChain4* swapChain, D3D12_RESOURCE_STATE
 
 }
 
-void CommandList::BarrierChange(ID3D12Resource* resource, D3D12_RESOURCE_STATES before, D3D12_RESOURCE_STATES after)
+void yunity::CommandList::BarrierChange(ID3D12Resource* resource, D3D12_RESOURCE_STATES before, D3D12_RESOURCE_STATES after)
 {
 	// リソースバリアを変更
 	D3D12_RESOURCE_BARRIER barrier{};
@@ -49,14 +49,14 @@ void CommandList::BarrierChange(ID3D12Resource* resource, D3D12_RESOURCE_STATES 
 	commandList_->ResourceBarrier(1, &barrier);
 }
 
-void CommandList::CommandClear()
+void yunity::CommandList::CommandClear()
 {
 	commandAllocator_->Reset();
 	commandList_->Reset(commandAllocator_.Get(), nullptr);
 
 }
 
-void CommandList::OMSetRenderTargets(const D3D12_CPU_DESCRIPTOR_HANDLE* cpuDescHandleRTV, ID3D12DescriptorHeap* dsvHeap)
+void yunity::CommandList::OMSetRenderTargets(const D3D12_CPU_DESCRIPTOR_HANDLE* cpuDescHandleRTV, ID3D12DescriptorHeap* dsvHeap)
 {
 	if (dsvHeap) {
 		// 深度ステンシルビュー用デスクリプタヒープのハンドルを取得
@@ -71,13 +71,13 @@ void CommandList::OMSetRenderTargets(const D3D12_CPU_DESCRIPTOR_HANDLE* cpuDescH
 	}
 }
 
-void CommandList::OMSetRenderTargets(const D3D12_CPU_DESCRIPTOR_HANDLE* cpuDescHandleRTV, D3D12_CPU_DESCRIPTOR_HANDLE* dsvHandle)
+void yunity::CommandList::OMSetRenderTargets(const D3D12_CPU_DESCRIPTOR_HANDLE* cpuDescHandleRTV, D3D12_CPU_DESCRIPTOR_HANDLE* dsvHandle)
 {
 	// レンダーターゲットをセット
 	commandList_->OMSetRenderTargets(1, cpuDescHandleRTV, false, dsvHandle);
 }
 
-void CommandList::ClearRenderTargetView(const Vector4 clearColorValue, const D3D12_CPU_DESCRIPTOR_HANDLE cpuDescHandleRTV)
+void yunity::CommandList::ClearRenderTargetView(const Vector4 clearColorValue, const D3D12_CPU_DESCRIPTOR_HANDLE cpuDescHandleRTV)
 {
 	// 全画面クリア        Red   Green Blue  Alpha
 	//float clearColor[] = { 0.1f, 0.25f, 0.5f, 0.0f }; // 青っぽい色
@@ -85,7 +85,7 @@ void CommandList::ClearRenderTargetView(const Vector4 clearColorValue, const D3D
 	commandList_->ClearRenderTargetView(cpuDescHandleRTV, clearColor, 0, nullptr);
 }
 
-void CommandList::ClearDepthStencilView(ID3D12DescriptorHeap* dsvHeap)
+void yunity::CommandList::ClearDepthStencilView(ID3D12DescriptorHeap* dsvHeap)
 {
 	// 深度ステンシルビュー用デスクリプタヒープのハンドルを取得
 	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle =
@@ -95,7 +95,7 @@ void CommandList::ClearDepthStencilView(ID3D12DescriptorHeap* dsvHeap)
 }
 
 
-void CommandList::RSSetViewports(float width, float height)
+void yunity::CommandList::RSSetViewports(float width, float height)
 {
 	D3D12_VIEWPORT viewport =
 		D3D12_VIEWPORT(0.0f, 0.0f, width, height, D3D12_MIN_DEPTH, D3D12_MAX_DEPTH);
@@ -103,27 +103,27 @@ void CommandList::RSSetViewports(float width, float height)
 
 }
 
-void CommandList::RSSetScissorRects(UINT width, UINT height)
+void yunity::CommandList::RSSetScissorRects(UINT width, UINT height)
 {
 	D3D12_RECT rect = D3D12_RECT(0, 0, width, height);
 	commandList_->RSSetScissorRects(1, &rect);
 
 }
 
-ID3D12CommandList* CommandList::GetCommandLists()
+ID3D12CommandList* yunity::CommandList::GetCommandLists()
 {
 	ID3D12CommandList* cmdLists[] = { commandList_.Get()};
 	return *cmdLists;
 }
 
-void CommandList::CreateAllocator()
+void yunity::CommandList::CreateAllocator()
 {
 	HRESULT result = S_FALSE;
 	result = Device::GetInstance()->GetDevice()->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&commandAllocator_));
 	assert(SUCCEEDED(result));
 }
 
-void CommandList::CreateList()
+void yunity::CommandList::CreateList()
 {
 	HRESULT result = S_FALSE;
 	result = Device::GetInstance()->GetDevice()->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, commandAllocator_.Get(), nullptr, IID_PPV_ARGS(&commandList_));

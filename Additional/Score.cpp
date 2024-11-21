@@ -5,21 +5,21 @@
 
 void Score::Initialize()
 {
-	scoreBackground_ = std::make_unique<Sprite>();
-	scoreBackground_.reset(Sprite::Create(TextureManager::GetInstance()->Load("ScoreBack.png"), { 84.0f, 84.0f }));
+	scoreBackground_ = std::make_unique<yunity::Sprite>();
+	scoreBackground_.reset(yunity::Sprite::Create(yunity::TextureManager::GetInstance()->Load("ScoreBack.png"), { 84.0f, 84.0f }));
 	scoreBackground_->SetAnchorPoint({ 0.5f, 0.5f });
 	scoreBackground_->SetSize({ 120.0f, 120.0f });
 
-	hiScore_ = std::make_unique<Sprite>();
-	hiScore_.reset(Sprite::Create(TextureManager::GetInstance()->Load("hiscore.png"), { 640.0f, 360.0f }));
+	hiScore_ = std::make_unique<yunity::Sprite>();
+	hiScore_.reset(yunity::Sprite::Create(yunity::TextureManager::GetInstance()->Load("hiscore.png"), { 640.0f, 360.0f }));
 	hiScore_->SetAnchorPoint({ 0.5f, 0.5f });
 	hiScore_->SetSize({ 120.0f, 30.0f });
 	isHiScore_ = false;
 
 	//scoreBackground_
 	for (uint32_t index = 0; index < 4; index++) {
-		scoreNumber_[index] = std::make_unique<Sprite>();
-		scoreNumber_[index].reset(Sprite::Create(TextureManager::GetInstance()->Load("numberWhite.png"), { 84.0f, 84.0f }));
+		scoreNumber_[index] = std::make_unique<yunity::Sprite>();
+		scoreNumber_[index].reset(yunity::Sprite::Create(yunity::TextureManager::GetInstance()->Load("numberWhite.png"), { 84.0f, 84.0f }));
 		scoreNumber_[index]->SetAnchorPoint({ 0.5f, 0.5f });
 		scoreNumber_[index]->SetSize({ 44.0f, 44.0f });
 		scoreNumber_[index]->SetTextureRect({ 0.0f,384.0f }, { 64.0f, 64.0f });

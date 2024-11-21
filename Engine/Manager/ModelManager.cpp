@@ -6,20 +6,20 @@
 
 #include "MathFunction.h"
 
-ModelManager* ModelManager::GetInstance()
+yunity::ModelManager* yunity::ModelManager::GetInstance()
 {
 	static ModelManager instance;
 	return &instance;
 }
 
-void ModelManager::Initialize()
+void yunity::ModelManager::Initialize()
 {
 	modelDataStorage_.clear();
 	animationDataStorage_.clear();
 	models_.clear();
 }
 
-void ModelManager::Update()
+void yunity::ModelManager::Update()
 {
 	for (auto& model : models_) {
 		if (model->IsAnimation()) {
@@ -28,12 +28,12 @@ void ModelManager::Update()
 	}
 }
 
-void ModelManager::Reset()
+void yunity::ModelManager::Reset()
 {
 	models_.clear();
 }
 
-void ModelManager::Take(Model* model)
+void yunity::ModelManager::Take(Model* model)
 {
 	for (std::list<Model*>::iterator iterator = models_.begin(); iterator != models_.end();) {
 		if (*iterator == model) {
@@ -44,7 +44,7 @@ void ModelManager::Take(Model* model)
 	}
 }
 
-Model* ModelManager::CreateModel(Format format, const std::string& folderName, const std::string& fileName, ModelType modelType)
+yunity::Model* yunity::ModelManager::CreateModel(Format format, const std::string& folderName, const std::string& fileName, ModelType modelType)
 {
 	Model* model = new Model();
 	std::string path = folderName;
@@ -60,13 +60,13 @@ Model* ModelManager::CreateModel(Format format, const std::string& folderName, c
 	return models_.back();
 }
 
-Model::ModelData& ModelManager::GetModelData(const std::string& modelName)
+yunity::Model::ModelData& yunity::ModelManager::GetModelData(const std::string& modelName)
 {
 	std::string path = modelName;
 	return modelDataStorage_[path];
 }
 
-Animation ModelManager::GetAnimation(Format format, const std::string& folderName, const std::string& fileName)
+Animation yunity::ModelManager::GetAnimation(Format format, const std::string& folderName, const std::string& fileName)
 {
 	std::string path = folderName + "/" + fileName;
 	auto itr = animationDataStorage_.find(path);
@@ -76,7 +76,7 @@ Animation ModelManager::GetAnimation(Format format, const std::string& folderNam
 	return animationDataStorage_[path];
 }
 
-Model::ModelData ModelManager::LoadModelFile(Format format, const std::string& folderName, const std::string& fileName)
+yunity::Model::ModelData yunity::ModelManager::LoadModelFile(Format format, const std::string& folderName, const std::string& fileName)
 {
 	Model::ModelData modelData;
 
@@ -152,7 +152,7 @@ Model::ModelData ModelManager::LoadModelFile(Format format, const std::string& f
 	return modelData;
 }
 
-Model::Node ModelManager::ReadNode(aiNode* node)
+yunity::Model::Node yunity::ModelManager::ReadNode(aiNode* node)
 {
 	Model::Node result;
 	aiVector3D scale;
@@ -174,7 +174,7 @@ Model::Node ModelManager::ReadNode(aiNode* node)
 	return result;
 }
 
-Model::MaterialData ModelManager::LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& filename)
+yunity::Model::MaterialData yunity::ModelManager::LoadMaterialTemplateFile(const std::string& directoryPath, const std::string& filename)
 {
 	// 1. 変数の宣言
 	Model::MaterialData materialData;

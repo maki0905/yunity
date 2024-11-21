@@ -8,15 +8,18 @@
 #include "Model.h"
 #include "WorldTransform.h"
 #include "Object3D.h"
-#include "Sprite.h"
 #include "Score.h"
 #include "SpringJoint.h"
 #include "FixedJoint.h"
 
+namespace yunity {
+	class Sprite;
+}
+
 /*
 * @brief プレイヤークラス
 */
-class Player : public Object3D
+class Player : public yunity::Object3D
 {
 public:
 	enum class UI {
@@ -30,7 +33,7 @@ public:
 	/// </summary>
 	/// <param name="camera">カメラ</param>
 	/// <param name="world">所属する物理空間</param>
-	void Initialize(Camera* camera, World* world);
+	void Initialize(yunity::Camera* camera, yunity::World* world);
 
 	/// <summary>
 	/// 更新
@@ -103,7 +106,7 @@ private:
 	bool isHit_;
 	bool isActive_;
 
-	std::unique_ptr<PrimitiveDrawer> line_;
+	std::unique_ptr<yunity::PrimitiveDrawer> line_;
 	Vector3 point_;
 	bool isWire_;
 
@@ -111,14 +114,14 @@ private:
 
 	bool isFloot_;
 
-	std::unique_ptr<Model> reticle3D_;
+	std::unique_ptr<yunity::Model> reticle3D_;
 	//WorldTransform reticle3DWorldTransform_;
-	std::unique_ptr<Model> apex_;
-	WorldTransform apexWorldTransform_;
+	std::unique_ptr<yunity::Model> apex_;
+	yunity::WorldTransform apexWorldTransform_;
 
 
-	std::unique_ptr<Sprite> reticle_;
-	WorldTransform reticleWorldTransform_;
+	std::unique_ptr<yunity::Sprite> reticle_;
+	yunity::WorldTransform reticleWorldTransform_;
 	uint32_t onReticle_;
 	uint32_t offReticle_;
 
@@ -136,11 +139,11 @@ private:
 	// 制限速度
 	float limitSpeed_ = 20.0f;
 
-	std::unique_ptr<SpringJoint> springJoint_;
-	std::unique_ptr<Body> apexBody_;
+	std::unique_ptr<yunity::SpringJoint> springJoint_;
+	std::unique_ptr<yunity::Body> apexBody_;
 
-	std::unique_ptr<FixedJoint> fixedJoint_;
-	std::unique_ptr<FixedJoint> playerFixedJoint_;
+	std::unique_ptr<yunity::FixedJoint> fixedJoint_;
+	std::unique_ptr<yunity::FixedJoint> playerFixedJoint_;
 
 
 };

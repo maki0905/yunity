@@ -4,7 +4,7 @@
 /*
 * @brief 動く床のクラス
 */
-class MoveFloor : public Object3D
+class MoveFloor : public yunity::Object3D
 {
 public:
 	/// <summary>

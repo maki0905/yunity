@@ -11,18 +11,18 @@
 void TitleScene::Initialize()
 {
 	camera_ = CameraManager::GetInstance()->GetCamera();
-	world_ = std::make_unique<World>();
+	world_ = std::make_unique<yunity::World>();
 	world_->Initialize({ 0.0f, -15.0, 0.0f });
 
-	bottonSprite_ = std::make_unique<Sprite>();
-	bottonSprite_.reset(Sprite::Create(TextureManager::GetInstance()->Load("ABotton.dds"), { 610.0f, 520.0f }));
-	bottonPushSprite_ = std::make_unique<Sprite>();
-	bottonPushSprite_.reset(Sprite::Create(TextureManager::GetInstance()->Load("ABottonPush.png"), { 610.0f, 520.0f }));
+	bottonSprite_ = std::make_unique<yunity::Sprite>();
+	bottonSprite_.reset(yunity::Sprite::Create(yunity::TextureManager::GetInstance()->Load("ABotton.dds"), { 610.0f, 520.0f }));
+	bottonPushSprite_ = std::make_unique<yunity::Sprite>();
+	bottonPushSprite_.reset(yunity::Sprite::Create(yunity::TextureManager::GetInstance()->Load("ABottonPush.png"), { 610.0f, 520.0f }));
 	time_ = 0;
 
-	model_ = std::make_unique<Model>();
-	model_.reset(ModelManager::GetInstance()->CreateModel(obj,/* ""*/"Signboard"));
-	Model::DirectionalLight l = { .color = {1.0f, 1.0f, 1.0f, 1.0f}, .direction = {1.0f, -1.0f, 0.0f}, .intensity= 1.0f };
+	model_ = std::make_unique<yunity::Model>();
+	model_.reset(yunity::ModelManager::GetInstance()->CreateModel(obj,/* ""*/"Signboard"));
+	yunity::Model::DirectionalLight l = { .color = {1.0f, 1.0f, 1.0f, 1.0f}, .direction = {1.0f, -1.0f, 0.0f}, .intensity= 1.0f };
 	model_->SetCamera(camera_);
 	model_->SetEnableLighting(true);
 	model_->SetDirectionalLight(l);
@@ -42,7 +42,7 @@ void TitleScene::Initialize()
 	objectManager_->SetDirectionalLight(l);
 
 	
-	skydome_ = std::make_unique<Skydome>();
+	skydome_ = std::make_unique<yunity::Skydome>();
 	skydome_->Initialize(camera_, { 5.0f, 5.0f, 5.0f });
 
 	CommonData::GetInstance()->stageNum_ = -1;
@@ -51,8 +51,8 @@ void TitleScene::Initialize()
 	isStart_ = false;
 
 	for (uint32_t index = 0; index < 3; index++) {
-		models_[index] = std::make_unique<Model>();
-		models_[index].reset(ModelManager::GetInstance()->CreateModel(obj, "TV"));
+		models_[index] = std::make_unique<yunity::Model>();
+		models_[index].reset(yunity::ModelManager::GetInstance()->CreateModel(obj, "TV"));
 		models_[index]->SetCamera(camera_);
 		models_[index]->SetEnableLighting(false);
 		TVworldTransform_[index].Initialize();
@@ -63,9 +63,9 @@ void TitleScene::Initialize()
 		grow_[index] = { false, 0.0f };
 		shrink_[index] = { false, 0.0f };
 	}
-	textureTV_[0] = TextureManager::Load("Models/TV/TV1.png");
-	textureTV_[1] = TextureManager::Load("Models/TV/TV2.png");
-	textureTV_[2] = TextureManager::Load("Models/TV/TV3.png");
+	textureTV_[0] = yunity::TextureManager::Load("Models/TV/TV1.png");
+	textureTV_[1] = yunity::TextureManager::Load("Models/TV/TV2.png");
+	textureTV_[2] = yunity::TextureManager::Load("Models/TV/TV3.png");
 
 	preNum_ = CommonData::GetInstance()->stageNum_;
 	camera_->SetTranslate({ 0, 10.0f, -50.0f });
@@ -84,7 +84,7 @@ void TitleScene::Update()
 {
 	prePad_ = pad_;
 
-	if (Input::GetInstance()->TriggerKey(DIK_0)) {
+	if (yunity::Input::GetInstance()->TriggerKey(DIK_0)) {
 		pflag_ = true;
 	}
 	if (pflag_) {
@@ -104,8 +104,8 @@ void TitleScene::Update()
 
 		isActiveTV_[CommonData::GetInstance()->stageNum_] = true;
 
-		if (Input::GetInstance()->IsControllerConnected()) {
-			if (Input::GetInstance()->GetJoystickState(0, pad_)) {
+		if (yunity::Input::GetInstance()->IsControllerConnected()) {
+			if (yunity::Input::GetInstance()->GetJoystickState(0, pad_)) {
 				if ((pad_.Gamepad.wButtons & XINPUT_GAMEPAD_A) && !(prePad_.Gamepad.wButtons & XINPUT_GAMEPAD_A)) {
 					if (!Tradition::GetInstance()->GetIsActive()) {
 						isMoveCamera[0] = true;
@@ -131,7 +131,7 @@ void TitleScene::Update()
 	}
 
 	if (!Tradition::GetInstance()->GetIsActive()) {
-		RenderTexture::GetInstance()->SelectPostEffect(PostEffects::kRadialBlur, false);
+		yunity::RenderTexture::GetInstance()->SelectPostEffect(yunity::PostEffects::kRadialBlur, false);
 		if (isStart_) {
 			player_->SetMass(2.0f);
 			player_->Update();
@@ -148,8 +148,8 @@ void TitleScene::Update()
 
 		}
 
-		if (Input::GetInstance()->IsControllerConnected()) {
-			if (Input::GetInstance()->GetJoystickState(0, pad_)) {
+		if (yunity::Input::GetInstance()->IsControllerConnected()) {
+			if (yunity::Input::GetInstance()->GetJoystickState(0, pad_)) {
 				if ((pad_.Gamepad.wButtons & XINPUT_GAMEPAD_A) && !(prePad_.Gamepad.wButtons & XINPUT_GAMEPAD_A)) {
 					isStart_ = true;
 				}
@@ -165,7 +165,7 @@ void TitleScene::Update()
 				moveCameraTimer_ = 0.0f;
 				isMoveCamera[0] = false;
 				oldCameraPos_ = camera_->GetTranslate();
-				RenderTexture::GetInstance()->SelectPostEffect(PostEffects::kRadialBlur, true);
+				yunity::RenderTexture::GetInstance()->SelectPostEffect(yunity::PostEffects::kRadialBlur, true);
 			}
 		}
 		else {
@@ -175,8 +175,8 @@ void TitleScene::Update()
 			Tradition::GetInstance()->Update();
 		}
 		if (!Tradition::GetInstance()->GetIn()) {
-			RenderTexture::GetInstance()->SelectPostEffect(PostEffects::kRadialBlur, false);
-			SceneManager::GetInstance()->ChangeScene("GAMESTAGE");
+			yunity::RenderTexture::GetInstance()->SelectPostEffect(yunity::PostEffects::kRadialBlur, false);
+			yunity::SceneManager::GetInstance()->ChangeScene("GAMESTAGE");
 		}
 	}
 

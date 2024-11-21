@@ -49,9 +49,9 @@ public:
 	void SetDisplayHiScore(bool flag) { isHiScore_ = flag; }
 
 private:
-	std::unique_ptr<Sprite> scoreBackground_;
-	std::unique_ptr<Sprite> hiScore_;
-	std::unique_ptr<Sprite> scoreNumber_[4];
+	std::unique_ptr<yunity::Sprite> scoreBackground_;
+	std::unique_ptr<yunity::Sprite> hiScore_;
+	std::unique_ptr<yunity::Sprite> scoreNumber_[4];
 	uint32_t score_;
 	uint32_t digit_;
 	Vector2 pos_ = { 84.0f, 84.0f };

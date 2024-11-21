@@ -9,16 +9,16 @@
 
 using namespace DirectX;
 
-uint32_t TextureManager::Load(const std::string& fileName) {
+uint32_t yunity::TextureManager::Load(const std::string& fileName) {
 	return TextureManager::GetInstance()->LoadInternal(fileName);
 }
 
-TextureManager* TextureManager::GetInstance() {
+yunity::TextureManager* yunity::TextureManager::GetInstance() {
 	static TextureManager instance;
 	return &instance;
 }
 
-void TextureManager::Initialize(std::string directoryPath) {
+void yunity::TextureManager::Initialize(std::string directoryPath) {
 	directoryPath_ = directoryPath;
 
 	intermediateResources_.clear();
@@ -31,7 +31,7 @@ void TextureManager::Initialize(std::string directoryPath) {
 	ResetAll();
 }
 
-void TextureManager::ResetAll() {
+void yunity::TextureManager::ResetAll() {
 
 	srvHeap_ = DirectXCore::GetInstance()->GetDescriptorHeap(DirectXCore::HeapType::kSRV);
 
@@ -46,14 +46,14 @@ void TextureManager::ResetAll() {
 	}
 }
 
-const D3D12_RESOURCE_DESC TextureManager::GetResoureDesc(uint32_t textureHandle) {
+const D3D12_RESOURCE_DESC yunity::TextureManager::GetResoureDesc(uint32_t textureHandle) {
 
 	assert(textureHandle < textures_.size());
 	Texture& texture = textures_.at(textureHandle);
 	return texture.resource->GetDesc();
 }
 
-void TextureManager::SetGraphicsRootDescriptorTable(
+void yunity::TextureManager::SetGraphicsRootDescriptorTable(
 	ID3D12GraphicsCommandList* commandList, UINT rootParamIndex,
 	uint32_t textureHandle) { // デスクリプタヒープの配列
 	assert(textureHandle < textures_.size());
@@ -67,7 +67,7 @@ void TextureManager::SetGraphicsRootDescriptorTable(
 		rootParamIndex, textures_[textureHandle].gpuDescHandleSRV);
 }
 
-Microsoft::WRL::ComPtr<ID3D12Resource> TextureManager::CreateBufferResource(ID3D12Device* device, size_t sizeInBytes)
+Microsoft::WRL::ComPtr<ID3D12Resource> yunity::TextureManager::CreateBufferResource(ID3D12Device* device, size_t sizeInBytes)
 {
 	HRESULT hr;
 	// 頂点リソース用のヒープの設定
@@ -94,7 +94,7 @@ Microsoft::WRL::ComPtr<ID3D12Resource> TextureManager::CreateBufferResource(ID3D
 	return result;
 }
 
-uint32_t TextureManager::LoadInternal(const std::string& fileName) {
+uint32_t yunity::TextureManager::LoadInternal(const std::string& fileName) {
 
 	assert(indexNextDescriptorHeap_ < kNumDescriptors);
 	uint32_t handle = indexNextDescriptorHeap_;

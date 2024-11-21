@@ -6,7 +6,7 @@
 /*
 * @brief ゲームマネージャークラス
 */
-class GameManager : public Framework
+class GameManager : public yunity::Framework
 {
 public:
 	/// <summary>

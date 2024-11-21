@@ -2,14 +2,14 @@
 
 
 
-GraphicsCommon* GraphicsCommon::GetInstance()
+yunity::GraphicsCommon* yunity::GraphicsCommon::GetInstance()
 {
     static GraphicsCommon instance;
 
     return &instance;
 }
 
-void GraphicsCommon::Initialize()
+void yunity::GraphicsCommon::Initialize()
 {
     D3D12_STATIC_SAMPLER_DESC staticSamplerDesc;
     staticSamplerDesc.Filter = D3D12_FILTER_ANISOTROPIC;

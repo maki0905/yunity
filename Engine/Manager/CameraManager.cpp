@@ -8,8 +8,8 @@ CameraManager* CameraManager::GetInstance()
 
 void CameraManager::Initialize()
 {
-	camera_ = std::make_unique<Camera>();
-	debugCamera_ = new DebugCamera();
+	camera_ = std::make_unique<yunity::Camera>();
+	debugCamera_ = new yunity::DebugCamera();
 	isDebug_ = false;
 }
 
@@ -22,7 +22,7 @@ void CameraManager::Finalize()
 
 void CameraManager::Update()
 {
-	if (Input::GetInstance()->TriggerKey(DIK_LSHIFT)) {
+	if (yunity::Input::GetInstance()->TriggerKey(DIK_LSHIFT)) {
 		isDebug_ ^= true;
 	}
 

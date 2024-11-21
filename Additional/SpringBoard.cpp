@@ -16,7 +16,7 @@ void SpringBoard::Update()
 
 void SpringBoard::SetSpringJoint(Object3D* obj)
 {
-	springJoint_ = std::make_unique<SpringJoint>();
+	springJoint_ = std::make_unique<yunity::SpringJoint>();
 	springJoint_->CreateSpringJoint(this, obj);
 	springJoint_->SetDamping(1, damping_);
 	springJoint_->SetStiffness(1, 20.0f);

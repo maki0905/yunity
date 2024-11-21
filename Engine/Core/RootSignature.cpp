@@ -8,13 +8,13 @@
 #pragma comment(lib, "d3d12.lib")
 
 
-RootSignature::RootSignature(ID3D12Device* device, UINT numRootParameters, UINT numStaticSamplers)
+yunity::RootSignature::RootSignature(ID3D12Device* device, UINT numRootParameters, UINT numStaticSamplers)
 {
 	device_ = device;
 	Reset(numRootParameters, numStaticSamplers);
 }
 
-void RootSignature::Reset(UINT numRootParameters, UINT numStaticSamplers)
+void yunity::RootSignature::Reset(UINT numRootParameters, UINT numStaticSamplers)
 {
 	if (numRootParameters > 0) {
 		parameterArray_.reset(new RootParameter[numRootParameters]);
@@ -35,7 +35,7 @@ void RootSignature::Reset(UINT numRootParameters, UINT numStaticSamplers)
 
 }
 
-void RootSignature::InitializeStaticSampler(UINT shaderRegister, const D3D12_STATIC_SAMPLER_DESC& nonStaticSamplerDesc, D3D12_SHADER_VISIBILITY shaderVisibility)
+void yunity::RootSignature::InitializeStaticSampler(UINT shaderRegister, const D3D12_STATIC_SAMPLER_DESC& nonStaticSamplerDesc, D3D12_SHADER_VISIBILITY shaderVisibility)
 {
 	assert(numInitializedStaticSamplers_ < numSamplers_);
 	D3D12_STATIC_SAMPLER_DESC& staticSamplerDesc = samplerArray_[numInitializedStaticSamplers_++];
@@ -57,7 +57,7 @@ void RootSignature::InitializeStaticSampler(UINT shaderRegister, const D3D12_STA
 
 }
 
-void RootSignature::Finalize(D3D12_ROOT_SIGNATURE_FLAGS flags)
+void yunity::RootSignature::Finalize(D3D12_ROOT_SIGNATURE_FLAGS flags)
 {
 	HRESULT result_ = S_FALSE;
 

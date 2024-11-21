@@ -12,10 +12,10 @@
 #include "CameraManager.h"
 #include "PostEffect.h"
 
-RootSignature* RenderTexture::rootSignature_ = nullptr;
-PipelineState* RenderTexture::pipelineState_ = nullptr;
+yunity::RootSignature* yunity::RenderTexture::rootSignature_ = nullptr;
+yunity::PipelineState* yunity::RenderTexture::pipelineState_ = nullptr;
 
-void RenderTexture::InitializeGraphicsPipeline()
+void yunity::RenderTexture::InitializeGraphicsPipeline()
 {
 	rootSignature_ = new RootSignature(Device::GetInstance()->GetDevice(), static_cast<int>(RootBindings::kCount), 1);
 
@@ -95,14 +95,14 @@ void RenderTexture::InitializeGraphicsPipeline()
 	pipelineState_->Finalize();
 }
 
-RenderTexture* RenderTexture::GetInstance()
+yunity::RenderTexture* yunity::RenderTexture::GetInstance()
 {
 	static RenderTexture instance;
 
 	return &instance;
 }
 
-void RenderTexture::Initalize()
+void yunity::RenderTexture::Initalize()
 {
 	depthBuffe_ = std::make_unique<DepthBuffer>();
 	depthBuffe_->Create();
@@ -114,7 +114,7 @@ void RenderTexture::Initalize()
 	}
 }
 
-void RenderTexture::Finalize()
+void yunity::RenderTexture::Finalize()
 {
 #ifdef _DEBUG
 	postEffect_->Finalize();
@@ -131,7 +131,7 @@ void RenderTexture::Finalize()
 	}
 }
 
-void RenderTexture::Create()
+void yunity::RenderTexture::Create()
 {
 	CreateResorce();
 	CreateRTV();
@@ -140,7 +140,7 @@ void RenderTexture::Create()
 	commandList_ = DirectXCore::GetInstance()->GetCommandList();
 }
 
-void RenderTexture::Machining()
+void yunity::RenderTexture::Machining()
 {
 	selectedFlag_ = false;
 	for (auto& flag : postEffectFlag_) {
@@ -184,7 +184,7 @@ void RenderTexture::Machining()
 
 }
 
-void RenderTexture::Copy()
+void yunity::RenderTexture::Copy()
 {
 	uint32_t finIndex = 0;
 	for (uint32_t index = 0; index < static_cast<uint32_t>(PostEffects::kCount); index++) {
@@ -208,7 +208,7 @@ void RenderTexture::Copy()
 	commandList_->DrawInstanced(3, 1, 0, 0);
 }
 
-bool RenderTexture::CheckPostEffect()
+bool yunity::RenderTexture::CheckPostEffect()
 {
 	selectedFlag_ = false;
 	for (auto& flag : postEffectFlag_) {
@@ -221,20 +221,20 @@ bool RenderTexture::CheckPostEffect()
 }
 
 
-void RenderTexture::ClearRenderTargetView()
+void yunity::RenderTexture::ClearRenderTargetView()
 {
 	float clearColor[] = { kRenderTargetClearValue.x, kRenderTargetClearValue.y, kRenderTargetClearValue.z, kRenderTargetClearValue.w };
 	commandList_->ClearRenderTargetView(cpuDescHandleRTV_, clearColor, 0, nullptr);
 }
 
-void RenderTexture::OMSetRenderTargets()
+void yunity::RenderTexture::OMSetRenderTargets()
 {
 	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle =
 		D3D12_CPU_DESCRIPTOR_HANDLE(depthBuffe_->GetDescriptorHeap()->GetCPUDescriptorHandleForHeapStart());
 	commandList_->OMSetRenderTargets(1, &cpuDescHandleRTV_, false, &dsvHandle);
 }
 
-void RenderTexture::ClearDepthStencilView()
+void yunity::RenderTexture::ClearDepthStencilView()
 {
 	// 深度ステンシルビュー用デスクリプタヒープのハンドルを取得
 	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle =
@@ -245,20 +245,20 @@ void RenderTexture::ClearDepthStencilView()
 
 
 
-void RenderTexture::SelectPostEffect(PostEffects postEffect, bool flag)
+void yunity::RenderTexture::SelectPostEffect(PostEffects postEffect, bool flag)
 {
 	postEffectFlag_[static_cast<uint32_t>(postEffect)] = flag;
 
 }
 
-void RenderTexture::ClearPostEffect()
+void yunity::RenderTexture::ClearPostEffect()
 {
 	for (uint32_t index = 0; index < static_cast<uint32_t>(PostEffects::kCount); index++) {
 		postEffectFlag_[index] = false;
 	}
 }
 
-void RenderTexture::CreateResorce()
+void yunity::RenderTexture::CreateResorce()
 {
 	renderTextureResource_ = CreateRenderTextureResource(WindowsAPI::kWindowWidth, WindowsAPI::kWindowHeight, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, kRenderTargetClearValue);
 
@@ -293,7 +293,7 @@ void RenderTexture::CreateResorce()
 	assert(SUCCEEDED(hr));
 }
 
-void RenderTexture::CreateRTV()
+void yunity::RenderTexture::CreateRTV()
 {
 	// レンダーターゲットビューの設定
 	D3D12_RENDER_TARGET_VIEW_DESC renderTargetViewDesc{};
@@ -308,7 +308,7 @@ void RenderTexture::CreateRTV()
 	Device::GetInstance()->GetDevice()->CreateRenderTargetView(renderTextureResource_.Get(), &renderTargetViewDesc, cpuDescHandleRTV_);
 }
 
-void RenderTexture::CreateSRV()
+void yunity::RenderTexture::CreateSRV()
 {
 	D3D12_SHADER_RESOURCE_VIEW_DESC renderTextureSrvDesc{};
 	renderTextureSrvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
@@ -337,7 +337,7 @@ void RenderTexture::CreateSRV()
 
 }
 
-void RenderTexture::InitializeMaterial()
+void yunity::RenderTexture::InitializeMaterial()
 {
 	materialResource_ = CreateBufferResource(sizeof(Material));
 	materialData_ = nullptr;
@@ -345,7 +345,7 @@ void RenderTexture::InitializeMaterial()
 	materialData_->projectionInverse = MakeIdentity4x4();
 }
 
-Microsoft::WRL::ComPtr<ID3D12Resource> RenderTexture::CreateRenderTextureResource(uint32_t width, uint32_t hight, DXGI_FORMAT format, const Vector4& clearColor)
+Microsoft::WRL::ComPtr<ID3D12Resource> yunity::RenderTexture::CreateRenderTextureResource(uint32_t width, uint32_t hight, DXGI_FORMAT format, const Vector4& clearColor)
 {
 	HRESULT result = S_FALSE;
 
@@ -386,7 +386,7 @@ Microsoft::WRL::ComPtr<ID3D12Resource> RenderTexture::CreateRenderTextureResourc
 	return resource;
 }
 
-Microsoft::WRL::ComPtr<ID3D12Resource> RenderTexture::CreateBufferResource(size_t sizeInBytes)
+Microsoft::WRL::ComPtr<ID3D12Resource> yunity::RenderTexture::CreateBufferResource(size_t sizeInBytes)
 {
 	HRESULT result = S_FALSE;
 	// リソース用のヒープの設定

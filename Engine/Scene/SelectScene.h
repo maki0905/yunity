@@ -13,7 +13,7 @@
 /*
 * @brief セレクトシーンクラス
 */
-class SelectScene : public IScene
+class SelectScene : public yunity::IScene
 {
 public:
 	/// <summary>
@@ -42,7 +42,7 @@ public:
 	void DrawFront() override;
 
 private:
-	/*std::unique_ptr<Camera>*/ Camera* camera_;
+	yunity::Camera* camera_;
 
 	XINPUT_STATE pad_;
 	XINPUT_STATE prePad_;

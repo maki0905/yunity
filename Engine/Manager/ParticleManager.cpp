@@ -18,7 +18,7 @@ void ParticleManager::Update()
 		}
 	}
 
-	for (std::list<BaseParticle*>::iterator particleIterator = particles_.begin(); particleIterator != particles_.end();) {
+	for (std::list<yunity::BaseParticle*>::iterator particleIterator = particles_.begin(); particleIterator != particles_.end();) {
 		if (!(*particleIterator)->GetIsActive()) {
 			particleIterator = particles_.erase(particleIterator);
 			continue;

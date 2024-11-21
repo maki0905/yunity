@@ -4,10 +4,9 @@
 #include "Collision.h"
 #include "CollisionConfig.h"
 #include "ImGuiManager.h"
-#include "Object3D.h"
 #include "Shape.h"
 
-void CollisionManager::CheckAllCollision() {
+void yunity::CollisionManager::CheckAllCollision() {
 
 	// リスト内のペアを総当たり
 	std::list<Object3D*>::iterator itrA = colliders_.begin();
@@ -27,7 +26,7 @@ void CollisionManager::CheckAllCollision() {
 	}
 }
 
-void CollisionManager::CheckCollisionPair(Object3D* colliderA, Object3D* colliderB)
+void yunity::CollisionManager::CheckCollisionPair(Object3D* colliderA, Object3D* colliderB)
 {
 	if (colliderA->GetCollisionAttribute() == colliderB->GetCollisionAttribute()) {
 		return;

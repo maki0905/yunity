@@ -5,20 +5,21 @@
 #include "RayCast.h"
 #include "SceneManager.h"
 #include "CommonData.h"
+#include "Sprite.h"
 
-void Player::Initialize(Camera* camera, World* world)
+void Player::Initialize(yunity::Camera* camera, yunity::World* world)
 {
 	SetHitBoxSize({ 2.0f, 6.0f, 2.0f });
-	Object3D::Initialize(world, Collider::Shape::kAABB);
-	worldTransform_.rotateType_ = RotationType::Quaternion;
+	Object3D::Initialize(world, yunity::Collider::Shape::kAABB);
+	worldTransform_.rotateType_ = yunity::RotationType::Quaternion;
 	worldTransform_.translation_.y = 40.0f;
 	SetMass(2.0f);
 	SetFirictionCombine(FrictionCombine::kAverage);
 	SetMiu(2.0f);
 	SetBounceCombine(BounceCombine::kMaximum);
 	SetBounciness(0.0f);
-	models_["player"] = std::make_unique<Model>();
-	models_["player"].reset(ModelManager::GetInstance()->CreateModel(obj, "Player"));
+	models_["player"] = std::make_unique<yunity::Model>();
+	models_["player"].reset(yunity::ModelManager::GetInstance()->CreateModel(obj, "Player"));
 	models_["player"]->SetCamera(camera);
 
 	camera_ = camera;
@@ -36,31 +37,31 @@ void Player::Initialize(Camera* camera, World* world)
 	SetCollisionAttribute(kCollisionAttributePlayer);
 	isActive_ = true;
 
-	line_ = std::make_unique<PrimitiveDrawer>();
-	line_.reset(PrimitiveDrawer::Create());
+	line_ = std::make_unique<yunity::PrimitiveDrawer>();
+	line_.reset(yunity::PrimitiveDrawer::Create());
 	line_->SetCamera(camera_);
 
-	reticle3D_ = std::make_unique<Model>();
-	reticle3D_.reset(ModelManager::GetInstance()->CreateModel(obj, "apex"));
+	reticle3D_ = std::make_unique<yunity::Model>();
+	reticle3D_.reset(yunity::ModelManager::GetInstance()->CreateModel(obj, "apex"));
 	reticle3D_->SetCamera(camera_);
 
-	onReticle_ = TextureManager::GetInstance()->Load("onReticle.png");
-	offReticle_ = TextureManager::GetInstance()->Load("offReticle.png");
-	reticle_ = std::make_unique<Sprite>();
-	reticle_.reset(Sprite::Create(offReticle_, { 0.0f, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.5f, 0.5f }));
+	onReticle_ = yunity::TextureManager::GetInstance()->Load("onReticle.png");
+	offReticle_ = yunity::TextureManager::GetInstance()->Load("offReticle.png");
+	reticle_ = std::make_unique<yunity::Sprite>();
+	reticle_.reset(yunity::Sprite::Create(offReticle_, { 0.0f, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.5f, 0.5f }));
 
 	reticleWorldTransform_.Initialize();
 	reticleWorldTransform_.translation_.x = 3.0f;
 	reticleWorldTransform_.parent_ = &worldTransform_;
 
-	apex_ = std::make_unique<Model>();
-	apex_.reset(ModelManager::GetInstance()->CreateModel(obj, "apex"));
+	apex_ = std::make_unique<yunity::Model>();
+	apex_.reset(yunity::ModelManager::GetInstance()->CreateModel(obj, "apex"));
 	apex_->SetCamera(camera_);
 	apexWorldTransform_.Initialize();
 	apexBody_ = std::make_unique<Body>();
 	apexBody_->CreateBody(world, &apexWorldTransform_);
 
-	springJoint_ = std::make_unique<SpringJoint>();
+	springJoint_ = std::make_unique<yunity::SpringJoint>();
 	springJoint_->CreateSpringJoint(this, apexBody_.get());
 	springJoint_->EnableSpring(0, false);
 	springJoint_->EnableSpring(1, false);
@@ -79,7 +80,7 @@ void Player::Initialize(Camera* camera, World* world)
 	isSelect_ = false;
 
 
-	Input::GetInstance()->GetJoystickState(0, pad_);
+	yunity::Input::GetInstance()->GetJoystickState(0, pad_);
 
 	scoreUI_ = std::make_unique<Score>();
 	scoreUI_->Initialize();
@@ -88,8 +89,8 @@ void Player::Initialize(Camera* camera, World* world)
 	lerpTime_ = 0.0f;
 	displayTime_ = 0.0f;
 
-	fixedJoint_ = std::make_unique<FixedJoint>();
-	playerFixedJoint_ = std::make_unique<FixedJoint>();
+	fixedJoint_ = std::make_unique<yunity::FixedJoint>();
+	playerFixedJoint_ = std::make_unique<yunity::FixedJoint>();
 
 }
 
@@ -103,8 +104,8 @@ void Player::Update()
 	
 	if (!CommonData::GetInstance()->isGoal_ || inGame_) {
 		// ジョイスティック状態取得
-		if (Input::GetInstance()->IsControllerConnected()) {
-			if (Input::GetInstance()->GetJoystickState(0, pad_)) {
+		if (yunity::Input::GetInstance()->IsControllerConnected()) {
+			if (yunity::Input::GetInstance()->GetJoystickState(0, pad_)) {
 
 				// プレイヤーの動き
 				const float threshold = 0.7f;
@@ -264,10 +265,10 @@ void Player::Draw()
 	models_["player"]->Draw(worldTransform_);
 	if (isReticle_) {
 		if (CommonData::GetInstance()->scene_ == Scene::kStage) {
-			reticle3D_->Draw(reticleWorldTransform_, TextureManager::GetInstance()->Load("pink1x1.png"));
+			reticle3D_->Draw(reticleWorldTransform_, yunity::TextureManager::GetInstance()->Load("pink1x1.png"));
 			if (isWire_) {
 				line_->Draw(worldTransform_.translation_, apexBody_->GetMatWorldTranslation(), { 0.0f, 0.0f, 0.0f, 1.0f });
-				apex_->Draw(*apexBody_->GetWorldTransform(), TextureManager::GetInstance()->Load("purple1x1.png"));
+				apex_->Draw(*apexBody_->GetWorldTransform(), yunity::TextureManager::GetInstance()->Load("purple1x1.png"));
 			}
 		}
 	}

@@ -6,13 +6,7 @@
 
 #pragma comment(lib, "d3d12.lib")
 
-
-
-
-
-
-
-void DescriptorHeap::Create(D3D12_DESCRIPTOR_HEAP_TYPE heapType, uint32_t numDescriptors, bool shaderVisible)
+void yunity::DescriptorHeap::Create(D3D12_DESCRIPTOR_HEAP_TYPE heapType, uint32_t numDescriptors, bool shaderVisible)
 {
 	Device* device = Device::GetInstance();
 
@@ -37,7 +31,7 @@ void DescriptorHeap::Create(D3D12_DESCRIPTOR_HEAP_TYPE heapType, uint32_t numDes
 	nextFreeHandle_ = firstHandle_;
 }
 
-DescriptorHandle DescriptorHeap::Alloc(uint32_t count)
+yunity::DescriptorHandle yunity::DescriptorHeap::Alloc(uint32_t count)
 {
 	assert(HasAvailableSpace(count));
 	DescriptorHandle ret = *nextFreeHandle_;
@@ -51,7 +45,7 @@ DescriptorHandle DescriptorHeap::Alloc(uint32_t count)
 	return ret;
 }
 
-bool DescriptorHeap::ValidateHandle(const DescriptorHandle& DHandle) const
+bool yunity::DescriptorHeap::ValidateHandle(const DescriptorHandle& DHandle) const
 {
 	if (DHandle.GetCpuPtr() < firstHandle_->GetCpuPtr() ||
 		DHandle.GetCpuPtr() >= firstHandle_->GetCpuPtr() + heapDesc_.NumDescriptors * descriptorSize_)

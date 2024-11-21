@@ -26,56 +26,60 @@
 #include "SkyBox.h"
 #include "ObjectManager.h"
 
-/*
-* @brief フレームワーククラス
-*/
-class Framework {
-public:
-	/// <summary>
-	/// 初期化
-	/// </summary>
-	virtual void Initialize();
+namespace yunity {
+	/*
+	* @brief フレームワーククラス
+	*/
+	class Framework {
+	public:
+		/// <summary>
+		/// 初期化
+		/// </summary>
+		virtual void Initialize();
 
-	/// <summary>
-	/// ファイナライザ
-	/// </summary>
-	virtual void Finalize();
+		/// <summary>
+		/// ファイナライザ
+		/// </summary>
+		virtual void Finalize();
 
-	/// <summary>
-	/// 更新
-	/// </summary>
-	virtual void Update();
+		/// <summary>
+		/// 更新
+		/// </summary>
+		virtual void Update();
 
-	/// <summary>
-	/// 描画
-	/// </summary>
-	virtual void Draw() = 0;
+		/// <summary>
+		/// 描画
+		/// </summary>
+		virtual void Draw() = 0;
 
-	/// <summary>
-	/// 終了チェック
-	/// </summary>
-	/// <returns></returns>
-	virtual bool IsEndRequest() { return endRequest_; }
+		/// <summary>
+		/// 終了チェック
+		/// </summary>
+		/// <returns></returns>
+		virtual bool IsEndRequest() { return endRequest_; }
 
-	/// <summary>
-	/// 実行
-	/// </summary>
-	void Run();
+		/// <summary>
+		/// 実行
+		/// </summary>
+		void Run();
 
-	virtual ~Framework() = default;
+		virtual ~Framework() = default;
 
-protected:
-	bool endRequest_;
-	// シーンを保持するメンバ変数
-	std::unique_ptr<IScene> sceneArr_[COUNT];
+	protected:
+		bool endRequest_;
+		// シーンを保持するメンバ変数
+		std::unique_ptr<IScene> sceneArr_[COUNT];
 
-	// シーン管理用の変数
-	int currentSceneNo_; // 現在のシーン
-	int prevSceneNo_; // 前のシーン
+		// シーン管理用の変数
+		int currentSceneNo_; // 現在のシーン
+		int prevSceneNo_; // 前のシーン
 
-	std::unique_ptr<Model> model_ = nullptr;
-	std::unique_ptr<Sprite> sprite_ = nullptr;
-	std::unique_ptr<PrimitiveDrawer> primitive_ = nullptr;
-	std::unique_ptr<SkyBox> skybox_ = nullptr;
-	std::unique_ptr<ParticleDrawer> particleDrawer_ = nullptr;
-};
+		std::unique_ptr<Model> model_ = nullptr;
+		std::unique_ptr<Sprite> sprite_ = nullptr;
+		std::unique_ptr<PrimitiveDrawer> primitive_ = nullptr;
+		std::unique_ptr<SkyBox> skybox_ = nullptr;
+		std::unique_ptr<ParticleDrawer> particleDrawer_ = nullptr;
+	};
+}
+
+

@@ -1,6 +1,6 @@
 #include "Framework.h"
 
-void Framework::Initialize()
+void yunity::Framework::Initialize()
 {
 	// WindowsAPI
 	WindowsAPI::GetInstance()->CreateGameWindow();
@@ -57,7 +57,7 @@ void Framework::Initialize()
 
 }
 
-void Framework::Finalize()
+void yunity::Framework::Finalize()
 {
 	skybox_->Finalize();
 	primitive_->Finalize();
@@ -66,7 +66,7 @@ void Framework::Finalize()
 	WindowsAPI::GetInstance()->TerminateGameWindow();
 }
 
-void Framework::Update()
+void yunity::Framework::Update()
 {
 	// ImGui受付開始
 	ImGuiManager::GetInstance()->Begin();
@@ -80,7 +80,7 @@ void Framework::Update()
 	ImGuiManager::GetInstance()->End();
 }
 
-void Framework::Run()
+void yunity::Framework::Run()
 {
 	// ゲームの初期化
 	Initialize();

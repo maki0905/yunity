@@ -4,7 +4,7 @@
 #include "ParticleDrawer.h"
 #include "Random.h"
 
-class FireworksParticle : public BaseParticle {
+class FireworksParticle : public yunity::BaseParticle {
 public:
 	void Initialize(const Vector3& position);
 	void Update() override;

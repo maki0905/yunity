@@ -19,14 +19,14 @@ D3D_FEATURE_LEVEL levels[] = {
 };
 
 
-Device* Device::GetInstance()
+yunity::Device* yunity::Device::GetInstance()
 {
 	static Device instance;
 
 	return &instance;
 }
 
-void Device::Initialize()
+void yunity::Device::Initialize()
 {
 	HRESULT result = S_FALSE;
 

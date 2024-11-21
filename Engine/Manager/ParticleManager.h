@@ -21,11 +21,11 @@ public:
 
 	void AddEmitter(ParticleEmitter* emitter);
 
-	void SetCamera(Camera* camera) { camera_ = camera; }
+	void SetCamera(yunity::Camera* camera) { camera_ = camera; }
 
 private:
-	Camera* camera_ = nullptr;
+	yunity::Camera* camera_ = nullptr;
 	std::list<ParticleEmitter*> emitters_;
-	std::list<BaseParticle*> particles_;
+	std::list<yunity::BaseParticle*> particles_;
 };
 

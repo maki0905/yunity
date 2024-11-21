@@ -1,21 +1,20 @@
 #include "ShaderCompiler.h"
 
 #include <cassert>
-//#include "externals/DirectXTex/DirectXTex.h"
 #include "DirectXTex/DirectXTex.h"
 
 #pragma comment(lib, "d3dcompiler.lib")
 #pragma comment(lib,"dxcompiler.lib")
 
 
-ShaderCompiler* ShaderCompiler::GetInstance()
+yunity::ShaderCompiler* yunity::ShaderCompiler::GetInstance()
 {
 	static ShaderCompiler instance;
 
 	return &instance;
 }
 
-void ShaderCompiler::Initialize()
+void yunity::ShaderCompiler::Initialize()
 {
 	HRESULT result = S_FALSE;
 	result = DxcCreateInstance(CLSID_DxcUtils, IID_PPV_ARGS(&dxcUtils_));
@@ -32,7 +31,7 @@ void ShaderCompiler::Initialize()
 	ShaderCompile();
 }
 
-ID3DBlob* ShaderCompiler::Get(std::string shaderName, ShaderType shaderType)
+ID3DBlob* yunity::ShaderCompiler::Get(std::string shaderName, ShaderType shaderType)
 {
 	ID3DBlob* result = nullptr;
 	switch (shaderType)
@@ -50,7 +49,7 @@ ID3DBlob* ShaderCompiler::Get(std::string shaderName, ShaderType shaderType)
 	return result;
 }
 
-void ShaderCompiler::ShaderCompile()
+void yunity::ShaderCompiler::ShaderCompile()
 {
 
 	vsblob_["Object3d"] = CompileShader(L"Resources/Shaders/Object3d.VS.hlsl", L"vs_6_0");
@@ -119,7 +118,7 @@ void ShaderCompiler::ShaderCompile()
 
 }
 
-ID3DBlob* ShaderCompiler::CompileShader(const std::wstring& filePath, const wchar_t* profile)
+ID3DBlob* yunity::ShaderCompiler::CompileShader(const std::wstring& filePath, const wchar_t* profile)
 {
 	//hlslファイルを読む
 	IDxcBlobEncoding* shaderSource = nullptr;
@@ -174,7 +173,7 @@ ID3DBlob* ShaderCompiler::CompileShader(const std::wstring& filePath, const wcha
 	return shaderBlob;
 }
 
-void ShaderCompiler::Log(const std::string& message)
+void yunity::ShaderCompiler::Log(const std::string& message)
 {
 	OutputDebugStringA(message.c_str());
 }

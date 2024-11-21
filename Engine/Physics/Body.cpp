@@ -2,6 +2,7 @@
 
 #include <cmath>
 
+#include "World.h"
 //#include "Shape.h"
 
 namespace {
@@ -177,7 +178,7 @@ namespace {
 			}
 
 			// 重なりの深さを計算
-			float penetrationDepth = min(max1, max2) - max(min1, min2);
+			float penetrationDepth = std::min(max1, max2) - max(min1, min2);
 
 			// 最小の重なりを保存
 			if (penetrationDepth < minPentrationDepth) {
@@ -189,8 +190,8 @@ namespace {
 		return Multiply(minPentrationDepth, minPenetrationAxis);
 	}
 
-	Body::PersistentManifold* GetNewManifold(Body* bodyA, Body* bodyB) {
-		Body::PersistentManifold* persistentManifold = new Body::PersistentManifold();
+	yunity::Body::PersistentManifold* GetNewManifold(yunity::Body* bodyA, yunity::Body* bodyB) {
+		yunity::Body::PersistentManifold* persistentManifold = new yunity::Body::PersistentManifold();
 
 		// ボディー
 		/*persistentManifold->bodyA = bodyA;
@@ -227,7 +228,7 @@ namespace {
 		if (a.max.x > b.min.x && b.max.x > a.min.x) {
 			float overlapX1 = a.max.x - b.min.x;
 			float overlapX2 = b.max.x - a.min.x;
-			penetrationDepth.x = min(overlapX1, overlapX2);
+			penetrationDepth.x = std::min(overlapX1, overlapX2);
 		}
 		else {
 			penetrationDepth.x = 0.0f; // 重なっていない場合
@@ -237,7 +238,7 @@ namespace {
 		if (a.max.y > b.min.y && b.max.y > a.min.y) {
 			float overlapY1 = a.max.y - b.min.y;
 			float overlapY2 = b.max.y - a.min.y;
-			penetrationDepth.y = min(overlapY1, overlapY2);
+			penetrationDepth.y = std::min(overlapY1, overlapY2);
 		}
 		else {
 			penetrationDepth.y = 0.0f; // 重なっていない場合
@@ -247,7 +248,7 @@ namespace {
 		if (a.max.z > b.min.z && b.max.z > a.min.z) {
 			float overlapZ1 = a.max.z - b.min.z;
 			float overlapZ2 = b.max.z - a.min.z;
-			penetrationDepth.z = min(overlapZ1, overlapZ2);
+			penetrationDepth.z = std::min(overlapZ1, overlapZ2);
 		}
 		else {
 			penetrationDepth.z = 0.0f; // 重なっていない場合
@@ -257,7 +258,7 @@ namespace {
 
 }
 
-void Body::CreateBody(World* world, WorldTransform* worldTransform, float mass)
+void yunity::Body::CreateBody(World* world, WorldTransform* worldTransform, float mass)
 {
 	mass_ = mass;
 	velocity_ = { 0.0f, 0.0f, 0.0f };
@@ -273,7 +274,7 @@ void Body::CreateBody(World* world, WorldTransform* worldTransform, float mass)
 	worldTransform_ = worldTransform;
 }
 
-void Body::Solve(float time)
+void yunity::Body::Solve(float time)
 {
 	if (mass_ != 0.0f) {
 		// 空気抵抗airResistanceは、速度に比例して逆方向に発生する
@@ -336,7 +337,7 @@ void Body::Solve(float time)
 	worldTransform_->UpdateMatrix();
 }
 
-void Body::SolveConstraints(/*float time*/)
+void yunity::Body::SolveConstraints(/*float time*/)
 {
 
 	Vector3 L = GetHitBoxSize();
@@ -395,7 +396,7 @@ void Body::SolveConstraints(/*float time*/)
 }
 
 
-Vector3 Body::RubberMovement(const Vector3& start, const Vector3& end, float limitLength, float stiffness, float dampingCoefficient)
+Vector3 yunity::Body::RubberMovement(const Vector3& start, const Vector3& end, float limitLength, float stiffness, float dampingCoefficient)
 {
 	Vector3 diff = Subtract(start, end);
 	float length = Length(diff);
@@ -414,7 +415,7 @@ Vector3 Body::RubberMovement(const Vector3& start, const Vector3& end, float lim
 	return { 0.0f, 0.0f, 0.0f };
 }
 
-Vector3 Body::Spring(const Vector3& anchor, const Vector3& position, float naturalLength, float stiffness, float dampingCoefficient)
+Vector3 yunity::Body::Spring(const Vector3& anchor, const Vector3& position, float naturalLength, float stiffness, float dampingCoefficient)
 {
 	Vector3 diff = Subtract(position, anchor);
 	float length = Length(diff);
@@ -432,7 +433,7 @@ Vector3 Body::Spring(const Vector3& anchor, const Vector3& position, float natur
 	return { 0.0f, 0.0f, 0.0f };
 }
 
-void Body::AddForce(const Vector3& force, ForceMode mode)
+void yunity::Body::AddForce(const Vector3& force, ForceMode mode)
 {
 	if (mode == ForceMode::kForce) {
 		force_ = Add(force_, force);
@@ -442,7 +443,7 @@ void Body::AddForce(const Vector3& force, ForceMode mode)
 	}
 }
 
-void Body::AddTorque(const Vector3& torque, ForceMode mode)
+void yunity::Body::AddTorque(const Vector3& torque, ForceMode mode)
 {
 	if (mode == ForceMode::kForce) {
 		torque_ = Add(torque_, torque);
@@ -453,14 +454,14 @@ void Body::AddTorque(const Vector3& torque, ForceMode mode)
 	}
 }
 
-void Body::AddForce(const Vector3& force, const Vector3& point)
+void yunity::Body::AddForce(const Vector3& force, const Vector3& point)
 {
 	force_ = Add(force_, force);
 	torque_ = Add(torque_, Cross(Subtract(point, GetMatWorldTranslation()), force));
 
 }
 
-void Body::AddImpulse(const Vector3& impulse, const Vector3& pos)
+void yunity::Body::AddImpulse(const Vector3& impulse, const Vector3& pos)
 {
 	velocity_ = Add(velocity_, Multiply(1.0f / mass_, impulse));
 	Vector3 torque = Cross(Subtract(pos, GetMatWorldTranslation()), impulse);
@@ -469,14 +470,14 @@ void Body::AddImpulse(const Vector3& impulse, const Vector3& pos)
 }
 
 
-void Body::Reset()
+void yunity::Body::Reset()
 {
 	velocity_ = { 0.0f, 0.0f, 0.0f };
 	acceleration_ = { 0.0f, 0.0f, 0.0f };
 
 }
 
-void Body::OnCollision(Body* body)
+void yunity::Body::OnCollision(Body* body)
 {
 	if (mass_) {
 
@@ -543,7 +544,7 @@ void Body::OnCollision(Body* body)
 			magnitude_ = miu * Length(Multiply(-mass_, world_->GetGravity()));
 			break;
 		case Body::FrictionCombine::kMinimum:
-			miu = min(miu_, body->GetMiu());
+			miu = std::min(miu_, body->GetMiu());
 			magnitude_ = miu * Length(Multiply(-mass_, world_->GetGravity()));
 			break;
 		case Body::FrictionCombine::kMaximum:
@@ -567,7 +568,7 @@ void Body::OnCollision(Body* body)
 			e = (bounciness_ + body->bounciness_) / 2.0f;
 			break;
 		case Body::BounceCombine::kMinimum:
-			e = min(bounciness_, body->bounciness_);
+			e = std::min(bounciness_, body->bounciness_);
 			break;
 		case Body::BounceCombine::kMaximum:
 			e = max(bounciness_, body->bounciness_);

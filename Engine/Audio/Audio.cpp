@@ -5,13 +5,13 @@
 
 #pragma comment(lib, "xaudio2.lib")
 
-Audio* Audio::GetInstance()
+yunity::Audio* yunity::Audio::GetInstance()
 {
 	static Audio instance;
 	return &instance;
 }
 
-void Audio::Initialize(const std::string& directoryPath)
+void yunity::Audio::Initialize(const std::string& directoryPath)
 {
 	directoryPath_ = directoryPath;
 
@@ -30,7 +30,7 @@ void Audio::Initialize(const std::string& directoryPath)
 
 }
 
-void Audio::Finalize()
+void yunity::Audio::Finalize()
 {
 	// xAudio2解放
 	xAudio2_.Reset();
@@ -41,7 +41,7 @@ void Audio::Finalize()
 
 }
 
-uint32_t Audio::LoadWave(const std::string& fileName)
+uint32_t yunity::Audio::LoadWave(const std::string& fileName)
 {
 	assert(indexSoundData_ < kMaxSoundData);
 	uint32_t handle = indexSoundData_;
@@ -130,7 +130,7 @@ uint32_t Audio::LoadWave(const std::string& fileName)
 	
 }
 
-void Audio::Unload(SoundData* soundData)
+void yunity::Audio::Unload(SoundData* soundData)
 {
 	// バッファのメモリを解放
 	delete[] soundData->pBuffer;
@@ -141,7 +141,7 @@ void Audio::Unload(SoundData* soundData)
 
 }
 
-uint32_t Audio::PlayWave(uint32_t soundDataHandle, bool loopFlag)
+uint32_t yunity::Audio::PlayWave(uint32_t soundDataHandle, bool loopFlag)
 {
 	HRESULT result;
 
@@ -187,7 +187,7 @@ uint32_t Audio::PlayWave(uint32_t soundDataHandle, bool loopFlag)
 	return handle;
 }
 
-void Audio::StopWave(uint32_t voiceHandle)
+void yunity::Audio::StopWave(uint32_t voiceHandle)
 {
 	// 再生中リストから検索
 	auto it = std::find_if(voices_.begin(), voices_.end(), [&](Voice* voice) {return voice->handle == voiceHandle; });

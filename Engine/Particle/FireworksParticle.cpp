@@ -3,7 +3,7 @@
 void FireworksParticle::Initialize(const Vector3& position)
 {
 	isActive_ = true;
-	particleDrawer_.reset(ParticleDrawer::Create("circle.png"));
+	particleDrawer_.reset(yunity::ParticleDrawer::Create("circle.png"));
 	particleDrawer_->Initialize("circle.png");
 	particleDrawer_->SetCamera(camera_);
 	particles_.clear();

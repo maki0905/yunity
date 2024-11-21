@@ -7,10 +7,10 @@
 #include "ClearScene.h"
 #pragma endregion 
 
-IScene* SceneFactory::CreateScene(const std::string& sceneName)
+yunity::IScene* yunity::SceneFactory::CreateScene(const std::string& sceneName)
 {
     // 次のシーンを生成
-    IScene* newScene = nullptr;
+    yunity::IScene* newScene = nullptr;
 
     if (sceneName == "TITLE") {
         newScene = new TitleScene();

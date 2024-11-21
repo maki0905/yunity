@@ -10,19 +10,19 @@
 #include "Common.h"
 #include "TextureManager.h"
 
-ID3D12Device* SphereDrawer::device_ = nullptr;
-ID3D12GraphicsCommandList* SphereDrawer::commandList_ = nullptr;
-RootSignature* SphereDrawer::rootSignature_ = nullptr;
-PipelineState* SphereDrawer::pipelineState_ = nullptr;
+ID3D12Device* yunity::SphereDrawer::device_ = nullptr;
+ID3D12GraphicsCommandList* yunity::SphereDrawer::commandList_ = nullptr;
+yunity::RootSignature* yunity::SphereDrawer::rootSignature_ = nullptr;
+yunity::PipelineState* yunity::SphereDrawer::pipelineState_ = nullptr;
 
-void SphereDrawer::StaticInitialize()
+void yunity::SphereDrawer::StaticInitialize()
 {
 	device_ = Device::GetInstance()->GetDevice();
 
 	InitializeGraphicsPipeline();
 }
 
-void SphereDrawer::PreDraw(ID3D12GraphicsCommandList* commandList)
+void yunity::SphereDrawer::PreDraw(ID3D12GraphicsCommandList* commandList)
 {
 	assert(commandList_ == nullptr);
 
@@ -32,12 +32,12 @@ void SphereDrawer::PreDraw(ID3D12GraphicsCommandList* commandList)
 	commandList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }
 
-void SphereDrawer::PostDraw()
+void yunity::SphereDrawer::PostDraw()
 {
 	commandList_ = nullptr;
 }
 
-SphereDrawer* SphereDrawer::Create(const std::string& textureName)
+yunity::SphereDrawer* yunity::SphereDrawer::Create(const std::string& textureName)
 {
 	SphereDrawer* sphereDrawer = new SphereDrawer();
 	sphereDrawer->Initialize();
@@ -45,7 +45,7 @@ SphereDrawer* SphereDrawer::Create(const std::string& textureName)
 	return sphereDrawer;
 }
 
-void SphereDrawer::InitializeGraphicsPipeline()
+void yunity::SphereDrawer::InitializeGraphicsPipeline()
 {
 	rootSignature_ = new RootSignature(device_, static_cast<int>(RootBindings::kCount), 1);
 
@@ -70,7 +70,7 @@ void SphereDrawer::InitializeGraphicsPipeline()
 
 	rootSignature_->Finalize(D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
 
-	pipelineState_ = new PipelineState(device_, rootSignature_);
+	pipelineState_ = new yunity::PipelineState(device_, rootSignature_);
 
 	// InputLayout
 	D3D12_INPUT_ELEMENT_DESC inputElementDescs[] = {
@@ -112,8 +112,8 @@ void SphereDrawer::InitializeGraphicsPipeline()
 
 
 	pipelineState_->SetInputLayout(inputLayoutDesc);
-	pipelineState_->SetShader(PipelineState::ShaderType::kVS, ShaderCompiler::GetInstance()->Get("Object3d", ShaderCompiler::ShaderType::kVS));
-	pipelineState_->SetShader(PipelineState::ShaderType::kPS, ShaderCompiler::GetInstance()->Get("Object3d", ShaderCompiler::ShaderType::kPS));
+	pipelineState_->SetShader(yunity::PipelineState::ShaderType::kVS, yunity::ShaderCompiler::GetInstance()->Get("Object3d", yunity::ShaderCompiler::ShaderType::kVS));
+	pipelineState_->SetShader(yunity::PipelineState::ShaderType::kPS, yunity::ShaderCompiler::GetInstance()->Get("Object3d", yunity::ShaderCompiler::ShaderType::kPS));
 	pipelineState_->SetBlendState(blendDesc);
 	pipelineState_->SetRasterizerState(rasterizerDesc);
 	pipelineState_->SetDepthStencilState(depthStencilDesc);
@@ -123,14 +123,14 @@ void SphereDrawer::InitializeGraphicsPipeline()
 	pipelineState_->Finalize();
 }
 
-void SphereDrawer::Initialize()
+void yunity::SphereDrawer::Initialize()
 {
 	CreateMesh();
 	InitializeDirectionalLight();
 	InitializeMaterial();
 }
 
-void SphereDrawer::Draw(const WorldTransform& worldTransform)
+void yunity::SphereDrawer::Draw(const WorldTransform& worldTransform)
 {
 	assert(device_);
 	assert(commandList_);
@@ -165,12 +165,12 @@ void SphereDrawer::Draw(const WorldTransform& worldTransform)
 	commandList_->DrawIndexedInstanced(kSubdivision * kSubdivision * 6, 1, 0, 0, 0);
 }
 
-void SphereDrawer::SetTextureHandle(const std::string& textureName)
+void yunity::SphereDrawer::SetTextureHandle(const std::string& textureName)
 {
 	textureHandle_ = TextureManager::GetInstance()->Load(textureName);
 }
 
-void SphereDrawer::SetPointLight(const PointLight& pointLight)
+void yunity::SphereDrawer::SetPointLight(const PointLight& pointLight)
 {
 	pointLightData_->color = pointLight.color;
 	pointLightData_->position = pointLight.position;
@@ -179,7 +179,7 @@ void SphereDrawer::SetPointLight(const PointLight& pointLight)
 	pointLightData_->decay = pointLight.decay;
 }
 
-void SphereDrawer::CreateMesh()
+void yunity::SphereDrawer::CreateMesh()
 {
 
 	// 頂点リソース
@@ -269,7 +269,7 @@ void SphereDrawer::CreateMesh()
 	}
 }
 
-void SphereDrawer::InitializeDirectionalLight()
+void yunity::SphereDrawer::InitializeDirectionalLight()
 {
 	directionalLightResource_ = CreateBufferResource(sizeof(DirectionalLight));
 	directionalLightData_ = nullptr;
@@ -291,7 +291,7 @@ void SphereDrawer::InitializeDirectionalLight()
 
 }
 
-void SphereDrawer::InitializeMaterial()
+void yunity::SphereDrawer::InitializeMaterial()
 {
 	materialResource_ = CreateBufferResource(sizeof(MaterialData));
 	materialData_ = nullptr;

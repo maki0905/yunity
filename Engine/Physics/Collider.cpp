@@ -3,7 +3,7 @@
 #include "ImGuiManager.h"
 #include <algorithm>
 
-void Collider::CreateCollider(WorldTransform* worldTransform, Shape shape, Camera* camera)
+void yunity::Collider::CreateCollider(WorldTransform* worldTransform, Shape shape, Camera* camera)
 {
 	shape_ = shape;
 	worldTransform_ = worldTransform;
@@ -31,7 +31,7 @@ void Collider::CreateCollider(WorldTransform* worldTransform, Shape shape, Camer
 	worldTransform_HitBox_.Initialize();
 }
 
-void Collider::CreateCollider(WorldTransform* worldTransform, Shape shape, Camera* camera, const Vector3& size)
+void yunity::Collider::CreateCollider(WorldTransform* worldTransform, Shape shape, Camera* camera, const Vector3& size)
 {
 	shape_ = shape;
 	worldTransform_ = worldTransform;
@@ -61,7 +61,7 @@ void Collider::CreateCollider(WorldTransform* worldTransform, Shape shape, Camer
 
 }
 
-void Collider::HitBox()
+void yunity::Collider::HitBox()
 {
 	if (shape_ == kSphere) {
 		worldTransform_HitBox_.scale_ = Multiply(size_.x, worldTransform_->scale_);
@@ -76,7 +76,7 @@ void Collider::HitBox()
 	HitBox_->Draw(worldTransform_HitBox_);
 }
 
-void Collider::HitBox(Camera* camera)
+void yunity::Collider::HitBox(Camera* camera)
 {
 	if (shape_ == kSphere) {
 		worldTransform_HitBox_.scale_ = Multiply(size_.x, worldTransform_->scale_);
@@ -92,7 +92,7 @@ void Collider::HitBox(Camera* camera)
 	HitBox_->Draw(worldTransform_HitBox_);
 }
 
-Vector3 Collider::GetHitBoxSize()
+Vector3 yunity::Collider::GetHitBoxSize()
 {
 	Vector3 result = { 0.0f, 0.0f, 0.0f };
 	switch (shape_)
@@ -117,7 +117,7 @@ Vector3 Collider::GetHitBoxSize()
 	return  result;
 }
 
-AABB Collider::GetAABB()
+AABB yunity::Collider::GetAABB()
 {
 	return AABB(Subtract(worldTransform_->translation_, GetHitBoxSize()), Add(worldTransform_->translation_, GetHitBoxSize()));
 }

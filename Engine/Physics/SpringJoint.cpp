@@ -1,28 +1,28 @@
 #include "SpringJoint.h"
 
-void SpringJoint::CreateSpringJoint(Body* bodyA, Body* bodyB)
+void yunity::SpringJoint::CreateSpringJoint(Body* bodyA, Body* bodyB)
 {
 	bodyA_ = bodyA;
 	bodyB_ = bodyB;
 
 }
 
-void SpringJoint::EnableSpring(int index, bool onOff)
+void yunity::SpringJoint::EnableSpring(int index, bool onOff)
 {
 	springEnabled_[index] = onOff;
 }
 
-void SpringJoint::SetStiffness(int index, float stiffness)
+void yunity::SpringJoint::SetStiffness(int index, float stiffness)
 {
 	stiffness_[index] = stiffness;
 }
 
-void SpringJoint::SetDamping(int index, float damping)
+void yunity::SpringJoint::SetDamping(int index, float damping)
 {
 	dampingCoefficient_[index] = damping;
 }
 
-void SpringJoint::SetEquilibriumPoint()
+void yunity::SpringJoint::SetEquilibriumPoint()
 {
 	Vector3 v = Subtract(bodyA_->GetTranslation(), bodyB_->GetTranslation());
 	v.x = std::abs(v.x);
@@ -38,7 +38,7 @@ void SpringJoint::SetEquilibriumPoint()
 
 }
 
-void SpringJoint::SetEquilibriumPoint(int index)
+void yunity::SpringJoint::SetEquilibriumPoint(int index)
 {
 	Vector3 v = Subtract(bodyA_->GetTranslation(), bodyB_->GetTranslation());
 	v.x = std::abs(v.x);
@@ -48,12 +48,12 @@ void SpringJoint::SetEquilibriumPoint(int index)
 	equilibriumPoint_[index] = diff;
 }
 
-void SpringJoint::SetEquilibriumPoint(int index, float value)
+void yunity::SpringJoint::SetEquilibriumPoint(int index, float value)
 {
 	equilibriumPoint_[index] = value;
 }
 
-void SpringJoint::Solve()
+void yunity::SpringJoint::Solve()
 {
 	Vector3 force;
 	for (int index = 0; index < 3; index++) {
@@ -69,7 +69,7 @@ void SpringJoint::Solve()
 
 }
 
-Vector3 SpringJoint::Spring(Body* bodyA, Body* bodyB, float naturalLength, float stiffness, float dampingCoefficient)
+Vector3 yunity::SpringJoint::Spring(Body* bodyA, Body* bodyB, float naturalLength, float stiffness, float dampingCoefficient)
 {
 	Vector3 diff = Subtract(bodyA->GetMatWorldTranslation(), bodyB->GetMatWorldTranslation());
 	float length = Length(diff);

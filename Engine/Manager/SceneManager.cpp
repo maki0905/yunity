@@ -3,19 +3,19 @@
 #include <cassert>
 #include "ModelManager.h"
 
-SceneManager* SceneManager::GetInstance()
+yunity::SceneManager* yunity::SceneManager::GetInstance()
 {
 	static SceneManager instance;
 
 	return &instance;
 }
 
-void SceneManager::Initialize()
+void yunity::SceneManager::Initialize()
 {
 	sceneFactory_ = new SceneFactory();
 }
 
-void SceneManager::Update()
+void yunity::SceneManager::Update()
 {
 	// 次のシーンの予約があるなら
 	if (nextScene_) {
@@ -39,22 +39,22 @@ void SceneManager::Update()
 
 }
 
-void SceneManager::DrawBack()
+void yunity::SceneManager::DrawBack()
 {
 	scene_->DrawBack();
 }
 
-void SceneManager::Draw3D()
+void yunity::SceneManager::Draw3D()
 {
 	scene_->Draw3D();
 }
 
-void SceneManager::DrawFront()
+void yunity::SceneManager::DrawFront()
 {
 	scene_->DrawFront();
 }
 
-void SceneManager::ChangeScene(const std::string& sceneName)
+void yunity::SceneManager::ChangeScene(const std::string& sceneName)
 {
 	assert(sceneFactory_);
 	assert(nextScene_ == nullptr);

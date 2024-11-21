@@ -1,7 +1,7 @@
 #pragma once
 #include "BaseObjectManager.h"
 
-class ObjectManager : public BaseObjectManager {
+class ObjectManager : public yunity::BaseObjectManager {
 public:
-	void Load(const std::string& fileName, Camera* camera, World* world) override;
+	void Load(const std::string& fileName, yunity::Camera* camera, yunity::World* world) override;
 };

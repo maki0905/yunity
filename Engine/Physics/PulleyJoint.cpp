@@ -1,6 +1,6 @@
 #include "PulleyJoint.h"
 
-void PulleyJoint::CreatePulleyJoint(Body* bodyA, Body* bodyB, Vector3 groundAnchorA, Vector3 groundAnchorB, Vector3 anchorA, Vector3 anchorB, float ratio)
+void yunity::PulleyJoint::CreatePulleyJoint(Body* bodyA, Body* bodyB, Vector3 groundAnchorA, Vector3 groundAnchorB, Vector3 anchorA, Vector3 anchorB, float ratio)
 {
 	bodyA_ = bodyA;
 	bodyB_ = bodyB;
@@ -28,14 +28,14 @@ void PulleyJoint::CreatePulleyJoint(Body* bodyA, Body* bodyB, Vector3 groundAnch
 
 }
 
-void PulleyJoint::Solve()
+void yunity::PulleyJoint::Solve()
 {
 	SolveVelocity();
 	SolvePosition();
 
 }
 
-void PulleyJoint::SolveVelocity()
+void yunity::PulleyJoint::SolveVelocity()
 {
 	// 各ボディの速度取得
 	Vector3 velocityA = bodyA_->GetVelocity();
@@ -56,7 +56,7 @@ void PulleyJoint::SolveVelocity()
 	bodyB_->AddForce(forceB, Body::ForceMode::kImpulse);
 }
 
-void PulleyJoint::SolvePosition()
+void yunity::PulleyJoint::SolvePosition()
 {
 	Vector3 positionA = bodyA_->GetMatWorldTranslation();
 	Vector3 positionB = bodyB_->GetMatWorldTranslation();

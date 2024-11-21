@@ -7,54 +7,56 @@
 
 class DescriptorHeap;
 
-/*
-* @brief 深度バッファ
-*/
-class DepthBuffer
-{
-public:
+namespace yunity {
+	/*
+	* @brief 深度バッファ
+	*/
+	class DepthBuffer
+	{
+	public:
 
-	/// <summary>
-	/// コンストラクタ
-	/// </summary>
-	/// <param name="device">デバイス</param>
-	/// <param name="commandList">コマンドリスト</param>
-	DepthBuffer();
+		/// <summary>
+		/// コンストラクタ
+		/// </summary>
+		/// <param name="device">デバイス</param>
+		/// <param name="commandList">コマンドリスト</param>
+		DepthBuffer();
 
-	/// <summary>
-	/// 生成
-	/// </summary>
-	void Create();
+		/// <summary>
+		/// 生成
+		/// </summary>
+		void Create();
 
-	/// <summary>
-	/// デプスビュークリア
-	/// </summary>
-	void ClearDepthView();
+		/// <summary>
+		/// デプスビュークリア
+		/// </summary>
+		void ClearDepthView();
 
 
-	/// <summary>
-	/// getter
-	/// </summary>
-	/// <returns></returns>
-	
-	ID3D12DescriptorHeap* GetDescriptorHeap() { return dsvHeap_->GetHeapPointer(); }
-	ID3D12Resource* GetDepthStencil() { return depthStencilResource_.Get(); }
+		/// <summary>
+		/// getter
+		/// </summary>
+		/// <returns></returns>
 
-private:
+		ID3D12DescriptorHeap* GetDescriptorHeap() { return dsvHeap_->GetHeapPointer(); }
+		ID3D12Resource* GetDepthStencil() { return depthStencilResource_.Get(); }
 
-	/// <summary>
-	/// デプスステンシル生成
-	/// </summary>
-	/// <returns></returns>
-	Microsoft::WRL::ComPtr<ID3D12Resource> CreateDepthStencilTextureResource();
+	private:
 
-private:
+		/// <summary>
+		/// デプスステンシル生成
+		/// </summary>
+		/// <returns></returns>
+		Microsoft::WRL::ComPtr<ID3D12Resource> CreateDepthStencilTextureResource();
 
-	Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> commandList_;
+	private:
 
-	Microsoft::WRL::ComPtr<ID3D12Resource> depthStencilResource_;
+		Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> commandList_;
 
-	DescriptorHeap* dsvHeap_ = nullptr;
+		Microsoft::WRL::ComPtr<ID3D12Resource> depthStencilResource_;
 
-};
+		DescriptorHeap* dsvHeap_ = nullptr;
 
+	};
+
+}

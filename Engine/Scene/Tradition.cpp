@@ -11,8 +11,8 @@ Tradition* Tradition::GetInstance()
 
 void Tradition::Initialize()
 {
-	sprite_ = std::make_unique<Sprite>();
-	sprite_.reset(Sprite::Create(TextureManager::GetInstance()->Load("white1x1.png"), { 640.0f, 360.0f }, { 1.0f, 1.0f, 1.0f, 0.0f }, { 0.5f, 0.5f }));
+	sprite_ = std::make_unique<yunity::Sprite>();
+	sprite_.reset(yunity::Sprite::Create(yunity::TextureManager::GetInstance()->Load("white1x1.png"), { 640.0f, 360.0f }, { 1.0f, 1.0f, 1.0f, 0.0f }, { 0.5f, 0.5f }));
 	sprite_->SetSize({ 1280.0f, 720.0 });
 	in_ = false;
 	out_ = false;

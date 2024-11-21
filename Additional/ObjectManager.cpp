@@ -2,9 +2,9 @@
 
 #include "ModelManager.h"
 
-void ObjectManager::Load(const std::string& fileName, Camera* camera, World* world) {
-	std::unique_ptr<LevelData> levelData = std::make_unique<LevelData>();
-	levelData.reset(LevelEditor::GetInstance()->LoadFile(fileName));
+void ObjectManager::Load(const std::string& fileName, yunity::Camera* camera, yunity::World* world) {
+	std::unique_ptr<yunity::LevelData> levelData = std::make_unique<yunity::LevelData>();
+	levelData.reset(yunity::LevelEditor::GetInstance()->LoadFile(fileName));
 
 	world_ = world;
 
@@ -15,7 +15,7 @@ void ObjectManager::Load(const std::string& fileName, Camera* camera, World* wor
 			InitializeCommon(objectData, newObject);
 			InitializeCollider(objectData, newObject);
 			InitializePhysics(objectData, newObject);
-			newObject->Initialize(ModelManager::GetInstance()->CreateModel(obj, objectData.fileName), world, objectData.shape);
+			newObject->Initialize(yunity::ModelManager::GetInstance()->CreateModel(obj, objectData.fileName), world, objectData.shape);
 			newObject->InitializeDirection(objectData.tag_);
 			newObject->SetCamera(camera);
 			world->Add(newObject);
@@ -27,7 +27,7 @@ void ObjectManager::Load(const std::string& fileName, Camera* camera, World* wor
 			InitializeCommon(objectData, newObject);
 			InitializeCollider(objectData, newObject);
 			InitializePhysics(objectData, newObject);
-			newObject->Initialize(ModelManager::GetInstance()->CreateModel(obj, objectData.fileName), world, objectData.shape);
+			newObject->Initialize(yunity::ModelManager::GetInstance()->CreateModel(obj, objectData.fileName), world, objectData.shape);
 			newObject->InitializeTexture();
 			newObject->SetCamera(camera);
 			world->Add(newObject);
@@ -39,7 +39,7 @@ void ObjectManager::Load(const std::string& fileName, Camera* camera, World* wor
 			InitializeCommon(objectData, newObject);
 			InitializeCollider(objectData, newObject);
 			InitializePhysics(objectData, newObject);
-			newObject->Initialize(ModelManager::GetInstance()->CreateModel(obj, objectData.fileName), world, objectData.shape);
+			newObject->Initialize(yunity::ModelManager::GetInstance()->CreateModel(obj, objectData.fileName), world, objectData.shape);
 			newObject->SetCamera(camera);
 			world->Add(newObject);
 			objects_.emplace_back(newObject);
@@ -63,8 +63,8 @@ void ObjectManager::Load(const std::string& fileName, Camera* camera, World* wor
 	}
 
 	for (uint32_t index = 0; auto & joint : jointData_) {
-		if (joint.objectDataA.jointType_ == JointType::kSpring && joint.objectDataB.jointType_ == JointType::kSpring) {
-			SpringJoint* springJoint = new SpringJoint();
+		if (joint.objectDataA.jointType_ == yunity::JointType::kSpring && joint.objectDataB.jointType_ == yunity::JointType::kSpring) {
+			yunity::SpringJoint* springJoint = new yunity::SpringJoint();
 			springJoint->CreateSpringJoint(joint.objA, joint.objB);
 			for (uint32_t i = 0; i < 3; i++) {
 				springJoint->EnableSpring(i, joint.objectDataA.springEnabled_[i]);
@@ -80,8 +80,8 @@ void ObjectManager::Load(const std::string& fileName, Camera* camera, World* wor
 			springLines_[index].isActive_ = true;
 			index++;
 		}
-		else if (joint.objectDataA.jointType_ == JointType::kPulley && joint.objectDataB.jointType_ == JointType::kPulley) {
-			PulleyJoint* pulleyJoint = new PulleyJoint();
+		else if (joint.objectDataA.jointType_ == yunity::JointType::kPulley && joint.objectDataB.jointType_ == yunity::JointType::kPulley) {
+			yunity::PulleyJoint* pulleyJoint = new yunity::PulleyJoint();
 			pulleyJoint->CreatePulleyJoint(joint.objA, joint.objB, joint.objectDataA.groundAnchor_, joint.objectDataB.groundAnchor_, joint.objectDataA.anchor_, joint.objectDataB.anchor_, (joint.objectDataA.ratio_ + joint.objectDataB.ratio_) / 2.0f);
 			world->AddJoint(pulleyJoint);
 			joints_.emplace_back(pulleyJoint);

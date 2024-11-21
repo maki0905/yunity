@@ -3,9 +3,10 @@
 #include "Collider.h"
 #include "MathFunction.h"
 #include "World.h"
+#include "Object3D.h"
 
 struct RayCastHit {
-	Object3D* collider;
+	yunity::Object3D* collider;
 	float distance;
 	Vector3 point;
 };
@@ -20,7 +21,7 @@ struct RayCastHit {
 /// <param name="world"></param>
 /// <param name="mask"></param>
 /// <returns></returns>
-bool RayCast(const Vector3& origin, const Vector3& direction, RayCastHit* hitInfo, float maxDistance, World* world, uint32_t mask = 0);
+bool RayCast(const Vector3& origin, const Vector3& direction, RayCastHit* hitInfo, float maxDistance, yunity::World* world, uint32_t mask = 0);
 
 /// <summary>
 /// レイキャスト
@@ -31,7 +32,7 @@ bool RayCast(const Vector3& origin, const Vector3& direction, RayCastHit* hitInf
 /// <param name="world"></param>
 /// <param name="mask"></param>
 /// <returns></returns>
-bool RayCast(const Vector3& origin, const Vector3& direction, RayCastHit* hitInfo, World* world, uint32_t mask = 0);
+bool RayCast(const Vector3& origin, const Vector3& direction, RayCastHit* hitInfo, yunity::World* world, uint32_t mask = 0);
 
 /// <summary>
 /// レイ交点

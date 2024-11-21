@@ -11,19 +11,19 @@ void ClearScene::Initialize()
 	//debugCamera_ = std::make_unique<DebugCamera>();
 	//isDebug_ = false;
 
-	model0_ = std::make_unique<Model>();
+	model0_ = std::make_unique<yunity::Model>();
 	//model0_.reset(Model::Create("terrain", "obj"));
 	//model0_.reset(Model::Create("plane", "gltf"));
 	//model0_.reset(ModelManager::GetInstance()->CreateModel(gltf, true, "simpleSkin"));
-	model0_.reset(ModelManager::GetInstance()->CreateModel(gltf, "human", "sneakWalk", ModelType::kSkin));
+	model0_.reset(yunity::ModelManager::GetInstance()->CreateModel(gltf, "human", "sneakWalk", yunity::ModelType::kSkin));
 	model0_->SetCamera(camera_);
 	worldTransform0_.Initialize();
 	worldTransform0_.scale_ = Vector3(10.0f, 10.0f, 10.0f);
 	worldTransform0_.translation_ = { 10.0f, 0.0f, 0.0f };
 	worldTransform0_.quaternion_ = { 0.0f, 1.0f, 0.0f, 0.0f };
 
-	model0_->SetAnimation("walk", ModelManager::GetInstance()->GetAnimation(gltf, "human", "walk"), AnimationCommon::kLooping);
-	model0_->SetAnimation("sneakWalk", ModelManager::GetInstance()->GetAnimation(gltf, "human", "sneakWalk"), AnimationCommon::kLooping);
+	model0_->SetAnimation("walk", yunity::ModelManager::GetInstance()->GetAnimation(gltf, "human", "walk"), AnimationCommon::kLooping);
+	model0_->SetAnimation("sneakWalk", yunity::ModelManager::GetInstance()->GetAnimation(gltf, "human", "sneakWalk"), AnimationCommon::kLooping);
 
 	//model1_ = std::make_unique<Model>();
 	//model1_.reset(ModelManager::GetInstance()->CreateModel(gltf, "human", "walk", ModelType::kSkin));
@@ -42,8 +42,8 @@ void ClearScene::Initialize()
 	//uint32_t handle = TextureManager::GetInstance()->Load("rostock_laage_airport_4k.dds");
 	////worldTransform2_.scale_ = { 10.0f, 10.0f, 10.0f };
 
-	skybox_ = std::make_unique<SkyBox>();
-	skybox_.reset(SkyBox::Create());
+	skybox_ = std::make_unique<yunity::SkyBox>();
+	skybox_.reset(yunity::SkyBox::Create());
 	skybox_->SetCamera(camera_);
 	skybox_->SetTexture("rostock_laage_airport_4k.dds");
 
@@ -87,15 +87,15 @@ void ClearScene::Update()
 	//worldTransform2_.rotation_.y += 1.0f;
 	worldTransform2_.UpdateMatrix();
 
-	if (Input::GetInstance()->TriggerKey(DIK_1)) {
+	if (yunity::Input::GetInstance()->TriggerKey(DIK_1)) {
 		model0_->PlayAnimation("walk", AnimationCommon::kLooping);
 	}
-	if (Input::GetInstance()->TriggerKey(DIK_2)) {
+	if (yunity::Input::GetInstance()->TriggerKey(DIK_2)) {
 		model0_->PlayAnimation("sneakWalk", AnimationCommon::kLooping);
 	}
 
 
-	if (Input::GetInstance()->TriggerKey(DIK_LSHIFT)) {
+	if (yunity::Input::GetInstance()->TriggerKey(DIK_LSHIFT)) {
 		isDebug_ ^= true;
 	}
 

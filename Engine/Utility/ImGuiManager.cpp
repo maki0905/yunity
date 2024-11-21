@@ -1,4 +1,4 @@
-﻿#include "ImGuiManager.h"
+#include "ImGuiManager.h"
 
 #ifdef _DEBUG
 #include "DirectXCore.h"
@@ -10,13 +10,13 @@
 #endif // _DEBUG
 
 
-ImGuiManager* ImGuiManager::GetInstance()
+yunity::ImGuiManager* yunity::ImGuiManager::GetInstance()
 {
 	static ImGuiManager instance;
 	return &instance;
 }
 
-void ImGuiManager::Initialize()
+void yunity::ImGuiManager::Initialize()
 {
 #ifdef _DEBUG
 	DescriptorHandle srvHandle = DirectXCore::GetInstance()->GetDescriptorHeap(DirectXCore::HeapType::kSRV)->Alloc();
@@ -45,7 +45,7 @@ void ImGuiManager::Initialize()
 
 }
 
-void ImGuiManager::Finalize()
+void yunity::ImGuiManager::Finalize()
 {
 #ifdef _DEBUG
 	// 後始末
@@ -59,7 +59,7 @@ void ImGuiManager::Finalize()
 
 }
 
-void ImGuiManager::Begin()
+void yunity::ImGuiManager::Begin()
 {
 #ifdef _DEBUG
 	// ImGuiフレーム開始
@@ -72,7 +72,7 @@ void ImGuiManager::Begin()
 
 }
 
-void ImGuiManager::End()
+void yunity::ImGuiManager::End()
 {
 #ifdef _DEBUG
 	// 描画前準備
@@ -80,7 +80,7 @@ void ImGuiManager::End()
 #endif
 }
 
-void ImGuiManager::Draw()
+void yunity::ImGuiManager::Draw()
 {
 #ifdef _DEBUG
 	//ID3D12GraphicsCommandList* commandList = directXCore_->GetCommandList();

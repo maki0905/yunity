@@ -4,54 +4,54 @@
 
 #include "RootSignature.h"
 
-PipelineState::PipelineState(ID3D12Device* device, RootSignature* rootSignature)
+yunity::PipelineState::PipelineState(ID3D12Device* device, RootSignature* rootSignature)
 {
 	device_ = device;
 	rootSignature_ = rootSignature;
 }
 
-void PipelineState::SetBlendState(const D3D12_BLEND_DESC& blendDesc)
+void yunity::PipelineState::SetBlendState(const D3D12_BLEND_DESC& blendDesc)
 {
 	psoDesc_.BlendState = blendDesc;
 }
 
-void PipelineState::SetBlendState(const D3D12_RENDER_TARGET_BLEND_DESC& blendDesc)
+void yunity::PipelineState::SetBlendState(const D3D12_RENDER_TARGET_BLEND_DESC& blendDesc)
 {
 	psoDesc_.BlendState.RenderTarget[0] = blendDesc;
 }
 
-void PipelineState::SetRasterizerState(const D3D12_RASTERIZER_DESC& rasterizerDesc)
+void yunity::PipelineState::SetRasterizerState(const D3D12_RASTERIZER_DESC& rasterizerDesc)
 {
 	psoDesc_.RasterizerState = rasterizerDesc;
 }
 
-void PipelineState::SetDepthStencilState(const D3D12_DEPTH_STENCIL_DESC& depthStencilDesc)
+void yunity::PipelineState::SetDepthStencilState(const D3D12_DEPTH_STENCIL_DESC& depthStencilDesc)
 {
 	psoDesc_.DepthStencilState = depthStencilDesc;
 }
 
-void PipelineState::SetSampleMask(UINT sampleMask)
+void yunity::PipelineState::SetSampleMask(UINT sampleMask)
 {
 	psoDesc_.SampleMask = sampleMask;
 }
 
-void PipelineState::SetPrimitiveTopologyType(D3D12_PRIMITIVE_TOPOLOGY_TYPE topologyType)
+void yunity::PipelineState::SetPrimitiveTopologyType(D3D12_PRIMITIVE_TOPOLOGY_TYPE topologyType)
 {
 	assert(topologyType != D3D12_PRIMITIVE_TOPOLOGY_TYPE_UNDEFINED);
 	psoDesc_.PrimitiveTopologyType = topologyType;
 }
 
-void PipelineState::SetDepthTargetFormat(DXGI_FORMAT dsvFormat, UINT msaaCount, UINT msaaQuality)
+void yunity::PipelineState::SetDepthTargetFormat(DXGI_FORMAT dsvFormat, UINT msaaCount, UINT msaaQuality)
 {
 	SetRenderTargetFormats(0, nullptr, dsvFormat, msaaCount, msaaQuality);
 }
 
-void PipelineState::SetRenderTargetFormat(DXGI_FORMAT rtvFormat, DXGI_FORMAT dsvFormat, UINT msaaCount, UINT msaaQuality)
+void yunity::PipelineState::SetRenderTargetFormat(DXGI_FORMAT rtvFormat, DXGI_FORMAT dsvFormat, UINT msaaCount, UINT msaaQuality)
 {
 	SetRenderTargetFormats(1, &rtvFormat, dsvFormat, msaaCount, msaaQuality);
 }
 
-void PipelineState::SetRenderTargetFormats(UINT numRTVs, const DXGI_FORMAT* rtvFormats, DXGI_FORMAT dsvFormat, UINT msaaCount, UINT msaaQuality)
+void yunity::PipelineState::SetRenderTargetFormats(UINT numRTVs, const DXGI_FORMAT* rtvFormats, DXGI_FORMAT dsvFormat, UINT msaaCount, UINT msaaQuality)
 {
 	assert(numRTVs == 0 || rtvFormats != nullptr);
 	for (UINT i = 0; i < numRTVs; ++i) {
@@ -69,17 +69,17 @@ void PipelineState::SetRenderTargetFormats(UINT numRTVs, const DXGI_FORMAT* rtvF
 	psoDesc_.SampleDesc.Quality = msaaQuality;
 }
 
-void PipelineState::SetInputLayout(const D3D12_INPUT_LAYOUT_DESC& inputLayoutDesc)
+void yunity::PipelineState::SetInputLayout(const D3D12_INPUT_LAYOUT_DESC& inputLayoutDesc)
 {
 	psoDesc_.InputLayout = inputLayoutDesc;
 }
 
-void PipelineState::SetPrimitiveRestart(D3D12_INDEX_BUFFER_STRIP_CUT_VALUE IBProps)
+void yunity::PipelineState::SetPrimitiveRestart(D3D12_INDEX_BUFFER_STRIP_CUT_VALUE IBProps)
 {
 	psoDesc_.IBStripCutValue = IBProps;
 }
 
-void PipelineState::SetShader(ShaderType type, Microsoft::WRL::ComPtr<ID3DBlob> blob)
+void yunity::PipelineState::SetShader(ShaderType type, Microsoft::WRL::ComPtr<ID3DBlob> blob)
 {
 	switch (type)
 	{
@@ -92,18 +92,18 @@ void PipelineState::SetShader(ShaderType type, Microsoft::WRL::ComPtr<ID3DBlob> 
 	}
 }
 
-void PipelineState::SetDepthFunc(D3D12_COMPARISON_FUNC depthFunc)
+void yunity::PipelineState::SetDepthFunc(D3D12_COMPARISON_FUNC depthFunc)
 {
 	psoDesc_.DepthStencilState.DepthFunc = depthFunc;
 
 }
 
-void PipelineState::SetCullMode(D3D12_CULL_MODE cullMode)
+void yunity::PipelineState::SetCullMode(D3D12_CULL_MODE cullMode)
 {
 	psoDesc_.RasterizerState.CullMode = cullMode;
 }
 
-void PipelineState::Finalize()
+void yunity::PipelineState::Finalize()
 {
 	HRESULT result = S_FALSE;
 

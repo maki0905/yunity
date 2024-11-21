@@ -10,7 +10,7 @@ void Particle::AffineMatrix()
 	particleForCPU.world = MakeAffineMatrix(transform.scale, transform.rotate, transform.translate);
 }
 
-void Particle::BillboardMatrix(const Camera& camera)
+void Particle::BillboardMatrix(const yunity::Camera& camera)
 {
 	Matrix4x4 billboardMatrix = Inverse(camera.GetViewMatrix());
 	billboardMatrix.m[3][0] = 0.0f;

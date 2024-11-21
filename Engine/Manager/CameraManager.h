@@ -32,10 +32,10 @@ public:
 	/// </summary>
 	void Update();
 
-	Camera* GetCamera() { return camera_.get(); }
+	yunity::Camera* GetCamera() { return camera_.get(); }
 private:
-	std::unique_ptr<Camera> camera_;
-	DebugCamera* debugCamera_;
+	std::unique_ptr<yunity::Camera> camera_;
+	yunity::DebugCamera* debugCamera_;
 	bool isDebug_;
 
 };

@@ -5,7 +5,7 @@
 /*
 * @brief イベントトリガークラス
 */
-class EventTrigger : public Object3D{
+class EventTrigger : public yunity::Object3D{
 public:
 	enum class SerialNumber {
 		kStage1,

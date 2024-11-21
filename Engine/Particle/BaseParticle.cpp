@@ -1,6 +1,6 @@
 #include "BaseParticle.h"
 
-void BaseParticle::Update()
+void yunity::BaseParticle::Update()
 {
 	for (std::list<Particle>::iterator particleIterator = particles_.begin(); particleIterator != particles_.end();) {
 		if ((*particleIterator).lifeTime <= (*particleIterator).currentTime) {
@@ -13,7 +13,7 @@ void BaseParticle::Update()
 	}
 }
 
-void BaseParticle::Draw()
+void yunity::BaseParticle::Draw()
 {
 	particleDrawer_->Draw(particles_);
 }

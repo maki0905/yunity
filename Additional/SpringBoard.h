@@ -2,7 +2,9 @@
 #include "Object3D.h"
 #include "SpringJoint.h"
 
-class SpringBoard : public Object3D {
+
+
+class SpringBoard : public yunity::Object3D {
 public:
 
 	/// <summary>
@@ -16,7 +18,7 @@ public:
 	/// スプリングジョイントの設定
 	/// </summary>
 	/// <param name="obj"></param>
-	void SetSpringJoint(Object3D* obj);
+	void SetSpringJoint(yunity::Object3D* obj);
 
 	/// <summary>
 	/// 衝突時のイベント
@@ -24,7 +26,7 @@ public:
 	void OnCollisionEvent() override;
 
 private:
-	std::unique_ptr<SpringJoint> springJoint_;
+	std::unique_ptr<yunity::SpringJoint> springJoint_;
 
 	Vector3 fixedPosition_;
 

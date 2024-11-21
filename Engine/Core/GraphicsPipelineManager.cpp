@@ -4,7 +4,7 @@
 #include "ShaderCompiler.h"
 #include "RootBindingsCommon.h"
 
-void GraphicsPipelineManager::Initialize()
+void yunity::GraphicsPipelineManager::Initialize()
 {
 	graphicsCommon_ = GraphicsCommon::GetInstance();
 	for (uint32_t pipelineType = 0; pipelineType < PipelineType::kCount; pipelineType++) {
@@ -12,7 +12,6 @@ void GraphicsPipelineManager::Initialize()
 	}
 
 	CreateObject3d();
-	CreateSprite();
 	CreateParticle();
 	CreateLine();
 	CreatePrimitive();
@@ -20,13 +19,13 @@ void GraphicsPipelineManager::Initialize()
 
 }
 
-void GraphicsPipelineManager::SetCommandList(ID3D12GraphicsCommandList* commandList, PipelineType pipelineType, BlendModeType blendModeType)
+void yunity::GraphicsPipelineManager::SetCommandList(ID3D12GraphicsCommandList* commandList, PipelineType pipelineType, BlendModeType blendModeType)
 {
 	commandList->SetGraphicsRootSignature(graphicsPipelines_[pipelineType]->rooSignature_->GetSignature());
 	commandList->SetPipelineState(graphicsPipelines_[pipelineType]->pso_[blendModeType]->GetPipelineStateObject());
 }
 
-void GraphicsPipelineManager::CreateObject3d()
+void yunity::GraphicsPipelineManager::CreateObject3d()
 {
 	graphicsPipelines_[PipelineType::kObject3d]->rooSignature_ = std::make_unique<RootSignature>(Device::GetInstance()->GetDevice(), static_cast<UINT>(Object3dRootBindings::kCount), 1);
 	D3D12_STATIC_SAMPLER_DESC staticSamplers = graphicsCommon_->StaticSampler;
@@ -77,11 +76,7 @@ void GraphicsPipelineManager::CreateObject3d()
 	}
 }
 
-void GraphicsPipelineManager::CreateSprite()
-{
-}
-
-void GraphicsPipelineManager::CreateParticle()
+void yunity::GraphicsPipelineManager::CreateParticle()
 {
 	graphicsPipelines_[PipelineType::kParticle]->rooSignature_ = std::make_unique<RootSignature>(Device::GetInstance()->GetDevice(), static_cast<int>(ParticleRootBindings::kCount), 1);
 
@@ -129,7 +124,7 @@ void GraphicsPipelineManager::CreateParticle()
 	}
 }
 
-void GraphicsPipelineManager::CreateLine()
+void yunity::GraphicsPipelineManager::CreateLine()
 {
 	graphicsPipelines_[PipelineType::kLine]->rooSignature_ = std::make_unique<RootSignature>(Device::GetInstance()->GetDevice(), static_cast<int>(LineRootBindings::kCount), 1);
 	D3D12_STATIC_SAMPLER_DESC staticSamplers = graphicsCommon_->StaticSampler;
@@ -170,7 +165,7 @@ void GraphicsPipelineManager::CreateLine()
 	graphicsPipelines_[PipelineType::kLine]->pso_[0]->Finalize();
 }
 
-void GraphicsPipelineManager::CreatePrimitive()
+void yunity::GraphicsPipelineManager::CreatePrimitive()
 {
 	//graphicsPipelines_[PipelineType::kPrimitive]->rooSignature_ = new RootSignature(Device::GetInstance()->GetDevice(), static_cast<int>(PrimitiveRootBindings::kCount), 1);
 	graphicsPipelines_[PipelineType::kPrimitive]->rooSignature_ = std::make_unique<RootSignature>(Device::GetInstance()->GetDevice(), static_cast<int>(PrimitiveRootBindings::kCount), 1);
@@ -215,7 +210,7 @@ void GraphicsPipelineManager::CreatePrimitive()
 
 }
 
-void GraphicsPipelineManager::CreateSkinning()
+void yunity::GraphicsPipelineManager::CreateSkinning()
 {
 	//graphicsPipelines_[PipelineType::kSkinning]->rooSignature_ = new RootSignature(Device::GetInstance()->GetDevice(), static_cast<UINT>(SkinningRootBindings::kCount), 1);
 	graphicsPipelines_[PipelineType::kSkinning]->rooSignature_ = std::make_unique<RootSignature>(Device::GetInstance()->GetDevice(), static_cast<UINT>(SkinningRootBindings::kCount), 1);
@@ -270,7 +265,7 @@ void GraphicsPipelineManager::CreateSkinning()
 	}
 }
 
-GraphicsPipelineManager* GraphicsPipelineManager::GetInstance()
+yunity::GraphicsPipelineManager* yunity::GraphicsPipelineManager::GetInstance()
 {
 	static GraphicsPipelineManager instance;
 	return &instance;

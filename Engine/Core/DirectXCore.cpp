@@ -16,14 +16,14 @@
 
 #pragma comment(lib, "d3d12.lib")
 
-DirectXCore* DirectXCore::GetInstance()
+yunity::DirectXCore* yunity::DirectXCore::GetInstance()
 {
-	static DirectXCore instance;
+	static yunity::DirectXCore instance;
 
 	return &instance;
 }
 
-void DirectXCore::Initialize()
+void yunity::DirectXCore::Initialize()
 {
 	// FPS固定初期化
 	InitializeFixFPS();
@@ -69,12 +69,12 @@ void DirectXCore::Initialize()
 	GraphicsPipelineManager::GetInstance()->Initialize();
 }
 
-void DirectXCore::Finalize()
+void yunity::DirectXCore::Finalize()
 {
 	RenderTexture::GetInstance()->Finalize();
 }
 
-void DirectXCore::PreDrawRenderTexture()
+void yunity::DirectXCore::PreDrawRenderTexture()
 {
 	RenderTexture::GetInstance()->OMSetRenderTargets();
 	RenderTexture::GetInstance()->ClearRenderTargetView();
@@ -83,13 +83,13 @@ void DirectXCore::PreDrawRenderTexture()
 	commandList_->RSSetScissorRects(windowWidth_, windowHeight_);
 }
 
-void DirectXCore::PostDrawRenderTexture()
+void yunity::DirectXCore::PostDrawRenderTexture()
 {
 	commandList_->BarrierChange(RenderTexture::GetInstance()->GetResource(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
 	RenderTexture::GetInstance()->Machining();
 }
 
-void DirectXCore::PreDrawSwapchain()
+void yunity::DirectXCore::PreDrawSwapchain()
 {
 	commandList_->BarrierChange(swapChain_->GetSwapChain(), D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
 
@@ -102,7 +102,7 @@ void DirectXCore::PreDrawSwapchain()
 	commandList_->BarrierChange(RenderTexture::GetInstance()->GetResource(), D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_RENDER_TARGET);
 }
 
-void DirectXCore::PostDrawSwapchain()
+void yunity::DirectXCore::PostDrawSwapchain()
 {
 	HRESULT result = S_FALSE;
 	commandList_->BarrierChange(swapChain_->GetSwapChain(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
@@ -141,12 +141,12 @@ void DirectXCore::PostDrawSwapchain()
 
 
 
-void DirectXCore::InitializeFixFPS()
+void yunity::DirectXCore::InitializeFixFPS()
 {
 	reference_ = std::chrono::steady_clock::now();
 }
 
-void DirectXCore::UpdateFixFPS()
+void yunity::DirectXCore::UpdateFixFPS()
 {
 	timeBeginPeriod(1);
 	auto now = std::chrono::steady_clock::now();

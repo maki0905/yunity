@@ -1,6 +1,6 @@
 #include "FixedJoint.h"
 
-void FixedJoint::CreateFixedJoint(Body* bodyA, Body* bodyB)
+void yunity::FixedJoint::CreateFixedJoint(Body* bodyA, Body* bodyB)
 {
 	bodyA_ = bodyA;
 	bodyB_ = bodyB;
@@ -9,14 +9,14 @@ void FixedJoint::CreateFixedJoint(Body* bodyA, Body* bodyB)
 
 }
 
-void FixedJoint::Clear()
+void yunity::FixedJoint::Clear()
 {
 	bodyA_ = nullptr;
 	bodyB_ = nullptr;
 	initialPositionOffset.SetZero();
 }
 
-void FixedJoint::Solve()
+void yunity::FixedJoint::Solve()
 {
 	if (bodyA_ != nullptr && bodyB_ != nullptr) {
 		Matrix4x4 rotate = MakeRotateXYZMatrix(bodyA_->GetWorldTransform()->rotation_);

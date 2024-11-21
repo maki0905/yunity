@@ -2,7 +2,7 @@
 
 #include "ModelManager.h"
 
-void Skydome::Initialize(Camera* camera, Vector3 size)
+void yunity::Skydome::Initialize(Camera* camera, Vector3 size)
 {
 	model_ = std::make_unique<Model>();
 	model_.reset(ModelManager::GetInstance()->CreateModel(obj, "skydome"));
@@ -13,11 +13,11 @@ void Skydome::Initialize(Camera* camera, Vector3 size)
 	worldTransform_.UpdateMatrix();
 }
 
-void Skydome::Update()
+void yunity::Skydome::Update()
 {
 }
 
-void Skydome::Draw()
+void yunity::Skydome::Draw()
 {
 	model_->Draw(worldTransform_);
 }

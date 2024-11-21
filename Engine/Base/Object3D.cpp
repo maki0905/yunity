@@ -5,12 +5,12 @@
 #include "CameraManager.h"
 #include "ImGuiManager.h"
 
-Object3D::~Object3D()
+yunity::Object3D::~Object3D()
 {
 	models_.clear();
 }
 
-void Object3D::Initialize(Model* model, World* world, Collider::Shape shape)
+void yunity::Object3D::Initialize(Model* model, World* world, Collider::Shape shape)
 {
 	model_ = std::make_unique<Model>();
 	model_.reset(model);
@@ -22,7 +22,7 @@ void Object3D::Initialize(Model* model, World* world, Collider::Shape shape)
 	texture_ = TextureManager::GetInstance()->Load("uvChecker.png");
 }
 
-void Object3D::Initialize(World* world, Collider::Shape shape)
+void yunity::Object3D::Initialize(World* world, Collider::Shape shape)
 {
 	camera_ = CameraManager::GetInstance()->GetCamera();
 	worldTransform_.Initialize();
@@ -31,7 +31,7 @@ void Object3D::Initialize(World* world, Collider::Shape shape)
 	CreateCollider(&worldTransform_, shape, camera_);
 }
 
-void Object3D::Update()
+void yunity::Object3D::Update()
 {
 #ifdef _DEBUG
 	ImGui::Begin("Object3D");
@@ -44,7 +44,7 @@ void Object3D::Update()
 	//worldTransform_.UpdateMatrix();
 }
 
-void Object3D::Draw()
+void yunity::Object3D::Draw()
 {
 	if (model_) {
 		model_->Draw(worldTransform_/*,texture_*/);
@@ -54,22 +54,22 @@ void Object3D::Draw()
 #endif
 }
 
-void Object3D::OnCollisionEvent()
+void yunity::Object3D::OnCollisionEvent()
 {
 }
 
-void Object3D::OnTriggerEvent()
+void yunity::Object3D::OnTriggerEvent()
 {
 }
 
 
 
-void Object3D::SetModel(const std::string& modelName, Model* model)
+void yunity::Object3D::SetModel(const std::string& modelName, Model* model)
 {
 	models_[modelName].reset(model);
 }
 
-void Object3D::SetEnableLighting(bool onOff)
+void yunity::Object3D::SetEnableLighting(bool onOff)
 {
 	if (model_) {
 		model_->SetEnableLighting(onOff);
@@ -90,7 +90,7 @@ void Object3D::SetEnableLighting(bool onOff)
 
 }
 
-void Object3D::SetDirectionalLight(Model::DirectionalLight directionalLight)
+void yunity::Object3D::SetDirectionalLight(Model::DirectionalLight directionalLight)
 {
 	
 	if (model_) {

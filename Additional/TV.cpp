@@ -5,16 +5,16 @@
 void TV::InitializeTexture()
 {
 	if (GetCollisionAttribute() == kCollisionAttributeTV1) {
-		textureHandle_[0] = TextureManager::Load("Models/TV/TVABotton.png");
-		textureHandle_[1] = TextureManager::Load("Models/TV/TVABottonPush.png");
+		textureHandle_[0] = yunity::TextureManager::Load("Models/TV/TVABotton.png");
+		textureHandle_[1] = yunity::TextureManager::Load("Models/TV/TVABottonPush.png");
 	}
 	else if (GetCollisionAttribute() == kCollisionAttributeTV2) {
-		textureHandle_[0] = TextureManager::Load("Models/TV/TVRStickLeft.png");
-		textureHandle_[1] = TextureManager::Load("Models/TV/TVRStickRight.png");
+		textureHandle_[0] = yunity::TextureManager::Load("Models/TV/TVRStickLeft.png");
+		textureHandle_[1] = yunity::TextureManager::Load("Models/TV/TVRStickRight.png");
 	}
 	else {
-		textureHandle_[0] = TextureManager::Load("Models/TV/TVRBotton.png");
-		textureHandle_[1] = TextureManager::Load("Models/TV/TVRBottonPush.png");
+		textureHandle_[0] = yunity::TextureManager::Load("Models/TV/TVRBotton.png");
+		textureHandle_[1] = yunity::TextureManager::Load("Models/TV/TVRBottonPush.png");
 	}
 
 }

@@ -9,13 +9,12 @@
 
 #pragma comment(lib, "d3d12.lib")
 
-DepthBuffer::DepthBuffer()
+yunity::DepthBuffer::DepthBuffer()
 {
-	//device_ = Device::GetInstance()->GetDevice();
 	commandList_ = DirectXCore::GetInstance()->GetCommandList();
 }
 
-void DepthBuffer::Create()
+void yunity::DepthBuffer::Create()
 {
 	// DepthStemcilTextureをウィンドウのサイズで作成
 	depthStencilResource_ = CreateDepthStencilTextureResource();
@@ -33,7 +32,7 @@ void DepthBuffer::Create()
 	Device::GetInstance()->GetDevice()->CreateDepthStencilView(depthStencilResource_.Get(), &dsvDesc, /*dsvHeap_->GetHeapPointer()->GetCPUDescriptorHandleForHeapStart()*/dsvHeap_->Alloc().GetCPUHandle());
 }
 
-void DepthBuffer::ClearDepthView()
+void yunity::DepthBuffer::ClearDepthView()
 {
 	// 深度ステンシルビュー用デスクリプタヒープのハンドルを取得
 	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle =
@@ -43,7 +42,7 @@ void DepthBuffer::ClearDepthView()
 }
 
 
-Microsoft::WRL::ComPtr<ID3D12Resource> DepthBuffer::CreateDepthStencilTextureResource()
+Microsoft::WRL::ComPtr<ID3D12Resource> yunity::DepthBuffer::CreateDepthStencilTextureResource()
 {
 	HRESULT hr = S_FALSE;
 	Microsoft::WRL::ComPtr<ID3D12Resource> result = nullptr;

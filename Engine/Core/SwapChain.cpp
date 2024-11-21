@@ -9,7 +9,7 @@
 #pragma comment(lib, "dxgi.lib")
 
 
-void SwapChain::Create(ID3D12CommandQueue* commandQueue)
+void yunity::SwapChain::Create(ID3D12CommandQueue* commandQueue)
 {
 	HRESULT result = S_FALSE;
 

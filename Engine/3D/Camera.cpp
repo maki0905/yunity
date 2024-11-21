@@ -6,7 +6,7 @@
 #include "Common.h"
 #include "ImGuiManager.h"
 
-Camera::Camera() :
+yunity::Camera::Camera() :
 	transform_({ {1.0f, 1.0f, 1.0f}, {0, 0, 0 }, { 0, 10.0f, -50.0f} }),
 	fovAngleY_(ConvertToRadians(45.0f)),
 	aspectRatio_((float)16 / 9),
@@ -30,7 +30,7 @@ Camera::Camera() :
 	offset_ = { 0.0f, 5.0f, -50.0f };
 }
 
-Vector3 Camera::Offset()
+Vector3 yunity::Camera::Offset()
 {
 	Vector3 offset = { 0.0f, 5.0f, -50.0f };
 	Matrix4x4 rotate = MakeRotateYMatrix(transform_.rotate.y);
@@ -38,7 +38,7 @@ Vector3 Camera::Offset()
 	return offset;
 }
 
-void Camera::Update()
+void yunity::Camera::Update()
 {
 
 	if (target_ != nullptr) {

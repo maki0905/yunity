@@ -12,13 +12,13 @@ public:
 
 	void Draw();
 
-	void SetCamera(Camera* camera) { camera_ = camera; } 
+	void SetCamera(yunity::Camera* camera) { camera_ = camera; }
 
 	Vector3 GetPosition() { return worldTransform_.translation_; }
 
 private:
-	Camera* camera_ = nullptr;
-	WorldTransform worldTransform_;
+	yunity::Camera* camera_ = nullptr;
+	yunity::WorldTransform worldTransform_;
 	// 発生頻度
 	float frequency_;
 	// 頻度用時刻
@@ -26,5 +26,5 @@ private:
 	// 発生数
 	uint32_t count_;
 
-	std::unique_ptr<PrimitiveDrawer> primitiveDrawer_;
+	std::unique_ptr<yunity::PrimitiveDrawer> primitiveDrawer_;
 };

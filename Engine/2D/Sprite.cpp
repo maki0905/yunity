@@ -13,18 +13,18 @@
 /// <summary>
 /// 静的メンバ変数の実体
 /// </summary>
-UINT Sprite::descriptorHandleIncrementSize_;
-ID3D12GraphicsCommandList* Sprite::commandList_ = nullptr;
-RootSignature* Sprite::rootSignature_ = nullptr;
-PipelineState* Sprite::pipelineState_ = nullptr;
-Matrix4x4 Sprite::matProjection_;
+UINT yunity::Sprite::descriptorHandleIncrementSize_;
+ID3D12GraphicsCommandList* yunity::Sprite::commandList_ = nullptr;
+yunity::RootSignature*  yunity::Sprite::rootSignature_ = nullptr;
+yunity::PipelineState*  yunity::Sprite::pipelineState_ = nullptr;
+Matrix4x4  yunity::Sprite::matProjection_;
 
 
-void Sprite::StaticInitialize()
+void  yunity::Sprite::StaticInitialize()
 {
 
 	// デスクリプタサイズを取得
-	descriptorHandleIncrementSize_ = Device::GetInstance()->GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+	descriptorHandleIncrementSize_ =Device::GetInstance()->GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 
 	HRESULT result = S_FALSE;
 	Microsoft::WRL::ComPtr<ID3DBlob> vsBlob;    // 頂点シェーダーオブジェクト
@@ -74,7 +74,7 @@ void Sprite::StaticInitialize()
 		exit(1);
 	}
 
-	rootSignature_ = new RootSignature(Device::GetInstance()->GetDevice(), 2, 1);
+	rootSignature_ = new yunity::RootSignature(Device::GetInstance()->GetDevice(), 2, 1);
 	
 	// スタティックサンプラー
 	D3D12_STATIC_SAMPLER_DESC staticSamplers = {};
@@ -160,7 +160,7 @@ void Sprite::StaticInitialize()
 
 }
 
-void Sprite::PreDraw(ID3D12GraphicsCommandList* commandList)
+void  yunity::Sprite::PreDraw(ID3D12GraphicsCommandList* commandList)
 {
 	// PreDrawとPostDrawがペアで呼ばれていなければエラー
 	assert(Sprite::commandList_ == nullptr);
@@ -177,13 +177,13 @@ void Sprite::PreDraw(ID3D12GraphicsCommandList* commandList)
 
 }
 
-void Sprite::PostDraw()
+void  yunity::Sprite::PostDraw()
 {
 	// コマンドリストを解除
 	Sprite::commandList_ = nullptr;
 }
 
-Sprite* Sprite::Create(uint32_t textureHandle, Vector2 position, Vector4 color, Vector2 anchorpoint, bool isFlipx, bool isFlipY)
+yunity::Sprite* yunity::Sprite::Create(uint32_t textureHandle, Vector2 position, Vector4 color, Vector2 anchorpoint, bool isFlipx, bool isFlipY)
 {
 	// 仮サイズ
 	Vector2 size = { 100.0f, 100.0f };
@@ -210,11 +210,11 @@ Sprite* Sprite::Create(uint32_t textureHandle, Vector2 position, Vector4 color, 
 	return sprite;
 }
 
-Sprite::Sprite()
+yunity::Sprite::Sprite()
 {
 }
 
-Sprite::Sprite(uint32_t textureHandle, Vector2 position, Vector2 size, Vector4 color, Vector2 anchorpoint, bool isFlipx, bool isFlipY)
+yunity::Sprite::Sprite(uint32_t textureHandle, Vector2 position, Vector2 size, Vector4 color, Vector2 anchorpoint, bool isFlipx, bool isFlipY)
 {
 	position_ = position;
 	size_ = size;
@@ -227,7 +227,7 @@ Sprite::Sprite(uint32_t textureHandle, Vector2 position, Vector2 size, Vector4 c
 	texSize_ = size;
 }
 
-void Sprite::Finalize()
+void  yunity::Sprite::Finalize()
 {
 	if (rootSignature_) {
 		delete rootSignature_;
@@ -241,7 +241,7 @@ void Sprite::Finalize()
 }
 
 
-bool Sprite::Initialize()
+bool  yunity::Sprite::Initialize()
 {
 	// nullptrチェック
 	HRESULT result = S_FALSE;
@@ -312,27 +312,27 @@ bool Sprite::Initialize()
 	return true;
 }
 
-void Sprite::SetTextureHandle(uint32_t textureHandle)
+void  yunity::Sprite::SetTextureHandle(uint32_t textureHandle)
 {
 	textureHandle_ = textureHandle;
 	resourceDesc_ = TextureManager::GetInstance()->GetResoureDesc(textureHandle_);
 }
 
-void Sprite::SetPosition(const Vector2 position)
+void  yunity::Sprite::SetPosition(const Vector2 position)
 {
 	position_ = position;
 	// 頂点バッファへのデータ転送
 	TransferVertices();
 }
 
-void Sprite::SetRotation(float rotation)
+void  yunity::Sprite::SetRotation(float rotation)
 {
 	rotation_ = rotation;
 	// 頂点バッファへのデータ転送
 	TransferVertices();
 }
 
-void Sprite::SetSize(const Vector2& size)
+void  yunity::Sprite::SetSize(const Vector2& size)
 {
 	size_ = size;
 	// 頂点バッファへのデータ転送
@@ -340,7 +340,7 @@ void Sprite::SetSize(const Vector2& size)
 
 }
 
-void Sprite::SetAnchorPoint(const Vector2& anchorPoint)
+void  yunity::Sprite::SetAnchorPoint(const Vector2& anchorPoint)
 {
 	anchorPoint_ = anchorPoint;
 	// 頂点バッファへのデータ転送
@@ -348,21 +348,21 @@ void Sprite::SetAnchorPoint(const Vector2& anchorPoint)
 
 }
 
-void Sprite::SetIsFlipX(bool isFlipX)
+void  yunity::Sprite::SetIsFlipX(bool isFlipX)
 {
 	isFlipX_ = isFlipX;
 	// 頂点バッファへのデータ転送
 	TransferVertices();
 }
 
-void Sprite::SetIsFlipY(bool isFlipY)
+void  yunity::Sprite::SetIsFlipY(bool isFlipY)
 {
 	isFlipY_ = isFlipY;
 	// 頂点バッファへのデータ転送
 	TransferVertices();
 }
 
-void Sprite::SetTextureRect(const Vector2 texBase, const Vector2& texSize)
+void  yunity::Sprite::SetTextureRect(const Vector2 texBase, const Vector2& texSize)
 {
 	texBase_ = texBase;
 	texSize_ = texSize;
@@ -370,7 +370,7 @@ void Sprite::SetTextureRect(const Vector2 texBase, const Vector2& texSize)
 	TransferVertices();
 }
 
-void Sprite::Draw()
+void  yunity::Sprite::Draw()
 {
 	// ワールド行列の更新
 	matWorld_ = MakeIdentity4x4();
@@ -393,7 +393,7 @@ void Sprite::Draw()
 
 }
 
-void Sprite::TransferVertices()
+void  yunity::Sprite::TransferVertices()
 {
 	// 左下、左上、右下、右上
 	enum { LB, LT, RB, RT };

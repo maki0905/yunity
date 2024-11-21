@@ -1,4 +1,4 @@
-﻿#include "Input.h"
+#include "Input.h"
 #include <cassert>
 
 #include "WindowsAPI.h"
@@ -11,14 +11,14 @@
 //	return DIENUM_CONTINUE;
 //}
 
-Input* Input::GetInstance()
+yunity::Input* yunity::Input::GetInstance()
 {
 	static Input instance;
 
 	return &instance;
 }
 
-void Input::Initialize()
+void yunity::Input::Initialize()
 {
 	HRESULT result = S_FALSE;
 
@@ -64,7 +64,7 @@ void Input::Initialize()
 
 }
 
-void Input::Update()
+void yunity::Input::Update()
 {
 	devKeyboard_->Acquire(); // キーボード動作開始
 
@@ -116,7 +116,7 @@ void Input::Update()
 
 }
 
-bool Input::PushKey(BYTE keyNumber)
+bool yunity::Input::PushKey(BYTE keyNumber)
 {
 	// 0でなければ押している
 	if (key_[keyNumber]) {
@@ -127,7 +127,7 @@ bool Input::PushKey(BYTE keyNumber)
 	return false;
 }
 
-bool Input::PrePushKey(BYTE keyNumber) const
+bool yunity::Input::PrePushKey(BYTE keyNumber) const
 {
 	if (!keyPre_[keyNumber]) {
 		return true;
@@ -135,7 +135,7 @@ bool Input::PrePushKey(BYTE keyNumber) const
 	return false;
 }
 
-bool Input::TriggerKey(BYTE keyNumber)
+bool yunity::Input::TriggerKey(BYTE keyNumber)
 {
 	// 前が0で、今回が0でなければトリガー
 	if (!keyPre_[keyNumber] && key_[keyNumber]) {
@@ -146,7 +146,7 @@ bool Input::TriggerKey(BYTE keyNumber)
 	return false;
 }
 
-bool Input::IsKeyReleased(BYTE keyNumber) const
+bool yunity::Input::IsKeyReleased(BYTE keyNumber) const
 {
 	// 前が0ではなくて、今回が0
 	if (keyPre_[keyNumber] && !key_[keyNumber]) {
@@ -155,7 +155,7 @@ bool Input::IsKeyReleased(BYTE keyNumber) const
 	return false;
 }
 
-bool Input::ExitKey(BYTE keyNumber) const
+bool yunity::Input::ExitKey(BYTE keyNumber) const
 {
 	// 前回が0ではなくて、今回が0
 	if (keyPre_[keyNumber] && !key_[keyNumber]) {
@@ -164,7 +164,7 @@ bool Input::ExitKey(BYTE keyNumber) const
 	return false;
 }
 
-bool Input::PushMouse(int32_t keyNumber) const
+bool yunity::Input::PushMouse(int32_t keyNumber) const
 {
 	if (mouse_.rgbButtons[keyNumber]) {
 		return true;
@@ -174,7 +174,7 @@ bool Input::PushMouse(int32_t keyNumber) const
 	return false;
 }
 
-bool Input::TriggerMouse(int32_t keyNumber) const
+bool yunity::Input::TriggerMouse(int32_t keyNumber) const
 {
 	// 前が0で、今回が0でなければトリガー
 	if (!mousePre_.rgbButtons[keyNumber] && mouse_.rgbButtons[keyNumber]) {
@@ -184,7 +184,7 @@ bool Input::TriggerMouse(int32_t keyNumber) const
 	return false;
 }
 
-bool Input::ExitMouse(int32_t keyNumber) const
+bool yunity::Input::ExitMouse(int32_t keyNumber) const
 {
 	// 前が0ではなくて、今回が0
 	if (mousePre_.rgbButtons[keyNumber] && !mouse_.rgbButtons[keyNumber]) {
@@ -193,17 +193,17 @@ bool Input::ExitMouse(int32_t keyNumber) const
 	return false;
 }
 
-int32_t Input::GetWheel() const
+int32_t yunity::Input::GetWheel() const
 {
 	return static_cast<int32_t>(mouse_.lZ);
 }
 
-Vector2 Input::GetMouseMove() const
+Vector2 yunity::Input::GetMouseMove() const
 {
 	return { (float)mouse_.lX,(float)mouse_.lY };
 }
 
-bool Input::GetJoystickState(int32_t stickNo, DIJOYSTATE2& out) const
+bool yunity::Input::GetJoystickState(int32_t stickNo, DIJOYSTATE2& out) const
 {
 	if (stickNo >= 0 && stickNo < static_cast<int32_t>(devJoysticks_.size())) {
 		out = devJoysticks_[stickNo].state_.directInput_;
@@ -212,7 +212,7 @@ bool Input::GetJoystickState(int32_t stickNo, DIJOYSTATE2& out) const
 	return false;
 }
 
-bool Input::GetJoystickStatePrevious(int32_t stickNo, DIJOYSTATE2& out) const
+bool yunity::Input::GetJoystickStatePrevious(int32_t stickNo, DIJOYSTATE2& out) const
 {
 	if (stickNo >= 0 && stickNo < static_cast<int32_t>(devJoysticks_.size())) {
 		out = devJoysticks_[stickNo].statePre_.directInput_;
@@ -221,7 +221,7 @@ bool Input::GetJoystickStatePrevious(int32_t stickNo, DIJOYSTATE2& out) const
 	return false;
 }
 
-bool Input::GetJoystickState(int32_t stickNo, XINPUT_STATE& out) const
+bool yunity::Input::GetJoystickState(int32_t stickNo, XINPUT_STATE& out) const
 {
 	if (stickNo >= 0 && stickNo < static_cast<int32_t>(devJoysticks_.size())) {
 		if (devJoysticks_[stickNo].type_ == PadType::XInput) {
@@ -236,7 +236,7 @@ bool Input::GetJoystickState(int32_t stickNo, XINPUT_STATE& out) const
 	return false;
 }
 
-bool Input::GetJoystickStatePrevious(int32_t stickNo, XINPUT_STATE& out) const
+bool yunity::Input::GetJoystickStatePrevious(int32_t stickNo, XINPUT_STATE& out) const
 {
 	if (stickNo >= 0 && stickNo < static_cast<int32_t>(devJoysticks_.size())) {
 		if (devJoysticks_[stickNo].type_ == PadType::XInput) {
@@ -247,7 +247,7 @@ bool Input::GetJoystickStatePrevious(int32_t stickNo, XINPUT_STATE& out) const
 	return false;
 }
 
-bool Input::IsControllerConnected() const
+bool yunity::Input::IsControllerConnected() const
 {
 	for (DWORD i = 0; i < XUSER_MAX_COUNT; ++i) {
 		XINPUT_STATE state;

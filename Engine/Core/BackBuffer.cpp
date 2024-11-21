@@ -8,12 +8,12 @@
 #pragma comment(lib, "d3d12.lib")
 #pragma comment(lib, "dxgi.lib")
 
-void BackBuffer::Finalize()
+void yunity::BackBuffer::Finalize()
 {
 	backBuffers_.clear();
 }
 
-void BackBuffer::Create(IDXGISwapChain4* swapChain)
+void yunity::BackBuffer::Create(IDXGISwapChain4* swapChain)
 {
 	HRESULT result = S_FALSE;
 
@@ -42,15 +42,15 @@ void BackBuffer::Create(IDXGISwapChain4* swapChain)
 		renderTargetViewDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
 		renderTargetViewDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;
 		// レンダーターゲットビューの生成
-		Device::GetInstance()->GetDevice()->CreateRenderTargetView(backBuffers_[i].Get(), &renderTargetViewDesc, handle);
+		yunity::Device::GetInstance()->GetDevice()->CreateRenderTargetView(backBuffers_[i].Get(), &renderTargetViewDesc, handle);
 	}
 
 	rtvHandles_[0] = rtvDescriptorHeap_->GetHeapPointer()->GetCPUDescriptorHandleForHeapStart()/*rtvDescriptorHeap_->GetCPUDescriptorHandleForHeapStart()*/;
-	rtvHandles_[1].ptr = rtvHandles_[0].ptr + Device::GetInstance()->GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
+	rtvHandles_[1].ptr = rtvHandles_[0].ptr + yunity::Device::GetInstance()->GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 
 }
 
-void BackBuffer::SetRenderTarget(ID3D12GraphicsCommandList* commandList, IDXGISwapChain4* swapChain, ID3D12DescriptorHeap* dsvHeap_)
+void yunity::BackBuffer::SetRenderTarget(ID3D12GraphicsCommandList* commandList, IDXGISwapChain4* swapChain, ID3D12DescriptorHeap* dsvHeap_)
 {
 	UINT bbIndex = swapChain->GetCurrentBackBufferIndex();
 	// 深度ステンシルビュー用デスクリプタヒープのハンドルを取得
@@ -60,7 +60,7 @@ void BackBuffer::SetRenderTarget(ID3D12GraphicsCommandList* commandList, IDXGISw
 	commandList->OMSetRenderTargets(1, &rtvHandles_[bbIndex], false, &dsvHandle);
 }
 
-void BackBuffer::ClearRenderTarget(ID3D12GraphicsCommandList* commandList, IDXGISwapChain4* swapChain)
+void yunity::BackBuffer::ClearRenderTarget(ID3D12GraphicsCommandList* commandList, IDXGISwapChain4* swapChain)
 {
 	UINT bbIndex = swapChain->GetCurrentBackBufferIndex();
 	// 全画面クリア        Red   Green Blue  Alpha

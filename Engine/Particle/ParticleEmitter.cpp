@@ -13,7 +13,7 @@ void ParticleEmitter::Initialize(EulerTransform transform, float frequency, uint
 	frequencyTime_ = 0.0f;
 	count_ = count;
 
-	primitiveDrawer_.reset(PrimitiveDrawer::Create(PrimitiveDrawer::Type::kBox));
+	primitiveDrawer_.reset(yunity::PrimitiveDrawer::Create(yunity::PrimitiveDrawer::Type::kBox));
 	primitiveDrawer_->SetCamera(camera_);
 }
 

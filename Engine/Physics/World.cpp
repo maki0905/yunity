@@ -1,11 +1,11 @@
 #include "World.h"
 
-#include "Object3D.h"
 #include "DirectXCore.h"
 #include "ImGuiManager.h"
 #include "Joint.h"
+#include "Object3D.h"
 
-void World::Initialize(const Vector3& gravity)
+void yunity::World::Initialize(const Vector3& gravity)
 {
 	collisionManager_ = std::make_unique<CollisionManager>();
 	allocator_.clear();
@@ -15,7 +15,7 @@ void World::Initialize(const Vector3& gravity)
 	isFixedTime_ = true;
 }
 
-void World::Solve()
+void yunity::World::Solve()
 {
 	float time = 0.0f;
 	if (!isFixedTime_) {
@@ -50,7 +50,7 @@ void World::Solve()
 
 }
 
-void World::Take(Object3D* collider)
+void yunity::World::Take(Object3D* collider)
 {
 	for (std::list<Object3D*>::iterator iterator = allocator_.begin(); iterator != allocator_.end();) {
 		if (*iterator == collider) {
@@ -63,7 +63,7 @@ void World::Take(Object3D* collider)
 
 }
 
-void World::AddJoint(Joint* joint)
+void yunity::World::AddJoint(Joint* joint)
 {
 	bool duplicationCheck = true;
 	for (std::list<Joint*>::iterator iterator = jointAllocator_.begin(); iterator != jointAllocator_.end();) {
@@ -77,7 +77,7 @@ void World::AddJoint(Joint* joint)
 	}
 }
 
-void World::TakeJoint(Joint* joint)
+void yunity::World::TakeJoint(Joint* joint)
 {
 	for (std::list<Joint*>::iterator iterator = jointAllocator_.begin(); iterator != jointAllocator_.end();) {
 		if (*iterator == joint) {

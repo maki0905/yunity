@@ -14,7 +14,7 @@
 /*
 * @brief クリアシーンクラス
 */
-class ClearScene : public IScene
+class ClearScene : public yunity::IScene
 {
 public:
 	/// <summary>
@@ -47,21 +47,21 @@ public:
 private:
 	bool isDebug_ = false;
 
-	Camera* camera_;
-	std::unique_ptr<DebugCamera> debugCamera_;
+	yunity::Camera* camera_;
+	std::unique_ptr<yunity::DebugCamera> debugCamera_;
 
-	std::vector<Object3D*> objects_;
+	std::vector<yunity::Object3D*> objects_;
 
-	std::unique_ptr<Model> model0_;
-	WorldTransform worldTransform0_;
-	std::unique_ptr<Model> model1_;
-	WorldTransform worldTransform1_;
-	std::unique_ptr<Model> model2_;
-	WorldTransform worldTransform2_;
-	std::unique_ptr<SkyBox> skybox_;
+	std::unique_ptr<yunity::Model> model0_;
+	yunity::WorldTransform worldTransform0_;
+	std::unique_ptr<yunity::Model> model1_;
+	yunity::WorldTransform worldTransform1_;
+	std::unique_ptr<yunity::Model> model2_;
+	yunity::WorldTransform worldTransform2_;
+	std::unique_ptr<yunity::SkyBox> skybox_;
 	std::unique_ptr<Player> player_;
 
-	std::unique_ptr<World> world_;
+	std::unique_ptr<yunity::World> world_;
 
 };
 

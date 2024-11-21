@@ -14,28 +14,28 @@
 #include "RootBindingsCommon.h"
 #include "ModelManager.h"
 
-ID3D12GraphicsCommandList* Model::commandList_ = nullptr;
+ID3D12GraphicsCommandList* yunity::Model::commandList_ = nullptr;
 
 
-void Model::PreDraw(ID3D12GraphicsCommandList* commandList)
+void yunity::Model::PreDraw(ID3D12GraphicsCommandList* commandList)
 {
 	assert(commandList_ == nullptr);
 	commandList_ = commandList;
 }
 
-void Model::PostDraw()
+void yunity::Model::PostDraw()
 {
 	commandList_ = nullptr;
 }
 
-Model::~Model()
+yunity::Model::~Model()
 {
 	ModelManager::GetInstance()->Take(this);
 }
 
 
 
-void Model::Initialize(const std::string& name, const ModelType& modelType, const ModelData& modelData)
+void yunity::Model::Initialize(const std::string& name, const ModelType& modelType, const ModelData& modelData)
 {
 	// 共通
 	modelName_ = name;
@@ -63,7 +63,7 @@ void Model::Initialize(const std::string& name, const ModelType& modelType, cons
 	}
 }
 
-void Model::Draw(const WorldTransform& worldTransform, uint32_t textureHandle)
+void yunity::Model::Draw(const WorldTransform& worldTransform, uint32_t textureHandle)
 {
 	assert(commandList_);
 	assert(worldTransform.constBuff_.Get());
@@ -115,7 +115,7 @@ void Model::Draw(const WorldTransform& worldTransform, uint32_t textureHandle)
 	}
 }
 
-void Model::Draw(const WorldTransform& worldTransform)
+void yunity::Model::Draw(const WorldTransform& worldTransform)
 {
 	assert(commandList_);
 	assert(worldTransform.constBuff_.Get());
@@ -172,21 +172,21 @@ void Model::Draw(const WorldTransform& worldTransform)
 	
 }
 
-void Model::SetPointLight(const PointLight& pointLight)
+void yunity::Model::SetPointLight(const PointLight& pointLight)
 {
 	pointLightData_->color = pointLight.color;
 	pointLightData_->position = pointLight.position;
 	pointLightData_->intensity = pointLight.intensity;
 }
 
-void Model::SetDirectionalLight(const DirectionalLight& directionalLight)
+void yunity::Model::SetDirectionalLight(const DirectionalLight& directionalLight)
 {
 	directionalLightData_->color = directionalLight.color;
 	directionalLightData_->direction = directionalLight.direction;
 	directionalLightData_->intensity = directionalLight.intensity;
 }
 
-void Model::SetAnimation(std::string name, const Animation& animation, AnimationCommon::AnimationMode mode)
+void yunity::Model::SetAnimation(std::string name, const Animation& animation, AnimationCommon::AnimationMode mode)
 {
 	std::string path = name;
 	auto itr = animations_.find(path);
@@ -197,7 +197,7 @@ void Model::SetAnimation(std::string name, const Animation& animation, Animation
 	}
 }
 
-void Model::PlayAnimation(std::string name, AnimationCommon::AnimationMode mode)
+void yunity::Model::PlayAnimation(std::string name, AnimationCommon::AnimationMode mode)
 {
 	isAnimation_ = true;
 	if (animations_[name].animationCommon.state == AnimationCommon::kStopped) {
@@ -205,7 +205,7 @@ void Model::PlayAnimation(std::string name, AnimationCommon::AnimationMode mode)
 	}
 }
 
-void Model::StopAnimation()
+void yunity::Model::StopAnimation()
 {
 	isAnimation_ = false;
 
@@ -219,13 +219,13 @@ void Model::StopAnimation()
 	}
 }
 
-void Model::StopAnimation(std::string name)
+void yunity::Model::StopAnimation(std::string name)
 {
 	isAnimation_ = true;
 	animations_[name].animationCommon.state = AnimationCommon::kStopped;
 }
 
-void Model::TransitionAnimation(const std::string& from, const std::string& to, float time)
+void yunity::Model::TransitionAnimation(const std::string& from, const std::string& to, float time)
 {
 	isTransition_ = true;
 	from_ = from;
@@ -235,7 +235,7 @@ void Model::TransitionAnimation(const std::string& from, const std::string& to, 
 }
 
 
-void Model::SkeletonUpdate()
+void yunity::Model::SkeletonUpdate()
 {
 	// すべてのJointを更新。親が若いので通常ループで処理可能になっている
 	for (Joint& joint : skeleton_.joints) {
@@ -249,7 +249,7 @@ void Model::SkeletonUpdate()
 	}
 }
 
-void Model::ApplyAnimation()
+void yunity::Model::ApplyAnimation()
 {
 	if (isTransition_) {
 		animations_[from_].animationCommon.time += 1.0f / 60.0f;
@@ -345,7 +345,7 @@ void Model::ApplyAnimation()
 	}
 }
 
-void Model::SkinClusterUpdate()
+void yunity::Model::SkinClusterUpdate()
 {
 	for (size_t jointIndex = 0; jointIndex < skeleton_.joints.size(); ++jointIndex) {
 		assert(jointIndex < skinCluster_.inverseBindPoseMatrices.size());
@@ -354,7 +354,7 @@ void Model::SkinClusterUpdate()
 	}
 }
 
-void Model::CreateMesh()
+void yunity::Model::CreateMesh()
 {	
 	// 頂点リソース
 	vertexResource_ = CreateBufferResource(sizeof(VertexData) * modelData_.vertices.size());
@@ -369,7 +369,7 @@ void Model::CreateMesh()
 	vertexResource_->Unmap(0, nullptr);
 }
 
-void Model::CreateIndex()
+void yunity::Model::CreateIndex()
 {
 	// インデックスリソース
 	indexResource_ = CreateBufferResource(sizeof(uint32_t) * modelData_.indices.size());
@@ -383,7 +383,7 @@ void Model::CreateIndex()
 
 }
 
-void Model::InitializeDirectionalLight()
+void yunity::Model::InitializeDirectionalLight()
 {
 	// 
 	directionalLightResource_ = CreateBufferResource(sizeof(DirectionalLight));
@@ -405,7 +405,7 @@ void Model::InitializeDirectionalLight()
 
 }
 
-void Model::InitializeMaterial()
+void yunity::Model::InitializeMaterial()
 {
 	materialResource_ = CreateBufferResource(sizeof(MaterialData));
 	materialData_ = nullptr;
@@ -415,7 +415,7 @@ void Model::InitializeMaterial()
 	materialData_->shininess = 50.0f;
 }
 
-void Model::InitializeNode()
+void yunity::Model::InitializeNode()
 {
 	nodeResource_ = CreateBufferResource(sizeof(Matrix4x4));
 	nodeData_ = nullptr;
@@ -425,7 +425,7 @@ void Model::InitializeNode()
 }
 
 
-Microsoft::WRL::ComPtr<ID3D12Resource> Model::CreateBufferResource(size_t sizeInBytes)
+Microsoft::WRL::ComPtr<ID3D12Resource> yunity::Model::CreateBufferResource(size_t sizeInBytes)
 {
 	HRESULT result = S_FALSE;
 	// リソース用のヒープの設定
@@ -449,7 +449,7 @@ Microsoft::WRL::ComPtr<ID3D12Resource> Model::CreateBufferResource(size_t sizeIn
 	return resource;
 }
 
-Model::Skeleton Model::CreateSkelton(const Node& rootNode)
+yunity::Model::Skeleton yunity::Model::CreateSkelton(const Node& rootNode)
 {
 	Skeleton skeleton;
 	skeleton.root = CreateJoint(rootNode, {}, skeleton.joints);
@@ -464,7 +464,7 @@ Model::Skeleton Model::CreateSkelton(const Node& rootNode)
 	return skeleton;
 }
 
-int32_t Model::CreateJoint(const Node& node, const std::optional<int32_t>& parent, std::vector<Joint>& joints)
+int32_t yunity::Model::CreateJoint(const Node& node, const std::optional<int32_t>& parent, std::vector<Joint>& joints)
 {
 	Joint joint;
 	joint.name = node.name;
@@ -483,7 +483,7 @@ int32_t Model::CreateJoint(const Node& node, const std::optional<int32_t>& paren
 	return joint.index;
 }
 
-Model::SkinCluster Model::CreateSkinCluster()
+yunity::Model::SkinCluster yunity::Model::CreateSkinCluster()
 {
 	SkinCluster skinCluster;
 	// palette用のResourceを確保

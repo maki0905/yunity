@@ -77,7 +77,7 @@ public:
 	float GetTime() { return time_; }
 
 private:
-	std::unique_ptr<Sprite> sprite_;
+	std::unique_ptr<yunity::Sprite> sprite_;
 
 	TraditionMode mode_;
 	bool isActive_;

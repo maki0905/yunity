@@ -5,25 +5,23 @@
 #include <sstream>
 
 #include "Device.h"
-#include "RootSignature.h"
-#include "PipelineState.h"
 #include "ShaderCompiler.h"
 #include "DirectXCore.h"
 
-ID3D12Device* ParticleDrawer::device_ = nullptr;
-ID3D12GraphicsCommandList* ParticleDrawer::commandList_ = nullptr;
-RootSignature* ParticleDrawer::rootSignature_ = nullptr;
-PipelineState* ParticleDrawer::pipelineState_ = nullptr;
+ID3D12Device* yunity::ParticleDrawer::device_ = nullptr;
+ID3D12GraphicsCommandList* yunity::ParticleDrawer::commandList_ = nullptr;
+yunity::RootSignature* yunity::ParticleDrawer::rootSignature_ = nullptr;
+yunity::PipelineState* yunity::ParticleDrawer::pipelineState_ = nullptr;
 
 
-void ParticleDrawer::StaticInitialize()
+void yunity::ParticleDrawer::StaticInitialize()
 {
 	device_ = Device::GetInstance()->GetDevice();
 
 	InitializeGraphicsPipeline();
 }
 
-void ParticleDrawer::PreDraw(ID3D12GraphicsCommandList* commandList)
+void yunity::ParticleDrawer::PreDraw(ID3D12GraphicsCommandList* commandList)
 {
 	assert(commandList_ == nullptr);
 
@@ -33,19 +31,19 @@ void ParticleDrawer::PreDraw(ID3D12GraphicsCommandList* commandList)
 	commandList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }
 
-void ParticleDrawer::PostDraw()
+void yunity::ParticleDrawer::PostDraw()
 {
 	commandList_ = nullptr;
 }
 
-ParticleDrawer* ParticleDrawer::Create(const std::string& modelname)
+yunity::ParticleDrawer* yunity::ParticleDrawer::Create(const std::string& modelname)
 {
 	ParticleDrawer* particleDrawer = new ParticleDrawer();
 	particleDrawer->Initialize(modelname);
 	return particleDrawer;
 }
 
-void ParticleDrawer::InitializeGraphicsPipeline()
+void yunity::ParticleDrawer::InitializeGraphicsPipeline()
 {
 	rootSignature_ = new RootSignature(device_, static_cast<int>(RootBindings::kCount), 1);
 
@@ -122,7 +120,7 @@ void ParticleDrawer::InitializeGraphicsPipeline()
 }
 
 
-void ParticleDrawer::Initialize(const std::string& filename)
+void yunity::ParticleDrawer::Initialize(const std::string& filename)
 {
 	CreateMesh();
 	if (filename.size() != 0) {
@@ -132,7 +130,7 @@ void ParticleDrawer::Initialize(const std::string& filename)
 	InitializeMaterial();
 }
 
-void ParticleDrawer::Draw(std::list<Particle> particles)
+void yunity::ParticleDrawer::Draw(std::list<Particle> particles)
 {
 	assert(device_);
 	assert(commandList_);
@@ -140,18 +138,6 @@ void ParticleDrawer::Draw(std::list<Particle> particles)
 	GraphicsPipelineManager::GetInstance()->SetCommandList(commandList_, PipelineType::kParticle, BlendModeType::kNone);
 
 	uint32_t numInstance = 0;
-	
-	//for (uint32_t index = 0; index < kNumInstance; index++) {
-	//	instancingData_[index].matWorld_ = worldTransform[index].matWorld_;
-	//	//instancingData_[index].constBuff_ = worldTransform[index].constBuff_;
-	//}
-	//for (uint32_t index = 0; index < kNumMaxInstance; index++) {
-	//	//instancingData_[index].world = worldTransform[index].matWorld_;
-	//	++numInstance;
-	//	/*if (numInstance >= kNumMaxInstance) {
-	//		break;
-	//	}*/
-	//}
 
 	for (uint32_t index = 0; auto& particle : particles) {
 		instancingData_[index].world = particle.particleForCPU.world;
@@ -188,12 +174,12 @@ void ParticleDrawer::Draw(std::list<Particle> particles)
 	commandList_->DrawInstanced(UINT(modelData.vertices.size()), numInstance, 0, 0);
 }
 
-void ParticleDrawer::SetMaterial(const Vector4& color)
+void yunity::ParticleDrawer::SetMaterial(const Vector4& color)
 {
 	materialData_->color = color;
 }
 
-void ParticleDrawer::CreateMesh()
+void yunity::ParticleDrawer::CreateMesh()
 {
 
 	modelData.vertices.push_back({ .position = {-1.0f, 1.0f, 0.0f, 1.0f}, .texcoord = {0.0f, 0.0f}, .normal = {0.0f, 0.0f, 1.0f} }); // 左上
@@ -217,7 +203,7 @@ void ParticleDrawer::CreateMesh()
 
 
 
-void ParticleDrawer::CreateSRV()
+void yunity::ParticleDrawer::CreateSRV()
 {
 	//instancingResource_ = CreateBufferResource(sizeof(WorldTransform) * kNumInstance);
 	instancingResource_ = CreateBufferResource(sizeof(ParticleForCPU) * kNumMaxInstance);
@@ -251,7 +237,7 @@ void ParticleDrawer::CreateSRV()
 }
 
 
-void ParticleDrawer::InitializeMaterial()
+void yunity::ParticleDrawer::InitializeMaterial()
 {
 	materialResource_ = CreateBufferResource(sizeof(MaterialData));
 	materialData_ = nullptr;
@@ -259,7 +245,7 @@ void ParticleDrawer::InitializeMaterial()
 	materialData_->color = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
 }
 
-ID3D12Resource* ParticleDrawer::CreateBufferResource(size_t sizeInBytes)
+ID3D12Resource* yunity::ParticleDrawer::CreateBufferResource(size_t sizeInBytes)
 {
 	HRESULT result = S_FALSE;
 	// リソース用のヒープの設定

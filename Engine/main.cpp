@@ -8,9 +8,9 @@
 static ResourceLeakChecker leakChecker;
 
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
-    Framework* game = new GameManager();
+    yunity::Framework* game = new GameManager();
     game->Run();
     delete game;
-    RenderTexture::GetInstance()->Finalize();
+    yunity::RenderTexture::GetInstance()->Finalize();
 	return 0;
 }

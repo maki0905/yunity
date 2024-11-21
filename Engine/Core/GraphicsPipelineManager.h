@@ -9,92 +9,86 @@
 #include "RootSignature.h"
 #include "GraphicsCommon.h"
 
-//class PipelineState;
-//class RootSignature;
-//class GraphicsCommon;
-
-enum PipelineType {
-	kObject3d,
-	kSprite,
-	kParticle,
-	kLine,
-	kPrimitive,
-	kSkinning,
-	kCount,
-};
-
-/*
-* @brief グラフィックパイプラインマネージャークラス
-*/
-class GraphicsPipelineManager {
-	/*struct GraphicsPipeline {
-		std::unordered_map<BlendModeType, PipelineState*> pso_;
-	};*/
-
-	// 
-	struct GraphicsPipeline {
-		std::unique_ptr<PipelineState> pso_[BlendModeType::kBlendCount];
-		std::unique_ptr<RootSignature> rooSignature_;
+namespace yunity {
+	enum PipelineType {
+		kObject3d,
+		kSprite,
+		kParticle,
+		kLine,
+		kPrimitive,
+		kSkinning,
+		kCount,
 	};
-public:
-	/// <summary>
-	/// インスタンス取得
-	/// </summary>
-	/// <returns></returns>
-	static GraphicsPipelineManager* GetInstance();
 
-	/// <summary>
-	/// 初期化
-	/// </summary>
-	void Initialize();
+	/*
+	* @brief グラフィックパイプラインマネージャークラス
+	*/
+	class GraphicsPipelineManager {
+		/*struct GraphicsPipeline {
+			std::unordered_map<BlendModeType, PipelineState*> pso_;
+		};*/
 
-	/// <summary>
-	/// コマンドリスト設定
-	/// </summary>
-	/// <param name="commandList"></param>
-	/// <param name="pipelineType"></param>
-	/// <param name="blendModeType"></param>
-	void SetCommandList(ID3D12GraphicsCommandList* commandList, PipelineType pipelineType, BlendModeType blendModeType);
+		// 
+		struct GraphicsPipeline {
+			std::unique_ptr<PipelineState> pso_[BlendModeType::kBlendCount];
+			std::unique_ptr<RootSignature> rooSignature_;
+		};
+	public:
+		/// <summary>
+		/// インスタンス取得
+		/// </summary>
+		/// <returns></returns>
+		static GraphicsPipelineManager* GetInstance();
 
-private:
+		/// <summary>
+		/// 初期化
+		/// </summary>
+		void Initialize();
 
-	/// <summary>
-	/// 3Dオブジェクト用パイプライン生成
-	/// </summary>
-	void CreateObject3d();
+		/// <summary>
+		/// コマンドリスト設定
+		/// </summary>
+		/// <param name="commandList"></param>
+		/// <param name="pipelineType"></param>
+		/// <param name="blendModeType"></param>
+		void SetCommandList(ID3D12GraphicsCommandList* commandList, PipelineType pipelineType, BlendModeType blendModeType);
 
-	/// <summary>
-	/// スプライト用パイプライン生成
-	/// </summary>
-	void CreateSprite();
+	private:
 
-	/// <summary>
-	/// パーティクル用パイプライン生成
-	/// </summary>
-	void CreateParticle();
+		/// <summary>
+		/// 3Dオブジェクト用パイプライン生成
+		/// </summary>
+		void CreateObject3d();
 
-	/// <summary>
-	/// ライン描画用パイプライン生成
-	/// </summary>
-	void CreateLine();
+		/// <summary>
+		/// パーティクル用パイプライン生成
+		/// </summary>
+		void CreateParticle();
 
-	/// <summary>
-	/// プリミティブ用パイプライン生成
-	/// </summary>
-	void CreatePrimitive();
+		/// <summary>
+		/// ライン描画用パイプライン生成
+		/// </summary>
+		void CreateLine();
 
-	/// <summary>
-	/// スキニング用パイプライン生成
-	/// </summary>
-	void CreateSkinning();
+		/// <summary>
+		/// プリミティブ用パイプライン生成
+		/// </summary>
+		void CreatePrimitive();
 
-private:
-	GraphicsPipelineManager() = default;
-	~GraphicsPipelineManager() = default;
-	GraphicsPipelineManager(const GraphicsPipelineManager&) = delete;
-	GraphicsPipelineManager& operator=(const GraphicsPipelineManager&) = delete;
-private:
-	GraphicsCommon* graphicsCommon_;
-	std::unique_ptr<GraphicsPipeline> graphicsPipelines_[PipelineType::kCount];
+		/// <summary>
+		/// スキニング用パイプライン生成
+		/// </summary>
+		void CreateSkinning();
 
-};
+	private:
+		GraphicsPipelineManager() = default;
+		~GraphicsPipelineManager() = default;
+		GraphicsPipelineManager(const GraphicsPipelineManager&) = delete;
+		GraphicsPipelineManager& operator=(const GraphicsPipelineManager&) = delete;
+	private:
+		GraphicsCommon* graphicsCommon_;
+		std::unique_ptr<GraphicsPipeline> graphicsPipelines_[PipelineType::kCount];
+
+	};
+}
+

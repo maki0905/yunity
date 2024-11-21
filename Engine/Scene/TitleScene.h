@@ -16,7 +16,7 @@
 /*
 * @brief タイトルクラス
 */
-class TitleScene : public IScene
+class TitleScene : public yunity::IScene
 {
 	struct Easing {
 		bool flag;
@@ -50,26 +50,26 @@ public:
 	void DrawFront() override;
 
 private:
-	Camera* camera_;
+	yunity::Camera* camera_;
 
 	XINPUT_STATE pad_;
 	XINPUT_STATE prePad_;
 
-	WorldTransform worldTransform_;
-	std::unique_ptr<Sprite> bottonSprite_ = nullptr;
-	std::unique_ptr<Sprite> bottonPushSprite_ = nullptr;
+	yunity::WorldTransform worldTransform_;
+	std::unique_ptr<yunity::Sprite> bottonSprite_ = nullptr;
+	std::unique_ptr<yunity::Sprite> bottonPushSprite_ = nullptr;
 	uint32_t time_;
 	bool isDraw_;
-	std::unique_ptr<Model> model_ = nullptr;
-	std::unique_ptr<World> world_;
+	std::unique_ptr<yunity::Model> model_ = nullptr;
+	std::unique_ptr<yunity::World> world_;
 	std::unique_ptr<Player> player_;
-	std::unique_ptr<Object3D> obj_;
-	std::unique_ptr<Skydome> skydome_;
+	std::unique_ptr<yunity::Object3D> obj_;
+	std::unique_ptr<yunity::Skydome> skydome_;
 	float amplitude = 0.5f;
 	float wavelength = 0.0f;
 	bool isStart_ = false;
-	std::unique_ptr<Model> models_[3];
-	WorldTransform TVworldTransform_[3];
+	std::unique_ptr<yunity::Model> models_[3];
+	yunity::WorldTransform TVworldTransform_[3];
 	bool isActiveTV_[3];
 	int preNum_;
 	Easing grow_[3];

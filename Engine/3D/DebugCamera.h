@@ -4,21 +4,17 @@
 #include "Camera.h"
 
 
-
-/// <summary>
+namespace yunity{
+	/// <summary>
 /// デバッグ用カメラ
 /// </summary>
-class DebugCamera {
-	// カメラ注視点までの距離
-	static const float distance_;
+	class DebugCamera {
+		// カメラ注視点までの距離
+		static const float distance_;
 
-public:
-	/// <summary>
-	/// コンストラクタ
-	/// </summary>
-	DebugCamera();
+	public:
+		// 更新
+		void Update(Camera* camera);
 
-	// 更新
-	void Update(Camera* camera);
-
-};
+	};
+}

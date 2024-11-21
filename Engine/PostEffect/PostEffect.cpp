@@ -12,15 +12,15 @@
 #include "CameraManager.h"
 #include "ImGuiManager.h"
 
-RootSignature* PostEffect::rootSignature_[static_cast<uint32_t>(PostEffects::kCount)];
-PipelineState* PostEffect::pipelineState_[static_cast<uint32_t>(PostEffects::kCount)];
+yunity::RootSignature* yunity::PostEffect::rootSignature_[static_cast<uint32_t>(yunity::PostEffects::kCount)];
+yunity::PipelineState* yunity::PostEffect::pipelineState_[static_cast<uint32_t>(yunity::PostEffects::kCount)];
 
-void PostEffect::InitializeGraphicsPipeline()
+void yunity::PostEffect::InitializeGraphicsPipeline()
 {
 
-	for (uint32_t index = 0; index < static_cast<uint32_t>(PostEffects::kCount); index++) {
+	for (uint32_t index = 0; index < static_cast<uint32_t>(yunity::PostEffects::kCount); index++) {
 
-		rootSignature_[index] = new RootSignature(Device::GetInstance()->GetDevice(), static_cast<int>(RootBindings::kCount), 2);
+		rootSignature_[index] = new yunity::RootSignature(Device::GetInstance()->GetDevice(), static_cast<int>(RootBindings::kCount), 2);
 
 		D3D12_STATIC_SAMPLER_DESC staticSamplers[2];
 		staticSamplers[0] = {};
@@ -56,7 +56,7 @@ void PostEffect::InitializeGraphicsPipeline()
 
 		rootSignature_[index]->Finalize(D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
 
-		pipelineState_[index] = new PipelineState(Device::GetInstance()->GetDevice(), rootSignature_[index]);
+		pipelineState_[index] = new yunity::PipelineState(Device::GetInstance()->GetDevice(), rootSignature_[index]);
 
 		// InputLayout
 		D3D12_INPUT_LAYOUT_DESC inputLayoutDesc{};
@@ -88,35 +88,35 @@ void PostEffect::InitializeGraphicsPipeline()
 		depthStencilDesc.DepthEnable = false;
 
 		pipelineState_[index]->SetInputLayout(inputLayoutDesc);
-		pipelineState_[index]->SetShader(PipelineState::ShaderType::kVS, ShaderCompiler::GetInstance()->Get("Fullscreen", ShaderCompiler::ShaderType::kVS));
-		switch (static_cast<PostEffects>(index))
+		pipelineState_[index]->SetShader(yunity::PipelineState::ShaderType::kVS, yunity::ShaderCompiler::GetInstance()->Get("Fullscreen", yunity::ShaderCompiler::ShaderType::kVS));
+		switch (static_cast<yunity::PostEffects>(index))
 		{
-		case PostEffects::kGrayscale:
-			pipelineState_[index]->SetShader(PipelineState::ShaderType::kPS, ShaderCompiler::GetInstance()->Get("Grayscale", ShaderCompiler::ShaderType::kPS));
+		case yunity::PostEffects::kGrayscale:
+			pipelineState_[index]->SetShader(yunity::PipelineState::ShaderType::kPS, yunity::ShaderCompiler::GetInstance()->Get("Grayscale", yunity::ShaderCompiler::ShaderType::kPS));
 			break;
-		case PostEffects::kVignetting:
-			pipelineState_[index]->SetShader(PipelineState::ShaderType::kPS, ShaderCompiler::GetInstance()->Get("Vignette", ShaderCompiler::ShaderType::kPS));
+		case yunity::PostEffects::kVignetting:
+			pipelineState_[index]->SetShader(yunity::PipelineState::ShaderType::kPS, yunity::ShaderCompiler::GetInstance()->Get("Vignette", yunity::ShaderCompiler::ShaderType::kPS));
 			break;
-		case PostEffects::kSmoothing:
-			pipelineState_[index]->SetShader(PipelineState::ShaderType::kPS, ShaderCompiler::GetInstance()->Get("BoxFilter", ShaderCompiler::ShaderType::kPS));
+		case yunity::PostEffects::kSmoothing:
+			pipelineState_[index]->SetShader(yunity::PipelineState::ShaderType::kPS, yunity::ShaderCompiler::GetInstance()->Get("BoxFilter", yunity::ShaderCompiler::ShaderType::kPS));
 			break;
-		case PostEffects::kGaussianFilter:
-			pipelineState_[index]->SetShader(PipelineState::ShaderType::kPS, ShaderCompiler::GetInstance()->Get("GaussianFilter", ShaderCompiler::ShaderType::kPS));
+		case yunity::PostEffects::kGaussianFilter:
+			pipelineState_[index]->SetShader(yunity::PipelineState::ShaderType::kPS, yunity::ShaderCompiler::GetInstance()->Get("GaussianFilter", yunity::ShaderCompiler::ShaderType::kPS));
 			break;
-		case PostEffects::kOutline:
-			pipelineState_[index]->SetShader(PipelineState::ShaderType::kPS, ShaderCompiler::GetInstance()->Get("DepthBasedOutline", ShaderCompiler::ShaderType::kPS));
+		case yunity::PostEffects::kOutline:
+			pipelineState_[index]->SetShader(yunity::PipelineState::ShaderType::kPS, yunity::ShaderCompiler::GetInstance()->Get("DepthBasedOutline", yunity::ShaderCompiler::ShaderType::kPS));
 			break;
-		case PostEffects::kRadialBlur:
-			pipelineState_[index]->SetShader(PipelineState::ShaderType::kPS, ShaderCompiler::GetInstance()->Get("RadialBlur", ShaderCompiler::ShaderType::kPS));
+		case yunity::PostEffects::kRadialBlur:
+			pipelineState_[index]->SetShader(yunity::PipelineState::ShaderType::kPS, yunity::ShaderCompiler::GetInstance()->Get("RadialBlur", yunity::ShaderCompiler::ShaderType::kPS));
 			break;
-		case PostEffects::kDissolve:
-			pipelineState_[index]->SetShader(PipelineState::ShaderType::kPS, ShaderCompiler::GetInstance()->Get("CopyImage", ShaderCompiler::ShaderType::kPS));
+		case yunity::PostEffects::kDissolve:
+			pipelineState_[index]->SetShader(yunity::PipelineState::ShaderType::kPS, yunity::ShaderCompiler::GetInstance()->Get("CopyImage", yunity::ShaderCompiler::ShaderType::kPS));
 			break;
-		case PostEffects::kRandom:
-			pipelineState_[index]->SetShader(PipelineState::ShaderType::kPS, ShaderCompiler::GetInstance()->Get("CopyImage", ShaderCompiler::ShaderType::kPS));
+		case yunity::PostEffects::kRandom:
+			pipelineState_[index]->SetShader(yunity::PipelineState::ShaderType::kPS, yunity::ShaderCompiler::GetInstance()->Get("CopyImage", yunity::ShaderCompiler::ShaderType::kPS));
 			break;
-		case PostEffects::kHSVFilter:
-			pipelineState_[index]->SetShader(PipelineState::ShaderType::kPS, ShaderCompiler::GetInstance()->Get("HSVFilter", ShaderCompiler::ShaderType::kPS));
+		case yunity::PostEffects::kHSVFilter:
+			pipelineState_[index]->SetShader(yunity::PipelineState::ShaderType::kPS, yunity::ShaderCompiler::GetInstance()->Get("HSVFilter", yunity::ShaderCompiler::ShaderType::kPS));
 			break;
 		default:
 			break;
@@ -136,9 +136,9 @@ void PostEffect::InitializeGraphicsPipeline()
 
 }
 
-void PostEffect::Initalize()
+void yunity::PostEffect::Initalize()
 {
-	depthBuffe_ = std::make_unique<DepthBuffer>();
+	depthBuffe_ = std::make_unique<yunity::DepthBuffer>();
 	depthBuffe_->Create();
 	CreateResorce();
 	CreateRTV();
@@ -146,9 +146,9 @@ void PostEffect::Initalize()
 	InitializeMaterial();
 }
 
-void PostEffect::Finalize()
+void yunity::PostEffect::Finalize()
 {
-	for (uint32_t index = 0; index <= static_cast<uint32_t>(PostEffects::kCount); index++) {
+	for (uint32_t index = 0; index <= static_cast<uint32_t>(yunity::PostEffects::kCount); index++) {
 		if (pipelineState_[index]) {
 			delete pipelineState_[index];
 			pipelineState_[index] = nullptr;
@@ -161,71 +161,71 @@ void PostEffect::Finalize()
 	}
 }
 
-void PostEffect::SetGraphicsRootSignature(uint32_t index)
+void yunity::PostEffect::SetGraphicsRootSignature(uint32_t index)
 {
-	DirectXCore::GetInstance()->GetCommandList()->SetGraphicsRootSignature(rootSignature_[index]->GetSignature());
+	yunity::DirectXCore::GetInstance()->GetCommandList()->SetGraphicsRootSignature(rootSignature_[index]->GetSignature());
 }
 
-void PostEffect::SetPipelineState(uint32_t index)
+void yunity::PostEffect::SetPipelineState(uint32_t index)
 {
-	DirectXCore::GetInstance()->GetCommandList()->SetPipelineState(pipelineState_[index]->GetPipelineStateObject());
+	yunity::DirectXCore::GetInstance()->GetCommandList()->SetPipelineState(pipelineState_[index]->GetPipelineStateObject());
 }
 
-void PostEffect::CRTV(uint32_t index)
-{
-	float clearColor[] = { kRenderTargetClearValue.x, kRenderTargetClearValue.y, kRenderTargetClearValue.z, kRenderTargetClearValue.w };
-	DirectXCore::GetInstance()->GetCommandList()->ClearRenderTargetView(cpuDescHandleRTV_[index], clearColor, 0, nullptr);
-}
-
-
-
-void PostEffect::ClearRenderTargetView(uint32_t index)
+void yunity::PostEffect::CRTV(uint32_t index)
 {
 	float clearColor[] = { kRenderTargetClearValue.x, kRenderTargetClearValue.y, kRenderTargetClearValue.z, kRenderTargetClearValue.w };
-	DirectXCore::GetInstance()->GetCommandList()->ClearRenderTargetView(cpuDescHandleRTV_[index], clearColor, 0, nullptr);
+	yunity::DirectXCore::GetInstance()->GetCommandList()->ClearRenderTargetView(cpuDescHandleRTV_[index], clearColor, 0, nullptr);
 }
 
-void PostEffect::OMSetRenderTargets(uint32_t index)
+
+
+void yunity::PostEffect::ClearRenderTargetView(uint32_t index)
+{
+	float clearColor[] = { kRenderTargetClearValue.x, kRenderTargetClearValue.y, kRenderTargetClearValue.z, kRenderTargetClearValue.w };
+	yunity::DirectXCore::GetInstance()->GetCommandList()->ClearRenderTargetView(cpuDescHandleRTV_[index], clearColor, 0, nullptr);
+}
+
+void yunity::PostEffect::OMSetRenderTargets(uint32_t index)
 {
 	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle =
 		D3D12_CPU_DESCRIPTOR_HANDLE(depthBuffe_->GetDescriptorHeap()->GetCPUDescriptorHandleForHeapStart());
-	DirectXCore::GetInstance()->GetCommandList()->OMSetRenderTargets(1, &cpuDescHandleRTV_[index], false, &dsvHandle);
+	yunity::DirectXCore::GetInstance()->GetCommandList()->OMSetRenderTargets(1, &cpuDescHandleRTV_[index], false, &dsvHandle);
 }
 
-void PostEffect::ClearDepthStencilView()
+void yunity::PostEffect::ClearDepthStencilView()
 {
 	// 深度ステンシルビュー用デスクリプタヒープのハンドルを取得
 	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle =
 		D3D12_CPU_DESCRIPTOR_HANDLE(depthBuffe_->GetDescriptorHeap()->GetCPUDescriptorHandleForHeapStart());
 	// 深度バッファのクリア
-	DirectXCore::GetInstance()->GetCommandList()->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
+	yunity::DirectXCore::GetInstance()->GetCommandList()->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 }
 
-void PostEffect::SetGraphicsRootDescriptorTable(RootBindings binding, uint32_t index)
+void yunity::PostEffect::SetGraphicsRootDescriptorTable(RootBindings binding, uint32_t index)
 {
 	switch (binding)
 	{
-	case PostEffect::RootBindings::kTexture:
-		DirectXCore::GetInstance()->GetCommandList()->SetGraphicsRootDescriptorTable(static_cast<UINT>(binding), gpuDescHandleSRV_[index]);
+	case yunity::PostEffect::RootBindings::kTexture:
+		yunity::DirectXCore::GetInstance()->GetCommandList()->SetGraphicsRootDescriptorTable(static_cast<UINT>(binding), gpuDescHandleSRV_[index]);
 		break;
-	case PostEffect::RootBindings::kDepthTexture:
-		DirectXCore::GetInstance()->GetCommandList()->SetGraphicsRootDescriptorTable(static_cast<UINT>(RootBindings::kDepthTexture), depthTextureGpuDescHandleSRV_);
+	case yunity::PostEffect::RootBindings::kDepthTexture:
+		yunity::DirectXCore::GetInstance()->GetCommandList()->SetGraphicsRootDescriptorTable(static_cast<UINT>(RootBindings::kDepthTexture), depthTextureGpuDescHandleSRV_);
 		break;
 	}
 }
 
-void PostEffect::SetMaterial(uint32_t index)
+void yunity::PostEffect::SetMaterial(uint32_t index)
 {
 	SetMaterialData(index);
 	DirectXCore::GetInstance()->GetCommandList()->SetGraphicsRootConstantBufferView(static_cast<UINT>(RootBindings::kMaterial), materialResource_[index]->GetGPUVirtualAddress());
 }
 
-void PostEffect::SetMaterialData(uint32_t index)
+void yunity::PostEffect::SetMaterialData(uint32_t index)
 {
 	materialData_[index]->projectionInverse = Inverse(CameraManager::GetInstance()->GetCamera()->GetProjectionMatrix());
 }
 
-void PostEffect::Adjustment()
+void yunity::PostEffect::Adjustment()
 {
 #ifdef _DEBUG
 	ImGui::Begin("PostEffect");
@@ -236,7 +236,7 @@ void PostEffect::Adjustment()
 #endif
 }
 
-void PostEffect::CreateResorce()
+void yunity::PostEffect::CreateResorce()
 {
 
 	for (uint32_t index = 0; index < static_cast<uint32_t>(PostEffects::kCount); index++) {
@@ -274,7 +274,7 @@ void PostEffect::CreateResorce()
 	assert(SUCCEEDED(hr));
 }
 
-void PostEffect::CreateRTV()
+void yunity::PostEffect::CreateRTV()
 {
 	// レンダーターゲットビューの設定
 	D3D12_RENDER_TARGET_VIEW_DESC renderTargetViewDesc{};
@@ -289,7 +289,7 @@ void PostEffect::CreateRTV()
 	}
 }
 
-void PostEffect::CreateSRV()
+void yunity::PostEffect::CreateSRV()
 {
 	D3D12_SHADER_RESOURCE_VIEW_DESC renderTextureSrvDesc{};
 	renderTextureSrvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
@@ -319,7 +319,7 @@ void PostEffect::CreateSRV()
 	Device::GetInstance()->GetDevice()->CreateShaderResourceView(depthBuffe_->GetDepthStencil(), &depthTextureSrvDesc, depthTextureCpuDescHandleSRV_);
 }
 
-void PostEffect::InitializeMaterial()
+void yunity::PostEffect::InitializeMaterial()
 {
 	for (uint32_t index = 0; index < static_cast<uint32_t>(PostEffects::kCount); index++) {
 		materialResource_[index] = CreateBufferResource(sizeof(Material));
@@ -330,7 +330,7 @@ void PostEffect::InitializeMaterial()
 
 }
 
-Microsoft::WRL::ComPtr<ID3D12Resource> PostEffect::CreateRenderTextureResource(uint32_t width, uint32_t hight, DXGI_FORMAT format, const Vector4& clearColor)
+Microsoft::WRL::ComPtr<ID3D12Resource> yunity::PostEffect::CreateRenderTextureResource(uint32_t width, uint32_t hight, DXGI_FORMAT format, const Vector4& clearColor)
 {
 	HRESULT result = S_FALSE;
 
@@ -371,7 +371,7 @@ Microsoft::WRL::ComPtr<ID3D12Resource> PostEffect::CreateRenderTextureResource(u
 	return resource;
 }
 
-Microsoft::WRL::ComPtr<ID3D12Resource> PostEffect::CreateBufferResource(size_t sizeInBytes)
+Microsoft::WRL::ComPtr<ID3D12Resource> yunity::PostEffect::CreateBufferResource(size_t sizeInBytes)
 {
 	HRESULT result = S_FALSE;
 	// リソース用のヒープの設定

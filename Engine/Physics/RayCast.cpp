@@ -2,11 +2,10 @@
 
 #include "Collision.h"
 #include "CollisionConfig.h"
-#include "Object3D.h"
 
 #include <algorithm>
 
-bool RayCast(const Vector3& origin, const Vector3& direction, RayCastHit* hitInfo, float maxDistance, World* world, uint32_t mask)
+bool RayCast(const Vector3& origin, const Vector3& direction, RayCastHit* hitInfo, float maxDistance, yunity::World* world, uint32_t mask)
 {
 	Segment ray;
 	ray.origin = origin;
@@ -19,10 +18,10 @@ bool RayCast(const Vector3& origin, const Vector3& direction, RayCastHit* hitInf
 
 		switch (obj->GetShape())
 		{
-		case Collider::Shape::kSphere:
+		case yunity::Collider::Shape::kSphere:
 
 			break;
-		case Collider::Shape::kAABB:
+		case yunity::Collider::Shape::kAABB:
 			AABB aabb;
 			aabb.min = Subtract(obj->GetTranslation(), obj->GetHitBoxSize());
 			aabb.max = Add(obj->GetTranslation(), obj->GetHitBoxSize());
@@ -32,7 +31,7 @@ bool RayCast(const Vector3& origin, const Vector3& direction, RayCastHit* hitInf
 				return true;
 			}
 			break;
-		case Collider::Shape::kOBB:
+		case yunity::Collider::Shape::kOBB:
 
 			break;
 
@@ -42,7 +41,7 @@ bool RayCast(const Vector3& origin, const Vector3& direction, RayCastHit* hitInf
     return false;
 }
 
-bool RayCast(const Vector3& origin, const Vector3& direction, RayCastHit* hitInfo, World* world, uint32_t mask)
+bool RayCast(const Vector3& origin, const Vector3& direction, RayCastHit* hitInfo, yunity::World* world, uint32_t mask)
 {
 	Ray ray;
 	ray.origin = origin;
@@ -55,10 +54,10 @@ bool RayCast(const Vector3& origin, const Vector3& direction, RayCastHit* hitInf
 
 		switch (obj->GetShape())
 		{
-		case Collider::Shape::kSphere:
+		case yunity::Collider::Shape::kSphere:
 
 			break;
-		case Collider::Shape::kAABB:
+		case yunity::Collider::Shape::kAABB:
 			AABB aabb;
 			aabb.min = Subtract(obj->GetTranslation(), obj->GetHitBoxSize());
 			aabb.max = Add(obj->GetTranslation(), obj->GetHitBoxSize());
@@ -68,7 +67,7 @@ bool RayCast(const Vector3& origin, const Vector3& direction, RayCastHit* hitInf
 				return true;
 			}
 			break;
-		case Collider::Shape::kOBB:
+		case yunity::Collider::Shape::kOBB:
 
 			break;
 

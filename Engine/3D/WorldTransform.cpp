@@ -1,9 +1,9 @@
-﻿#include "WorldTransform.h"
+#include "WorldTransform.h"
 #include <cassert>
 
 #include "Device.h"
 
-void WorldTransform::Initialize(RotationType rotateType)
+void yunity::WorldTransform::Initialize(RotationType rotateType)
 {
     CreateConstBuffer();
     Map();
@@ -14,7 +14,7 @@ void WorldTransform::Initialize(RotationType rotateType)
     rotateType_ = rotateType;
 }
 
-void WorldTransform::CreateConstBuffer() {
+void yunity::WorldTransform::CreateConstBuffer() {
     HRESULT result;
 
     // ヒーププロパティ
@@ -32,20 +32,20 @@ void WorldTransform::CreateConstBuffer() {
     //CD3DX12_RESOURCE_DESC::Buffer((sizeof(ConstBufferDataWorldTransform) + 0xff) & ~0xff);
 
     // 定数バッファの生成
-    result = Device::GetInstance()->GetDevice()->CreateCommittedResource(
+    result = yunity::Device::GetInstance()->GetDevice()->CreateCommittedResource(
         &heapProps, // アップロード可能
         D3D12_HEAP_FLAG_NONE, &resourceDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr,
         IID_PPV_ARGS(&constBuff_));
     assert(SUCCEEDED(result));
 }
 
-void WorldTransform::Map() {
+void yunity::WorldTransform::Map() {
     // 定数バッファとのデータリンク
     HRESULT result = constBuff_->Map(0, nullptr, (void**)&constMap);
     assert(SUCCEEDED(result));
 }
 
-void WorldTransform::UpdateMatrix()
+void yunity::WorldTransform::UpdateMatrix()
 {
     switch (rotateType_)
     {
@@ -69,7 +69,7 @@ void WorldTransform::UpdateMatrix()
     TransferMatrix();
 }
 
-void WorldTransform::TransferMatrix()
+void yunity::WorldTransform::TransferMatrix()
 {
     // 定数バッファに書き込み
     constMap->matWorld = matWorld_;

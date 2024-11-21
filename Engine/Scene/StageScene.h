@@ -19,7 +19,7 @@
 /*
 * @brief ステージシーンクラス
 */
-class StageScene : public IScene
+class StageScene : public yunity::IScene
 {
 public:
 	/// <summary>
@@ -50,25 +50,25 @@ private:
 	bool isDebug_ = false;
 	bool inStage_ = false;
 
-	Camera* camera_;
-	std::unique_ptr<DebugCamera> debugCamera_;
+	yunity::Camera* camera_;
+	std::unique_ptr<yunity::DebugCamera> debugCamera_;
 
-	std::unique_ptr<SkyBox> skybox_;
-	WorldTransform skyboxWorldTransform_;
-	std::unique_ptr<Skydome> skydome_;
+	std::unique_ptr<yunity::SkyBox> skybox_;
+	yunity::WorldTransform skyboxWorldTransform_;
+	std::unique_ptr<yunity::Skydome> skydome_;
 	std::unique_ptr<Player> player_;
 
-	std::unique_ptr<World> world_;
+	std::unique_ptr<yunity::World> world_;
 
 	std::string stageName_ = "stage1";
 
 	float moveCameraTimer_;
 	Vector3 oldCameraPos_;
 
-	std::unique_ptr<Model> start_;
-	WorldTransform startWT_;
-	std::unique_ptr<Model> end_;
-	WorldTransform endWT_;
+	std::unique_ptr<yunity::Model> start_;
+	yunity::WorldTransform startWT_;
+	std::unique_ptr<yunity::Model> end_;
+	yunity::WorldTransform endWT_;
 	Vector3 startPos_;
 	Vector3 endPos_ = { 570.0f, 35.0f, 10.0f };
 	uint32_t textureTV_;
@@ -95,14 +95,14 @@ private:
 	// ジャンプ台
 	static const uint32_t springBoardCount_ = 2;
 	std::array<std::unique_ptr<SpringBoard>, springBoardCount_> springTops_;
-	std::array<std::unique_ptr<Object3D>, springBoardCount_> springAnchors_;
-	std::array<std::unique_ptr<PrimitiveDrawer>, springBoardCount_> springLines_;
+	std::array<std::unique_ptr<yunity::Object3D>, springBoardCount_> springAnchors_;
+	std::array<std::unique_ptr<yunity::PrimitiveDrawer>, springBoardCount_> springLines_;
 
 	// 吊り橋
 	static const uint32_t bridgeCount_ = 9;
-	std::array<std::unique_ptr<Object3D>, bridgeCount_> bridge_;
-	std::array<std::unique_ptr<PrimitiveDrawer>, bridgeCount_ - 1> bridgeLines_;
-	std::array<std::unique_ptr<SpringJoint>, bridgeCount_ - 1> bridgesJoint_;
+	std::array<std::unique_ptr<yunity::Object3D>, bridgeCount_> bridge_;
+	std::array<std::unique_ptr<yunity::PrimitiveDrawer>, bridgeCount_ - 1> bridgeLines_;
+	std::array<std::unique_ptr<yunity::SpringJoint>, bridgeCount_ - 1> bridgesJoint_;
 	const float stiffness_ = 5.0f;
 	const float damper_ = 0.1f;
 };

@@ -10,29 +10,29 @@
 #include "ShaderCompiler.h"
 #include "TextureManager.h"
 
-ID3D12GraphicsCommandList* SkyBox::commandList_ = nullptr;
-RootSignature* SkyBox::rootSignature_ = nullptr;
-PipelineState* SkyBox::pipelineState_ = nullptr;
+ID3D12GraphicsCommandList* yunity::SkyBox::commandList_ = nullptr;
+yunity::RootSignature* yunity::SkyBox::rootSignature_ = nullptr;
+yunity::PipelineState* yunity::SkyBox::pipelineState_ = nullptr;
 
-void SkyBox::StaticInitialize()
+void yunity::SkyBox::StaticInitialize()
 {
 
 	InitializeGraphicsPipeline();
 }
 
-void SkyBox::PreDraw(ID3D12GraphicsCommandList* commandList)
+void yunity::SkyBox::PreDraw(ID3D12GraphicsCommandList* commandList)
 {
 	assert(commandList_ == nullptr);
 
 	commandList_ = commandList;
 }
 
-void SkyBox::PostDraw()
+void yunity::SkyBox::PostDraw()
 {
 	commandList_ = nullptr;
 }
 
-SkyBox* SkyBox::Create()
+yunity::SkyBox* yunity::SkyBox::Create()
 {
 	SkyBox* skyBox = new SkyBox();
 	skyBox->CreateBox();
@@ -41,7 +41,7 @@ SkyBox* SkyBox::Create()
 	return skyBox;
 }
 
-void SkyBox::InitializeGraphicsPipeline()
+void yunity::SkyBox::InitializeGraphicsPipeline()
 {
 	rootSignature_ = new RootSignature(Device::GetInstance()->GetDevice() , static_cast<int>(RootBindings::kCount), 1);
 
@@ -107,7 +107,7 @@ void SkyBox::InitializeGraphicsPipeline()
 	pipelineState_->Finalize();
 }
 
-void SkyBox::Finalize()
+void yunity::SkyBox::Finalize()
 {
 	if (rootSignature_) {
 		delete rootSignature_;
@@ -120,7 +120,7 @@ void SkyBox::Finalize()
 	}
 }
 
-void SkyBox::Draw(const WorldTransform& worldTransform)
+void yunity::SkyBox::Draw(const WorldTransform& worldTransform)
 {
 	assert(commandList_);
 	assert(worldTransform.constBuff_.Get());
@@ -145,12 +145,12 @@ void SkyBox::Draw(const WorldTransform& worldTransform)
 	commandList_->DrawIndexedInstanced(static_cast<UINT>(indices_.size()), 1, 0, 0, 0);
 }
 
-void SkyBox::SetTexture(const std::string& textureName)
+void yunity::SkyBox::SetTexture(const std::string& textureName)
 {
 	textureHandle_ = TextureManager::GetInstance()->Load(textureName);
 }
 
-void SkyBox::CreateMesh()
+void yunity::SkyBox::CreateMesh()
 {
 	// 頂点リソース
 	vertexResource_ = CreateBufferResource(sizeof(VertexData) * vertices_.size()/** 16 * 16 * 4*/);
@@ -175,7 +175,7 @@ void SkyBox::CreateMesh()
 
 }
 
-void SkyBox::CreateBox()
+void yunity::SkyBox::CreateBox()
 {
 	VertexData vertexData[24];
 
@@ -241,7 +241,7 @@ void SkyBox::CreateBox()
 
 }
 
-Microsoft::WRL::ComPtr<ID3D12Resource> SkyBox::CreateBufferResource(size_t sizeInBytes)
+Microsoft::WRL::ComPtr<ID3D12Resource> yunity::SkyBox::CreateBufferResource(size_t sizeInBytes)
 {
 	HRESULT result = S_FALSE;
 	// リソース用のヒープの設定

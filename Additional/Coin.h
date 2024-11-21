@@ -4,7 +4,7 @@
 /*
 * @brief コインクラス
 */
-class Coin : public Object3D{
+class Coin : public yunity::Object3D{
 public:
 	/// <summary>
 	/// 更新

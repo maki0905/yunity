@@ -44,13 +44,13 @@ namespace {
 	}
 } // namespace
 
-WindowsAPI* WindowsAPI::GetInstance()
+yunity::WindowsAPI* yunity::WindowsAPI::GetInstance()
 {
 	static WindowsAPI instance;
 	return &instance;
 }
 
-LRESULT WindowsAPI::WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
+LRESULT yunity::WindowsAPI::WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
 {
 	WindowsAPI* app = reinterpret_cast<WindowsAPI*>(GetWindowLongPtr(hwnd, GWLP_USERDATA));
 
@@ -104,7 +104,7 @@ LRESULT WindowsAPI::WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam
 	return DefWindowProc(hwnd, msg, wparam, lparam); // 標準の処理を行う return LRESULT();
 }
 
-void WindowsAPI::CreateGameWindow(const char* title, UINT windowStyle, int32_t clientWidth, int32_t clientHeight)
+void yunity::WindowsAPI::CreateGameWindow(const char* title, UINT windowStyle, int32_t clientWidth, int32_t clientHeight)
 {
 	windowStyle_ = windowStyle;
 	aspectRatio_ = float(clientWidth) / float(clientHeight);
@@ -147,13 +147,13 @@ void WindowsAPI::CreateGameWindow(const char* title, UINT windowStyle, int32_t c
 
 }
 
-void WindowsAPI::TerminateGameWindow()
+void yunity::WindowsAPI::TerminateGameWindow()
 {
 	// ウィンドウクラスを登録解除
 	UnregisterClass(wndClass_.lpszClassName, wndClass_.hInstance);
 }
 
-bool WindowsAPI::ProcessMessage()
+bool yunity::WindowsAPI::ProcessMessage()
 {
 	MSG msg{}; // メッセージ
 
@@ -171,7 +171,7 @@ bool WindowsAPI::ProcessMessage()
 	return false;
 }
 
-void WindowsAPI::SetFullscreen(bool fullscreen)
+void yunity::WindowsAPI::SetFullscreen(bool fullscreen)
 {
 	if (isFullscreen_ != fullscreen) {
 		if (fullscreen) {
@@ -214,12 +214,12 @@ void WindowsAPI::SetFullscreen(bool fullscreen)
 	isFullscreen_ = fullscreen;
 }
 
-bool WindowsAPI::IsFullscreen() const
+bool yunity::WindowsAPI::IsFullscreen() const
 {
 	return isFullscreen_;
 }
 
-void WindowsAPI::SetSizeChangeMode(SizeChangeMode sizeChangeMode)
+void yunity::WindowsAPI::SetSizeChangeMode(SizeChangeMode sizeChangeMode)
 {
 	sizeChangeMode_ = sizeChangeMode;
 	if (sizeChangeMode_ == SizeChangeMode::kNone) {
@@ -241,7 +241,7 @@ void WindowsAPI::SetSizeChangeMode(SizeChangeMode sizeChangeMode)
 	ShowWindow(hwnd_, SW_NORMAL);
 }
 
-WindowsAPI::SizeChangeMode WindowsAPI::GetSizeChangeMode() const
+yunity::WindowsAPI::SizeChangeMode yunity::WindowsAPI::GetSizeChangeMode() const
 {
 	return sizeChangeMode_;
 }

@@ -2,7 +2,7 @@
 
 #include "ModelManager.h"
 
-void BaseObjectManager::Initialize(Camera* camera)
+void yunity::BaseObjectManager::Initialize(Camera* camera)
 {
 	objects_.clear();
 	joints_.clear();
@@ -19,14 +19,14 @@ void BaseObjectManager::Initialize(Camera* camera)
 
 }
 
-void BaseObjectManager::Update()
+void yunity::BaseObjectManager::Update()
 {
 	for (auto& object : objects_) {
 		object->Update();
 	}
 }
 
-void BaseObjectManager::Draw()
+void yunity::BaseObjectManager::Draw()
 {
 	
 	for (auto& springLine : springLines_) {
@@ -45,7 +45,7 @@ void BaseObjectManager::Draw()
 }
 
 
-void BaseObjectManager::Load(const std::string& fileName, Camera* camera, World* world)
+void yunity::BaseObjectManager::Load(const std::string& fileName, Camera* camera, World* world)
 {
 	std::unique_ptr<LevelData> levelData = std::make_unique<LevelData>();
 	levelData.reset(LevelEditor::GetInstance()->LoadFile(fileName));
@@ -58,7 +58,7 @@ void BaseObjectManager::Load(const std::string& fileName, Camera* camera, World*
 
 }
 
-Vector3 BaseObjectManager::GetPos(const std::string& modelName)
+Vector3 yunity::BaseObjectManager::GetPos(const std::string& modelName)
 {
 	for (auto& obj : objects_) {
 		if (obj->GetModel()->GetModelName() == modelName) {
@@ -68,7 +68,7 @@ Vector3 BaseObjectManager::GetPos(const std::string& modelName)
 	return Vector3();
 }
 
-void BaseObjectManager::Clear()
+void yunity::BaseObjectManager::Clear()
 {
 	for (auto& obj : objects_) {
 		obj->GetWorld()->Take(obj.get());
@@ -81,7 +81,7 @@ void BaseObjectManager::Clear()
 	joints_.clear();
 }
 
-void BaseObjectManager::SetDirectionalLight(Model::DirectionalLight directionalLight)
+void yunity::BaseObjectManager::SetDirectionalLight(Model::DirectionalLight directionalLight)
 {
 	for (auto& obj : objects_) {
 		obj->SetEnableLighting(true);
@@ -89,14 +89,14 @@ void BaseObjectManager::SetDirectionalLight(Model::DirectionalLight directionalL
 	}
 }
 
-void BaseObjectManager::SetEnableLighting(bool onOff)
+void yunity::BaseObjectManager::SetEnableLighting(bool onOff)
 {
 	for (auto& obj : objects_) {
 		obj->SetEnableLighting(onOff);
 	}
 }
 
-void BaseObjectManager::CreateBasicObject(const LevelData::ObjectData& objectData, Camera* camera, World* world)
+void yunity::BaseObjectManager::CreateBasicObject(const LevelData::ObjectData& objectData, Camera* camera, World* world)
 {
 	if (objectData.serialNumber != -1) { // イベントトリガー
 		EventTrigger* newObject = new EventTrigger();
@@ -125,14 +125,14 @@ void BaseObjectManager::CreateBasicObject(const LevelData::ObjectData& objectDat
 	}
 }
 
-void BaseObjectManager::InitializeCommon(const LevelData::ObjectData& objectData, Object3D* newObject)
+void yunity::BaseObjectManager::InitializeCommon(const LevelData::ObjectData& objectData, Object3D* newObject)
 {
 	newObject->SetPosition(objectData.translation);
 	newObject->SetRotation(objectData.rotation);
 	newObject->SetScale(objectData.scaling);
 }
 
-void BaseObjectManager::InitializeCollider(const LevelData::ObjectData& objectData, Object3D* newObject)
+void yunity::BaseObjectManager::InitializeCollider(const LevelData::ObjectData& objectData, Object3D* newObject)
 {
 	newObject->SetHitBoxSize(objectData.size);
 	newObject->SetCenter(objectData.center);
@@ -140,7 +140,7 @@ void BaseObjectManager::InitializeCollider(const LevelData::ObjectData& objectDa
 	newObject->SetIsTrigger(objectData.isTrigger);
 }
 
-void BaseObjectManager::InitializePhysics(const LevelData::ObjectData& objectData, Object3D* newObject)
+void yunity::BaseObjectManager::InitializePhysics(const LevelData::ObjectData& objectData, Object3D* newObject)
 {
 	newObject->SetMass(objectData.mass);
 	newObject->SetDrag(objectData.drag);

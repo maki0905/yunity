@@ -6,7 +6,7 @@
 
 #pragma comment(lib, "d3d12")
 
-void CommandQueue::Create()
+void yunity::CommandQueue::Create()
 {
 	HRESULT result = S_FALSE;
 
@@ -17,7 +17,7 @@ void CommandQueue::Create()
 	result = Device::GetInstance()->GetDevice()->CreateFence(fenceVal_, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fence_));
 }
 
-void CommandQueue::WaitForCommandsToFinish()
+void yunity::CommandQueue::WaitForCommandsToFinish()
 {
 	// コマンドリストの実行完了を待つ
 	commandQueue_->Signal(fence_.Get(), ++fenceVal_);

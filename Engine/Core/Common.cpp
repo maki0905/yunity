@@ -2,7 +2,7 @@
 
 #include "Device.h"
 
-Microsoft::WRL::ComPtr<ID3D12Resource> CreateBufferResource(size_t sizeInBytes)
+Microsoft::WRL::ComPtr<ID3D12Resource> yunity::CreateBufferResource(size_t sizeInBytes)
 {
 	HRESULT result = S_FALSE;
 	// リソース用のヒープの設定

@@ -5,9 +5,11 @@
 #include <wrl.h>
 #include <cassert>
 
-/// <summary>
-///  定数バッファ生成
-/// </summary>
-/// <param name="sizeInBytes"></param>
-/// <returns>サイズ</returns>
-Microsoft::WRL::ComPtr<ID3D12Resource> CreateBufferResource(size_t sizeInBytes);
+namespace yunity {
+	/// <summary>
+	///  定数バッファ生成
+	/// </summary>
+	/// <param name="sizeInBytes"></param>
+	/// <returns>サイズ</returns>
+	Microsoft::WRL::ComPtr<ID3D12Resource> CreateBufferResource(size_t sizeInBytes);
+}

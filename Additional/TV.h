@@ -5,7 +5,7 @@
 /*
 * @brief TVクラス
 */
-class TV :public Object3D{
+class TV :public yunity::Object3D{
 public:
 	/// <summary>
 	/// 初期化

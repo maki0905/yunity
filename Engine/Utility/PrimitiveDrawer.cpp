@@ -5,34 +5,32 @@
 #include <sstream>
 
 #include "Device.h"
-#include "PipelineState.h"
-#include "RootSignature.h"
 #include "ShaderCompiler.h"
 #include "Common.h"
 #include <GraphicsPipelineManager.h>
 
-ID3D12GraphicsCommandList* PrimitiveDrawer::commandList_ = nullptr;
-RootSignature* PrimitiveDrawer::rootSignature_ = nullptr;
-PipelineState* PrimitiveDrawer::pipelineState_ = nullptr;
+ID3D12GraphicsCommandList* yunity::PrimitiveDrawer::commandList_ = nullptr;
+yunity::RootSignature* yunity::PrimitiveDrawer::rootSignature_ = nullptr;
+yunity::PipelineState* yunity::PrimitiveDrawer::pipelineState_ = nullptr;
 
-void PrimitiveDrawer::StaticInitialize()
+void yunity::PrimitiveDrawer::StaticInitialize()
 {
 	InitializeGraphicsPipeline();
 }
 
-void PrimitiveDrawer::PreDraw(ID3D12GraphicsCommandList* commandList)
+void yunity::PrimitiveDrawer::PreDraw(ID3D12GraphicsCommandList* commandList)
 {
 	assert(commandList_ == nullptr);
 
 	commandList_ = commandList;
 }
 
-void PrimitiveDrawer::PostDraw()
+void yunity::PrimitiveDrawer::PostDraw()
 {
 	commandList_ = nullptr;
 }
 
-PrimitiveDrawer* PrimitiveDrawer::Create(Type type)
+yunity::PrimitiveDrawer* yunity::PrimitiveDrawer::Create(Type type)
 {
 	PrimitiveDrawer* primitiveDrawer = new PrimitiveDrawer();
 	switch (type)
@@ -51,7 +49,7 @@ PrimitiveDrawer* PrimitiveDrawer::Create(Type type)
 	return primitiveDrawer;
 }
 
-void PrimitiveDrawer::InitializeGraphicsPipeline()
+void yunity::PrimitiveDrawer::InitializeGraphicsPipeline()
 {
 	rootSignature_ = new RootSignature(Device::GetInstance()->GetDevice(), static_cast<int>(RootBindings::kCount), 1);
 
@@ -88,14 +86,6 @@ void PrimitiveDrawer::InitializeGraphicsPipeline()
 	D3D12_BLEND_DESC blendDesc{};
 	// すべての色要素を書き込む
 	blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
-	/*blendDesc.RenderTarget[0].BlendEnable = TRUE;
-	blendDesc.RenderTarget[0].SrcBlend = D3D12_BLEND_SRC_ALPHA;
-	blendDesc.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;
-	blendDesc.RenderTarget[0].DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
-	blendDesc.RenderTarget[0].SrcBlendAlpha = D3D12_BLEND_ONE;
-	blendDesc.RenderTarget[0].BlendOpAlpha = D3D12_BLEND_OP_ADD;
-	blendDesc.RenderTarget[0].DestBlendAlpha = D3D12_BLEND_ZERO;*/
-
 
 	//RasiterzerStateの設定
 	D3D12_RASTERIZER_DESC rasterizerDesc{};
@@ -128,7 +118,7 @@ void PrimitiveDrawer::InitializeGraphicsPipeline()
 
 }
 
-void PrimitiveDrawer::Finalize()
+void yunity::PrimitiveDrawer::Finalize()
 {
 	if (rootSignature_) {
 		delete rootSignature_;
@@ -141,7 +131,7 @@ void PrimitiveDrawer::Finalize()
 	}
 }
 
-void PrimitiveDrawer::Draw(const WorldTransform& worldTransform)
+void yunity::PrimitiveDrawer::Draw(const WorldTransform& worldTransform)
 {
 	assert(commandList_);
 	assert(worldTransform.constBuff_.Get());
@@ -163,11 +153,10 @@ void PrimitiveDrawer::Draw(const WorldTransform& worldTransform)
 
 	commandList_->DrawIndexedInstanced(static_cast<UINT>(indices_.size()), 1, 0, 0, 0);
 
-	//commandList_->DrawIndexedInstanced(16 * 16 * 6, 1, 0, 0, 0);
-	//commandList_->DrawIndexedInstanced(24, 1, 0, 0, 0);
+
 }
 
-void PrimitiveDrawer::Draw(const Vector3& start, const Vector3& end, const Vector4& color)
+void yunity::PrimitiveDrawer::Draw(const Vector3& start, const Vector3& end, const Vector4& color)
 {
 	assert(commandList_);
 
@@ -188,7 +177,7 @@ void PrimitiveDrawer::Draw(const Vector3& start, const Vector3& end, const Vecto
 	commandList_->DrawInstanced(2, 1, 0, 0);
 }
 
-void PrimitiveDrawer::CreateMesh()
+void yunity::PrimitiveDrawer::CreateMesh()
 {
 	// 頂点リソース
 	vertexResource_ = CreateBufferResource(sizeof(VertexData) * vertices_.size()/** 16 * 16 * 4*/);
@@ -215,13 +204,10 @@ void PrimitiveDrawer::CreateMesh()
 
 }
 
-void PrimitiveDrawer::CreateSphere()
+void yunity::PrimitiveDrawer::CreateSphere()
 {
-	
-
 	const uint32_t kSubdivision = 16;
 	
-
 	// 経度分割1つ分の角度 φ
 	const float kLonEvery = float(std::numbers::pi) * 2.0f / float(kSubdivision);
 	// 緯度分割1つ分の角度 θ
@@ -264,30 +250,7 @@ void PrimitiveDrawer::CreateSphere()
 				vertices_.push_back(vertexData[i]);
 			}
 
-			//// 頂点にデータを入力する。基準点a
-			//vertexData_[start].position.x = cos(lat) * cos(lon);
-			//vertexData_[start].position.y = sin(lat);
-			//vertexData_[start].position.z = cos(lat) * sin(lon);
-			//vertexData_[start].position.w = 1.0f;
-			//vertexData_[start].color = { 1, 1, 1, 1 };
-			//// b
-			//vertexData_[start + 1].position.x = cos(lat + kLatEvery) * cos(lon);
-			//vertexData_[start + 1].position.y = sin(lat + kLatEvery);
-			//vertexData_[start + 1].position.z = cos(lat + kLatEvery) * sin(lon);
-			//vertexData_[start + 1].position.w = 1.0f;
-			//vertexData_[start + 1].color = { 1, 1, 1, 1 };
-			//// c
-			//vertexData_[start + 2].position.x = cos(lat) * cos(lon + kLonEvery);
-			//vertexData_[start + 2].position.y = sin(lat);
-			//vertexData_[start + 2].position.z = cos(lat) * sin(lon + kLonEvery);
-			//vertexData_[start + 2].position.w = 1.0f;
-			//vertexData_[start + 2].color = { 1, 1, 1, 1 };
-			//// d
-			//vertexData_[start + 3].position.x = cos(lat + kLatEvery) * cos(lon + kLonEvery);
-			//vertexData_[start + 3].position.y = sin(lat + kLatEvery);
-			//vertexData_[start + 3].position.z = cos(lat + kLatEvery) * sin(lon + kLonEvery);
-			//vertexData_[start + 3].position.w = 1.0f;
-			//vertexData_[start + 3].color = { 1, 1, 1, 1 };
+			
 		}
 
 	}
@@ -312,41 +275,11 @@ void PrimitiveDrawer::CreateSphere()
 		}
 
 	}
-
-	/*for (uint32_t latIndex = 0; latIndex < kSubdivision; ++latIndex) {
-		for (uint32_t lonIndex = 0; lonIndex < kSubdivision; ++lonIndex) {
-			uint32_t start = (latIndex * kSubdivision + lonIndex) * 6;
-			uint32_t i = (latIndex * kSubdivision + lonIndex) * 4;
-			indexData_[start] = i;
-			indexData_[start + 1] = i + 1;
-			indexData_[start + 2] = i + 2;
-			indexData_[start + 3] = i + 1;
-			indexData_[start + 4] = i + 3;
-			indexData_[start + 5] = i + 2;
-
-		}
-
-	}*/
 }
 
-void PrimitiveDrawer::CreateBox()
+void yunity::PrimitiveDrawer::CreateBox()
 {
-	//// 頂点リソース
-	//vertexResource_ = CreateBufferResource(sizeof(VertexData) * 8);
-	//// 頂点バッファビュー
-	//vertexBufferView_.BufferLocation = vertexResource_->GetGPUVirtualAddress(); // リソースの先頭のアドレスから使う
-	//vertexBufferView_.SizeInBytes = UINT(sizeof(VertexData) * 8); // 使用するリソースのサイズは頂点サイズ
-	//vertexBufferView_.StrideInBytes = sizeof(VertexData); // 1頂点当たりのサイズ
 
-	//// 頂点リソースにデータを書き込む
-	//vertexResource_->Map(0, nullptr, (void**)&vertexData_); // 書き込ためのアドレスを取得
-
-	//indexBuff_ = CreateBufferResource(sizeof(uint32_t) * 36);
-	//indexBufferView_.BufferLocation = indexBuff_->GetGPUVirtualAddress();
-	//indexBufferView_.SizeInBytes = UINT(sizeof(uint32_t) * 36);
-	//indexBufferView_.Format = DXGI_FORMAT_R32_UINT;
-
-	//indexBuff_->Map(0, nullptr, (void**)&indexData_);
 
 	VertexData vertexData[8];
 	vertexData[0] = { Vector4(-0.5f, -0.5f, -0.5f, 1.0f), Vector4(1.0f, 0.0f, 0.0f, 1.0f) };
@@ -382,34 +315,9 @@ void PrimitiveDrawer::CreateBox()
 	for (int32_t i = 0; i < 24; i++) {
 		indices_.push_back(indexData[i]);
 	}
-
-	/*vertexData_[0] = { Vector4(-0.5f, -0.5f, -0.5f, 1.0f), Vector4(1.0f, 1.0f, 1.0f, 1.0f) };
-	vertexData_[1] = { Vector4(-0.5f, 0.5f, -0.5f, 1.0f), Vector4(1.0f, 1.0f, 1.0f, 1.0f) };
-	vertexData_[2] = { Vector4(0.5f, 0.5f, -0.5f, 1.0f), Vector4(1.0f, 1.0f, 1.0f, 1.0f) };
-	vertexData_[3] = { Vector4(0.5f, -0.5f, -0.5f, 1.0f), Vector4(1.0f, 1.0f, 1.0f, 1.0f) };
-	vertexData_[4] = { Vector4(-0.5f, -0.5f, 0.5f, 1.0f), Vector4(1.0f, 1.0f, 1.0f, 1.0f) };
-	vertexData_[5] = { Vector4(-0.5f, 0.5f, 0.5f, 1.0f), Vector4(1.0f, 1.0f, 1.0f, 1.0f) };
-	vertexData_[6] = { Vector4(0.5f, 0.5f, 0.5f, 1.0f), Vector4(1.0f, 1.0f, 1.0f, 1.0f) };
-	vertexData_[7] = { Vector4(0.5f, -0.5f, 0.5f, 1.0f), Vector4(1.0f, 1.0f, 1.0f, 1.0f) };
-
-	indexData_[0] = 0; indexData_[1] = 1; 
-	indexData_[2] = 1; indexData_[3] = 2; 
-	indexData_[4] = 2; indexData_[5] = 3;
-	indexData_[6] = 3; indexData_[7] = 0; 
-
-	indexData_[8] = 4;  indexData_[9] = 5; 
-	indexData_[10] = 5; indexData_[11] = 6;
-	indexData_[12] = 6; indexData_[13] = 7; 
-	indexData_[14] = 7; indexData_[15] = 4; 
-
-	indexData_[16] = 0; indexData_[17] = 4;
-	indexData_[18] = 1; indexData_[19] = 5; 
-	indexData_[20] = 2; indexData_[21] = 6; 
-	indexData_[22] = 3; indexData_[23] = 7;*/
-
 }
 
-void PrimitiveDrawer::CreateLine()
+void yunity::PrimitiveDrawer::CreateLine()
 {
 	VertexData vertexData[2];
 	vertexData[0] = { Vector4(0.0f, 0.0f, 0.0f, 1.0f), Vector4(1.0f, 1.0f, 1.0f, 1.0f) };
@@ -420,27 +328,4 @@ void PrimitiveDrawer::CreateLine()
 	}
 }
 
-//ID3D12Resource* PrimitiveDrawer::CreateBufferResource(size_t sizeInBytes)
-//{
-//	HRESULT result = S_FALSE;
-//	// リソース用のヒープの設定
-//	D3D12_HEAP_PROPERTIES uploadHeapProperties{};
-//	uploadHeapProperties.Type = D3D12_HEAP_TYPE_UPLOAD; // uploadHeapを使う
-//	// リソースの設定
-//	D3D12_RESOURCE_DESC ResourceDesc{};
-//	// バッファリソース
-//	ResourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
-//	ResourceDesc.Width = sizeInBytes; // リソースのサイズ
-//	ResourceDesc.Height = 1;
-//	ResourceDesc.DepthOrArraySize = 1;
-//	ResourceDesc.MipLevels = 1;
-//	ResourceDesc.SampleDesc.Count = 1;
-//	ResourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
-//	// リソースを作る
-//	ID3D12Resource* resource = nullptr;
-//	result = Device::GetInstance()->GetDevice()->CreateCommittedResource(&uploadHeapProperties, D3D12_HEAP_FLAG_NONE,
-//		&ResourceDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(&resource));
-//	assert(SUCCEEDED(result));
-//	return resource;
-//}
 

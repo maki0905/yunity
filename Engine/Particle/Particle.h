@@ -26,7 +26,7 @@ struct Particle {
 
 	void AddVecocity();
 	void AffineMatrix();
-	void BillboardMatrix(const Camera& camera);
+	void BillboardMatrix(const yunity::Camera& camera);
 };
 
 

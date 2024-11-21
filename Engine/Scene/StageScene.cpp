@@ -22,19 +22,19 @@ void StageScene::Initialize()
 
 	camera_ = CameraManager::GetInstance()->GetCamera();
 	camera_->SetFixedAxis({ 0.0f, 0.0f, 1.0f });
-	debugCamera_ = std::make_unique<DebugCamera>();
+	debugCamera_ = std::make_unique<yunity::DebugCamera>();
 	isDebug_ = false;
 
 	skyboxWorldTransform_.Initialize();
 	skyboxWorldTransform_.scale_ = { 100.0f, 100.0f, 100.0f };
-	skybox_ = std::make_unique<SkyBox>();
-	skybox_.reset(SkyBox::Create());
+	skybox_ = std::make_unique<yunity::SkyBox>();
+	skybox_.reset(yunity::SkyBox::Create());
 	skybox_->SetCamera(camera_);
 	skybox_->SetTexture("rostock_laage_airport_4k.dds");
 
-	Model::DirectionalLight l = { .color = {1.0f, 1.0f, 1.0f, 1.0f}, .direction = {1.0f, -1.0f, 0.0f}, .intensity = 1.0f };
+	yunity::Model::DirectionalLight l = { .color = {1.0f, 1.0f, 1.0f, 1.0f}, .direction = {1.0f, -1.0f, 0.0f}, .intensity = 1.0f };
 
-	world_ = std::make_unique<World>();
+	world_ = std::make_unique<yunity::World>();
 	world_->Initialize({0.0f, -15.0f, 0.0f});
 
 	player_ = std::make_unique<Player>();
@@ -53,24 +53,24 @@ void StageScene::Initialize()
 	startPos_ = startWT_.translation_;
 	player_->ResetPos(startPos_);
 
-	start_ = std::make_unique<Model>();
-	start_.reset(ModelManager::GetInstance()->CreateModel(obj, "TV"));
+	start_ = std::make_unique<yunity::Model>();
+	start_.reset(yunity::ModelManager::GetInstance()->CreateModel(obj, "TV"));
 	start_->SetCamera(camera_);
 	startWT_.translation_.y += 1.0f;
 	startWT_.translation_.z += 3.0f;
 	startWT_.scale_ = { 0.5f, 0.5f, 0.5f };
 	startWT_.UpdateMatrix();
-	textureTV_ = TextureManager::Load("Models/TV/TV.png");
+	textureTV_ = yunity::TextureManager::Load("Models/TV/TV.png");
 
-	end_ = std::make_unique<Model>();
-	end_.reset(ModelManager::GetInstance()->CreateModel(obj, "TV"));
+	end_ = std::make_unique<yunity::Model>();
+	end_.reset(yunity::ModelManager::GetInstance()->CreateModel(obj, "TV"));
 	end_->SetCamera(camera_);
 	endWT_.Initialize();
 	endWT_.translation_ = endPos_;
 	endWT_.scale_ = { 1.5f, 1.5f, 1.5f };
 	endWT_.UpdateMatrix();
 
-	skydome_ = std::make_unique<Skydome>();
+	skydome_ = std::make_unique<yunity::Skydome>();
 	skydome_->Initialize(camera_, {5.0f, 5.0f, 5.0f});
 
 	CommonData::GetInstance()->scene_ = Scene::kStage;
@@ -82,7 +82,7 @@ void StageScene::Initialize()
 
 	for (uint32_t i = 0; i < springBoardCount_; i++) {
 		springTops_[i] = std::make_unique<SpringBoard>();
-		springAnchors_[i] = std::make_unique<Object3D>();
+		springAnchors_[i] = std::make_unique<yunity::Object3D>();
 		Vector3 pos;
 		if (i == 0) {
 			pos = {103.0f, 2.5f, 0.0f};
@@ -91,7 +91,7 @@ void StageScene::Initialize()
 			pos = {257.6f, -4.5f, -1.0f};
 		}
 
-		springTops_[i]->Initialize(ModelManager::GetInstance()->CreateModel(obj, "Wood"), world_.get(), Collider::kAABB);
+		springTops_[i]->Initialize(yunity::ModelManager::GetInstance()->CreateModel(obj, "Wood"), world_.get(), yunity::Collider::kAABB);
 		springTops_[i]->SetTranslation(pos);
 		springTops_[i]->SetMass(1.0f);
 		springTops_[i]->SetHitBoxSize({ 2.0f, 2.0f, 2.0f });
@@ -102,7 +102,7 @@ void StageScene::Initialize()
 		springTops_[i]->SetDirectionalLight(l);
 		world_->Add(springTops_[i].get());
 
-		springAnchors_[i]->Initialize(world_.get(), Collider::kAABB);
+		springAnchors_[i]->Initialize(world_.get(), yunity::Collider::kAABB);
 		springAnchors_[i]->SetTranslation({ pos.x, pos.y - 1.0f, pos.z });
 		springAnchors_[i]->SetCamera(camera_);
 		springAnchors_[i]->SetCollisionAttribute(kCollisionAttributeFloor);
@@ -110,18 +110,18 @@ void StageScene::Initialize()
 
 		springTops_[i]->SetSpringJoint(springAnchors_[i].get());
 
-		springLines_[i] = std::make_unique<PrimitiveDrawer>();
-		springLines_[i].reset(PrimitiveDrawer::Create());
+		springLines_[i] = std::make_unique<yunity::PrimitiveDrawer>();
+		springLines_[i].reset(yunity::PrimitiveDrawer::Create());
 		springLines_[i]->SetCamera(camera_);
 	}
 
 	for (uint32_t i = 0; i < bridgeCount_; i++) {
-		bridge_[i] = std::make_unique<Object3D>();
+		bridge_[i] = std::make_unique<yunity::Object3D>();
 		bridge_[i]->SetPosition(Vector3{ 397.45f + i * 15.0f,  26.765f, 0.0f });
 		if (i > 0 && i < bridgeCount_ - 1) {
 			bridge_[i]->SetMass(2.0f);
 		}
-		bridge_[i]->Initialize(ModelManager::GetInstance()->CreateModel(obj,/* ""*/"Wood"), world_.get(), Collider::Shape::kAABB);
+		bridge_[i]->Initialize(yunity::ModelManager::GetInstance()->CreateModel(obj,/* ""*/"Wood"), world_.get(), yunity::Collider::Shape::kAABB);
 		bridge_[i]->SetCamera(camera_);
 		bridge_[i]->SetScale({ 3.0f, 2.0f ,6.4f });
 		bridge_[i]->SetHitBoxSize({ 2.0f, 2.0f, 2.0f });
@@ -132,7 +132,7 @@ void StageScene::Initialize()
 
 
 		if (i > 0) {
-			bridgesJoint_[i - 1] = std::make_unique<SpringJoint>();
+			bridgesJoint_[i - 1] = std::make_unique<yunity::SpringJoint>();
 			bridgesJoint_[i - 1]->CreateSpringJoint(bridge_[i - 1].get(), bridge_[i].get());
 			bridgesJoint_[i - 1]->EnableSpring(0, true);
 			bridgesJoint_[i - 1]->EnableSpring(1, true);
@@ -144,8 +144,8 @@ void StageScene::Initialize()
 			bridgesJoint_[i - 1]->SetDamping(1, damper_);
 			world_->AddJoint(bridgesJoint_[i - 1].get());
 
-			bridgeLines_[i - 1] = std::make_unique<PrimitiveDrawer>();
-			bridgeLines_[i - 1].reset(PrimitiveDrawer::Create());
+			bridgeLines_[i - 1] = std::make_unique<yunity::PrimitiveDrawer>();
+			bridgeLines_[i - 1].reset(yunity::PrimitiveDrawer::Create());
 			bridgeLines_[i - 1]->SetCamera(camera_);
 		}
 
@@ -215,7 +215,7 @@ void StageScene::Update()
 
 	skyboxWorldTransform_.UpdateMatrix();
 
-	if (Input::GetInstance()->TriggerKey(DIK_LSHIFT)) {
+	if (yunity::Input::GetInstance()->TriggerKey(DIK_LSHIFT)) {
 		isDebug_ ^= true;
 	}
 
@@ -234,7 +234,7 @@ void StageScene::Update()
 			dieCamera_ = camera_->GetTranslate();
 			diePos_ = player_->GetMatWorldTranslation();
 			camera_->SetTarget(nullptr);
-			player_->AddForce({0.0f, 10.0f, -1.0f}, Body::ForceMode::kImpulse);
+			player_->AddForce({0.0f, 10.0f, -1.0f}, yunity::Body::ForceMode::kImpulse);
 			player_->SetIsTrigger(true);
 			isDebt_ = true;
 			player_->SetVelocity({ 0.0f, 0.0f, 0.0f });
@@ -294,21 +294,9 @@ void StageScene::Update()
 					isClear_ = true;
 					time_ = 0.0f;
 					cameraPos_ = camera_->GetTranslate();
-					RenderTexture::GetInstance()->SelectPostEffect(PostEffects::kRadialBlur, true);
+					yunity::RenderTexture::GetInstance()->SelectPostEffect(yunity::PostEffects::kRadialBlur, true);
 				}
 			}
-			
-			/*time_ += 1.0f / 30.0f;
-			time_ = std::clamp(time_, 0.0f, 1.0f);
-			camera_->SetTranslate(Lerp(cameraPos_, { cameraPos_.x, endPos_.y, -60.0f }, time_));
-			if (time_ == 1.0f) {
-				if (player_->Result()) {
-					isClear_ = true;
-					time_ = 0.0f;
-					cameraPos_ = camera_->GetTranslate();
-					RenderTexture::GetInstance()->SelectPostEffect(PostEffects::kRadialBlur, true);
-				}
-			}*/
 
 		}
 		else {
@@ -320,7 +308,7 @@ void StageScene::Update()
 
 			if (!Tradition::GetInstance()->GetIn()) {
 				CommonData::GetInstance()->isGoal_ = false;
-				SceneManager::GetInstance()->ChangeScene("TITLE");
+				yunity::SceneManager::GetInstance()->ChangeScene("TITLE");
 				player_->SetSelect(false);
 				Tradition::GetInstance()->Initialize();
 			}
@@ -329,8 +317,8 @@ void StageScene::Update()
 
 	}
 
-	if (Input::GetInstance()->TriggerKey(DIK_T)) {
-		SceneManager::GetInstance()->ChangeScene("TITLE");
+	if (yunity::Input::GetInstance()->TriggerKey(DIK_T)) {
+		yunity::SceneManager::GetInstance()->ChangeScene("TITLE");
 	}
 
 	

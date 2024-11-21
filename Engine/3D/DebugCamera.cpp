@@ -2,11 +2,7 @@
 #include "MathFunction.h"
 #include "Transform.h"
 
-DebugCamera::DebugCamera()
-{
-}
-
-void DebugCamera::Update(Camera* camera)
+void yunity::DebugCamera::Update(Camera* camera)
 {
 	int32_t wheel = Input::GetInstance()->GetWheel();
 	Vector2 mouseMove = Input::GetInstance()->GetMouseMove();

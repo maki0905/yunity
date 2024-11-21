@@ -6,14 +6,14 @@
 #include <Windows.h>
 #include "MathFunction.h"
 
-LevelEditor* LevelEditor::GetInstance()
+yunity::LevelEditor* yunity::LevelEditor::GetInstance()
 {
 	static LevelEditor instance;
 
 	return &instance;
 }
 
-LevelData* LevelEditor::LoadFile(const std::string& fileName)
+yunity::LevelData* yunity::LevelEditor::LoadFile(const std::string& fileName)
 {
 	// 読み込むJSONファイルのフルパスを合成
 	std::string filePath = kDirectoryPath + fileName + ".json";
@@ -59,7 +59,7 @@ LevelData* LevelEditor::LoadFile(const std::string& fileName)
 
 }
 
-void LevelEditor::LoadObjectRecursive(LevelData* levelData, nlohmann::json deserialized)
+void yunity::LevelEditor::LoadObjectRecursive(LevelData* levelData, nlohmann::json deserialized)
 {
 	// "objects"の全オブジェクトを走査
 	for (nlohmann::json& object : deserialized["objects"]) {
