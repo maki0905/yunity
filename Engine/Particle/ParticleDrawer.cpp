@@ -36,9 +36,19 @@ yunity::ParticleDrawer* yunity::ParticleDrawer::Create(const std::string& modeln
 void yunity::ParticleDrawer::Initialize(const std::string& filename)
 {
 	CreateMesh();
+	modelData_.indices.clear();
 	if (filename.size() != 0) {
 		textureHandle_ = TextureManager::Load(filename);
 	}
+	CreateSRV();
+	InitializeMaterial();
+}
+
+void yunity::ParticleDrawer::Initialize(const Model::ModelData& modelData)
+{
+	CreateMesh(modelData.vertices);
+	CreateIndex(modelData.indices);
+	textureHandle_ = TextureManager::Load(modelData.material.textureFilePath);
 	CreateSRV();
 	InitializeMaterial();
 }
@@ -47,7 +57,7 @@ void yunity::ParticleDrawer::Draw(std::list<Particle> particles)
 {
 	assert(commandList_);
 
-	GraphicsPipelineManager::GetInstance()->SetCommandList(commandList_, PipelineType::kParticle, BlendModeType::kNone);
+	GraphicsPipelineManager::GetInstance()->SetCommandList(commandList_, PipelineType::kParticle, blendModeType_);
 	commandList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	uint32_t numInstance = 0;
@@ -55,7 +65,6 @@ void yunity::ParticleDrawer::Draw(std::list<Particle> particles)
 	for (uint32_t index = 0; auto& particle : particles) {
 		instancingData_[index].world = particle.particleForCPU.world;
 		instancingData_[index].color = particle.particleForCPU.color;
-		//instancingData_[index] = particle->color;
 		index++;
 		++numInstance;
 
@@ -84,7 +93,8 @@ void yunity::ParticleDrawer::Draw(std::list<Particle> particles)
 	// SRVをセット
 	TextureManager::GetInstance()->SetGraphicsRootDescriptorTable(commandList_, static_cast<UINT>(RootBindings::kTexture), textureHandle_);
 
-	commandList_->DrawInstanced(UINT(modelData.vertices.size()), numInstance, 0, 0);
+
+	commandList_->DrawInstanced(UINT(modelData_.vertices.size()), numInstance, 0, 0);
 }
 
 void yunity::ParticleDrawer::SetMaterial(const Vector4& color)
@@ -95,26 +105,63 @@ void yunity::ParticleDrawer::SetMaterial(const Vector4& color)
 void yunity::ParticleDrawer::CreateMesh()
 {
 
-	modelData.vertices.push_back({ .position = {-1.0f, 1.0f, 0.0f, 1.0f}, .texcoord = {0.0f, 0.0f}, .normal = {0.0f, 0.0f, 1.0f} }); // 左上
-	modelData.vertices.push_back({ .position = {1.0f, 1.0f, 0.0f, 1.0f}, .texcoord = {1.0f, 0.0f}, .normal = {0.0f, 0.0f, 1.0f} }); // 右上
-	modelData.vertices.push_back({ .position = {-1.0f, -1.0f, 0.0f, 1.0f}, .texcoord = {0.0f, 1.0f}, .normal = {0.0f, 0.0f, 1.0f} }); // 左下
-	modelData.vertices.push_back({ .position = {-1.0f, -1.0f, 0.0f, 1.0f}, .texcoord = {0.0f, 1.0f}, .normal = {0.0f, 0.0f, 1.0f} }); // 左下
-	modelData.vertices.push_back({ .position = {1.0f, 1.0f, 0.0f, 1.0f}, .texcoord = {1.0f, 0.0f}, .normal = {0.0f, 0.0f, 1.0f} }); // 右上
-	modelData.vertices.push_back({ .position = {1.0f, -1.0f, 0.0f, 1.0f}, .texcoord = {1.0f, 1.0f}, .normal = {0.0f, 0.0f, 1.0f} }); // 右下
+	modelData_.vertices.push_back({ .position = {-1.0f, 1.0f, 0.0f, 1.0f}, .texcoord = {0.0f, 0.0f}, .normal = {0.0f, 0.0f, 1.0f} }); // 左上
+	modelData_.vertices.push_back({ .position = {1.0f, 1.0f, 0.0f, 1.0f}, .texcoord = {1.0f, 0.0f}, .normal = {0.0f, 0.0f, 1.0f} }); // 右上
+	modelData_.vertices.push_back({ .position = {-1.0f, -1.0f, 0.0f, 1.0f}, .texcoord = {0.0f, 1.0f}, .normal = {0.0f, 0.0f, 1.0f} }); // 左下
+	modelData_.vertices.push_back({ .position = {-1.0f, -1.0f, 0.0f, 1.0f}, .texcoord = {0.0f, 1.0f}, .normal = {0.0f, 0.0f, 1.0f} }); // 左下
+	modelData_.vertices.push_back({ .position = {1.0f, 1.0f, 0.0f, 1.0f}, .texcoord = {1.0f, 0.0f}, .normal = {0.0f, 0.0f, 1.0f} }); // 右上
+	modelData_.vertices.push_back({ .position = {1.0f, -1.0f, 0.0f, 1.0f}, .texcoord = {1.0f, 1.0f}, .normal = {0.0f, 0.0f, 1.0f} }); // 右下
 
 	// 頂点リソース
-	vertexResource_ = CreateBufferResource(sizeof(VertexData) * modelData.vertices.size());
+	vertexResource_ = CreateBufferResource(sizeof(VertexData) * modelData_.vertices.size());
 	// 頂点バッファビュー
 	vertexBufferView_.BufferLocation = vertexResource_->GetGPUVirtualAddress(); // リソースの先頭のアドレスから使う
-	vertexBufferView_.SizeInBytes = UINT(sizeof(VertexData) * modelData.vertices.size()); // 使用するリソースのサイズは頂点サイズ
+	vertexBufferView_.SizeInBytes = UINT(sizeof(VertexData) * modelData_.vertices.size()); // 使用するリソースのサイズは頂点サイズ
 	vertexBufferView_.StrideInBytes = sizeof(VertexData); // 1頂点当たりのサイズ
 
 	// 頂点リソースにデータを書き込む
 	vertexResource_->Map(0, nullptr, (void**)&vertexData_); // 書き込むためのアドレスを取得
-	std::memcpy(vertexData_, modelData.vertices.data(), sizeof(VertexData) * modelData.vertices.size()); // 頂点データをリソースにコピー
+	std::memcpy(vertexData_, modelData_.vertices.data(), sizeof(VertexData) * modelData_.vertices.size()); // 頂点データをリソースにコピー
+}
+
+void yunity::ParticleDrawer::CreateMesh(const std::vector<Model::VertexData>& vertices)
+{
+	modelData_.vertices.clear();
+	for (auto& vertex : vertices) {
+		modelData_.vertices.push_back({ .position = vertex.position, .texcoord = vertex.texcoord, .normal = vertex.normal }); // 左上
+	}
+
+	// 頂点リソース
+	vertexResource_ = CreateBufferResource(sizeof(VertexData) * modelData_.vertices.size());
+	// 頂点バッファビュー
+	vertexBufferView_.BufferLocation = vertexResource_->GetGPUVirtualAddress(); // リソースの先頭のアドレスから使う
+	vertexBufferView_.SizeInBytes = UINT(sizeof(VertexData) * modelData_.vertices.size()); // 使用するリソースのサイズは頂点サイズ
+	vertexBufferView_.StrideInBytes = sizeof(VertexData); // 1頂点当たりのサイズ
+
+	// 頂点リソースにデータを書き込む
+	vertexResource_->Map(0, nullptr, (void**)&vertexData_); // 書き込むためのアドレスを取得
+	std::memcpy(vertexData_, modelData_.vertices.data(), sizeof(VertexData) * modelData_.vertices.size()); // 頂点データをリソースにコピー
 }
 
 
+
+void yunity::ParticleDrawer::CreateIndex(const std::vector<uint32_t>& indices)
+{
+	modelData_.indices.clear();
+	for (auto& index : indices) {
+		modelData_.indices.push_back(index);
+	}
+
+	// インデックスリソース
+	indexResource_ = CreateBufferResource(sizeof(uint32_t) * modelData_.indices.size());
+	// インデックスバッファビュー
+	indexBufferView_.BufferLocation = indexResource_->GetGPUVirtualAddress();
+	indexBufferView_.SizeInBytes = UINT(sizeof(uint32_t) * modelData_.indices.size());
+	indexBufferView_.Format = DXGI_FORMAT_R32_UINT;
+	// インデックスリソースにデータを書き込む
+	indexResource_->Map(0, nullptr, reinterpret_cast<void**>(&mappedIndex_));
+	std::memcpy(mappedIndex_, modelData_.indices.data(), sizeof(uint32_t) * modelData_.indices.size());
+}
 
 void yunity::ParticleDrawer::CreateSRV()
 {

@@ -61,7 +61,7 @@ namespace yunity {
 		/// <param name="fileName"></param>
 		/// <param name="modelType"></param>
 		/// <returns></returns>
-		Model* CreateModel(Format format, const std::string& folderName, const std::string& fileName = "", ModelType modelType = kRigid);
+		Model* CreateModel(const Format& format, const std::string& folderName, const std::string& fileName = "", ModelType modelType = kRigid);
 		//std::unique_ptr<Model> CreateModel(Format format, const std::string& folderName, const std::string& fileName = "", ModelType modelType = kRigid);
 
 		/// <summary>
@@ -69,8 +69,9 @@ namespace yunity {
 		/// </summary>
 		/// <returns></returns>
 
-		Model::ModelData& GetModelData(const std::string& modelName);
+		Model::ModelData& GetModelData(const Format& format, const std::string& folderName, const std::string& fileName = "");
 		Animation GetAnimation(Format format, const std::string& folderName, const std::string& fileName = "");
+		
 
 	private:
 		ModelManager() = default;

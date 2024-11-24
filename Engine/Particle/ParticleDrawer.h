@@ -12,6 +12,7 @@
 #include "MathFunction.h"
 #include "DescriptorHeap.h"
 #include "Particle.h"
+#include "Model.h"
 
 namespace yunity {
 	class ParticleDrawer
@@ -43,6 +44,7 @@ namespace yunity {
 
 		struct ModelData {
 			std::vector<VertexData> vertices;
+			std::vector<uint32_t> indices;
 			MaterialData material;
 		};
 
@@ -65,16 +67,14 @@ namespace yunity {
 		/// <returns></returns>
 		static ParticleDrawer* Create(const std::string& filename);
 
-	
-
-
-
 	public:
 
 		/// <summary>
 		/// 初期化
 		/// </summary>
 		void Initialize(const std::string& filename = nullptr);
+
+		void Initialize(const Model::ModelData& modelData);
 
 		/// <summary>
 		/// 描画
@@ -90,11 +90,16 @@ namespace yunity {
 		void SetMaterial(const Vector4& color);
 
 		void SetTextuer(const std::string& filename) { textureHandle_ = yunity::TextureManager::Load(filename); }
+		void SetBlendModeType(const BlendModeType& blendModeType) { blendModeType_ = blendModeType; }
 
 	private:
 
 		// メッシュ生成
 		void CreateMesh();
+		void CreateMesh(const std::vector<Model::VertexData>& vertices);
+
+		// インデックス生成
+		void CreateIndex(const std::vector<uint32_t>& indices);
 
 		void CreateSRV();
 
@@ -104,13 +109,15 @@ namespace yunity {
 		static ID3D12GraphicsCommandList* commandList_;
 
 	private:
+		// ブレンドモード
+		BlendModeType blendModeType_ = BlendModeType::kNone;
 
 		yunity::Camera* camera_ = nullptr;
 
 		// SRV用ヒープ
 		yunity::DescriptorHeap* srvHeap_;
 
-		ModelData modelData;
+		ModelData modelData_;
 		// 頂点バッファ
 		Microsoft::WRL::ComPtr<ID3D12Resource> vertexResource_;
 		// 頂点データ
@@ -119,10 +126,9 @@ namespace yunity {
 		D3D12_VERTEX_BUFFER_VIEW vertexBufferView_;
 		// インデックスバッファ
 		Microsoft::WRL::ComPtr<ID3D12Resource> indexResource_;
-		// インデックスデータ
-		std::vector<uint16_t> indexData_;
 		// インデックスバッファビュー
 		D3D12_INDEX_BUFFER_VIEW indexBufferView_;
+		uint32_t* mappedIndex_;
 
 		// インスタンス数
 		const uint32_t kNumMaxInstance = 100;

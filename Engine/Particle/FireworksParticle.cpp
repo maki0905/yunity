@@ -1,10 +1,12 @@
 #include "FireworksParticle.h"
 
+#include "ModelManager.h"
+
 void FireworksParticle::Initialize(const Vector3& position)
 {
 	isActive_ = true;
-	particleDrawer_.reset(yunity::ParticleDrawer::Create("circle.png"));
-	particleDrawer_->Initialize("circle.png");
+	particleDrawer_ = std::make_unique<yunity::ParticleDrawer>();
+	particleDrawer_->Initialize(yunity::ModelManager::GetInstance()->GetModelData(obj, "Cube"));
 	particleDrawer_->SetCamera(camera_);
 	particles_.clear();
 
@@ -43,9 +45,3 @@ void FireworksParticle::Update()
 	}
 	BaseParticle::Update();
 }
-
-
-//void FireworksParticle::Draw()
-//{
-//	particleDrawer_->Draw(particles_);
-//}

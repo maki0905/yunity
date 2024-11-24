@@ -44,7 +44,7 @@ void yunity::ModelManager::Take(Model* model)
 	}
 }
 
-yunity::Model* yunity::ModelManager::CreateModel(Format format, const std::string& folderName, const std::string& fileName, ModelType modelType)
+yunity::Model* yunity::ModelManager::CreateModel(const Format& format, const std::string& folderName, const std::string& fileName, ModelType modelType)
 {
 	Model* model = new Model();
 	std::string path = folderName;
@@ -60,9 +60,16 @@ yunity::Model* yunity::ModelManager::CreateModel(Format format, const std::strin
 	return models_.back();
 }
 
-yunity::Model::ModelData& yunity::ModelManager::GetModelData(const std::string& modelName)
+yunity::Model::ModelData& yunity::ModelManager::GetModelData(const Format& format, const std::string& folderName, const std::string& fileName)
 {
-	std::string path = modelName;
+	std::string path = folderName;
+	if (fileName.size() != 0) {
+		path = path + "/" + fileName;
+	}
+	auto itr = modelDataStorage_.find(path);
+	if (itr == modelDataStorage_.end()) {
+		modelDataStorage_[path] = LoadModelFile(format, folderName, fileName);
+	}
 	return modelDataStorage_[path];
 }
 
