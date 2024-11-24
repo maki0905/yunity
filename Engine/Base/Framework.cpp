@@ -51,7 +51,6 @@ void yunity::Framework::Initialize()
 
 	// パーティクル
 	particleDrawer_ = std::make_unique<ParticleDrawer>();
-	particleDrawer_->StaticInitialize();
 
 #pragma endregion
 

@@ -15,7 +15,9 @@ void yunity::DescriptorHeap::Create(D3D12_DESCRIPTOR_HEAP_TYPE heapType, uint32_
 	heapDesc_.Flags = shaderVisible ? D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE : D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
 	heapDesc_.NodeMask = 1;
 
-	HRESULT result = device->GetDevice()->CreateDescriptorHeap(&heapDesc_, IID_PPV_ARGS(&heap_));
+	HRESULT result;
+
+	result = device->GetDevice()->CreateDescriptorHeap(&heapDesc_, IID_PPV_ARGS(&heap_));
 	assert(SUCCEEDED(result));
 
 	descriptorSize_ = device->GetDevice()->GetDescriptorHandleIncrementSize(heapDesc_.Type);

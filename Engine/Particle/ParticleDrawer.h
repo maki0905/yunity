@@ -12,8 +12,6 @@
 #include "MathFunction.h"
 #include "DescriptorHeap.h"
 #include "Particle.h"
-#include "PipelineState.h"
-#include "RootSignature.h"
 
 namespace yunity {
 	class ParticleDrawer
@@ -49,11 +47,6 @@ namespace yunity {
 		};
 
 	public:
-		/// <summary>
-		/// 静的初期化
-		/// </summary>
-		/// <param name="device">デバイス</param>
-		static void StaticInitialize();
 
 		/// <summary>
 		/// 描画前処理
@@ -72,10 +65,7 @@ namespace yunity {
 		/// <returns></returns>
 		static ParticleDrawer* Create(const std::string& filename);
 
-		/// <summary>
-		/// グラフィックスパイプライン生成
-		/// </summary>
-		static void InitializeGraphicsPipeline();
+	
 
 
 
@@ -110,18 +100,8 @@ namespace yunity {
 
 		void InitializeMaterial();
 
-		/// <summary>
-		/// 定数バッファ生成
-		/// </summary>
-		/// <param name="sizeInBytes"></param>
-		/// <returns>サイズ</returns>
-		ID3D12Resource* CreateBufferResource(size_t sizeInBytes);
-
 	private:
-		static ID3D12Device* device_;
 		static ID3D12GraphicsCommandList* commandList_;
-		static RootSignature* rootSignature_;
-		static PipelineState* pipelineState_;
 
 	private:
 

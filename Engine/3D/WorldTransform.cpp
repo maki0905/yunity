@@ -40,8 +40,9 @@ void yunity::WorldTransform::CreateConstBuffer() {
 }
 
 void yunity::WorldTransform::Map() {
+    HRESULT result;
     // 定数バッファとのデータリンク
-    HRESULT result = constBuff_->Map(0, nullptr, (void**)&constMap);
+    result = constBuff_->Map(0, nullptr, (void**)&constMap);
     assert(SUCCEEDED(result));
 }
 
