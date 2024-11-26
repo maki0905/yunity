@@ -26,6 +26,6 @@ public:
 private:
 	yunity::Camera* camera_ = nullptr;
 	std::list<ParticleEmitter*> emitters_;
-	std::list<yunity::BaseParticle*> particles_;
+	std::list<std::unique_ptr<yunity::BaseParticle>> particles_;
 };
 

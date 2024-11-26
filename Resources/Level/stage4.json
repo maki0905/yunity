@@ -2724,6 +2724,51 @@
                 ],
                 "ratio": 0.0
             }
+        },
+        {
+            "type": "MESH",
+            "name": "立方体.019",
+            "transform": {
+                "translation": [
+                    507.7705993652344,
+                    -0.6955204010009766,
+                    33.22200012207031
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    2.2952959537506104,
+                    3.9811649322509766,
+                    1.1671967506408691
+                ]
+            },
+            "file_name": "Brick",
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    3.0,
+                    3.0,
+                    3.0
+                ],
+                "isTrigger": false,
+                "attribute": 1
+            },
+            "body": {
+                "mass": 0.0,
+                "drag": 0.05,
+                "miu": 0.5,
+                "frictionCombine": 0,
+                "bounciness": 0.20000000298023224,
+                "bounceCombine": 0
+            }
         }
     ]
 }

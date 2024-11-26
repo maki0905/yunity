@@ -11,14 +11,10 @@ void ParticleManager::Update()
 	for (auto& emitter : emitters_) {
 		if (emitter->Update()) {
 
-			FireworksParticle* fireworksParticle = new FireworksParticle();
-			fireworksParticle->SetCamera(camera_);
-			fireworksParticle->Initialize(emitter->GetPosition());
-			particles_.push_back(fireworksParticle);
 		}
 	}
 
-	for (std::list<yunity::BaseParticle*>::iterator particleIterator = particles_.begin(); particleIterator != particles_.end();) {
+	for (std::list<std::unique_ptr<yunity::BaseParticle>>::iterator particleIterator = particles_.begin(); particleIterator != particles_.end();) {
 		if (!(*particleIterator)->GetIsActive()) {
 			particleIterator = particles_.erase(particleIterator);
 			continue;

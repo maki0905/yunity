@@ -15,6 +15,8 @@
 #include "Skydome.h"
 #include "Coin.h"
 #include "SpringBoard.h"
+#include "FireworksParticle.h"
+#include "Random.h"
 
 /*
 * @brief ステージシーンクラス
@@ -99,11 +101,11 @@ private:
 	std::array<std::unique_ptr<yunity::PrimitiveDrawer>, springBoardCount_> springLines_;
 
 	// 吊り橋
-	static const uint32_t bridgeCount_ = 9;
+	/*static const uint32_t bridgeCount_ = 9;
 	std::array<std::unique_ptr<yunity::Object3D>, bridgeCount_> bridge_;
 	std::array<std::unique_ptr<yunity::PrimitiveDrawer>, bridgeCount_ - 1> bridgeLines_;
 	std::array<std::unique_ptr<yunity::SpringJoint>, bridgeCount_ - 1> bridgesJoint_;
 	const float stiffness_ = 5.0f;
-	const float damper_ = 0.1f;
+	const float damper_ = 0.1f;*/
 };
 

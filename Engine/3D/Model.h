@@ -186,6 +186,7 @@ namespace yunity {
 		/// 
 		Camera* GetCamera() { return camera_; }
 		std::string GetModelName() { return modelName_; }
+		ModelData GetModelData() { return modelData_; }
 
 		//void SetModelData(const std::string& fileName, const std::string format);
 

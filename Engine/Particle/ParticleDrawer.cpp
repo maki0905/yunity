@@ -93,8 +93,12 @@ void yunity::ParticleDrawer::Draw(std::list<Particle> particles)
 	// SRVをセット
 	TextureManager::GetInstance()->SetGraphicsRootDescriptorTable(commandList_, static_cast<UINT>(RootBindings::kTexture), textureHandle_);
 
-
-	commandList_->DrawInstanced(UINT(modelData_.vertices.size()), numInstance, 0, 0);
+	if (modelData_.indices.size() != 0) {
+		commandList_->DrawIndexedInstanced((UINT)modelData_.indices.size(), numInstance, 0, 0, 0);
+	}
+	else {
+		commandList_->DrawInstanced(UINT(modelData_.vertices.size()), numInstance, 0, 0);
+	}
 }
 
 void yunity::ParticleDrawer::SetMaterial(const Vector4& color)

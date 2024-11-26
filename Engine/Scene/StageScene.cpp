@@ -51,6 +51,7 @@ void StageScene::Initialize()
 	objectManager_->SetDirectionalLight(l);
 	startWT_.translation_ = objectManager_->GetPos("startBox");
 	startPos_ = startWT_.translation_;
+	startPos_ = { 500.0f, endPos_.y, 0.0f };
 	player_->ResetPos(startPos_);
 
 	start_ = std::make_unique<yunity::Model>();
@@ -115,41 +116,41 @@ void StageScene::Initialize()
 		springLines_[i]->SetCamera(camera_);
 	}
 
-	for (uint32_t i = 0; i < bridgeCount_; i++) {
-		bridge_[i] = std::make_unique<yunity::Object3D>();
-		bridge_[i]->SetPosition(Vector3{ 397.45f + i * 15.0f,  26.765f, 0.0f });
-		if (i > 0 && i < bridgeCount_ - 1) {
-			bridge_[i]->SetMass(2.0f);
-		}
-		bridge_[i]->Initialize(yunity::ModelManager::GetInstance()->CreateModel(obj,/* ""*/"Wood"), world_.get(), yunity::Collider::Shape::kAABB);
-		bridge_[i]->SetCamera(camera_);
-		bridge_[i]->SetScale({ 3.0f, 2.0f ,6.4f });
-		bridge_[i]->SetHitBoxSize({ 2.0f, 2.0f, 2.0f });
-		bridge_[i]->SetCollisionAttribute(kCollisionAttributeTrampoline);
-		bridge_[i]->SetDirectionalLight(l);
-		world_->Add(bridge_[i].get());
+	//for (uint32_t i = 0; i < bridgeCount_; i++) {
+	//	bridge_[i] = std::make_unique<yunity::Object3D>();
+	//	bridge_[i]->SetPosition(Vector3{ 397.45f + i * 15.0f,  26.765f, 0.0f });
+	//	if (i > 0 && i < bridgeCount_ - 1) {
+	//		bridge_[i]->SetMass(2.0f);
+	//	}
+	//	bridge_[i]->Initialize(yunity::ModelManager::GetInstance()->CreateModel(obj,/* ""*/"Wood"), world_.get(), yunity::Collider::Shape::kAABB);
+	//	bridge_[i]->SetCamera(camera_);
+	//	bridge_[i]->SetScale({ 3.0f, 2.0f ,6.4f });
+	//	bridge_[i]->SetHitBoxSize({ 2.0f, 2.0f, 2.0f });
+	//	bridge_[i]->SetCollisionAttribute(kCollisionAttributeTrampoline);
+	//	bridge_[i]->SetDirectionalLight(l);
+	//	world_->Add(bridge_[i].get());
 
 
 
-		if (i > 0) {
-			bridgesJoint_[i - 1] = std::make_unique<yunity::SpringJoint>();
-			bridgesJoint_[i - 1]->CreateSpringJoint(bridge_[i - 1].get(), bridge_[i].get());
-			bridgesJoint_[i - 1]->EnableSpring(0, true);
-			bridgesJoint_[i - 1]->EnableSpring(1, true);
-			bridgesJoint_[i - 1]->SetEquilibriumPoint(0, 0.0f);
-			bridgesJoint_[i - 1]->SetEquilibriumPoint(1, 0.0f);
-			bridgesJoint_[i - 1]->SetStiffness(0, stiffness_);
-			bridgesJoint_[i - 1]->SetStiffness(1, stiffness_);
-			bridgesJoint_[i - 1]->SetDamping(0, damper_);
-			bridgesJoint_[i - 1]->SetDamping(1, damper_);
-			world_->AddJoint(bridgesJoint_[i - 1].get());
+	//	if (i > 0) {
+	//		bridgesJoint_[i - 1] = std::make_unique<yunity::SpringJoint>();
+	//		bridgesJoint_[i - 1]->CreateSpringJoint(bridge_[i - 1].get(), bridge_[i].get());
+	//		bridgesJoint_[i - 1]->EnableSpring(0, true);
+	//		bridgesJoint_[i - 1]->EnableSpring(1, true);
+	//		bridgesJoint_[i - 1]->SetEquilibriumPoint(0, 0.0f);
+	//		bridgesJoint_[i - 1]->SetEquilibriumPoint(1, 0.0f);
+	//		bridgesJoint_[i - 1]->SetStiffness(0, stiffness_);
+	//		bridgesJoint_[i - 1]->SetStiffness(1, stiffness_);
+	//		bridgesJoint_[i - 1]->SetDamping(0, damper_);
+	//		bridgesJoint_[i - 1]->SetDamping(1, damper_);
+	//		world_->AddJoint(bridgesJoint_[i - 1].get());
 
-			bridgeLines_[i - 1] = std::make_unique<yunity::PrimitiveDrawer>();
-			bridgeLines_[i - 1].reset(yunity::PrimitiveDrawer::Create());
-			bridgeLines_[i - 1]->SetCamera(camera_);
-		}
+	//		bridgeLines_[i - 1] = std::make_unique<yunity::PrimitiveDrawer>();
+	//		bridgeLines_[i - 1].reset(yunity::PrimitiveDrawer::Create());
+	//		bridgeLines_[i - 1]->SetCamera(camera_);
+	//	}
 
-	}
+	//}
 	
 }
 
@@ -275,6 +276,8 @@ void StageScene::Update()
 			time_ += 1.0f / 120.0f;
 			time_ = std::clamp(time_, 0.0f, 1.0f);
 			player_->SetPosition(Lerp(playerPos_, { endPos_.x, playerPos_.y, 0.0f }, time_));
+
+
 			if (time_ == 1.0f) {
 				isGoal_ = true;
 				cameraPos_ = camera_->GetTranslate();
@@ -344,12 +347,12 @@ void StageScene::Draw3D()
 		springLines_[i]->Draw(springTops_[i]->GetMatWorldTranslation(), springAnchors_[i]->GetMatWorldTranslation(), { 0.0f, 0.0f, 0.0f, 1.0f });
 		springTops_[i]->Draw();
 	}
-	for (uint32_t i = 0; i < bridgeCount_; i++) {
+	/*for (uint32_t i = 0; i < bridgeCount_; i++) {
 		if (i > 0) {
 			bridgeLines_[i - 1]->Draw(bridge_[i - 1]->GetMatWorldTranslation(), bridge_[i]->GetMatWorldTranslation(), { 0.0f, 0.0f, 0.0f, 1.0f });
 		}
 		bridge_[i]->Draw();
-	}
+	}*/
 	start_->Draw(startWT_, textureTV_);
 	end_->Draw(endWT_, textureTV_);
 	player_->Draw();

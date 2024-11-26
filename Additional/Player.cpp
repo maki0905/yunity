@@ -92,6 +92,16 @@ void Player::Initialize(yunity::Camera* camera, yunity::World* world)
 	fixedJoint_ = std::make_unique<yunity::FixedJoint>();
 	playerFixedJoint_ = std::make_unique<yunity::FixedJoint>();
 
+	pointParticle_ = std::make_unique<PointParticle>();
+	pointParticle_->Initialize(camera);
+	smokeParticle_ = std::make_unique<SmokeParticle>();
+	smokeParticle_->Initialize(camera);
+
+	for (int i = 0; i < 10; i++) {
+		fireworksParticles_[i] = std::make_unique<FireworksParticle>();
+		fireworksParticles_[i]->Initialize(camera_);
+	}
+
 }
 
 void Player::Update()
@@ -117,13 +127,16 @@ void Player::Update()
 				}
 
 				// 移動量
-				move = { (float)pad_.Gamepad.sThumbLX, 0,(float)pad_.Gamepad.sThumbLY };
+				move = { (float)pad_.Gamepad.sThumbLX, 0,/*(float)pad_.Gamepad.sThumbLY*/0 };
 
 				if (Length(move) > threshold) {
 					isMoving = true;
 				}
 
 				if (isMoving) {
+					if (isHit_) {
+						smokeParticle_->Spawn({ worldTransform_.GetMatWorldTranslation().x, worldTransform_.GetMatWorldTranslation().y - 2.0f, worldTransform_.GetMatWorldTranslation().z });
+					}
 
 					move.Normalize();
 					// 移動量に速さを反映
@@ -170,6 +183,7 @@ void Player::Update()
 								if (hit.collider->GetCollisionAttribute() == kCollisionAttributeMoveFloor || hit.collider->GetCollisionAttribute() == kCollisionAttributeTrampoline) {
 									fixedJoint_->CreateFixedJoint(hit.collider, apexBody_.get());
 								}
+								pointParticle_->Spawn(hit.point);
 							}
 						}
 						else {
@@ -242,6 +256,9 @@ void Player::Update()
 		SetVelocity({ limitSpeed_ * pandm, velocity.y, velocity.z });
 	}
 
+	smokeParticle_->Update();
+	pointParticle_->Update();
+
 #ifdef _DEBUG
 	ImGui::Begin("Player");
 	ImGui::DragFloat3("translate", &worldTransform_.translation_.x);
@@ -272,6 +289,13 @@ void Player::Draw()
 			}
 		}
 	}
+
+	smokeParticle_->Draw();
+	pointParticle_->Draw();
+	for (int i = 0; i < 10; i++) {
+		fireworksParticles_[i]->Draw();
+	}
+
 #ifdef _DEBUG
 	HitBox();
 #endif // _DEBUG
@@ -373,6 +397,14 @@ bool Player::Result()
 			CommonData::GetInstance()->hiScore_ = scoreUI_->GetScore();
 			scoreUI_->SetDisplayHiScore(true);
 
+		}
+
+		for (int i = 0; i < 10; i++) {
+			if (!fireworksParticles_[i]->GetIsActive()) {
+				fireworksParticles_[i]->Spawn({ worldTransform_.GetMatWorldTranslation().x + 4.0f * rng.NextFloatRange(-5.0f, 5.0f), worldTransform_.GetMatWorldTranslation().y + 4.0f * rng.NextFloatRange(5.0f, 10.0f), worldTransform_.GetMatWorldTranslation().z + 4.0f * rng.NextFloatRange(-5.0f, 5.0f) });
+			}
+
+			fireworksParticles_[i]->Update();
 		}
 	}
 	else {

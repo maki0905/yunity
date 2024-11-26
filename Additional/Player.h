@@ -12,6 +12,10 @@
 #include "SpringJoint.h"
 #include "FixedJoint.h"
 
+#include "PointParticle.h"
+#include "SmokeParticle.h"
+#include "FireworksParticle.h"
+
 namespace yunity {
 	class Sprite;
 }
@@ -145,6 +149,11 @@ private:
 	std::unique_ptr<yunity::FixedJoint> fixedJoint_;
 	std::unique_ptr<yunity::FixedJoint> playerFixedJoint_;
 
+	std::unique_ptr<PointParticle> pointParticle_;
+	std::unique_ptr<SmokeParticle> smokeParticle_;
+
+	Random::RandomNumberGenerator rng;
+	std::array<std::unique_ptr<FireworksParticle>, 10> fireworksParticles_;
 
 };
 

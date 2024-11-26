@@ -107,6 +107,7 @@ void yunity::GraphicsPipelineManager::CreateParticle()
 
 	// DepthStencilStateの設定
 	D3D12_DEPTH_STENCIL_DESC depthStencilDesc = GraphicsPipelineManager::graphicsCommon_->DepthStateReadWrite;
+	depthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ZERO;
 
 	for (uint32_t blendModeType = 0; blendModeType < BlendModeType::kBlendCount; blendModeType++) {
 		//graphicsPipelines_[PipelineType::kParticle]->pso_[blendModeType] = new PipelineState(Device::GetInstance()->GetDevice(), graphicsPipelines_[PipelineType::kParticle]->rooSignature_);

@@ -22,6 +22,7 @@ void TitleScene::Initialize()
 
 	model_ = std::make_unique<yunity::Model>();
 	model_.reset(yunity::ModelManager::GetInstance()->CreateModel(obj,/* ""*/"Signboard"));
+	//model_.reset(yunity::ModelManager::GetInstance()->CreateModel(obj,/* ""*/"Brick"));
 	yunity::Model::DirectionalLight l = { .color = {1.0f, 1.0f, 1.0f, 1.0f}, .direction = {1.0f, -1.0f, 0.0f}, .intensity= 1.0f };
 	model_->SetCamera(camera_);
 	model_->SetEnableLighting(true);
@@ -74,22 +75,14 @@ void TitleScene::Initialize()
 	isMoveCamera[1] = false;
 	moveCameraTimer_ = 0.0f;
 
-	pflag_ = false;
-	particle_ = std::make_unique<FireworksParticle>();
-	particle_->SetCamera(camera_);
-	particle_->Initialize({ 0.0f, 5.0f, 0.0f });
+	
 }
 
 void TitleScene::Update()
 {
 	prePad_ = pad_;
 
-	if (yunity::Input::GetInstance()->TriggerKey(DIK_0)) {
-		pflag_ = true;
-	}
-	if (pflag_) {
-		particle_->Update();
-	}
+	
 
 	if (player_->GetSelect()) {
 		if (preNum_ != CommonData::GetInstance()->stageNum_) {
@@ -256,10 +249,6 @@ void TitleScene::Draw3D()
 		if (isActiveTV_[index]) {
 			models_[index]->Draw(TVworldTransform_[index], textureTV_[index]);
 		}
-	}
-
-	if (pflag_) {
-		particle_->Draw();
 	}
 }
 

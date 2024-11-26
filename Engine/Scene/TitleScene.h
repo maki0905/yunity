@@ -11,7 +11,10 @@
 #include "Skydome.h"
 #include "Cloth.h"
 #include "ObjectManager.h"
+#include "SmokeParticle.h"
 #include "FireworksParticle.h"
+#include "PointParticle.h"
+
 
 /*
 * @brief タイトルクラス
@@ -81,8 +84,5 @@ private:
 	std::unique_ptr<Cloth> cloth_;
 
 	std::unique_ptr<ObjectManager> objectManager_;
-
-	bool pflag_;
-	std::unique_ptr<FireworksParticle> particle_;
 };
 
