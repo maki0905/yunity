@@ -36,17 +36,17 @@ public:
 	/// 更新
 	/// </summary>
 	void Update() override;
-	
+
 	/// <summary>
 	/// 背景描画
 	/// </summary>
 	void DrawBack() override;
-	
+
 	/// <summary>
 	/// 3D描画
 	/// </summary>
 	void Draw3D() override;
-	
+
 	/// <summary>
 	/// 前景描画
 	/// </summary>

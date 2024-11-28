@@ -18,6 +18,8 @@ void Player::Initialize(yunity::Camera* camera, yunity::World* world)
 	SetMiu(2.0f);
 	SetBounceCombine(BounceCombine::kMaximum);
 	SetBounciness(0.0f);
+	SetFixedMove(2, true);
+
 	models_["player"] = std::make_unique<yunity::Model>();
 	models_["player"].reset(yunity::ModelManager::GetInstance()->CreateModel(obj, "Player"));
 	models_["player"]->SetCamera(camera);
@@ -111,7 +113,7 @@ void Player::Update()
 	Vector3 move = { 0.0f, 0.0f, 0.0f };
 	Vector3 reticleMove = { 0.0f, 0.0f, 0.0f };
 
-	
+
 	if (!CommonData::GetInstance()->isGoal_ || inGame_) {
 		// ジョイスティック状態取得
 		if (yunity::Input::GetInstance()->IsControllerConnected()) {
@@ -121,13 +123,18 @@ void Player::Update()
 				const float threshold = 0.7f;
 				bool isMoving = false;
 				// 速さ
-				float speed = 1.0f;
+				float speed = fixedSpeed_;
 				if (!isHit_ && !isWire_) {
-					speed = 0.1f;
+					speed = floatSpeed_;
 				}
 
 				// 移動量
-				move = { (float)pad_.Gamepad.sThumbLX, 0,/*(float)pad_.Gamepad.sThumbLY*/0 };
+				if (isWire_) {
+					move = { (float)pad_.Gamepad.sThumbLX, (float)pad_.Gamepad.sThumbLY,0 };
+				}
+				else {
+					move = { (float)pad_.Gamepad.sThumbLX, 0,0 };
+				}
 
 				if (Length(move) > threshold) {
 					isMoving = true;
@@ -135,7 +142,7 @@ void Player::Update()
 
 				if (isMoving) {
 					if (isHit_) {
-						smokeParticle_->Spawn({ worldTransform_.GetMatWorldTranslation().x, worldTransform_.GetMatWorldTranslation().y - 2.0f, worldTransform_.GetMatWorldTranslation().z });
+						smokeParticle_->Spawn({ worldTransform_.GetMatWorldTranslation().x, worldTransform_.GetMatWorldTranslation().y - 2.5f, worldTransform_.GetMatWorldTranslation().z });
 					}
 
 					move.Normalize();
@@ -148,7 +155,7 @@ void Player::Update()
 				if ((pad_.Gamepad.wButtons & XINPUT_GAMEPAD_A) && !(prePad_.Gamepad.wButtons & XINPUT_GAMEPAD_A)) {
 					if (!isJunp_) {
 						isJunp_ = true;
-						AddForce({ 0.0f, 28.0f, 0.0f }, Body::ForceMode::kImpulse);
+						AddForce({ 0.0f, 32.0f, 0.0f }, Body::ForceMode::kImpulse);
 						GetWorld()->TakeJoint(playerFixedJoint_.get());
 					}
 				}
@@ -246,7 +253,7 @@ void Player::Update()
 	else {
 		isReticle_ = false;
 	}
-	
+
 
 	scoreUI_->Update();
 
@@ -389,8 +396,8 @@ bool Player::Result()
 		lerpTime_ = std::clamp(lerpTime_, 0.0f, 1.0f);
 		scoreUI_->SetPosition(Lerp(Vector2(84.0f, 84.0f), Vector2(640.0f, 360.0f), lerpTime_));
 	}
-	else if(displayTime_ != 1.0f){
-		displayTime_ += 1.0f / 120.0f;
+	else if (displayTime_ != 1.0f) {
+		displayTime_ += 1.0f / 180.0f;
 		displayTime_ = std::clamp(displayTime_, 0.0f, 1.0f);
 		scoreUI_->SetDisplayHiScore(true);
 		if (scoreUI_->GetScore() > CommonData::GetInstance()->hiScore_) {
@@ -399,9 +406,11 @@ bool Player::Result()
 
 		}
 
+		int num = 0;
 		for (int i = 0; i < 10; i++) {
-			if (!fireworksParticles_[i]->GetIsActive()) {
-				fireworksParticles_[i]->Spawn({ worldTransform_.GetMatWorldTranslation().x + 4.0f * rng.NextFloatRange(-5.0f, 5.0f), worldTransform_.GetMatWorldTranslation().y + 4.0f * rng.NextFloatRange(5.0f, 10.0f), worldTransform_.GetMatWorldTranslation().z + 4.0f * rng.NextFloatRange(-5.0f, 5.0f) });
+			if (!fireworksParticles_[i]->GetIsActive() && num < 5) {
+				fireworksParticles_[i]->Spawn({ worldTransform_.GetMatWorldTranslation().x + 4.0f * rng.NextFloatRange(-5.0f, 5.0f), worldTransform_.GetMatWorldTranslation().y + 4.0f * rng.NextFloatRange(5.0f, 10.0f), 0.0f });
+				num++;
 			}
 
 			fireworksParticles_[i]->Update();

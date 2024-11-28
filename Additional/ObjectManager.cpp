@@ -39,7 +39,8 @@ void ObjectManager::Load(const std::string& fileName, yunity::Camera* camera, yu
 			InitializeCommon(objectData, newObject);
 			InitializeCollider(objectData, newObject);
 			InitializePhysics(objectData, newObject);
-			newObject->Initialize(yunity::ModelManager::GetInstance()->CreateModel(obj, objectData.fileName), world, objectData.shape);
+			newObject->Object3D::Initialize(yunity::ModelManager::GetInstance()->CreateModel(obj, objectData.fileName), world, objectData.shape);
+			newObject->Initialize();
 			newObject->SetCamera(camera);
 			world->Add(newObject);
 			objects_.emplace_back(newObject);

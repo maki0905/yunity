@@ -282,6 +282,7 @@ void yunity::Body::Solve(float time)
 		// airResistanceAccelerationはairResitanceからの加速度
 		Vector3 airResistanceAcceleration = Multiply(1.0f / mass_, airResistance);
 
+		// 空間上の重力を取得
 		Vector3 gravity = world_->GetGravity();
 		if (gravityAcceleration_.Length() != 0.0f) {
 			gravity = gravityAcceleration_;
@@ -326,6 +327,18 @@ void yunity::Body::Solve(float time)
 		acceleration_ = Add(acceleration_, Multiply(1.0f / mass_, force_));
 
 		force_ = { 0.0f, 0.0f, 0.0f };
+
+
+		// 平行移動制限
+		if (fixedMove_[0]) { // x軸
+			acceleration_.x = 0.0f;
+		}
+		if (fixedMove_[1]) { // y軸
+			acceleration_.y = 0.0f;
+		}
+		if (fixedMove_[2]) { // z軸
+			acceleration_.z = 0.0f;
+		}
 
 		velocity_ = Add(velocity_, Multiply(time, acceleration_));
 

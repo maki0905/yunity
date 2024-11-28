@@ -14,9 +14,15 @@ private:
 	std::list<Particle> circleParticles_;
 	std::unique_ptr<yunity::ParticleDrawer> circleParticleDrawer_;
 	std::unique_ptr<yunity::ParticleDrawer> ellipseParticleDrawer_;
-	const float power_ = 0.1f;
-	const float torqe_ = 0.2f;
+	// 移動量
+	const float power_ = 0.2f;
+	// 生存時間
+	std::array<const float, 2> lifeTime_ = { 0.2f, 0.2f };
+	// 進行時間
+	const float fixedTime_ = 1.0f / 30.0f;
+	// 
+	const float degree_ = 90.0f;
+
 	float frequencyTime_;
 	float spawnTime_;
-	const float fixedTime_ = 1.0f / 30.0f;
 };

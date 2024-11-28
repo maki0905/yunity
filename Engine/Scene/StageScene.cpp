@@ -12,7 +12,7 @@
 
 void StageScene::Initialize()
 {
-	
+
 	inStage_ = false;
 
 	isGoal_ = false;
@@ -25,17 +25,11 @@ void StageScene::Initialize()
 	debugCamera_ = std::make_unique<yunity::DebugCamera>();
 	isDebug_ = false;
 
-	skyboxWorldTransform_.Initialize();
-	skyboxWorldTransform_.scale_ = { 100.0f, 100.0f, 100.0f };
-	skybox_ = std::make_unique<yunity::SkyBox>();
-	skybox_.reset(yunity::SkyBox::Create());
-	skybox_->SetCamera(camera_);
-	skybox_->SetTexture("rostock_laage_airport_4k.dds");
-
-	yunity::Model::DirectionalLight l = { .color = {1.0f, 1.0f, 1.0f, 1.0f}, .direction = {1.0f, -1.0f, 0.0f}, .intensity = 1.0f };
+	DirectionLight directionLight;
+	yunity::Model::DirectionalLight l = { .color = directionLight.color, .direction = directionLight.direction, .intensity = directionLight.intensity };
 
 	world_ = std::make_unique<yunity::World>();
-	world_->Initialize({0.0f, -15.0f, 0.0f});
+	world_->Initialize(gravity_);
 
 	player_ = std::make_unique<Player>();
 	player_->Initialize(camera_, world_.get());
@@ -51,7 +45,7 @@ void StageScene::Initialize()
 	objectManager_->SetDirectionalLight(l);
 	startWT_.translation_ = objectManager_->GetPos("startBox");
 	startPos_ = startWT_.translation_;
-	startPos_ = { 500.0f, endPos_.y, 0.0f };
+	//startPos_ = { 500.0f, 30.0f, 0.0f };
 	player_->ResetPos(startPos_);
 
 	start_ = std::make_unique<yunity::Model>();
@@ -67,12 +61,12 @@ void StageScene::Initialize()
 	end_.reset(yunity::ModelManager::GetInstance()->CreateModel(obj, "TV"));
 	end_->SetCamera(camera_);
 	endWT_.Initialize();
-	endWT_.translation_ = endPos_;
+	endWT_.translation_ = endConstant_.pos;
 	endWT_.scale_ = { 1.5f, 1.5f, 1.5f };
 	endWT_.UpdateMatrix();
 
 	skydome_ = std::make_unique<yunity::Skydome>();
-	skydome_->Initialize(camera_, {5.0f, 5.0f, 5.0f});
+	skydome_->Initialize(camera_, { 5.0f, 5.0f, 5.0f });
 
 	CommonData::GetInstance()->scene_ = Scene::kStage;
 
@@ -86,10 +80,10 @@ void StageScene::Initialize()
 		springAnchors_[i] = std::make_unique<yunity::Object3D>();
 		Vector3 pos;
 		if (i == 0) {
-			pos = {103.0f, 2.5f, 0.0f};
+			pos = { 103.0f, 2.5f, 0.0f };
 		}
 		else {
-			pos = {257.6f, -4.5f, -1.0f};
+			pos = { 257.6f, -4.5f, -1.0f };
 		}
 
 		springTops_[i]->Initialize(yunity::ModelManager::GetInstance()->CreateModel(obj, "Wood"), world_.get(), yunity::Collider::kAABB);
@@ -151,7 +145,7 @@ void StageScene::Initialize()
 	//	}
 
 	//}
-	
+
 }
 
 void StageScene::Update()
@@ -162,7 +156,7 @@ void StageScene::Update()
 			inStage_ = true;
 		}
 		Tradition::GetInstance()->Update();
-		camera_->SetOffset(Lerp({0.0f, 0.0f, 0.0f}, { 0.0, 5.0f, -50.0f }, std::clamp(1.0f - Tradition::GetInstance()->GetTime(), 0.0f, 1.0f)));
+		camera_->SetOffset(Lerp({ 0.0f, 0.0f, 0.0f }, { 0.0, 5.0f, -50.0f }, std::clamp(1.0f - Tradition::GetInstance()->GetTime(), 0.0f, 1.0f)));
 		player_->SetScale(Lerp({ 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f, 1.0f }, std::clamp(1.0f - Tradition::GetInstance()->GetTime(), 0.0f, 1.0f)));
 		if (player_->GetWorldTransform()->scale_.x == 1.0f) {
 			player_->SetDisplayUI(true, Player::UI::kScore);
@@ -173,7 +167,7 @@ void StageScene::Update()
 		if (!isReset_) {
 			player_->Update();
 			objectManager_->Update();
-			
+
 		}
 
 	}
@@ -198,7 +192,7 @@ void StageScene::Update()
 		else {
 			resetTime_ += 1.0f / 30.0f;
 			resetTime_ = std::clamp(resetTime_, 0.0f, 1.0f);
-			camera_->SetTranslate(Lerp(dieCamera_, { startPos_.x, startPos_.y + camera_->GetOffset().y, dieCamera_.z}, resetTime_));
+			camera_->SetTranslate(Lerp(dieCamera_, { startPos_.x, startPos_.y + camera_->GetOffset().y, dieCamera_.z }, resetTime_));
 			player_->SetTranslation(Lerp(diePos_, startPos_, resetTime_));
 			if (resetTime_ == 1.0f) {
 				player_->ResetPos(startPos_);
@@ -207,14 +201,12 @@ void StageScene::Update()
 			}
 		}
 	}
-	
+
 	world_->Solve();
 
 	for (uint32_t i = 0; i < springBoardCount_; i++) {
 		springTops_[i]->Update();
 	}
-
-	skyboxWorldTransform_.UpdateMatrix();
 
 	if (yunity::Input::GetInstance()->TriggerKey(DIK_LSHIFT)) {
 		isDebug_ ^= true;
@@ -235,7 +227,7 @@ void StageScene::Update()
 			dieCamera_ = camera_->GetTranslate();
 			diePos_ = player_->GetMatWorldTranslation();
 			camera_->SetTarget(nullptr);
-			player_->AddForce({0.0f, 10.0f, -1.0f}, yunity::Body::ForceMode::kImpulse);
+			player_->AddForce({ 0.0f, 10.0f, -1.0f }, yunity::Body::ForceMode::kImpulse);
 			player_->SetIsTrigger(true);
 			isDebt_ = true;
 			player_->SetVelocity({ 0.0f, 0.0f, 0.0f });
@@ -275,7 +267,7 @@ void StageScene::Update()
 			}
 			time_ += 1.0f / 120.0f;
 			time_ = std::clamp(time_, 0.0f, 1.0f);
-			player_->SetPosition(Lerp(playerPos_, { endPos_.x, playerPos_.y, 0.0f }, time_));
+			player_->SetPosition(Lerp(playerPos_, { endConstant_.pos.x, playerPos_.y, 0.0f }, time_));
 
 
 			if (time_ == 1.0f) {
@@ -286,13 +278,13 @@ void StageScene::Update()
 				Tradition::GetInstance()->Start();
 				time_ = 0.0f;
 			}
-			
+
 		}
 		else if (!isClear_) {
 			if (player_->Result()) {
 				time_ += 1.0f / 30.0f;
 				time_ = std::clamp(time_, 0.0f, 1.0f);
-				camera_->SetTranslate(Lerp(cameraPos_, { cameraPos_.x, endPos_.y, -60.0f }, time_));
+				camera_->SetTranslate(Lerp(cameraPos_, { cameraPos_.x, endConstant_.pos.y, -60.0f }, time_));
 				if (time_ == 1.0f) {
 					isClear_ = true;
 					time_ = 0.0f;
@@ -305,9 +297,9 @@ void StageScene::Update()
 		else {
 			time_ += 1.0f / 60.0f;
 			time_ = std::clamp(time_, 0.0f, 1.0f);
-			camera_->SetTranslate(Lerp(cameraPos_, endPos_, time_));
+			camera_->SetTranslate(Lerp(cameraPos_, endConstant_.pos, time_));
 			Tradition::GetInstance()->Update();
-			
+
 
 			if (!Tradition::GetInstance()->GetIn()) {
 				CommonData::GetInstance()->isGoal_ = false;
@@ -324,10 +316,10 @@ void StageScene::Update()
 		yunity::SceneManager::GetInstance()->ChangeScene("TITLE");
 	}
 
-	
+
 
 #ifdef _DEBUG
-	
+
 
 #endif
 

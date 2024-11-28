@@ -24,30 +24,32 @@ void SmokeParticle::Spawn(const Vector3& position)
 	if (!spawnTime_) {
 		Particle particle;
 		particle.transform.translate = position;
-		particle.transform.scale = { 0.0f, 0.0f, 0.0f };
+		particle.transform.translate.y += rng.NextFloatRange(0.0f, 0.5f);
+		float scale = rng.NextFloatRange(0.0f, 0.5f);
+		particle.transform.scale = { scale, scale, 0.0f };
 		particle.particleForCPU.color = { 1.0f, 1.0f, 1.0f , 1.0f };
-		particle.lifeTime = 2.0f;
+		particle.lifeTime = lifeTime_;
 		particle.currentTime = 0.0f;
-
 		particles_.push_back(particle);
-		spawnTime_ = 0.5f;
+		spawnTime_ = spawnInterval_;
 	}
 }
 
 void SmokeParticle::Update()
 {
 	frequencyTime_ += fixedTime_;
-	
+
 	if (spawnTime_) {
 		spawnTime_ -= fixedTime_;
 		spawnTime_ = std::clamp(spawnTime_, 0.0f, 2.0f);
 	}
 
 	for (auto& particle : particles_) {
-		float scale = particle.currentTime;
+		/*float scale = particle.currentTime;
 		scale = std::clamp(scale, 0.0f, 1.0f);
-		particle.transform.scale = { scale, scale, scale };
-		//particle.transform.translate = Add(particle.transform.translate, particle.velocity);
+		particle.transform.scale = { scale, scale, scale };*/
+		particle.transform.scale = Add(particle.transform.scale, { fixedTime_ / 2.0f, fixedTime_ / 2.0f, 0.0f });
+		particle.transform.translate.y += std::powf(particle.currentTime / particle.lifeTime, 5.0f) * ascent_;
 		particle.particleForCPU.color.w = 1.0f - (particle.currentTime / particle.lifeTime);
 		particle.BillboardMatrix(*camera_);
 	}

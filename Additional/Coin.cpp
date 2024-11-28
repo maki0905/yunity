@@ -7,6 +7,11 @@
 //	SetSize({ 1.0f, 1.0f, 1.0f });
 //}
 
+void Coin::Initialize()
+{
+	model_->SetBlendModeType(yunity::kAdd);
+}
+
 void Coin::Update()
 {
 	if (!isActive_) {

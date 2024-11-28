@@ -105,7 +105,7 @@ private:
 	float dampar_;
 	float mass_;
 	float limitLength_;
-	
+
 	bool isCrouching_;
 	bool isHit_;
 	bool isActive_;
@@ -140,8 +140,12 @@ private:
 	float lerpTime_;
 	float displayTime_;
 
+	// 速度
+	const float fixedSpeed_ = 1.5f;
+	const float floatSpeed_ = 0.1f;
+
 	// 制限速度
-	float limitSpeed_ = 20.0f;
+	const float limitSpeed_ = 20.0f;
 
 	std::unique_ptr<yunity::SpringJoint> springJoint_;
 	std::unique_ptr<yunity::Body> apexBody_;

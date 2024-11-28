@@ -32,9 +32,9 @@ void FireworksParticle::Spawn(const Vector3& position)
 
 
 		particle.velocity = {
-			float(power_ * std::cosf(36.0f * i * std::numbers::pi_v<float> / 180.0f) - power_ * std::sinf(36.0f * i * std::numbers::pi_v<float> / 180.0f)),
-			float(power_ * std::sinf(36.0f * i * std::numbers::pi_v<float> / 180.0f) + power_ * std::cosf(36.0f * i * std::numbers::pi_v<float> / 180.0f)),
-			0.0f
+			rng.NextFloatRange(-0.1f, 0.1f),
+			/*rng.NextFloatRange(-0.5f, -0.1f),*/ -0.05f,
+			rng.NextFloatRange(-0.1f, 0.1f)
 		};
 
 		particle.particleForCPU.color = { rng.NextFloatRange(0.0f, 1.0f), rng.NextFloatRange(0.0f, 1.0f) , rng.NextFloatRange(0.0f, 1.0f) , 1.0 };
@@ -49,7 +49,8 @@ void FireworksParticle::Update()
 {
 	for (auto& particle : particles_) {
 		particle.velocity.y -= 0.01f;
-		particle.transform.rotate.z += torqe_;
+		//particle.transform.rotate.z += torqe_;
+		particle.transform.rotate = Add(particle.transform.rotate, particle.velocity);
 		particle.transform.translate = Add(particle.transform.translate, particle.velocity);
 		particle.particleForCPU.color.w = 1.0f - (particle.currentTime / particle.lifeTime);
 		particle.BillboardMatrix(*camera_);

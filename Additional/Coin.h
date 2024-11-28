@@ -4,8 +4,13 @@
 /*
 * @brief コインクラス
 */
-class Coin : public yunity::Object3D{
+class Coin : public yunity::Object3D {
 public:
+	/// <summary>
+	/// 初期化
+	/// </summary>
+	void Initialize();
+
 	/// <summary>
 	/// 更新
 	/// </summary>

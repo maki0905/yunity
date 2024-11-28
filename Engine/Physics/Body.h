@@ -161,8 +161,8 @@ namespace yunity {
 		float GetBounciness() { return bounciness_; }
 		Vector3 GetNormalVector() { return normalVector_; }
 		Matrix3x3 GetInertiaTensor() { return inertiaTensor_; };
-
-
+		std::array<bool, 3> GetFixedMove() { return fixedMove_; }
+		bool GetFixedMove(int axis) { return fixedMove_[axis]; }
 
 		/// <summary>
 		/// setter
@@ -183,6 +183,8 @@ namespace yunity {
 		void SetBounceCombine(BounceCombine bounceCombine) { bounceCombine_ = bounceCombine; }
 		void SetTranslation(Vector3 translation) { worldTransform_->translation_ = translation; }
 		void SetMatTranslation(Vector3 translation) { worldTransform_->matWorld_.m[3][0] = translation.x, worldTransform_->matWorld_.m[3][1] = translation.y, worldTransform_->matWorld_.m[3][2] = translation.z; }
+		void SetFixedMove(std::array<bool, 3> fixedMove) { fixedMove_ = fixedMove; }
+		void SetFixedMove(int axis, bool fixedMove) { fixedMove_[axis] = fixedMove; }
 
 	private:
 
@@ -228,5 +230,8 @@ namespace yunity {
 		std::vector<PersistentManifold*> persistentManifold_;
 		float restitution_;
 		bool isTrigger_;
+
+		// 平行移動制限
+		std::array<bool, 3> fixedMove_ = { false, false, false };
 	};
 }

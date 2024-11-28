@@ -12,7 +12,7 @@ void TitleScene::Initialize()
 {
 	camera_ = CameraManager::GetInstance()->GetCamera();
 	world_ = std::make_unique<yunity::World>();
-	world_->Initialize({ 0.0f, -15.0, 0.0f });
+	world_->Initialize({ 0.0f, -25.0, 0.0f });
 
 	bottonSprite_ = std::make_unique<yunity::Sprite>();
 	bottonSprite_.reset(yunity::Sprite::Create(yunity::TextureManager::GetInstance()->Load("ABotton.dds"), { 610.0f, 520.0f }));
@@ -23,7 +23,7 @@ void TitleScene::Initialize()
 	model_ = std::make_unique<yunity::Model>();
 	model_.reset(yunity::ModelManager::GetInstance()->CreateModel(obj,/* ""*/"Signboard"));
 	//model_.reset(yunity::ModelManager::GetInstance()->CreateModel(obj,/* ""*/"Brick"));
-	yunity::Model::DirectionalLight l = { .color = {1.0f, 1.0f, 1.0f, 1.0f}, .direction = {1.0f, -1.0f, 0.0f}, .intensity= 1.0f };
+	yunity::Model::DirectionalLight l = { .color = {1.0f, 1.0f, 1.0f, 1.0f}, .direction = {1.0f, -1.0f, 0.0f}, .intensity = 1.0f };
 	model_->SetCamera(camera_);
 	model_->SetEnableLighting(true);
 	model_->SetDirectionalLight(l);
@@ -35,14 +35,14 @@ void TitleScene::Initialize()
 	player_->SetDirectionalLight(l);
 	player_->SetMass(0.0f);
 	player_->SetInGame(true);
-	camera_->SetTarget(nullptr);  
+	camera_->SetTarget(nullptr);
 
 	objectManager_ = std::make_unique<ObjectManager>();
 	objectManager_->Initialize();
 	objectManager_->Load("title1", camera_, world_.get());
 	objectManager_->SetDirectionalLight(l);
 
-	
+
 	skydome_ = std::make_unique<yunity::Skydome>();
 	skydome_->Initialize(camera_, { 5.0f, 5.0f, 5.0f });
 
@@ -75,14 +75,14 @@ void TitleScene::Initialize()
 	isMoveCamera[1] = false;
 	moveCameraTimer_ = 0.0f;
 
-	
+
 }
 
 void TitleScene::Update()
 {
 	prePad_ = pad_;
 
-	
+
 
 	if (player_->GetSelect()) {
 		if (preNum_ != CommonData::GetInstance()->stageNum_) {
@@ -109,7 +109,7 @@ void TitleScene::Update()
 						camera_->SetTarget(nullptr);
 						player_->SetVelocity({ 0.0f, 0.0f, 0.0f });
 					}
-					
+
 				}
 			}
 		}
@@ -215,7 +215,7 @@ void TitleScene::Update()
 	}
 
 #ifdef _DEBUG
-	
+
 	ImGui::Begin("a");
 
 	ImGui::DragFloat3("pos", &worldTransform_.translation_.x);
