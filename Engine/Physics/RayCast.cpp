@@ -2,6 +2,7 @@
 
 #include "Collision.h"
 #include "CollisionConfig.h"
+#include "Shape.h"
 
 #include <algorithm>
 
@@ -32,7 +33,13 @@ bool RayCast(const Vector3& origin, const Vector3& direction, RayCastHit* hitInf
 			}
 			break;
 		case yunity::Collider::Shape::kOBB:
-
+			OBB obb;
+			obb = CreateOBB(obj->GetMatWorldTranslation(), obj->GetWorldTransform()->rotation_, obj->GetHitBoxSize());
+			if (IsCollision(ray, obb)) {
+				hitInfo->collider = obj;
+				hitInfo->point = RayIntersection(ray, obb);
+				return true;
+			}
 			break;
 
 		}
@@ -68,7 +75,7 @@ bool RayCast(const Vector3& origin, const Vector3& direction, RayCastHit* hitInf
 			}
 			break;
 		case yunity::Collider::Shape::kOBB:
-
+			
 			break;
 
 		}
@@ -106,5 +113,51 @@ Vector3 RayIntersection(Ray ray, AABB aabb)
 
 	result = Add(ray.origin, Multiply(tmin, ray.diff));
 
+	return result;
+}
+
+Vector3 RayIntersection(Segment segment, OBB obb)
+{
+	Matrix4x4 W;
+	W.m[0][0] = obb.orientations[0].x;
+	W.m[0][1] = obb.orientations[0].y;
+	W.m[0][2] = obb.orientations[0].z;
+	W.m[0][3] = 0;
+	W.m[1][0] = obb.orientations[1].x;
+	W.m[1][1] = obb.orientations[1].y;
+	W.m[1][2] = obb.orientations[1].z;
+	W.m[1][3] = 0;
+	W.m[2][0] = obb.orientations[2].x;
+	W.m[2][1] = obb.orientations[2].y;
+	W.m[2][2] = obb.orientations[2].z;
+	W.m[2][3] = 0;
+	W.m[3][0] = obb.center.x;
+	W.m[3][1] = obb.center.y;
+	W.m[3][2] = obb.center.z;
+	W.m[3][3] = 1;
+	Matrix4x4 WInverse = Inverse(W);
+	Vector3 localOrigin = TransformVector3(segment.origin, WInverse);
+	Vector3 localEnd = TransformVector3(Add(segment.origin, segment.diff), WInverse);
+
+	AABB localAABB{
+		{-obb.size.x, -obb.size.y, -obb.size.z},
+		{obb.size.x, obb.size.y, obb.size.z}
+	};
+
+	Segment localSegment;
+	localSegment.origin = localOrigin;
+	localSegment.diff = Subtract(localEnd, localOrigin);
+
+	Vector3 result;
+
+
+	float tNearX = std::min((localAABB.min.x - localSegment.origin.x) / localSegment.diff.x, (localAABB.max.x - localSegment.origin.x) / localSegment.diff.x);
+	float tNearY = std::min((localAABB.min.y - localSegment.origin.y) / localSegment.diff.y, (localAABB.max.y - localSegment.origin.y) / localSegment.diff.y);
+	float tNearZ = std::min((localAABB.min.z - localSegment.origin.z) / localSegment.diff.z, (localAABB.max.z - localSegment.origin.z) / localSegment.diff.z);
+	// AABBとの衝突点(貫通点)のtが小さい方
+	float tmin = max(max(tNearX, tNearY), tNearZ);
+	// AABBとの衝突点(貫通点)のtが大きい方
+	result = Add(localSegment.origin, Multiply(tmin, localSegment.diff));
+	result = Add(obb.center, result);
 	return result;
 }

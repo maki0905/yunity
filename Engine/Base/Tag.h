@@ -6,5 +6,9 @@ enum class Tag {
 	kMoveFloor_L,
 	kMoveFloor_R,
 	kTV,
+	kForceField,
+	kPillar,
+	kClockwise,
+	kCounterClockwise,
 	kTagCount
 };

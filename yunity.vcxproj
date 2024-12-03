@@ -109,13 +109,18 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
   <ItemGroup>
     <ClCompile Include="Additional\Cloth.cpp" />
     <ClCompile Include="Additional\Coin.cpp" />
+    <ClCompile Include="Additional\ForceField.cpp" />
     <ClCompile Include="Additional\ObjectManager.cpp" />
+    <ClCompile Include="Additional\Pillar.cpp" />
+    <ClCompile Include="Additional\PillarTop.cpp" />
     <ClCompile Include="Additional\PointParticle.cpp" />
+    <ClCompile Include="Additional\RotationCube.cpp" />
     <ClCompile Include="Additional\Score.cpp" />
     <ClCompile Include="Additional\SmokeParticle.cpp" />
     <ClCompile Include="Additional\SpringBoard.cpp" />
     <ClCompile Include="Additional\StartObject.cpp" />
     <ClCompile Include="Additional\TV.cpp" />
+    <ClCompile Include="Additional\WindParticle.cpp" />
     <ClCompile Include="Engine\Particle\BaseParticle.cpp" />
     <ClCompile Include="Engine\Manager\CameraManager.cpp" />
     <ClCompile Include="Engine\Particle\FireworksParticle.cpp" />
@@ -202,13 +207,18 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Additional\Cloth.h" />
     <ClInclude Include="Additional\Coin.h" />
     <ClInclude Include="Additional\EndObject.h" />
+    <ClInclude Include="Additional\ForceField.h" />
     <ClInclude Include="Additional\ObjectManager.h" />
+    <ClInclude Include="Additional\Pillar.h" />
+    <ClInclude Include="Additional\PillarTop.h" />
     <ClInclude Include="Additional\PointParticle.h" />
+    <ClInclude Include="Additional\RotationCube.h" />
     <ClInclude Include="Additional\Score.h" />
     <ClInclude Include="Additional\SmokeParticle.h" />
     <ClInclude Include="Additional\SpringBoard.h" />
     <ClInclude Include="Additional\StartObject.h" />
     <ClInclude Include="Additional\TV.h" />
+    <ClInclude Include="Additional\WindParticle.h" />
     <ClInclude Include="Engine\Base\Tag.h" />
     <ClInclude Include="Engine\Core\ResourceLeakChecker.h" />
     <ClInclude Include="Engine\Math\Matrix3x3.h" />
@@ -238,6 +248,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\Physics\PulleyJoint.h" />
     <ClInclude Include="Engine\Physics\Shape.h" />
     <ClInclude Include="Engine\Scene\Tradition.h" />
+    <ClInclude Include="Engine\Utility\EngineTimeStep.h" />
     <ClInclude Include="Engine\Utility\Format.h" />
     <ClInclude Include="Engine\3D\Keyframe.h" />
     <ClInclude Include="Engine\Base\LevelData.h" />

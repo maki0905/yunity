@@ -10,10 +10,7 @@
 #include "PulleyJoint.h"
 #include "Camera.h"
 #include "World.h"
-#include "MoveFloor.h"
 #include "EventTrigger.h"
-#include "TV.h"
-#include "Coin.h"
 #include "LevelEditor.h"
 
 namespace yunity {

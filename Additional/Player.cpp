@@ -155,7 +155,7 @@ void Player::Update()
 				if ((pad_.Gamepad.wButtons & XINPUT_GAMEPAD_A) && !(prePad_.Gamepad.wButtons & XINPUT_GAMEPAD_A)) {
 					if (!isJunp_) {
 						isJunp_ = true;
-						AddForce({ 0.0f, 32.0f, 0.0f }, Body::ForceMode::kImpulse);
+						AddForce({ 0.0f, 35.0f, 0.0f }, Body::ForceMode::kImpulse);
 						GetWorld()->TakeJoint(playerFixedJoint_.get());
 					}
 				}
@@ -187,7 +187,7 @@ void Player::Update()
 								point_ = hit.point;
 								apexWorldTransform_.translation_ = hit.point;
 								apexBody_->SetMatTranslation(hit.point);
-								if (hit.collider->GetCollisionAttribute() == kCollisionAttributeMoveFloor || hit.collider->GetCollisionAttribute() == kCollisionAttributeTrampoline) {
+								if (hit.collider->GetCollisionAttribute() == kCollisionAttributeMoveFloor || hit.collider->GetCollisionAttribute() == kCollisionAttributeTrampoline || hit.collider->GetCollisionAttribute() == kCollisionAttributePillar) {
 									fixedJoint_->CreateFixedJoint(hit.collider, apexBody_.get());
 								}
 								pointParticle_->Spawn(hit.point);

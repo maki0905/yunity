@@ -24,7 +24,7 @@
 class StageScene : public yunity::IScene
 {
 	struct EndConstant {
-		const Vector3 pos = { 570.0f, 35.0f, 10.0f };
+		const Vector3 pos = { 997.0f, 60.0f, 10.0f };
 		const Vector3 scale = { 1.5f, 1.5f, 1.5f };
 	};
 
@@ -78,7 +78,7 @@ private:
 	std::unique_ptr<Player> player_;
 
 	// 物理空間
-	const Vector3 gravity_ = { 0.0f, -25.0f, 0.0f };
+	const Vector3 gravity_ = { 0.0f, -30.0f, 0.0f };
 	std::unique_ptr<yunity::World> world_;
 
 	// ステージ名
@@ -126,11 +126,19 @@ private:
 	std::array<std::unique_ptr<yunity::PrimitiveDrawer>, springBoardCount_> springLines_;
 
 	// 吊り橋
-	/*static const uint32_t bridgeCount_ = 9;
+	static const uint32_t bridgeCount_ = 6;
 	std::array<std::unique_ptr<yunity::Object3D>, bridgeCount_> bridge_;
 	std::array<std::unique_ptr<yunity::PrimitiveDrawer>, bridgeCount_ - 1> bridgeLines_;
 	std::array<std::unique_ptr<yunity::SpringJoint>, bridgeCount_ - 1> bridgesJoint_;
 	const float stiffness_ = 5.0f;
-	const float damper_ = 0.1f;*/
+	const float damper_ = 0.1f;
+
+	static const uint32_t bridge2Count_ = 16;
+	std::array<std::unique_ptr<yunity::Object3D>, bridge2Count_> bridge2_;
+	std::array<std::unique_ptr<yunity::PrimitiveDrawer>, bridge2Count_ - 1> bridge2Lines_;
+	std::array<std::unique_ptr<yunity::SpringJoint>, bridge2Count_ - 1> bridges2Joint_;
+	const float stiffness2_ = 10.0f;
+	const float damper2_ = 0.1f;
+
 };
 

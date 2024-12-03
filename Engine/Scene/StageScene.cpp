@@ -45,7 +45,7 @@ void StageScene::Initialize()
 	objectManager_->SetDirectionalLight(l);
 	startWT_.translation_ = objectManager_->GetPos("startBox");
 	startPos_ = startWT_.translation_;
-	//startPos_ = { 500.0f, 30.0f, 0.0f };
+	//startPos_ = { 730.0f, 63.0f, 0.0f };
 	player_->ResetPos(startPos_);
 
 	start_ = std::make_unique<yunity::Model>();
@@ -66,7 +66,7 @@ void StageScene::Initialize()
 	endWT_.UpdateMatrix();
 
 	skydome_ = std::make_unique<yunity::Skydome>();
-	skydome_->Initialize(camera_, { 5.0f, 5.0f, 5.0f });
+	skydome_->Initialize(camera_, { 10.0f, 10.0f, 10.0f });
 
 	CommonData::GetInstance()->scene_ = Scene::kStage;
 
@@ -83,7 +83,7 @@ void StageScene::Initialize()
 			pos = { 103.0f, 2.5f, 0.0f };
 		}
 		else {
-			pos = { 257.6f, -4.5f, -1.0f };
+			pos = { 395.0f, 26.0f, 0.0f };
 		}
 
 		springTops_[i]->Initialize(yunity::ModelManager::GetInstance()->CreateModel(obj, "Wood"), world_.get(), yunity::Collider::kAABB);
@@ -110,41 +110,77 @@ void StageScene::Initialize()
 		springLines_[i]->SetCamera(camera_);
 	}
 
-	//for (uint32_t i = 0; i < bridgeCount_; i++) {
-	//	bridge_[i] = std::make_unique<yunity::Object3D>();
-	//	bridge_[i]->SetPosition(Vector3{ 397.45f + i * 15.0f,  26.765f, 0.0f });
-	//	if (i > 0 && i < bridgeCount_ - 1) {
-	//		bridge_[i]->SetMass(2.0f);
-	//	}
-	//	bridge_[i]->Initialize(yunity::ModelManager::GetInstance()->CreateModel(obj,/* ""*/"Wood"), world_.get(), yunity::Collider::Shape::kAABB);
-	//	bridge_[i]->SetCamera(camera_);
-	//	bridge_[i]->SetScale({ 3.0f, 2.0f ,6.4f });
-	//	bridge_[i]->SetHitBoxSize({ 2.0f, 2.0f, 2.0f });
-	//	bridge_[i]->SetCollisionAttribute(kCollisionAttributeTrampoline);
-	//	bridge_[i]->SetDirectionalLight(l);
-	//	world_->Add(bridge_[i].get());
+	for (uint32_t i = 0; i < bridgeCount_; i++) {
+		bridge_[i] = std::make_unique<yunity::Object3D>();
+		bridge_[i]->SetPosition(Vector3{ 868.677f + i * 15.0f,  53.5f, 0.0f });
+		if (i > 0 && i < bridgeCount_ - 1) {
+			bridge_[i]->SetMass(5.0f);
+		}
+		bridge_[i]->Initialize(yunity::ModelManager::GetInstance()->CreateModel(obj,/* ""*/"Wood"), world_.get(), yunity::Collider::Shape::kAABB);
+		bridge_[i]->SetCamera(camera_);
+		bridge_[i]->SetScale({ 3.0f, 2.0f ,6.4f });
+		bridge_[i]->SetHitBoxSize({ 2.0f, 2.0f, 2.0f });
+		bridge_[i]->SetCollisionAttribute(kCollisionAttributeTrampoline);
+		bridge_[i]->SetDirectionalLight(l);
+		world_->Add(bridge_[i].get());
 
 
 
-	//	if (i > 0) {
-	//		bridgesJoint_[i - 1] = std::make_unique<yunity::SpringJoint>();
-	//		bridgesJoint_[i - 1]->CreateSpringJoint(bridge_[i - 1].get(), bridge_[i].get());
-	//		bridgesJoint_[i - 1]->EnableSpring(0, true);
-	//		bridgesJoint_[i - 1]->EnableSpring(1, true);
-	//		bridgesJoint_[i - 1]->SetEquilibriumPoint(0, 0.0f);
-	//		bridgesJoint_[i - 1]->SetEquilibriumPoint(1, 0.0f);
-	//		bridgesJoint_[i - 1]->SetStiffness(0, stiffness_);
-	//		bridgesJoint_[i - 1]->SetStiffness(1, stiffness_);
-	//		bridgesJoint_[i - 1]->SetDamping(0, damper_);
-	//		bridgesJoint_[i - 1]->SetDamping(1, damper_);
-	//		world_->AddJoint(bridgesJoint_[i - 1].get());
+		if (i > 0) {
+			bridgesJoint_[i - 1] = std::make_unique<yunity::SpringJoint>();
+			bridgesJoint_[i - 1]->CreateSpringJoint(bridge_[i - 1].get(), bridge_[i].get());
+			bridgesJoint_[i - 1]->EnableSpring(0, true);
+			bridgesJoint_[i - 1]->EnableSpring(1, true);
+			bridgesJoint_[i - 1]->SetEquilibriumPoint(0, 0.0f);
+			bridgesJoint_[i - 1]->SetEquilibriumPoint(1, 0.0f);
+			bridgesJoint_[i - 1]->SetStiffness(0, stiffness_);
+			bridgesJoint_[i - 1]->SetStiffness(1, stiffness_);
+			bridgesJoint_[i - 1]->SetDamping(0, damper_);
+			bridgesJoint_[i - 1]->SetDamping(1, damper_);
+			world_->AddJoint(bridgesJoint_[i - 1].get());
 
-	//		bridgeLines_[i - 1] = std::make_unique<yunity::PrimitiveDrawer>();
-	//		bridgeLines_[i - 1].reset(yunity::PrimitiveDrawer::Create());
-	//		bridgeLines_[i - 1]->SetCamera(camera_);
-	//	}
+			bridgeLines_[i - 1] = std::make_unique<yunity::PrimitiveDrawer>();
+			bridgeLines_[i - 1].reset(yunity::PrimitiveDrawer::Create());
+			bridgeLines_[i - 1]->SetCamera(camera_);
+		}
 
-	//}
+	}
+
+	for (uint32_t i = 0; i < bridge2Count_; i++) {
+		bridge2_[i] = std::make_unique<yunity::Object3D>();
+		bridge2_[i]->SetPosition(Vector3{ 751.0f + i * 5.0f,  53.5f, 0.0f });
+		if (i > 0 && i < bridge2Count_ - 1) {
+			bridge2_[i]->SetMass(2.0f);
+		}
+		bridge2_[i]->Initialize(yunity::ModelManager::GetInstance()->CreateModel(obj,/* ""*/"Wood"), world_.get(), yunity::Collider::Shape::kAABB);
+		bridge2_[i]->SetCamera(camera_);
+		bridge2_[i]->SetScale({ 3.0f, 2.0f ,6.4f });
+		bridge2_[i]->SetHitBoxSize({ 2.0f, 2.0f, 2.0f });
+		bridge2_[i]->SetCollisionAttribute(kCollisionAttributeTrampoline);
+		bridge2_[i]->SetDirectionalLight(l);
+		world_->Add(bridge2_[i].get());
+
+
+
+		if (i > 0) {
+			bridges2Joint_[i - 1] = std::make_unique<yunity::SpringJoint>();
+			bridges2Joint_[i - 1]->CreateSpringJoint(bridge2_[i - 1].get(), bridge2_[i].get());
+			bridges2Joint_[i - 1]->EnableSpring(0, true);
+			bridges2Joint_[i - 1]->EnableSpring(1, true);
+			bridges2Joint_[i - 1]->SetEquilibriumPoint(0, 0.0f);
+			bridges2Joint_[i - 1]->SetEquilibriumPoint(1, 0.0f);
+			bridges2Joint_[i - 1]->SetStiffness(0, stiffness2_);
+			bridges2Joint_[i - 1]->SetStiffness(1, stiffness2_);
+			bridges2Joint_[i - 1]->SetDamping(0, damper2_);
+			bridges2Joint_[i - 1]->SetDamping(1, damper2_);
+			world_->AddJoint(bridges2Joint_[i - 1].get());
+
+			bridge2Lines_[i - 1] = std::make_unique<yunity::PrimitiveDrawer>();
+			bridge2Lines_[i - 1].reset(yunity::PrimitiveDrawer::Create());
+			bridge2Lines_[i - 1]->SetCamera(camera_);
+		}
+
+	}
 
 }
 
@@ -210,6 +246,12 @@ void StageScene::Update()
 
 	if (yunity::Input::GetInstance()->TriggerKey(DIK_LSHIFT)) {
 		isDebug_ ^= true;
+		if (camera_->GetTarget() == nullptr) {
+			camera_->SetTarget(player_->GetWorldTransform());
+		}
+		else {
+			camera_->SetTarget(nullptr);
+		}
 	}
 
 	if (isDebug_) {
@@ -339,12 +381,18 @@ void StageScene::Draw3D()
 		springLines_[i]->Draw(springTops_[i]->GetMatWorldTranslation(), springAnchors_[i]->GetMatWorldTranslation(), { 0.0f, 0.0f, 0.0f, 1.0f });
 		springTops_[i]->Draw();
 	}
-	/*for (uint32_t i = 0; i < bridgeCount_; i++) {
+	for (uint32_t i = 0; i < bridgeCount_; i++) {
 		if (i > 0) {
 			bridgeLines_[i - 1]->Draw(bridge_[i - 1]->GetMatWorldTranslation(), bridge_[i]->GetMatWorldTranslation(), { 0.0f, 0.0f, 0.0f, 1.0f });
 		}
 		bridge_[i]->Draw();
-	}*/
+	}
+	for (uint32_t i = 0; i < bridge2Count_; i++) {
+		if (i > 0) {
+			bridge2Lines_[i - 1]->Draw(bridge2_[i - 1]->GetMatWorldTranslation(), bridge2_[i]->GetMatWorldTranslation(), { 0.0f, 0.0f, 0.0f, 1.0f });
+		}
+		bridge2_[i]->Draw();
+	}
 	start_->Draw(startWT_, textureTV_);
 	end_->Draw(endWT_, textureTV_);
 	player_->Draw();

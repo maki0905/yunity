@@ -49,3 +49,20 @@ Vector3 RayIntersection(Segment segment, AABB aabb);
 /// <param name="aabb"></param>
 /// <returns></returns>
 Vector3 RayIntersection(Ray ray, AABB aabb);
+
+/// <summary>
+/// レイ交点
+/// </summary>
+/// <param name="segment"></param>
+/// <param name="aabb"></param>
+/// <returns></returns>
+Vector3 RayIntersection(Segment segment, OBB obb);
+
+/// <summary>
+///　レイ交点
+/// </summary>
+/// <param name="ray"></param>
+/// <param name="aabb"></param>
+/// <returns></returns>
+//Vector3 RayIntersection(Ray ray, OBB obb);
+

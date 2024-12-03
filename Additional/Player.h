@@ -141,7 +141,7 @@ private:
 	float displayTime_;
 
 	// 速度
-	const float fixedSpeed_ = 1.5f;
+	const float fixedSpeed_ = 2.0f;
 	const float floatSpeed_ = 0.1f;
 
 	// 制限速度

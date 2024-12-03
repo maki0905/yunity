@@ -7,28 +7,30 @@
 #include "ImGuiManager.h"
 #include "CommonData.h"
 #include "Tradition.h"
+#include "EngineTimeStep.h"
 
 void TitleScene::Initialize()
 {
 	camera_ = CameraManager::GetInstance()->GetCamera();
 	world_ = std::make_unique<yunity::World>();
-	world_->Initialize({ 0.0f, -25.0, 0.0f });
+	world_->Initialize(gravity_);
 
 	bottonSprite_ = std::make_unique<yunity::Sprite>();
-	bottonSprite_.reset(yunity::Sprite::Create(yunity::TextureManager::GetInstance()->Load("ABotton.dds"), { 610.0f, 520.0f }));
+	bottonSprite_.reset(yunity::Sprite::Create(yunity::TextureManager::GetInstance()->Load("ABotton.dds"), spritePos_));
 	bottonPushSprite_ = std::make_unique<yunity::Sprite>();
-	bottonPushSprite_.reset(yunity::Sprite::Create(yunity::TextureManager::GetInstance()->Load("ABottonPush.png"), { 610.0f, 520.0f }));
+	bottonPushSprite_.reset(yunity::Sprite::Create(yunity::TextureManager::GetInstance()->Load("ABottonPush.png"), spritePos_));
 	time_ = 0;
 
 	model_ = std::make_unique<yunity::Model>();
 	model_.reset(yunity::ModelManager::GetInstance()->CreateModel(obj,/* ""*/"Signboard"));
 	//model_.reset(yunity::ModelManager::GetInstance()->CreateModel(obj,/* ""*/"Brick"));
-	yunity::Model::DirectionalLight l = { .color = {1.0f, 1.0f, 1.0f, 1.0f}, .direction = {1.0f, -1.0f, 0.0f}, .intensity = 1.0f };
+	DirectionLight directionLight;
+	yunity::Model::DirectionalLight l = { .color = directionLight.color, .direction = directionLight.direction, .intensity = directionLight.intensity };
 	model_->SetCamera(camera_);
 	model_->SetEnableLighting(true);
 	model_->SetDirectionalLight(l);
 	worldTransform_.Initialize();
-	worldTransform_.translation_ = { 25.0f, -7.0f, 6.0f };
+	worldTransform_.translation_ = signboardconstant_.pos;
 
 	player_ = std::make_unique<Player>();
 	player_->Initialize(camera_, world_.get());
@@ -44,21 +46,22 @@ void TitleScene::Initialize()
 
 
 	skydome_ = std::make_unique<yunity::Skydome>();
-	skydome_->Initialize(camera_, { 5.0f, 5.0f, 5.0f });
+	skydome_->Initialize(camera_, skydomeScale_);
 
 	CommonData::GetInstance()->stageNum_ = -1;
 	CommonData::GetInstance()->scene_ = Scene::kTitle;
 
 	isStart_ = false;
 
-	for (uint32_t index = 0; index < 3; index++) {
+	TVConstant tvConstant;
+	for (uint32_t index = 0; index < tvCount_; index++) {
 		models_[index] = std::make_unique<yunity::Model>();
 		models_[index].reset(yunity::ModelManager::GetInstance()->CreateModel(obj, "TV"));
 		models_[index]->SetCamera(camera_);
 		models_[index]->SetEnableLighting(false);
 		TVworldTransform_[index].Initialize();
-		TVworldTransform_[index].translation_ = { 80.0f + 30.0f * index, 18.0f, 12.0f };
-		TVworldTransform_[index].rotation_.x = -15.0f * DegToRad();
+		TVworldTransform_[index].translation_ = { tvConstant.translation.x + tvConstant.addition * index, tvConstant.translation.y, tvConstant.translation.z };
+		TVworldTransform_[index].rotation_.x = tvConstant.rotationX;
 		TVworldTransform_[index].scale_ = { 0.0f, 0.0f, 0.0f };
 		isActiveTV_[index] = false;
 		grow_[index] = { false, 0.0f };
@@ -69,12 +72,11 @@ void TitleScene::Initialize()
 	textureTV_[2] = yunity::TextureManager::Load("Models/TV/TV3.png");
 
 	preNum_ = CommonData::GetInstance()->stageNum_;
-	camera_->SetTranslate({ 0, 10.0f, -50.0f });
+	camera_->SetTranslate(cameraPos_);
 	CommonData::GetInstance()->scene_ = Scene::kTitle;
 	isMoveCamera[0] = false;
 	isMoveCamera[1] = false;
 	moveCameraTimer_ = 0.0f;
-
 
 }
 
@@ -82,14 +84,12 @@ void TitleScene::Update()
 {
 	prePad_ = pad_;
 
-
-
 	if (player_->GetSelect()) {
 		if (preNum_ != CommonData::GetInstance()->stageNum_) {
 			grow_[CommonData::GetInstance()->stageNum_] = { true, 0.0f, TVworldTransform_[CommonData::GetInstance()->stageNum_].scale_ };
 		}
 
-		for (int index = 0; index < 3; index++) {
+		for (int index = 0; index < tvCount_; index++) {
 			if (index != CommonData::GetInstance()->stageNum_) {
 				grow_[index] = { false, 0.0f };
 			}
@@ -115,7 +115,7 @@ void TitleScene::Update()
 		}
 	}
 	else {
-		for (uint32_t index = 0; index < 3; index++) {
+		for (uint32_t index = 0; index < tvCount_; index++) {
 			if (isActiveTV_[index] && !shrink_[index].flag) {
 				shrink_[index] = { true, 0.0f, TVworldTransform_[index].scale_ };
 			}
@@ -126,17 +126,17 @@ void TitleScene::Update()
 	if (!Tradition::GetInstance()->GetIsActive()) {
 		yunity::RenderTexture::GetInstance()->SelectPostEffect(yunity::PostEffects::kRadialBlur, false);
 		if (isStart_) {
-			player_->SetMass(2.0f);
+			player_->SetMass(playerMass_);
 			player_->Update();
 		}
-		if (player_->GetWorldTransform()->GetMatWorldTranslation().x >= 35.0f && camera_->GetTarget() == nullptr) {
+		if (player_->GetWorldTransform()->GetMatWorldTranslation().x >= targetPoint_ && camera_->GetTarget() == nullptr) {
 			camera_->SetTarget(player_->GetWorldTransform());
 			CommonData::GetInstance()->scene_ = Scene::kSelect;
 
 		}
-		else if (player_->GetWorldTransform()->GetMatWorldTranslation().x < 35.0f && camera_->GetTarget() != nullptr) {
+		else if (player_->GetWorldTransform()->GetMatWorldTranslation().x < targetPoint_ && camera_->GetTarget() != nullptr) {
 			camera_->SetTarget(nullptr);
-			camera_->SetTranslate({ 0, 10.0f, -50.0f });
+			camera_->SetTranslate(cameraPos_);
 			CommonData::GetInstance()->scene_ = Scene::kTitle;
 
 		}
@@ -151,9 +151,9 @@ void TitleScene::Update()
 	}
 	else {
 		if (isMoveCamera[0]) {
-			moveCameraTimer_ += 1.0f / 30.0f;
+			moveCameraTimer_ += yunity::fixedTimeStep_;
 			moveCameraTimer_ = std::clamp(moveCameraTimer_, 0.0f, 1.0f);
-			camera_->SetTranslate(Lerp(oldCameraPos_, { oldCameraPos_.x, 20.0f, -60.0f }, moveCameraTimer_));
+			camera_->SetTranslate(Lerp(oldCameraPos_, { oldCameraPos_.x, endCamerPos.y, endCamerPos.z }, moveCameraTimer_));
 			if (moveCameraTimer_ >= 1.0f) {
 				moveCameraTimer_ = 0.0f;
 				isMoveCamera[0] = false;
@@ -162,9 +162,9 @@ void TitleScene::Update()
 			}
 		}
 		else {
-			moveCameraTimer_ += 1.0f / 60.0f;
+			moveCameraTimer_ += yunity::fixedTimeStep_;
 			moveCameraTimer_ = std::clamp(moveCameraTimer_, 0.0f, 1.0f);
-			camera_->SetTranslate(Lerp(oldCameraPos_, { oldCameraPos_.x, oldCameraPos_.y, 12.0f }, moveCameraTimer_));
+			camera_->SetTranslate(Lerp(oldCameraPos_, { oldCameraPos_.x, oldCameraPos_.y, fixedEndCameraPosZ }, moveCameraTimer_));
 			Tradition::GetInstance()->Update();
 		}
 		if (!Tradition::GetInstance()->GetIn()) {
@@ -173,16 +173,16 @@ void TitleScene::Update()
 		}
 	}
 
-	for (uint32_t index = 0; index < 3; index++) {
+	for (uint32_t index = 0; index < tvCount_; index++) {
 		if (grow_[index].flag) {
-			grow_[index].t += 1.0f / 60.0f;
+			grow_[index].t += yunity::fixedTimeStep_;
 			if (grow_[index].t > 1.0f) {
 				grow_[index].flag = false;
 			}
 			TVworldTransform_[index].scale_ = Lerp({ 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f, 1.0f }, std::clamp(grow_[index].t, 0.0f, 1.0f));
 		}
 		if (shrink_[index].flag) {
-			shrink_[index].t += 1.0f / 60.0f;
+			shrink_[index].t += yunity::fixedTimeStep_;
 			if (shrink_[index].t > 1.0f) {
 				shrink_[index].flag = false;
 				isActiveTV_[index] = false;
@@ -194,21 +194,21 @@ void TitleScene::Update()
 	preNum_ = CommonData::GetInstance()->stageNum_;
 	CommonData::GetInstance()->stageNum_ = -1;
 
-	for (uint32_t index = 0; index < 3; index++) {
+	for (uint32_t index = 0; index < tvCount_; index++) {
 		TVworldTransform_[index].UpdateMatrix();
 	}
 
 	world_->Solve();
 
-	wavelength += amplitude;
-	if (wavelength > 10.0f || wavelength < -10.0f) {
-		amplitude *= -1.0f;
+	wavelength_ += amplitude_;
+	if (wavelength_ > signboardconstant_.limit || wavelength_ < -signboardconstant_.limit) {
+		amplitude_ *= -1.0f;
 	}
-	worldTransform_.rotation_.z = wavelength * DegToRad();
+	worldTransform_.rotation_.z = wavelength_ * DegToRad();
 	worldTransform_.UpdateMatrix();
 
 	time_++;
-	if (time_ % 30 == 0) {
+	if (time_ % limitTime_ == 0) {
 		time_ = 0;
 		isDraw_ ^= true;
 
@@ -245,7 +245,7 @@ void TitleScene::Draw3D()
 	player_->Draw();
 	model_->Draw(worldTransform_);
 
-	for (uint32_t index = 0; index < 3; index++) {
+	for (uint32_t index = 0; index < tvCount_; index++) {
 		if (isActiveTV_[index]) {
 			models_[index]->Draw(TVworldTransform_[index], textureTV_[index]);
 		}

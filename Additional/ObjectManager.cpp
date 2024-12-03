@@ -46,6 +46,53 @@ void ObjectManager::Load(const std::string& fileName, yunity::Camera* camera, yu
 			objects_.emplace_back(newObject);
 
 		}
+		else if (objectData.tag_ == Tag::kForceField) {
+			ForceField* newObject = new ForceField();
+			InitializeCommon(objectData, newObject);
+			InitializeCollider(objectData, newObject);
+			InitializePhysics(objectData, newObject);
+			newObject->Object3D::Initialize(world, objectData.shape);
+			newObject->Initialize();
+			newObject->SetCamera(camera);
+			world->Add(newObject);
+			objects_.emplace_back(newObject);
+		}
+		else if (objectData.tag_ == Tag::kPillar) {
+			Pillar* newObject = new Pillar();
+			InitializeCommon(objectData, newObject);
+			InitializeCollider(objectData, newObject);
+			InitializePhysics(objectData, newObject);
+			newObject->Object3D::Initialize(yunity::ModelManager::GetInstance()->CreateModel(obj, objectData.fileName), world, objectData.shape);
+			newObject->SetCamera(camera);
+			newObject->Initialize();
+			world->Add(newObject);
+			objects_.emplace_back(newObject);
+
+		}
+		else if (objectData.tag_ == Tag::kClockwise) {
+			RotationCube* newObject = new RotationCube();
+			InitializeCommon(objectData, newObject);
+			InitializeCollider(objectData, newObject);
+			InitializePhysics(objectData, newObject);
+			newObject->Object3D::Initialize(yunity::ModelManager::GetInstance()->CreateModel(obj, objectData.fileName), world, yunity::Collider::kOBB);
+			newObject->SetCamera(camera);
+			newObject->Initialize(1.0f);
+			world->Add(newObject);
+			objects_.emplace_back(newObject);
+
+		}
+		else if (objectData.tag_ == Tag::kCounterClockwise) {
+			RotationCube* newObject = new RotationCube();
+			InitializeCommon(objectData, newObject);
+			InitializeCollider(objectData, newObject);
+			InitializePhysics(objectData, newObject);
+			newObject->Object3D::Initialize(yunity::ModelManager::GetInstance()->CreateModel(obj, objectData.fileName), world, yunity::Collider::kOBB);
+			newObject->SetCamera(camera);
+			newObject->Initialize(-1.0f);
+			world->Add(newObject);
+			objects_.emplace_back(newObject);
+
+		}
 		else {
 			CreateBasicObject(objectData, camera, world);
 		}

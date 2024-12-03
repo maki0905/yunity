@@ -165,7 +165,8 @@ void yunity::LevelEditor::LoadObjectRecursive(LevelData* levelData, nlohmann::js
 
 			if (object.contains("tag")) {
 				nlohmann::json& tag = object["tag"];
-				objectData.tag_ = static_cast<Tag>((uint32_t)tag["tag"]);
+				uint32_t num = (uint32_t)tag["tag"];
+				objectData.tag_ = static_cast<Tag>(num);
 			}
 
 		}
@@ -261,7 +262,8 @@ void yunity::LevelEditor::LoadObjectRecursive(LevelData* levelData, nlohmann::js
 
 			if (object.contains("tag")) {
 				nlohmann::json& tag = object["tag"];
-				objectData.tag_ = static_cast<Tag>(tag);
+				uint32_t num = (uint32_t)tag["tag"];
+				objectData.tag_ = static_cast<Tag>(num);
 			}
 
 		}
