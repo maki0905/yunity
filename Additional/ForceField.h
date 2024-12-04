@@ -31,6 +31,6 @@ private:
 	bool isWind_ = false;
 	const float limitTime_ = 5.0f;
 	float time_ = 0;
-	//std::unique_ptr<WindParticle> windParticle_;
+	std::unique_ptr<WindParticle> windParticle_;
 
 };

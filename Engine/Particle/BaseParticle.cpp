@@ -1,5 +1,7 @@
 #include "BaseParticle.h"
 
+#include "EngineTimeStep.h"
+
 void yunity::BaseParticle::Update()
 {
 	for (std::list<Particle>::iterator particleIterator = particles_.begin(); particleIterator != particles_.end();) {
@@ -7,7 +9,7 @@ void yunity::BaseParticle::Update()
 			particleIterator = particles_.erase(particleIterator);
 			continue;
 		}
-		(*particleIterator).currentTime += fixedTime_;
+		(*particleIterator).currentTime += fixedTimeStep_;
 		// 次のイテレーターへ
 		++particleIterator;
 	}
@@ -40,7 +42,7 @@ void yunity::BaseParticle::Update(std::list<Particle>* particles)
             particleIterator = particles->erase(particleIterator);
         }
         else {
-            particleIterator->currentTime += fixedTime_;
+            particleIterator->currentTime += fixedTimeStep_;
             ++particleIterator;
         }
     }

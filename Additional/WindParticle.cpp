@@ -8,6 +8,7 @@ void WindParticle::Initialize(yunity::Camera* camera)
 	particleDrawer_ = std::make_unique<yunity::ParticleDrawer>();
 	particleDrawer_->Initialize("white1x1.png");
 	particleDrawer_->SetBlendModeType(yunity::BlendModeType::kAdd);
+	particleDrawer_->SetMaterial({ 1.0f, 1.0f, 1.0f, 0.3f });
 	particleDrawer_->SetCamera(camera);
 	particles_.clear();
 
@@ -20,6 +21,7 @@ void WindParticle::Spawn(const Vector3& position)
 		particle.transform.translate = position;
 		particle.transform.translate.x += rng.NextFloatRange(-5.0f, 5.0f);
 		particle.transform.translate.y += rng.NextFloatRange(-2.0f, 2.0f);
+		particle.transform.scale = { 0.2f, 1.0f, 1.0f };
 		particle.particleForCPU.color = { 1.0f, 1.0f, 1.0f , 1.0f };
 		particle.lifeTime = lifeTime_;
 		particle.currentTime = 0.0f;

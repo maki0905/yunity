@@ -11,7 +11,7 @@
 #include "Skydome.h"
 #include "Cloth.h"
 #include "ObjectManager.h"
-
+#include "WindParticle.h"
 
 /*
 * @brief タイトルクラス
