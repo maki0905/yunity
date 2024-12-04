@@ -82,7 +82,7 @@ private:
 	std::unique_ptr<yunity::World> world_;
 
 	// ステージ名
-	std::string stageName_ = "stage1";
+	std::string stageName_ = "stage4";
 
 	// カメラワーク
 	float moveCameraTimer_;

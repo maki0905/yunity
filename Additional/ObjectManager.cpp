@@ -2,9 +2,16 @@
 
 #include "ModelManager.h"
 
-void ObjectManager::Load(const std::string& fileName, yunity::Camera* camera, yunity::World* world) {
+void ObjectManager::Load(const std::string& objectFileName, yunity::Camera* camera, yunity::World* world, const std::string& jointFileName) {
 	std::unique_ptr<yunity::LevelData> levelData = std::make_unique<yunity::LevelData>();
-	levelData.reset(yunity::LevelEditor::GetInstance()->LoadFile(fileName));
+	levelData.reset(yunity::LevelEditor::GetInstance()->LoadFile(objectFileName));
+	std::unique_ptr<yunity::JointData> jointData = std::make_unique<yunity::JointData>();
+	bool jointDatacheck = false;
+	if (jointFileName.size() != 0) {
+		jointData.reset(yunity::LevelEditor::GetInstance()->LoadJointFile(jointFileName));
+		jointDatacheck = true;
+		LoadJoint(*jointData.get());
+	}
 
 	world_ = world;
 
@@ -96,44 +103,11 @@ void ObjectManager::Load(const std::string& fileName, yunity::Camera* camera, yu
 		else {
 			CreateBasicObject(objectData, camera, world);
 		}
-
-		if (objectData.jointPair_ != -1) {
-			int parentNumber = objectData.jointPair_;
-			if (jointData_[parentNumber].objA == nullptr) {
-				jointData_[parentNumber].objA = objects_.back().get();
-				jointData_[parentNumber].objectDataA = objectData;
-			}
-			else {
-				jointData_[parentNumber].objB = objects_.back().get();
-				jointData_[parentNumber].objectDataB = objectData;
-			}
+		if (jointDatacheck) {
+			AddJointData(objectData, objects_.back().get());
 		}
 	}
-
-	for (uint32_t index = 0; auto & joint : jointData_) {
-		if (joint.objectDataA.jointType_ == yunity::JointType::kSpring && joint.objectDataB.jointType_ == yunity::JointType::kSpring) {
-			yunity::SpringJoint* springJoint = new yunity::SpringJoint();
-			springJoint->CreateSpringJoint(joint.objA, joint.objB);
-			for (uint32_t i = 0; i < 3; i++) {
-				springJoint->EnableSpring(i, joint.objectDataA.springEnabled_[i]);
-				springJoint->SetStiffness(i, joint.objectDataA.stiffness_[i]);
-				springJoint->SetDamping(i, joint.objectDataA.dampingCoefficient_[i]);
-			}
-			springJoint->SetEquilibriumPoint();
-			world->AddJoint(springJoint);
-			joints_.emplace_back(springJoint);
-
-			springLines_[index].objA = joint.objA;
-			springLines_[index].objB = joint.objB;
-			springLines_[index].isActive_ = true;
-			index++;
-		}
-		else if (joint.objectDataA.jointType_ == yunity::JointType::kPulley && joint.objectDataB.jointType_ == yunity::JointType::kPulley) {
-			yunity::PulleyJoint* pulleyJoint = new yunity::PulleyJoint();
-			pulleyJoint->CreatePulleyJoint(joint.objA, joint.objB, joint.objectDataA.groundAnchor_, joint.objectDataB.groundAnchor_, joint.objectDataA.anchor_, joint.objectDataB.anchor_, (joint.objectDataA.ratio_ + joint.objectDataB.ratio_) / 2.0f);
-			world->AddJoint(pulleyJoint);
-			joints_.emplace_back(pulleyJoint);
-
-		}
+	if (jointDatacheck) {
+		CreateJoint();
 	}
 }

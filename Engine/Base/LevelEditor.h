@@ -9,6 +9,7 @@
 #include "json.hpp"
 #include "MathFunction.h"
 #include "LevelData.h"
+#include "JointData.h"
 
 namespace yunity {
 	/*
@@ -28,6 +29,13 @@ namespace yunity {
 		/// <param name="GroupName">グループ</param>
 		LevelData* LoadFile(const std::string& fileName);
 
+		/// <summary>
+		/// ファイルから読み込み
+		/// </summary>
+		/// <param name="fileName"></param>
+		/// <returns></returns>
+		JointData* LoadJointFile(const std::string& fileName);
+
 	private:
 		/// <summary>
 		/// オブジェクト読み込み
@@ -35,6 +43,13 @@ namespace yunity {
 		/// <param name="levelData">レベルデータ</param>
 		/// <param name="deserialized">デシリアライズ</param>
 		void LoadObjectRecursive(LevelData* levelData, nlohmann::json deserialized);
+
+		/// <summary>
+		/// ジョイント読み込み
+		/// </summary>
+		/// <param name="jointData"></param>
+		/// <param name="deserialized"></param>
+		void LoadJointRecursive(JointData* jointData, nlohmann::json deserialized);
 	private:
 		LevelEditor() = default;
 		~LevelEditor() = default;
@@ -43,6 +58,7 @@ namespace yunity {
 	private:
 
 		std::map<std::string, LevelData*> levelData_;
+		std::map<std::string, JointData*> jointData_;
 
 		// グローバル変数の保存先ファイルパス
 		const std::string kDirectoryPath = "Resources/Level/";

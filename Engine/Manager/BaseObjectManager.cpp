@@ -44,19 +44,31 @@ void yunity::BaseObjectManager::Draw()
 	}
 }
 
-
-void yunity::BaseObjectManager::Load(const std::string& fileName, Camera* camera, World* world)
+void yunity::BaseObjectManager::Load(const std::string& objectFileName, Camera* camera, World* world, const std::string& jointFileName)
 {
 	std::unique_ptr<LevelData> levelData = std::make_unique<LevelData>();
-	levelData.reset(LevelEditor::GetInstance()->LoadFile(fileName));
-
-
+	levelData.reset(LevelEditor::GetInstance()->LoadFile(objectFileName));
+	std::unique_ptr<JointData> jointData = std::make_unique<JointData>();
+	bool jointDataCheck = false;
+	if (jointFileName.size() != 0) {
+		jointData.reset(LevelEditor::GetInstance()->LoadJointFile(jointFileName));
+		jointDataCheck = true;
+		LoadJoint(*jointData.get());
+	}
 
 	for (auto& object : levelData->objects) {
 		CreateBasicObject(object, camera, world);
+		if (jointDataCheck) {
+			AddJointData(object, objects_.back().get());
+		}
 	}
 
+	if (jointDataCheck) {
+		CreateJoint();
+	}
 }
+
+
 
 Vector3 yunity::BaseObjectManager::GetPos(const std::string& modelName)
 {
@@ -149,4 +161,85 @@ void yunity::BaseObjectManager::InitializePhysics(const LevelData::ObjectData& o
 	newObject->SetBounciness(objectData.bounciness);
 	newObject->SetBounceCombine(static_cast<Body::BounceCombine>(objectData.bounceCombine));
 }
+
+void yunity::BaseObjectManager::LoadJoint(const JointData& jointData)
+{
+	// SpringJoint
+	for (auto& joint : jointData.springJoints) {
+		jointData_[joint.id].objA = nullptr;
+		jointData_[joint.id].objB = nullptr;
+		jointData_[joint.id].jointData = joint;
+		jointData_[joint.id].springJointData = joint;
+	}
+	// PulleyJoint
+	for (auto& joint : jointData.pulleyJoints) {
+		jointData_[joint.id].objA = nullptr;
+		jointData_[joint.id].objB = nullptr;
+		jointData_[joint.id].jointData = joint;
+		jointData_[joint.id].pulleyJointData = joint;
+	}
+}
+
+void yunity::BaseObjectManager::AddJointData(const LevelData::ObjectData& objectData, Object3D* object)
+{
+	if (objectData.jointIDs.size() > 0) {
+		for (auto& id : objectData.jointIDs) {
+			if (jointData_[id].objA == nullptr) {
+				jointData_[id].objA = object;
+			}
+			else {
+				jointData_[id].objB = object;
+			}
+		}
+	}
+
+}
+
+void yunity::BaseObjectManager::CreateJoint()
+{
+	for (auto& joint : jointData_) {
+		if (joint.objA == nullptr || joint.objB == nullptr) {
+			continue;
+		}
+		switch (joint.jointData.type)
+		{
+		case JointType::kDefalt:
+			break;
+		case JointType::kSpring:
+			InitializeSpringJoint(joint);
+			break;
+		case JointType::kPulley:
+			InitializePulleyJoint(joint);
+			break;
+	
+		}
+	}
+}
+
+void yunity::BaseObjectManager::InitializeSpringJoint(const JointObject& joint)
+{
+	yunity::SpringJoint* springJoint = new yunity::SpringJoint();
+	springJoint->CreateSpringJoint(joint.objA, joint.objB);
+	for (uint32_t i = 0; i < 3; i++) {
+		springJoint->EnableSpring(i, joint.springJointData.springEnabled[i]);
+		springJoint->SetEquilibriumPoint(i, joint.springJointData.equilibriumPoint[i]);
+		springJoint->SetStiffness(i, joint.springJointData.stiffness[i]);
+		springJoint->SetDamping(i, joint.springJointData.dampingCoefficient[i]);
+	}
+	joints_.emplace_back(springJoint);
+	world_->AddJoint(springJoint);
+}
+
+void yunity::BaseObjectManager::InitializePulleyJoint(const JointObject& joint)
+{
+	yunity::PulleyJoint* pulleyJoint = new yunity::PulleyJoint();
+	pulleyJoint->CreatePulleyJoint(
+		joint.objA, joint.objB,
+		joint.pulleyJointData.groundAnchorA, joint.pulleyJointData.groundAnchorB,
+		joint.pulleyJointData.anchorA, joint.pulleyJointData.anchorB,
+		joint.pulleyJointData.ratio);
+	joints_.emplace_back(pulleyJoint);
+	world_->AddJoint(pulleyJoint);
+}
+
 

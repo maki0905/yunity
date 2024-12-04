@@ -19,11 +19,12 @@ namespace yunity {
 	*/
 	class BaseObjectManager {
 	protected:
-		struct JointData {
+		struct JointObject {
 			Object3D* objA;
 			Object3D* objB;
-			LevelData::ObjectData objectDataA;
-			LevelData::ObjectData objectDataB;
+			JointData::BaseJointParameter jointData;
+			JointData::SpringJointParmameter springJointData;
+			JointData::PulleyJointParmameter pulleyJointData;
 		};
 
 		struct SpringJointLine {
@@ -58,7 +59,7 @@ namespace yunity {
 		/// <param name="fileName"></param>
 		/// <param name="camera"></param>
 		/// <param name="world"></param>
-		virtual void Load(const std::string& fileName, Camera* camera, World* world);
+		virtual void Load(const std::string& objectFileName,Camera* camera, World* world, const std::string& jointFileName = "");
 
 		/// <summary>
 		/// 指定オブジェクト群取得
@@ -137,12 +138,42 @@ namespace yunity {
 		/// <param name="newObject"></param>
 		void InitializePhysics(const LevelData::ObjectData& objectData, Object3D* newObject);
 
+		/// <summary>
+		/// ジョイントを読み込む
+		/// </summary>
+		/// <param name="jointData"></param>
+		void LoadJoint(const JointData& jointData);
+
+		/// <summary>
+		/// ジョイントオブジェクト収集
+		/// </summary>
+		/// <param name="objectData"></param>
+		/// <param name="object"></param>
+		void AddJointData(const LevelData::ObjectData& objectData, Object3D* object);
+
+		/// <summary>
+		/// ジョイント生成
+		/// </summary>
+		void CreateJoint();
+
+		/// <summary>
+		/// SpringJoint初期化
+		/// </summary>
+		/// <param name="joint"></param>
+		void InitializeSpringJoint(const JointObject& joint);
+
+		/// <summary>
+		/// PulleyJoint初期化
+		/// </summary>
+		/// <param name="joint"></param>
+		void InitializePulleyJoint(const JointObject& joint);
+
 	protected:
 		std::vector<std::unique_ptr<Object3D>> objects_;
 		std::vector<std::unique_ptr<Joint>> joints_;
 		World* world_;
 		static const uint32_t jointNumber_ = 100;
-		std::array<JointData, jointNumber_> jointData_;
+		std::array<JointObject, jointNumber_> jointData_;
 		std::array<SpringJointLine, jointNumber_> springLines_;
 	};
 

@@ -10,5 +10,5 @@
 
 class ObjectManager : public yunity::BaseObjectManager {
 public:
-	void Load(const std::string& fileName, yunity::Camera* camera, yunity::World* world) override;
+	void Load(const std::string& objectFileName, yunity::Camera* camera, yunity::World* world, const std::string& jointFileName = "") override;
 };

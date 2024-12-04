@@ -1,0 +1,29 @@
+{
+    "Joints": [
+        {
+            "ID": "0",
+            "object_name": "",
+            "type": "springJoint",
+            "springEnabled": [
+                1.0,
+                1.0,
+                0.0
+            ],
+            "equilibriumPoint": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "stiffness": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "dampingCoefficient": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        }
+    ]
+}

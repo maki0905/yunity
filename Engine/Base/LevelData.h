@@ -31,15 +31,7 @@ namespace yunity {
 			float bounciness;
 			uint32_t bounceCombine;
 			int serialNumber = -1;
-			int jointPair_ = -1;
-			JointType jointType_ = JointType::kDefalt;
-			bool springEnabled_[3];
-			float equilibriumPoint_[3];
-			float stiffness_[3];
-			float dampingCoefficient_[3];
-			Vector3 groundAnchor_;
-			Vector3 anchor_;
-			float ratio_;
+			std::vector<uint32_t> jointIDs;
 			Tag tag_ = Tag::kDefalt;
 		};
 

@@ -59,6 +59,44 @@ yunity::LevelData* yunity::LevelEditor::LoadFile(const std::string& fileName)
 
 }
 
+yunity::JointData* yunity::LevelEditor::LoadJointFile(const std::string& fileName)
+{
+	// 読み込むJSONファイルのフルパスを合成
+	std::string filePath = kDirectoryPath + fileName + ".json";
+
+	// 読み込み用ファイルストリーム
+	std::ifstream file;
+	// ファイルを読み込み用に開く
+	file.open(filePath);
+
+	// ファイルオープン失敗をチェック
+	if (file.fail()) {
+		std::string message = "Failed open Failure";
+		MessageBoxA(nullptr, message.c_str(), "LevelEditor", 0);
+		assert(0);
+	}
+
+	nlohmann::json deserialized;
+
+	// 解凍
+	file >> deserialized;
+
+	// 正しいレベルデータファイルかチェック
+	assert(deserialized.is_object());
+
+	// レベルデータ格納用インスタンスを生成
+	JointData* jointData = new JointData();
+
+	LoadJointRecursive(jointData, deserialized);
+
+	jointData_[fileName] = jointData;
+
+	// ファイルを閉じる
+	file.close();
+
+	return jointData_[fileName];
+}
+
 void yunity::LevelEditor::LoadObjectRecursive(LevelData* levelData, nlohmann::json deserialized)
 {
 	// "objects"の全オブジェクトを走査
@@ -138,29 +176,22 @@ void yunity::LevelEditor::LoadObjectRecursive(LevelData* levelData, nlohmann::js
 				objectData.serialNumber = (uint32_t)eventtrigger["serialnumber"];
 			}
 
-			if (object.contains("joint")) {
-				nlohmann::json& joint = object["joint"];
-				objectData.jointPair_ = (uint32_t)joint["joints"];
-				objectData.jointType_ = static_cast<JointType>((uint32_t)joint["type"]);
-
-				// springJoint
-				for (uint32_t i = 0; i < 3; i++) {
-					objectData.springEnabled_[i] = (int)joint["springEnabled"][i];
-					objectData.equilibriumPoint_[i] = (float)joint["equilibriumPoint"][i];
-					objectData.stiffness_[i] = (float)joint["stiffness"][i];
-					objectData.dampingCoefficient_[i] = (float)joint["dampingCoefficient"][i];
+			if (object.contains("jointIDs")) {
+				nlohmann::json& jointIDs = object["jointIDs"];
+				for (uint32_t i = 0; i < jointIDs.size(); i++) {
+					uint32_t id = 0;
+					if (object.contains("jointIDs")) {
+						std::string id_str = object["jointIDs"][i].get<std::string>();
+						try {
+							id = static_cast<uint32_t>(std::stoul(id_str));
+						}
+						catch (const std::exception& e) {
+							std::cerr << "Failed to convert ID: " << id_str << ", Error: " << e.what() << std::endl;
+							continue; // このジョイントをスキップ
+						}
+					}
+					objectData.jointIDs.push_back(id);
 				}
-
-				// pulleyJoint
-				objectData.groundAnchor_.x = (float)joint["groundAnchor"][0];
-				objectData.groundAnchor_.y = (float)joint["groundAnchor"][1];
-				objectData.groundAnchor_.z = (float)joint["groundAnchor"][2];
-				objectData.anchor_.x = (float)joint["anchor"][0];
-				objectData.anchor_.y = (float)joint["anchor"][1];
-				objectData.anchor_.z = (float)joint["anchor"][2];
-				objectData.ratio_ = (float)joint["ratio"];
-
-				
 			}
 
 			if (object.contains("tag")) {
@@ -239,25 +270,22 @@ void yunity::LevelEditor::LoadObjectRecursive(LevelData* levelData, nlohmann::js
 				objectData.serialNumber = (uint32_t)eventtrigger["serialnumber"];
 			}
 
-			if (object.contains("joint")) {
-				nlohmann::json& joint = object["joint"];
-				objectData.jointPair_ = (uint32_t)joint["joints"];
-				objectData.jointType_ = static_cast<JointType>((uint32_t)joint["type"]);
-				if (objectData.jointType_ == JointType::kSpring) {
-					for (uint32_t i = 0; i < 3; i++) {
-						objectData.springEnabled_[i] = (int)joint["springEnabled"][i];
-						objectData.equilibriumPoint_[i] = (float)joint["equilibriumPoint"][i];
-						objectData.stiffness_[i] = (float)joint["stiffness"][i];
-						objectData.dampingCoefficient_[i] = (float)joint["dampingCoefficient"][i];
+			if (object.contains("jointIDs")) {
+				nlohmann::json& jointIDs = object["jointIDs"];
+				for (uint32_t i = 0; i < jointIDs.size(); i++) {
+					uint32_t id = 0;
+					if (object.contains("jointIDs")) {
+						std::string id_str = object["jointIDs"][i].get<std::string>();
+						try {
+							id = static_cast<uint32_t>(std::stoul(id_str));
+						}
+						catch (const std::exception& e) {
+							std::cerr << "Failed to convert ID: " << id_str << ", Error: " << e.what() << std::endl;
+							continue; // このジョイントをスキップ
+						}
 					}
+					objectData.jointIDs.push_back(id);
 				}
-				else if(objectData.jointType_ == JointType::kPulley){
-					objectData.groundAnchor_ = Vector3((float)joint["groundAnchor"][0], (float)joint["groundAnchor"][1], (float)joint["groundAnchor"][2]);
-					objectData.anchor_ = Vector3((float)joint["anchor"][0], (float)joint["anchor"][1], (float)joint["anchor"][2]);
-					objectData.ratio_ = (float)joint["ratio"];
-				}
-
-
 			}
 
 			if (object.contains("tag")) {
@@ -275,6 +303,75 @@ void yunity::LevelEditor::LoadObjectRecursive(LevelData* levelData, nlohmann::js
 
 	}
 
+}
+
+void yunity::LevelEditor::LoadJointRecursive(JointData* jointData, nlohmann::json deserialized)
+{
+	// "joints"の全ジョイントを走査
+	for (nlohmann::json& joint : deserialized["Joints"]) {
+
+		// IDを取得 (文字列を数値に変換)
+		uint32_t id = 0;
+		if (joint.contains("ID")) {
+			std::string id_str = joint["ID"].get<std::string>();
+			try {
+				id = static_cast<uint32_t>(std::stoul(id_str));
+			}
+			catch (const std::exception& e) {
+				std::cerr << "Failed to convert ID: " << id_str << ", Error: " << e.what() << std::endl;
+				continue; // このジョイントをスキップ
+			}
+		}
+		// 種別ごとに
+		std::string type = joint["type"].get<std::string>();
+
+		if (type == "springJoint") {
+			JointData::SpringJointParmameter springJointParmeter;
+			nlohmann::json& springEnabled = joint["springEnabled"];
+			nlohmann::json& equilibriumPoint = joint["equilibriumPoint"];
+			nlohmann::json& stiffness = joint["stiffness"];
+			nlohmann::json& dampingCoefficient = joint["dampingCoefficient"];
+
+			for (uint32_t i = 0; i < 3; i++) {
+				springJointParmeter.springEnabled[i] = (uint32_t)springEnabled[i];
+				springJointParmeter.equilibriumPoint[i] = (float)equilibriumPoint[i];
+				springJointParmeter.stiffness[i] = (float)stiffness[i];
+				springJointParmeter.dampingCoefficient[i] = (float)dampingCoefficient[i];
+			}
+
+			springJointParmeter.id = id;
+			springJointParmeter.type = JointType::kSpring;
+
+			jointData->springJoints.emplace_back(springJointParmeter);
+
+		}
+		else if (type == "pulleyJoint") {
+			JointData::PulleyJointParmameter pulleyJointParmeter;
+			nlohmann::json& groundAnchor = joint["groundAnchor"];
+			nlohmann::json& anchor = joint["anchor"];
+			nlohmann::json& ratio = joint["ratio"];
+			pulleyJointParmeter.groundAnchorA.x = (float)groundAnchor["A"][0];
+			pulleyJointParmeter.groundAnchorA.y = (float)groundAnchor["A"][1];
+			pulleyJointParmeter.groundAnchorA.z = (float)groundAnchor["A"][2];
+			pulleyJointParmeter.anchorA.x = (float)anchor["A"][0];
+			pulleyJointParmeter.anchorA.y = (float)anchor["A"][1];
+			pulleyJointParmeter.anchorA.z = (float)anchor["A"][2];
+			pulleyJointParmeter.groundAnchorB.x = (float)groundAnchor["B"][0];
+			pulleyJointParmeter.groundAnchorB.y = (float)groundAnchor["B"][1];
+			pulleyJointParmeter.groundAnchorB.z = (float)groundAnchor["B"][2];
+			pulleyJointParmeter.anchorB.x = (float)anchor["B"][0];
+			pulleyJointParmeter.anchorB.y = (float)anchor["B"][1];
+			pulleyJointParmeter.anchorB.z = (float)anchor["B"][2];
+			pulleyJointParmeter.ratio = (float)ratio;
+
+			pulleyJointParmeter.id = id;
+			pulleyJointParmeter.type = JointType::kPulley;
+
+			jointData->pulleyJoints.emplace_back(pulleyJointParmeter);
+
+		}
+
+	}
 }
 
 

@@ -245,6 +245,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\Base\EventTrigger.h" />
     <ClInclude Include="Engine\Physics\FixedJoint.h" />
     <ClInclude Include="Engine\Physics\Joint.h" />
+    <ClInclude Include="Engine\Physics\JointData.h" />
     <ClInclude Include="Engine\Physics\PulleyJoint.h" />
     <ClInclude Include="Engine\Physics\Shape.h" />
     <ClInclude Include="Engine\Scene\Tradition.h" />
