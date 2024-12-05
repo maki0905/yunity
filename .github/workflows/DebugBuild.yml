@@ -4,7 +4,7 @@ on:
     branches:
       - master
 env:
-  SOLUTION_FILE_PATH: yunity/yunity.sln
+  SOLUTION_FILE_PATH: yunity.sln
   CONFIGURATION: Debug
 jobs:
   build:
@@ -13,6 +13,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Debug file structure
+        run: |
+          dir
+          dir yunity
 
       - name: Add MSBuild to PATH
         uses: microsoft/setup-msbuild@v2
