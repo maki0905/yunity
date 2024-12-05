@@ -3,14 +3,14 @@
 #include "ModelManager.h"
 
 void ObjectManager::Load(const std::string& objectFileName, yunity::Camera* camera, yunity::World* world, const std::string& jointFileName) {
-	std::unique_ptr<yunity::LevelData> levelData = std::make_unique<yunity::LevelData>();
-	levelData.reset(yunity::LevelEditor::GetInstance()->LoadFile(objectFileName));
-	std::unique_ptr<yunity::JointData> jointData = std::make_unique<yunity::JointData>();
+	yunity::LevelData* levelData = nullptr;
+	levelData = yunity::LevelEditor::GetInstance()->LoadFile(objectFileName);
+	yunity::JointData* jointData = nullptr;
 	bool jointDatacheck = false;
 	if (jointFileName.size() != 0) {
-		jointData.reset(yunity::LevelEditor::GetInstance()->LoadJointFile(jointFileName));
+		jointData = yunity::LevelEditor::GetInstance()->LoadJointFile(jointFileName);
 		jointDatacheck = true;
-		LoadJoint(*jointData.get());
+		LoadJoint(*jointData);
 	}
 
 	world_ = world;

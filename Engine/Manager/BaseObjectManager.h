@@ -59,7 +59,7 @@ namespace yunity {
 		/// <param name="fileName"></param>
 		/// <param name="camera"></param>
 		/// <param name="world"></param>
-		virtual void Load(const std::string& objectFileName,Camera* camera, World* world, const std::string& jointFileName = "");
+		virtual void Load(const std::string& objectFileName, Camera* camera, World* world, const std::string& jointFileName = "");
 
 
 		void SetInitalizeData(const LevelData::ObjectData& objectData, Object3D* newObject, Camera* camera);

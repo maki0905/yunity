@@ -28,7 +28,7 @@ void yunity::BaseObjectManager::Update()
 
 void yunity::BaseObjectManager::Draw()
 {
-	
+
 	for (auto& springLine : springLines_) {
 		if (springLine.isActive_) {
 			springLine.line->Draw(springLine.objA->GetMatWorldTranslation(), springLine.objB->GetMatWorldTranslation(), { 0.0f, 0.0f, 0.0f, 1.0f });
@@ -46,14 +46,14 @@ void yunity::BaseObjectManager::Draw()
 
 void yunity::BaseObjectManager::Load(const std::string& objectFileName, Camera* camera, World* world, const std::string& jointFileName)
 {
-	std::unique_ptr<LevelData> levelData = std::make_unique<LevelData>();
-	levelData.reset(LevelEditor::GetInstance()->LoadFile(objectFileName));
-	std::unique_ptr<JointData> jointData = std::make_unique<JointData>();
+	LevelData* levelData = nullptr;
+	levelData = LevelEditor::GetInstance()->LoadFile(objectFileName);
+	JointData* jointData = nullptr;
 	bool jointDataCheck = false;
 	if (jointFileName.size() != 0) {
-		jointData.reset(LevelEditor::GetInstance()->LoadJointFile(jointFileName));
+		jointData = LevelEditor::GetInstance()->LoadJointFile(jointFileName);
 		jointDataCheck = true;
-		LoadJoint(*jointData.get());
+		LoadJoint(*jointData);
 	}
 
 	for (auto& object : levelData->objects) {
@@ -228,7 +228,7 @@ void yunity::BaseObjectManager::CreateJoint()
 		case JointType::kPulley:
 			InitializePulleyJoint(joint);
 			break;
-	
+
 		}
 	}
 }

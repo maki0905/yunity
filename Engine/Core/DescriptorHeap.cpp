@@ -24,19 +24,22 @@ void yunity::DescriptorHeap::Create(D3D12_DESCRIPTOR_HEAP_TYPE heapType, uint32_
 	freeDescriptors_ = heapDesc_.NumDescriptors;
 
 	if (shaderVisible) {
-		firstHandle_ = new DescriptorHandle(heap_->GetCPUDescriptorHandleForHeapStart(), heap_->GetGPUDescriptorHandleForHeapStart());
+		//firstHandle_ = new DescriptorHandle(heap_->GetCPUDescriptorHandleForHeapStart(), heap_->GetGPUDescriptorHandleForHeapStart());
+		firstHandle_ = std::make_unique< DescriptorHandle>(heap_->GetCPUDescriptorHandleForHeapStart(), heap_->GetGPUDescriptorHandleForHeapStart());
 	}
 	else {
-		firstHandle_ = new DescriptorHandle(heap_->GetCPUDescriptorHandleForHeapStart());
+		//firstHandle_ = new DescriptorHandle(heap_->GetCPUDescriptorHandleForHeapStart());
+		firstHandle_ = std::make_unique<DescriptorHandle>(heap_->GetCPUDescriptorHandleForHeapStart());
 	}
 
-	nextFreeHandle_ = firstHandle_;
+	nextFreeHandle_ = std::move(firstHandle_);
 }
 
 yunity::DescriptorHandle yunity::DescriptorHeap::Alloc(uint32_t count)
 {
 	assert(HasAvailableSpace(count));
-	DescriptorHandle ret = *nextFreeHandle_;
+	//DescriptorHandle ret = *nextFreeHandle_;
+	DescriptorHandle ret = *nextFreeHandle_.get();
 	D3D12_CPU_DESCRIPTOR_HANDLE cpuHandle = nextFreeHandle_->GetCPUHandle();
 	D3D12_GPU_DESCRIPTOR_HANDLE gpuHandle = nextFreeHandle_->GetGPUHandle();
 	cpuHandle.ptr += (count * descriptorSize_);

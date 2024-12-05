@@ -161,17 +161,16 @@ uint32_t yunity::Audio::PlayWave(uint32_t soundDataHandle, bool loopFlag)
 	assert(SUCCEEDED(result));
 
 	// 再生中データ
-	//std::unique_ptr<Voice> voice = std::make_unique<Voice>();
-	Voice* voice = new Voice();
+	std::unique_ptr<Voice> voice = std::make_unique<Voice>();
 	voice->handle = handle;
 	voice->sourceVoice = pSourceVoice;
 	// 再生中データコンテナに登録
-	voices_.insert(voice);
+	voices_.insert(voice.get());
 
 	// 再生する波形データの設定
 	XAUDIO2_BUFFER buf{};
 	buf.pAudioData = soundData.pBuffer;
-	buf.pContext = voice;
+	buf.pContext = voice.get();
 	buf.AudioBytes = soundData.bufferSize;
 	buf.Flags = XAUDIO2_END_OF_STREAM;
 	if (loopFlag) {

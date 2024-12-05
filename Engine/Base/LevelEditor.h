@@ -57,8 +57,8 @@ namespace yunity {
 		LevelEditor& operator=(const LevelEditor& src) = default;
 	private:
 
-		std::map<std::string, LevelData*> levelData_;
-		std::map<std::string, JointData*> jointData_;
+		std::map<std::string, std::unique_ptr<LevelData>> levelData_;
+		std::map<std::string, std::unique_ptr<JointData>> jointData_;
 
 		// グローバル変数の保存先ファイルパス
 		const std::string kDirectoryPath = "Resources/Level/";

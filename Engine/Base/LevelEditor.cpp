@@ -45,17 +45,20 @@ yunity::LevelData* yunity::LevelEditor::LoadFile(const std::string& fileName)
 	// 正しいレベルデータファイルかチェック
 	assert(name.compare("scene") == 0);
 
+	if (levelData_.count(fileName)) {
+		return levelData_[fileName].get();
+	}
 	// レベルデータ格納用インスタンスを生成
-	LevelData* levelData = new LevelData();
+	std::unique_ptr<LevelData> levelData = std::make_unique<LevelData>();
 
-	LoadObjectRecursive(levelData, deserialized);
+	LoadObjectRecursive(levelData.get(), deserialized);
 
-	levelData_[fileName] = levelData;
+	levelData_[fileName] = std::move(levelData);
 
 	// ファイルを閉じる
 	file.close();
 
-	return levelData_[fileName];
+	return levelData_[fileName].get();
 
 }
 
@@ -84,17 +87,21 @@ yunity::JointData* yunity::LevelEditor::LoadJointFile(const std::string& fileNam
 	// 正しいレベルデータファイルかチェック
 	assert(deserialized.is_object());
 
+	if (jointData_.count(fileName)) {
+		return jointData_[fileName].get();
+	}
+
 	// レベルデータ格納用インスタンスを生成
-	JointData* jointData = new JointData();
+	std::unique_ptr<JointData> jointData = std::make_unique<JointData>();
 
-	LoadJointRecursive(jointData, deserialized);
+	LoadJointRecursive(jointData.get(), deserialized);
 
-	jointData_[fileName] = jointData;
+	jointData_[fileName] = std::move(jointData);
 
 	// ファイルを閉じる
 	file.close();
 
-	return jointData_[fileName];
+	return jointData_[fileName].get();
 }
 
 void yunity::LevelEditor::LoadObjectRecursive(LevelData* levelData, nlohmann::json deserialized)
