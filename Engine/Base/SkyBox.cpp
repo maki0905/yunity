@@ -10,9 +10,9 @@
 #include "ShaderCompiler.h"
 #include "TextureManager.h"
 
-ID3D12GraphicsCommandList* yunity::SkyBox::commandList_ = nullptr;
-yunity::RootSignature* yunity::SkyBox::rootSignature_ = nullptr;
-yunity::PipelineState* yunity::SkyBox::pipelineState_ = nullptr;
+Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> yunity::SkyBox::commandList_ = nullptr;
+std::unique_ptr<yunity::RootSignature> yunity::SkyBox::rootSignature_;
+std::unique_ptr<yunity::PipelineState> yunity::SkyBox::pipelineState_;
 
 void yunity::SkyBox::StaticInitialize()
 {
@@ -34,16 +34,16 @@ void yunity::SkyBox::PostDraw()
 
 yunity::SkyBox* yunity::SkyBox::Create()
 {
-	SkyBox* skyBox = new SkyBox();
+	std::unique_ptr<SkyBox> skyBox = std::make_unique<SkyBox>();
 	skyBox->CreateBox();
 	skyBox->CreateMesh();
-	
-	return skyBox;
+
+	return skyBox.release();
 }
 
 void yunity::SkyBox::InitializeGraphicsPipeline()
 {
-	rootSignature_ = new RootSignature(Device::GetInstance()->GetDevice() , static_cast<int>(RootBindings::kCount), 1);
+	rootSignature_ = std::make_unique<RootSignature>(Device::GetInstance()->GetDevice(), static_cast<int>(RootBindings::kCount), 1);
 
 	D3D12_STATIC_SAMPLER_DESC staticSamplers = {};
 	staticSamplers.Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;
@@ -63,7 +63,7 @@ void yunity::SkyBox::InitializeGraphicsPipeline()
 
 	rootSignature_->Finalize(D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
 
-	pipelineState_ = new PipelineState(Device::GetInstance()->GetDevice(), rootSignature_);
+	pipelineState_ = std::make_unique<PipelineState>(Device::GetInstance()->GetDevice(), rootSignature_.get());
 
 	// InputLayout
 	D3D12_INPUT_ELEMENT_DESC inputElementDescs[] = {
@@ -107,19 +107,6 @@ void yunity::SkyBox::InitializeGraphicsPipeline()
 	pipelineState_->Finalize();
 }
 
-void yunity::SkyBox::Finalize()
-{
-	if (rootSignature_) {
-		delete rootSignature_;
-	}
-	if (pipelineState_) {
-		delete pipelineState_;
-	}
-	if (commandList_) {
-		commandList_->Release();
-	}
-}
-
 void yunity::SkyBox::Draw(const WorldTransform& worldTransform)
 {
 	assert(commandList_);
@@ -140,7 +127,7 @@ void yunity::SkyBox::Draw(const WorldTransform& worldTransform)
 	// CBVをセット(ビュープロジェクション行列)
 	commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(RootBindings::kViewProjection), camera_->GetConstBuff()->GetGPUVirtualAddress());
 
-	TextureManager::GetInstance()->SetGraphicsRootDescriptorTable(commandList_, static_cast<UINT>(RootBindings::kTexture), textureHandle_);
+	TextureManager::GetInstance()->SetGraphicsRootDescriptorTable(commandList_.Get(), static_cast<UINT>(RootBindings::kTexture), textureHandle_);
 
 	commandList_->DrawIndexedInstanced(static_cast<UINT>(indices_.size()), 1, 0, 0, 0);
 }
@@ -180,35 +167,35 @@ void yunity::SkyBox::CreateBox()
 	VertexData vertexData[24];
 
 	// 右面。描画インデックスは[0, 1, 2][2, 1, 3]で内側を向く
-	vertexData[0] = {1.0f, 1.0f, 1.0f, 1.0f};
-	vertexData[1] = {1.0f, 1.0f, -1.0f, 1.0f};
-	vertexData[2] = {1.0f, -1.0f, 1.0f, 1.0f};
-	vertexData[3] = {1.0f, -1.0f, -1.0f, 1.0f};
+	vertexData[0] = { 1.0f, 1.0f, 1.0f, 1.0f };
+	vertexData[1] = { 1.0f, 1.0f, -1.0f, 1.0f };
+	vertexData[2] = { 1.0f, -1.0f, 1.0f, 1.0f };
+	vertexData[3] = { 1.0f, -1.0f, -1.0f, 1.0f };
 	// 左面。描画インデックスは[4, 5, 6][6, 5, 7]で内側を向く
-	vertexData[4] = {-1.0f, 1.0f, -1.0f, 1.0f};
-	vertexData[5] = {-1.0f, 1.0f, 1.0f, 1.0f};
-	vertexData[6] = {-1.0f, -1.0f, -1.0f, 1.0f};
-	vertexData[7] = {-1.0f, -1.0f, 1.0f, 1.0f};
+	vertexData[4] = { -1.0f, 1.0f, -1.0f, 1.0f };
+	vertexData[5] = { -1.0f, 1.0f, 1.0f, 1.0f };
+	vertexData[6] = { -1.0f, -1.0f, -1.0f, 1.0f };
+	vertexData[7] = { -1.0f, -1.0f, 1.0f, 1.0f };
 	// 前面。描画インデックスは[8, 9, 10][10, 9, 11]で内側を向く
-	vertexData[8] = {-1.0f, 1.0f, 1.0f, 1.0f};
-	vertexData[9] = {1.0f, 1.0f, 1.0f, 1.0f};
-	vertexData[10] ={-1.0f, -1.0f, 1.0f, 1.0f};
-	vertexData[11] ={1.0f, -1.0f, 1.0f, 1.0f};
+	vertexData[8] = { -1.0f, 1.0f, 1.0f, 1.0f };
+	vertexData[9] = { 1.0f, 1.0f, 1.0f, 1.0f };
+	vertexData[10] = { -1.0f, -1.0f, 1.0f, 1.0f };
+	vertexData[11] = { 1.0f, -1.0f, 1.0f, 1.0f };
 	// 後面。描画インデックスは[12, 13, 14][14, 13, 15]で内側を向く
-	vertexData[12] = {-1.0f, 1.0f, -1.0f, 1.0f};
-	vertexData[13] = {1.0f, 1.0f, -1.0f, 1.0f};
-	vertexData[14] = {-1.0f, -1.0f, -1.0f, 1.0f};
-	vertexData[15] = {1.0f, -1.0f, -1.0f, 1.0f};
+	vertexData[12] = { -1.0f, 1.0f, -1.0f, 1.0f };
+	vertexData[13] = { 1.0f, 1.0f, -1.0f, 1.0f };
+	vertexData[14] = { -1.0f, -1.0f, -1.0f, 1.0f };
+	vertexData[15] = { 1.0f, -1.0f, -1.0f, 1.0f };
 	// 上面。描画インデックスは[16, 17, 18][18, 17, 19]で内側を向く
-	vertexData[16] = {-1.0f, 1.0f, 1.0f, 1.0f};
-	vertexData[17] = {1.0f, 1.0f, 1.0f, 1.0f};
-	vertexData[18] = {-1.0f, 1.0f, -1.0f, 1.0f};
-	vertexData[19] = {1.0f, 1.0f, -1.0f, 1.0f};
+	vertexData[16] = { -1.0f, 1.0f, 1.0f, 1.0f };
+	vertexData[17] = { 1.0f, 1.0f, 1.0f, 1.0f };
+	vertexData[18] = { -1.0f, 1.0f, -1.0f, 1.0f };
+	vertexData[19] = { 1.0f, 1.0f, -1.0f, 1.0f };
 	// 下面。描画インデックスは[20, 21, 22][22, 21, 23]で内側を向く
-	vertexData[20] = {-1.0f, -1.0f, 1.0f, 1.0f};
-	vertexData[21] = {1.0f, -1.0f, 1.0f, 1.0f};
-	vertexData[22] = {-1.0f, -1.0f, -1.0f, 1.0f};
-	vertexData[23] = {1.0f, -1.0f, -1.0f, 1.0f};
+	vertexData[20] = { -1.0f, -1.0f, 1.0f, 1.0f };
+	vertexData[21] = { 1.0f, -1.0f, 1.0f, 1.0f };
+	vertexData[22] = { -1.0f, -1.0f, -1.0f, 1.0f };
+	vertexData[23] = { 1.0f, -1.0f, -1.0f, 1.0f };
 
 	for (int32_t i = 0; i < 24; i++) {
 		vertices_.push_back(vertexData[i]);

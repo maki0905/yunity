@@ -14,9 +14,9 @@
 /// 静的メンバ変数の実体
 /// </summary>
 UINT yunity::Sprite::descriptorHandleIncrementSize_;
-ID3D12GraphicsCommandList* yunity::Sprite::commandList_ = nullptr;
-yunity::RootSignature*  yunity::Sprite::rootSignature_ = nullptr;
-yunity::PipelineState*  yunity::Sprite::pipelineState_ = nullptr;
+Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> yunity::Sprite::commandList_ = nullptr;
+std::unique_ptr<yunity::RootSignature> yunity::Sprite::rootSignature_;
+std::unique_ptr<yunity::PipelineState> yunity::Sprite::pipelineState_;
 Matrix4x4  yunity::Sprite::matProjection_;
 
 
@@ -24,7 +24,7 @@ void  yunity::Sprite::StaticInitialize()
 {
 
 	// デスクリプタサイズを取得
-	descriptorHandleIncrementSize_ =Device::GetInstance()->GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+	descriptorHandleIncrementSize_ = Device::GetInstance()->GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
 
 	HRESULT result = S_FALSE;
 	Microsoft::WRL::ComPtr<ID3DBlob> vsBlob;    // 頂点シェーダーオブジェクト
@@ -74,8 +74,7 @@ void  yunity::Sprite::StaticInitialize()
 		exit(1);
 	}
 
-	rootSignature_ = new yunity::RootSignature(Device::GetInstance()->GetDevice(), 2, 1);
-	
+	rootSignature_ = std::make_unique<RootSignature>(Device::GetInstance()->GetDevice(), 2, 1);
 	// スタティックサンプラー
 	D3D12_STATIC_SAMPLER_DESC staticSamplers = {};
 	staticSamplers.Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;
@@ -93,8 +92,8 @@ void  yunity::Sprite::StaticInitialize()
 
 	rootSignature_->Finalize(D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
 
-	pipelineState_ = new PipelineState(Device::GetInstance()->GetDevice(), rootSignature_);
-	
+	pipelineState_ = std::make_unique<PipelineState>(Device::GetInstance()->GetDevice(), rootSignature_.get());
+
 	// 頂点レイアウト
 	D3D12_INPUT_ELEMENT_DESC inputLayout[] = {
 		// xy座標
@@ -128,7 +127,7 @@ void  yunity::Sprite::StaticInitialize()
 	// ラスタライザステート
 	pipelineState_->SetRasterizerState(rasterizerDesc);
 	pipelineState_->SetCullMode(D3D12_CULL_MODE_NONE);
-	
+
 	// レンダーターゲットのブレンド設定
 	D3D12_RENDER_TARGET_BLEND_DESC blenddesc{};
 	blenddesc.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
@@ -151,7 +150,7 @@ void  yunity::Sprite::StaticInitialize()
 	pipelineState_->SetPrimitiveTopologyType(D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE);
 
 	pipelineState_->SetRenderTargetFormat(DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, DXGI_FORMAT_D24_UNORM_S8_UINT);
-	
+
 	pipelineState_->Finalize();
 
 	// 射影行列計算
@@ -196,18 +195,19 @@ yunity::Sprite* yunity::Sprite::Create(uint32_t textureHandle, Vector2 position,
 	}
 
 	// Spriteのインスタンスを生成
-	Sprite* sprite = new Sprite(textureHandle, position, size, color, anchorpoint, isFlipx, isFlipY);
+	std::unique_ptr<Sprite> sprite = std::make_unique<Sprite>(textureHandle, position, size, color, anchorpoint, isFlipx, isFlipY);
 	if (sprite == nullptr) {
 		return nullptr;
 	}
 
 	// 初期化
 	if (!sprite->Initialize()) {
-		delete sprite;
 		assert(0);
 		return nullptr;
 	}
-	return sprite;
+
+
+	return sprite.release();
 }
 
 yunity::Sprite::Sprite()
@@ -226,20 +226,6 @@ yunity::Sprite::Sprite(uint32_t textureHandle, Vector2 position, Vector2 size, V
 	isFlipY_ = isFlipY;
 	texSize_ = size;
 }
-
-void  yunity::Sprite::Finalize()
-{
-	if (rootSignature_) {
-		delete rootSignature_;
-	}
-	if (pipelineState_) {
-		delete pipelineState_;
-	}
-	if (commandList_) {
-		commandList_->Release();
-	}
-}
-
 
 bool  yunity::Sprite::Initialize()
 {
@@ -387,7 +373,7 @@ void  yunity::Sprite::Draw()
 	// 定数バッファビューをセット
 	commandList_->SetGraphicsRootConstantBufferView(0, constBuff_->GetGPUVirtualAddress());
 	// シェーダリソースビューをセット
-	TextureManager::GetInstance()->SetGraphicsRootDescriptorTable(commandList_, 1, textureHandle_);
+	TextureManager::GetInstance()->SetGraphicsRootDescriptorTable(commandList_.Get(), 1, textureHandle_);
 	// 描画コマンド
 	commandList_->DrawInstanced(4, 1, 0, 0);
 

@@ -11,8 +11,8 @@
 
 namespace yunity {
 	/*
-* @スプライト
-*/
+	* @スプライト
+	*/
 	class Sprite
 	{
 	public:
@@ -68,17 +68,13 @@ namespace yunity {
 		// ディスクリプタサイズ
 		static UINT descriptorHandleIncrementSize_;
 		// コマンドリスト
-		static ID3D12GraphicsCommandList* commandList_;
+		static Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> commandList_;
 		//// ルートシグネチャー
-		static yunity::RootSignature* rootSignature_;
+		static std::unique_ptr<RootSignature> rootSignature_;
 		//// パイプラインステートオブジェクト
-		static yunity::PipelineState* pipelineState_;
+		static std::unique_ptr<PipelineState> pipelineState_;
 		// 射影行列
 		static Matrix4x4 matProjection_;
-		// ルートシグネチャー
-		//static Microsoft::WRL::ComPtr<ID3D12RootSignature> rootSignature_;
-		// パイプラインステートオブジェクト
-		//static Microsoft::WRL::ComPtr<ID3D12PipelineState> pipelineState_;
 
 
 	public:
@@ -91,10 +87,6 @@ namespace yunity {
 		/// コンストラクタ
 		/// </summary>
 		Sprite(uint32_t textureHandle, Vector2 position, Vector2 size, Vector4 color, Vector2 anchorpoint, bool isFlipx, bool isFlipY);
-
-
-
-		void Finalize();
 
 		/// <summary>
 		/// 初期化
