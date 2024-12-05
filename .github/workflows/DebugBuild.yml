@@ -1,10 +1,10 @@
 name: DebugBuild
 on:
   push:
-     branches:
-       - master
+    branches:
+      - master
 env:
-  SOLUTION_FILE_PATH: project/yunity.sln
+  SOLUTION_FILE_PATH: yunity.sln
   CONFIGURATION: Debug
 jobs:
   build:
