@@ -61,6 +61,11 @@ namespace yunity {
 		/// <param name="world"></param>
 		virtual void Load(const std::string& objectFileName,Camera* camera, World* world, const std::string& jointFileName = "");
 
+
+		void SetInitalizeData(const LevelData::ObjectData& objectData, Object3D* newObject, Camera* camera);
+
+		void AddObject(std::unique_ptr<Object3D> newObject);
+
 		/// <summary>
 		/// 指定オブジェクト群取得
 		/// </summary>

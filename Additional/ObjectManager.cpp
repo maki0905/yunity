@@ -17,87 +17,52 @@ void ObjectManager::Load(const std::string& objectFileName, yunity::Camera* came
 
 	for (auto& objectData : levelData->objects) {
 		if (objectData.tag_ == Tag::kMoveFloor_L || objectData.tag_ == Tag::kMoveFloor_R) {
-
-			MoveFloor* newObject = new MoveFloor();
-			InitializeCommon(objectData, newObject);
-			InitializeCollider(objectData, newObject);
-			InitializePhysics(objectData, newObject);
-			newObject->Initialize(yunity::ModelManager::GetInstance()->CreateModel(obj, objectData.fileName), world, objectData.shape);
+			std::unique_ptr<MoveFloor> newObject = std::make_unique<MoveFloor>();
+			SetInitalizeData(objectData, newObject.get(), camera);
 			newObject->InitializeDirection(objectData.tag_);
-			newObject->SetCamera(camera);
-			world->Add(newObject);
-			objects_.emplace_back(newObject);
+			AddObject(std::move(newObject));
 
 		}
 		else if (objectData.tag_ == Tag::kTV) {
-			TV* newObject = new TV();
-			InitializeCommon(objectData, newObject);
-			InitializeCollider(objectData, newObject);
-			InitializePhysics(objectData, newObject);
-			newObject->Initialize(yunity::ModelManager::GetInstance()->CreateModel(obj, objectData.fileName), world, objectData.shape);
+			std::unique_ptr<TV> newObject = std::make_unique<TV>();
+			SetInitalizeData(objectData, newObject.get(), camera);
 			newObject->InitializeTexture();
-			newObject->SetCamera(camera);
-			world->Add(newObject);
-			objects_.emplace_back(newObject);
+			AddObject(std::move(newObject));
 
 		}
 		else if (objectData.tag_ == Tag::kCoin) {
-			Coin* newObject = new Coin();
-			InitializeCommon(objectData, newObject);
-			InitializeCollider(objectData, newObject);
-			InitializePhysics(objectData, newObject);
-			newObject->Object3D::Initialize(yunity::ModelManager::GetInstance()->CreateModel(obj, objectData.fileName), world, objectData.shape);
+			std::unique_ptr<Coin> newObject = std::make_unique<Coin>();
+			SetInitalizeData(objectData, newObject.get(), camera);
 			newObject->Initialize();
-			newObject->SetCamera(camera);
-			world->Add(newObject);
-			objects_.emplace_back(newObject);
+			AddObject(std::move(newObject));
 
 		}
 		else if (objectData.tag_ == Tag::kForceField) {
-			ForceField* newObject = new ForceField();
-			InitializeCommon(objectData, newObject);
-			InitializeCollider(objectData, newObject);
-			InitializePhysics(objectData, newObject);
-			newObject->Object3D::Initialize(world, objectData.shape);
+			std::unique_ptr<ForceField> newObject = std::make_unique<ForceField>();
+			SetInitalizeData(objectData, newObject.get(), camera);
 			newObject->Initialize();
-			newObject->SetCamera(camera);
-			world->Add(newObject);
-			objects_.emplace_back(newObject);
+			AddObject(std::move(newObject));
 		}
 		else if (objectData.tag_ == Tag::kPillar) {
-			Pillar* newObject = new Pillar();
-			InitializeCommon(objectData, newObject);
-			InitializeCollider(objectData, newObject);
-			InitializePhysics(objectData, newObject);
-			newObject->Object3D::Initialize(yunity::ModelManager::GetInstance()->CreateModel(obj, objectData.fileName), world, objectData.shape);
-			newObject->SetCamera(camera);
+			std::unique_ptr<Pillar> newObject = std::make_unique<Pillar>();
+			SetInitalizeData(objectData, newObject.get(), camera);
 			newObject->Initialize();
-			world->Add(newObject);
-			objects_.emplace_back(newObject);
+			AddObject(std::move(newObject));
 
 		}
 		else if (objectData.tag_ == Tag::kClockwise) {
-			RotationCube* newObject = new RotationCube();
-			InitializeCommon(objectData, newObject);
-			InitializeCollider(objectData, newObject);
-			InitializePhysics(objectData, newObject);
-			newObject->Object3D::Initialize(yunity::ModelManager::GetInstance()->CreateModel(obj, objectData.fileName), world, yunity::Collider::kOBB);
+			std::unique_ptr<RotationCube> newObject = std::make_unique<RotationCube>();
+			SetInitalizeData(objectData, newObject.get(), camera);
 			newObject->SetCamera(camera);
-			newObject->Initialize(1.0f);
-			world->Add(newObject);
-			objects_.emplace_back(newObject);
+			newObject->Initialize(1.0);
+			AddObject(std::move(newObject));
 
 		}
 		else if (objectData.tag_ == Tag::kCounterClockwise) {
-			RotationCube* newObject = new RotationCube();
-			InitializeCommon(objectData, newObject);
-			InitializeCollider(objectData, newObject);
-			InitializePhysics(objectData, newObject);
-			newObject->Object3D::Initialize(yunity::ModelManager::GetInstance()->CreateModel(obj, objectData.fileName), world, yunity::Collider::kOBB);
-			newObject->SetCamera(camera);
+			std::unique_ptr<RotationCube> newObject = std::make_unique<RotationCube>();
+			SetInitalizeData(objectData, newObject.get(), camera);
 			newObject->Initialize(-1.0f);
-			world->Add(newObject);
-			objects_.emplace_back(newObject);
+			AddObject(std::move(newObject));
 
 		}
 		else {

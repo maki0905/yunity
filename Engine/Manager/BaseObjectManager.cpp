@@ -68,6 +68,26 @@ void yunity::BaseObjectManager::Load(const std::string& objectFileName, Camera* 
 	}
 }
 
+void yunity::BaseObjectManager::SetInitalizeData(const LevelData::ObjectData& objectData, Object3D* newObject, Camera* camera)
+{
+	InitializeCommon(objectData, newObject);
+	InitializeCollider(objectData, newObject);
+	InitializePhysics(objectData, newObject);
+	if (objectData.fileName != "") {
+		newObject->Initialize(yunity::ModelManager::GetInstance()->CreateModel(obj, objectData.fileName), world_, objectData.shape);
+	}
+	else {
+		newObject->Initialize(world_, objectData.shape);
+	}
+	newObject->SetCamera(camera);
+}
+
+void yunity::BaseObjectManager::AddObject(std::unique_ptr<Object3D> newObject)
+{
+	world_->Add(newObject.get());
+	objects_.emplace_back(std::move(newObject));
+}
+
 
 
 Vector3 yunity::BaseObjectManager::GetPos(const std::string& modelName)
@@ -111,18 +131,15 @@ void yunity::BaseObjectManager::SetEnableLighting(bool onOff)
 void yunity::BaseObjectManager::CreateBasicObject(const LevelData::ObjectData& objectData, Camera* camera, World* world)
 {
 	if (objectData.serialNumber != -1) { // イベントトリガー
-		EventTrigger* newObject = new EventTrigger();
-		InitializeCommon(objectData, newObject);
-		InitializeCollider(objectData, newObject);
+		std::unique_ptr<EventTrigger> newObject = std::make_unique<EventTrigger>();
+		InitializeCommon(objectData, newObject.get());
+		InitializeCollider(objectData, newObject.get());
 		newObject->Initialize(world, objectData.shape);
-		world->Add(newObject);
-		objects_.emplace_back(newObject);
+		AddObject(std::move(newObject));
 	}
 	else { // 基本オブジェクト
-		Object3D* newObject = new Object3D();
-		InitializeCommon(objectData, newObject);
-		InitializeCollider(objectData, newObject);
-		InitializePhysics(objectData, newObject);
+		std::unique_ptr<Object3D> newObject = std::make_unique<Object3D>();
+		SetInitalizeData(objectData, newObject.get(), camera);
 		if (objectData.empth) {
 			newObject->Initialize(world, objectData.shape);
 		}
@@ -131,9 +148,9 @@ void yunity::BaseObjectManager::CreateBasicObject(const LevelData::ObjectData& o
 		}
 		newObject->SetCamera(camera);
 		if (Length(objectData.size) > 0) {
-			world->Add(newObject);
+			world->Add(newObject.get());
 		}
-		objects_.emplace_back(newObject);
+		objects_.emplace_back(std::move(newObject));
 	}
 }
 

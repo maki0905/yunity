@@ -62,7 +62,7 @@ uint32_t yunity::Audio::LoadWave(const std::string& fileName)
 
 	// .wavファイルをバイナリモードで開く
 	file.open(fullpath, std::ios_base::binary);
-	
+
 	//　ファイルオープン失敗を検出する
 	assert(file.is_open());
 
@@ -110,8 +110,8 @@ uint32_t yunity::Audio::LoadWave(const std::string& fileName)
 	}
 
 	// Dataチャンクのデータ部(波形データ)の読み込み
-	char* pBuffer = new char[data.size];
-	file.read(pBuffer, data.size);
+	std::unique_ptr<char[]> pBuffer = std::make_unique<char[]>(data.size);
+	file.read(pBuffer.get(), data.size);
 
 	// Waveファイルを閉じる
 	file.close();
@@ -120,14 +120,14 @@ uint32_t yunity::Audio::LoadWave(const std::string& fileName)
 	SoundData& soundData = soundDatas_.at(handle);
 
 	soundData.wfex = format.fmt;
-	soundData.pBuffer = reinterpret_cast<BYTE*>(pBuffer);
+	soundData.pBuffer = reinterpret_cast<BYTE*>(pBuffer.get());
 	soundData.bufferSize = data.size;
 	soundData.name = fileName;
 
 	indexSoundData_++;
 
 	return handle;
-	
+
 }
 
 void yunity::Audio::Unload(SoundData* soundData)
@@ -161,6 +161,7 @@ uint32_t yunity::Audio::PlayWave(uint32_t soundDataHandle, bool loopFlag)
 	assert(SUCCEEDED(result));
 
 	// 再生中データ
+	//std::unique_ptr<Voice> voice = std::make_unique<Voice>();
 	Voice* voice = new Voice();
 	voice->handle = handle;
 	voice->sourceVoice = pSourceVoice;
