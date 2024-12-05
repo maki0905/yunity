@@ -7,8 +7,8 @@ void ForceField::Initialize()
 {
 	time_ = 0.0f;
 	isWind_ = false;
-	windParticle_ = std::make_unique<WindParticle>();
-	windParticle_->Initialize(camera_);
+	/*windParticle_ = std::make_unique<WindParticle>();
+	windParticle_->Initialize(camera_);*/
 	model_ = std::make_unique<yunity::Model>();
 	model_.reset(yunity::ModelManager::GetInstance()->CreateModel(obj, "Cube"));
 }
@@ -21,15 +21,15 @@ void ForceField::Update()
 		time_ = 0.0f;
 	}
 	if (isWind_) {
-		windParticle_->Spawn(worldTransform_.GetMatWorldTranslation());
+		//windParticle_->Spawn(worldTransform_.GetMatWorldTranslation());
 	}
-	windParticle_->Update();
+	//windParticle_->Update();
 }
 
 void ForceField::Draw()
 {
 	if (isWind_) {
-		windParticle_->Draw();
+		//windParticle_->Draw();
 	}
 
 }
