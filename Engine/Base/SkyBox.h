@@ -67,6 +67,10 @@ namespace yunity {
 
 
 	public:
+		/// <summary>
+		/// ファイナライザ
+		/// </summary>
+		void Finalize();
 
 		/// <summary>
 		/// 描画
@@ -101,12 +105,9 @@ namespace yunity {
 		Microsoft::WRL::ComPtr<ID3D12Resource> CreateBufferResource(size_t sizeInBytes);
 
 	private:
-		// コマンドリスト
-		static Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> commandList_;
-		//// ルートシグネチャー
-		static std::unique_ptr<RootSignature> rootSignature_;
-		//// パイプラインステートオブジェクト
-		static std::unique_ptr<PipelineState> pipelineState_;
+		static ID3D12GraphicsCommandList* commandList_;
+		static RootSignature* rootSignature_;
+		static PipelineState* pipelineState_;
 
 	private:
 		Camera* camera_ = nullptr;

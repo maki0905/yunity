@@ -58,6 +58,7 @@ void yunity::Framework::Initialize()
 
 void yunity::Framework::Finalize()
 {
+	skybox_->Finalize();
 	primitive_->Finalize();
 	ImGuiManager::GetInstance()->Finalize();
 	WindowsAPI::GetInstance()->TerminateGameWindow();
