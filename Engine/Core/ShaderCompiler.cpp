@@ -115,6 +115,14 @@ void yunity::ShaderCompiler::ShaderCompile()
 	psblob_["HSVFilter"] = CompileShader(L"Resources/Shaders/HSVFilter.PS.hlsl", L"ps_6_0");
 	assert(psblob_["HSVFilter"]);
 
+	vsblob_["ShadowMap"] = CompileShader(L"Resources/Shaders/ShadowMap.VS.hlsl", L"vs_6_0");
+	assert(vsblob_["ShadowMap"]);
+
+	vsblob_["Object3dShadowMap"] = CompileShader(L"Resources/Shaders/Object3dShadowMap.VS.hlsl", L"vs_6_0");
+	assert(vsblob_["Object3dShadowMap"]);
+	psblob_["Object3dShadowMap"] = CompileShader(L"Resources/Shaders/Object3dShadowMap.PS.hlsl", L"ps_6_0");
+	assert(psblob_["Object3dShadowMap"]);
+
 
 }
 

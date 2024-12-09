@@ -51,3 +51,24 @@ enum class LineRootBindings {
 	kViewProjection, // ビュープロジェクション変換行列
 	kCount,          // 最大数
 };
+
+enum class ShadowMapBindings {
+	kWorldTransform, // ワールド変換行列
+	kViewProjection, // ビュープロジェクション変換行列
+	kCount,          // 最大数
+};
+
+enum class Object3dShadowMapRootBindings {
+	kWorldTransform, // ワールド変換行列
+	kViewProjection, // ビュープロジェクション変換行列
+	kRootNode,       // ルートノード
+	kTexture,        // テクスチャ
+	kMaterial,       // マテリアル
+	kLight,          // ライティング
+	kCamera,         // カメラ
+	kPointLight,
+	//kEnvironmentMap, // 環境マップ
+	kShadowMap,
+	kLightViewProjection, // ライトビュープロジェクション
+	kCount,          // 最大数
+};

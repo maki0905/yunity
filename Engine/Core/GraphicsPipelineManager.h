@@ -17,6 +17,8 @@ namespace yunity {
 		kLine,
 		kPrimitive,
 		kSkinning,
+		kShadowMap,
+		kObject3dShadowMap,
 		kCount,
 	};
 
@@ -79,6 +81,16 @@ namespace yunity {
 		/// スキニング用パイプライン生成
 		/// </summary>
 		void CreateSkinning();
+
+		/// <summary>
+		/// シャドウマップ用パイプライン生成
+		/// </summary>
+		void CreateShadowMap();
+
+		/// <summary>
+		/// シャドウマップ3Dオブジェクト用パイプライン生成
+		/// </summary>
+		void CreateObject3dShadowMap();
 
 	private:
 		GraphicsPipelineManager() = default;

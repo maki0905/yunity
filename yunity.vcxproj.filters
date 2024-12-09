@@ -886,6 +886,9 @@
     <FxCompile Include="Resources\Shaders\Vignette.PS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
+    <FxCompile Include="Resources\Shaders\ShadowMap.VS.hlsl" />
+    <FxCompile Include="Resources\Shaders\Object3DShadowMap.VS.hlsl" />
+    <FxCompile Include="Resources\Shaders\Object3DShadowMap.PS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Shaders\Object3d.hlsli">
@@ -906,5 +909,6 @@
     <None Include="Resources\Shaders\Skybox.hlsli">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="Resources\Shaders\Object3DShadowMap.hlsli" />
   </ItemGroup>
 </Project>
