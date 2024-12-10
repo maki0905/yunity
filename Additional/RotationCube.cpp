@@ -4,6 +4,7 @@
 void RotationCube::Initialize(float torque)
 {
 	torque_ = torque;
+	SetShape(Shape::kOBB);
 }
 
 void RotationCube::Update()
