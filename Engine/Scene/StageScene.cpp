@@ -38,7 +38,7 @@ void StageScene::Initialize()
 
 	startWT_.Initialize();
 
-	stageName_ = CommonData::GetInstance()->GetStageName();
+	//stageName_ = CommonData::GetInstance()->GetStageName();
 	objectManager_ = std::make_unique<ObjectManager>();
 	objectManager_->Initialize(camera_);
 	objectManager_->Load(stageName_, camera_, world_.get());

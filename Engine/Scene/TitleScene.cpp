@@ -78,6 +78,9 @@ void TitleScene::Initialize()
 	isMoveCamera[1] = false;
 	moveCameraTimer_ = 0.0f;
 
+	/*coin_ = std::make_unique<Coin>();
+	coin_->Initialize();*/
+
 }
 
 void TitleScene::Update()
@@ -171,6 +174,10 @@ void TitleScene::Update()
 			yunity::RenderTexture::GetInstance()->SelectPostEffect(yunity::PostEffects::kRadialBlur, false);
 			yunity::SceneManager::GetInstance()->ChangeScene("GAMESTAGE");
 		}
+	}
+
+	if (yunity::Input::GetInstance()->TriggerKey(DIK_0)) {
+		yunity::SceneManager::GetInstance()->ChangeScene("GAMESTAGE");
 	}
 
 	for (uint32_t index = 0; index < tvCount_; index++) {

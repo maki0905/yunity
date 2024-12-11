@@ -10,10 +10,8 @@
 #include "World.h"
 #include "SkyBox.h"
 #include "Player.h"
-#include "World.h"
 #include "ObjectManager.h"
 #include "Skydome.h"
-#include "Coin.h"
 #include "SpringBoard.h"
 #include "FireworksParticle.h"
 #include "Random.h"
@@ -139,6 +137,5 @@ private:
 	std::array<std::unique_ptr<yunity::SpringJoint>, bridge2Count_ - 1> bridges2Joint_;
 	const float stiffness2_ = 10.0f;
 	const float damper2_ = 0.1f;
-
 };
 

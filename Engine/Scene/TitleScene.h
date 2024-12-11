@@ -12,6 +12,7 @@
 #include "Cloth.h"
 #include "ObjectManager.h"
 #include "WindParticle.h"
+#include "Coin.h"
 
 /*
 * @brief タイトルクラス
@@ -129,5 +130,7 @@ private:
 	bool isMoveCamera[cameraworkCount_];
 	float moveCameraTimer_;
 	Vector3 oldCameraPos_;
+
+	//std::unique_ptr<Coin> coin_;
 };
 

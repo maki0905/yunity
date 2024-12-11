@@ -16,7 +16,7 @@ namespace yunity {
 		/// <summary>
 		/// デストラクタ
 		/// </summary>
-		~Object3D();
+		virtual ~Object3D();
 
 		/// <summary>
 		/// 初期化

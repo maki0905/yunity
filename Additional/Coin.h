@@ -1,6 +1,8 @@
 #pragma once
 #include "Object3D.h"
 
+#include "FloatingParticle.h"
+#include "SmokeParticle.h"
 /*
 * @brief コインクラス
 */
@@ -43,4 +45,6 @@ public:
 
 private:
 	bool isActive_ = true;
+	std::unique_ptr<FloatingParticle> particle_;
+	Object3D::Body* player_;
 };

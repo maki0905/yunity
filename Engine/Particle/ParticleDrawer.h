@@ -106,6 +106,7 @@ namespace yunity {
 		void InitializeMaterial();
 
 	private:
+
 		static ID3D12GraphicsCommandList* commandList_;
 
 	private:

@@ -126,6 +126,7 @@ void yunity::ParticleDrawer::CreateMesh()
 	// 頂点リソースにデータを書き込む
 	vertexResource_->Map(0, nullptr, (void**)&vertexData_); // 書き込むためのアドレスを取得
 	std::memcpy(vertexData_, modelData_.vertices.data(), sizeof(VertexData) * modelData_.vertices.size()); // 頂点データをリソースにコピー
+	vertexResource_->Unmap(0, nullptr);
 }
 
 void yunity::ParticleDrawer::CreateMesh(const std::vector<Model::VertexData>& vertices)
@@ -145,6 +146,7 @@ void yunity::ParticleDrawer::CreateMesh(const std::vector<Model::VertexData>& ve
 	// 頂点リソースにデータを書き込む
 	vertexResource_->Map(0, nullptr, (void**)&vertexData_); // 書き込むためのアドレスを取得
 	std::memcpy(vertexData_, modelData_.vertices.data(), sizeof(VertexData) * modelData_.vertices.size()); // 頂点データをリソースにコピー
+	vertexResource_->Unmap(0, nullptr);
 }
 
 
@@ -165,6 +167,7 @@ void yunity::ParticleDrawer::CreateIndex(const std::vector<uint32_t>& indices)
 	// インデックスリソースにデータを書き込む
 	indexResource_->Map(0, nullptr, reinterpret_cast<void**>(&mappedIndex_));
 	std::memcpy(mappedIndex_, modelData_.indices.data(), sizeof(uint32_t) * modelData_.indices.size());
+	indexResource_->Unmap(0, nullptr);
 }
 
 void yunity::ParticleDrawer::CreateSRV()
@@ -201,6 +204,7 @@ void yunity::ParticleDrawer::InitializeMaterial()
 	materialData_ = nullptr;
 	materialResource_->Map(0, nullptr, reinterpret_cast<void**>(&materialData_));
 	materialData_->color = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+	materialResource_->Unmap(0, nullptr);
 }
 
 
