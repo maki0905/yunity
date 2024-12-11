@@ -37,6 +37,10 @@ void GameManager::Draw()
 #pragma endregion 
 
 #pragma region 3D描画
+	//ID3D12GraphicsCommandList* commandList = yunity::DirectXCore::GetInstance()->GetCommandList();
+
+
+
 	skybox_->PreDraw(yunity::DirectXCore::GetInstance()->GetCommandList());
 	model_->PreDraw(yunity::DirectXCore::GetInstance()->GetCommandList());
 	particleDrawer_->PreDraw(yunity::DirectXCore::GetInstance()->GetCommandList());
@@ -52,13 +56,13 @@ void GameManager::Draw()
 #pragma region 前景描画
 
 	yunity::DirectXCore::GetInstance()->PostDrawRenderTexture();
-#pragma endregion
 
 	yunity::DirectXCore::GetInstance()->PreDrawSwapchain();
 
 	sprite_->PreDraw(yunity::DirectXCore::GetInstance()->GetCommandList());
 	yunity::SceneManager::GetInstance()->DrawFront();
 	sprite_->PostDraw();
+#pragma endregion
 
 	// ImGui描画
 	yunity::ImGuiManager::GetInstance()->Draw();

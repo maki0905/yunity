@@ -140,6 +140,17 @@ namespace yunity {
 		/// </summary>
 		static void PostDraw();
 
+		/// <summary>
+		/// 描画前処理
+		/// </summary>
+		/// <param name="commandList">描画コマンドリスト</param>
+		static void PreDrawShadowMap(ID3D12GraphicsCommandList* commandList);
+
+		/// <summary>
+		/// 描画後処理
+		/// </summary>
+		static void PostDrawShadowMap();
+
 	public:
 		/// <summary>
 		/// デストラクタ
@@ -339,6 +350,8 @@ namespace yunity {
 		float transitionSecound_;
 
 		std::string modelName_;
+
+		static bool isShadowMap_;
 	};
 }
 

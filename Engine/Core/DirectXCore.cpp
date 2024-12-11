@@ -86,7 +86,7 @@ void yunity::DirectXCore::PreDrawRenderTexture()
 void yunity::DirectXCore::PostDrawRenderTexture()
 {
 	commandList_->BarrierChange(RenderTexture::GetInstance()->GetResource(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
-	//RenderTexture::GetInstance()->Machining();
+	RenderTexture::GetInstance()->Machining();
 }
 
 void yunity::DirectXCore::PreDrawSwapchain()

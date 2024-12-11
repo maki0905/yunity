@@ -139,7 +139,7 @@ void yunity::PostEffect::InitializeGraphicsPipeline()
 void yunity::PostEffect::Initalize()
 {
 	depthBuffe_ = std::make_unique<yunity::DepthBuffer>();
-	depthBuffe_->Create();
+	depthBuffe_->Initialize(DXGI_FORMAT_D24_UNORM_S8_UINT);
 	CreateResorce();
 	CreateRTV();
 	CreateSRV();

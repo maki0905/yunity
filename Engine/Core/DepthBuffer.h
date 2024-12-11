@@ -23,9 +23,9 @@ namespace yunity {
 		DepthBuffer();
 
 		/// <summary>
-		/// 生成
+		/// 初期化
 		/// </summary>
-		void Create();
+		void Initialize(DXGI_FORMAT format);
 
 		/// <summary>
 		/// デプスビュークリア
@@ -47,7 +47,7 @@ namespace yunity {
 		/// デプスステンシル生成
 		/// </summary>
 		/// <returns></returns>
-		Microsoft::WRL::ComPtr<ID3D12Resource> CreateDepthStencilTextureResource();
+		Microsoft::WRL::ComPtr<ID3D12Resource> CreateDepthStencilTextureResource(DXGI_FORMAT format);
 
 	private:
 

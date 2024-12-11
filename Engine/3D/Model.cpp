@@ -15,6 +15,7 @@
 #include "ModelManager.h"
 
 ID3D12GraphicsCommandList* yunity::Model::commandList_ = nullptr;
+bool yunity::Model::isShadowMap_ = false;
 
 
 void yunity::Model::PreDraw(ID3D12GraphicsCommandList* commandList)
@@ -26,6 +27,17 @@ void yunity::Model::PreDraw(ID3D12GraphicsCommandList* commandList)
 void yunity::Model::PostDraw()
 {
 	commandList_ = nullptr;
+}
+
+void yunity::Model::PreDrawShadowMap(ID3D12GraphicsCommandList* commandList)
+{
+	PreDraw(commandList);
+	isShadowMap_ = true;
+}
+
+void yunity::Model::PostDrawShadowMap()
+{
+	isShadowMap_ = false;
 }
 
 yunity::Model::~Model()

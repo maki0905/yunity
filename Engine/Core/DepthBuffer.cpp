@@ -14,10 +14,10 @@ yunity::DepthBuffer::DepthBuffer()
 	commandList_ = DirectXCore::GetInstance()->GetCommandList();
 }
 
-void yunity::DepthBuffer::Create()
+void yunity::DepthBuffer::Initialize(DXGI_FORMAT format)
 {
 	// DepthStemcilTextureをウィンドウのサイズで作成
-	depthStencilResource_ = CreateDepthStencilTextureResource();
+	depthStencilResource_ = CreateDepthStencilTextureResource(format);
 
 	// 深度ビュー用デスクリプタヒープ作成。DSV用のヒープでディスクリプタの数は1。
 	//dsvHeap_ = CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_DSV, 1, false);
@@ -26,7 +26,7 @@ void yunity::DepthBuffer::Create()
 
 	// 深度ビュー作成
 	D3D12_DEPTH_STENCIL_VIEW_DESC dsvDesc{};
-	dsvDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT; // Format。基本的にはResourceに合わせる
+	dsvDesc.Format = format/*DXGI_FORMAT_D24_UNORM_S8_UINT*/; // Format。基本的にはResourceに合わせる
 	dsvDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D; // 2dTexture
 	// DSVHeapの先頭にDSVをつくる
 	Device::GetInstance()->GetDevice()->CreateDepthStencilView(depthStencilResource_.Get(), &dsvDesc, /*dsvHeap_->GetHeapPointer()->GetCPUDescriptorHandleForHeapStart()*/dsvHeap_->Alloc().GetCPUHandle());
@@ -42,7 +42,7 @@ void yunity::DepthBuffer::ClearDepthView()
 }
 
 
-Microsoft::WRL::ComPtr<ID3D12Resource> yunity::DepthBuffer::CreateDepthStencilTextureResource()
+Microsoft::WRL::ComPtr<ID3D12Resource> yunity::DepthBuffer::CreateDepthStencilTextureResource(DXGI_FORMAT format)
 {
 	HRESULT hr = S_FALSE;
 	Microsoft::WRL::ComPtr<ID3D12Resource> result = nullptr;
@@ -63,7 +63,7 @@ Microsoft::WRL::ComPtr<ID3D12Resource> yunity::DepthBuffer::CreateDepthStencilTe
 
 	D3D12_CLEAR_VALUE depthClearValue;
 	depthClearValue.DepthStencil.Depth = 1.0f; // 1.0f(最大値)でクリア
-	depthClearValue.Format = DXGI_FORMAT_D24_UNORM_S8_UINT; // フォーマット。Resourceと合わせる
+	depthClearValue.Format = format; // フォーマット。Resourceと合わせる
 
 	hr = Device::GetInstance()->GetDevice()->CreateCommittedResource(
 		&heapProps, // Heapの設定

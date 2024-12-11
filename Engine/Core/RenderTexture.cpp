@@ -105,7 +105,7 @@ yunity::RenderTexture* yunity::RenderTexture::GetInstance()
 void yunity::RenderTexture::Initalize()
 {
 	depthBuffe_ = std::make_unique<DepthBuffer>();
-	depthBuffe_->Create();
+	depthBuffe_->Initialize(DXGI_FORMAT_D24_UNORM_S8_UINT);
 	postEffect_ = std::make_unique<PostEffect>();
 	postEffect_->InitializeGraphicsPipeline();
 	postEffect_->Initalize();
