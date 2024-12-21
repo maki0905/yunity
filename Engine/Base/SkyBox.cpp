@@ -27,11 +27,11 @@ void yunity::SkyBox::PostDraw()
 
 yunity::SkyBox* yunity::SkyBox::Create()
 {
-	SkyBox* skyBox = new SkyBox();
+	std::unique_ptr<SkyBox> skyBox = std::make_unique<SkyBox>();
 	skyBox->CreateBox();
 	skyBox->CreateMesh();
 
-	return skyBox;
+	return skyBox.release();
 }
 
 void yunity::SkyBox::Draw(const WorldTransform& worldTransform)

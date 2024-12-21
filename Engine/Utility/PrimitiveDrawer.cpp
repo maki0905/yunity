@@ -26,7 +26,7 @@ void yunity::PrimitiveDrawer::PostDraw()
 
 yunity::PrimitiveDrawer* yunity::PrimitiveDrawer::Create(Type type)
 {
-	PrimitiveDrawer* primitiveDrawer = new PrimitiveDrawer();
+	std::unique_ptr<PrimitiveDrawer> primitiveDrawer = std::make_unique<PrimitiveDrawer>();
 	switch (type)
 	{
 	case PrimitiveDrawer::Type::kBox:
@@ -40,7 +40,7 @@ yunity::PrimitiveDrawer* yunity::PrimitiveDrawer::Create(Type type)
 		break;
 	}
 	primitiveDrawer->CreateMesh();
-	return primitiveDrawer;
+	return primitiveDrawer.release();
 }
 
 
