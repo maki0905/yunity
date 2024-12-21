@@ -3,6 +3,7 @@
 #include <string>
 
 #include "IScene.h"
+#include <memory>
 
 namespace yunity {
 	/// <summary>
@@ -19,7 +20,7 @@ namespace yunity {
 		/// </summary>
 		/// <param name="sceneName"></param>
 		/// <returns></returns>
-		virtual IScene* CreateScene(const std::string& sceneName) = 0;
+		virtual std::unique_ptr<IScene> CreateScene(const std::string& sceneName) = 0;
 
 	};
 }

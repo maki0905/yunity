@@ -128,10 +128,12 @@ namespace yunity {
 		void InitializeMaterial();
 
 	private:
-		static ID3D12Device* device_;
+		// コマンドリスト
 		static ID3D12GraphicsCommandList* commandList_;
-		static RootSignature* rootSignature_;
-		static PipelineState* pipelineState_;
+		//// ルートシグネチャー
+		static std::unique_ptr<RootSignature> rootSignature_;
+		//// パイプラインステートオブジェクト
+		static std::unique_ptr<PipelineState> pipelineState_;
 
 	private:
 

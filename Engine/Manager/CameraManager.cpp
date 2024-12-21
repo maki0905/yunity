@@ -2,22 +2,15 @@
 
 CameraManager* CameraManager::GetInstance()
 {
-    static CameraManager instance;
-    return &instance;
+	static CameraManager instance;
+	return &instance;
 }
 
 void CameraManager::Initialize()
 {
 	camera_ = std::make_unique<yunity::Camera>();
-	debugCamera_ = new yunity::DebugCamera();
+	debugCamera_ = std::make_unique<yunity::DebugCamera>();
 	isDebug_ = false;
-}
-
-void CameraManager::Finalize()
-{
-	if (debugCamera_) {
-		delete debugCamera_;
-	}
 }
 
 void CameraManager::Update()

@@ -20,9 +20,7 @@ void yunity::DepthBuffer::Initialize(DXGI_FORMAT format)
 	depthStencilResource_ = CreateDepthStencilTextureResource(format);
 
 	// 深度ビュー用デスクリプタヒープ作成。DSV用のヒープでディスクリプタの数は1。
-	//dsvHeap_ = CreateDescriptorHeap(D3D12_DESCRIPTOR_HEAP_TYPE_DSV, 1, false);
 	dsvHeap_ = DirectXCore::GetInstance()->GetDescriptorHeap(DirectXCore::HeapType::kDSV);
-	//dsvHeap_->Alloc();
 
 	// 深度ビュー作成
 	D3D12_DEPTH_STENCIL_VIEW_DESC dsvDesc{};

@@ -10,7 +10,7 @@ namespace yunity {
 		/// </summary>
 		/// <param name="sceneName">シーン名</param>
 		/// <returns>生成したシーン</returns>
-		IScene* CreateScene(const std::string& sceneName) override;
+		std::unique_ptr<IScene> CreateScene(const std::string& sceneName) override;
 
 	};
 }

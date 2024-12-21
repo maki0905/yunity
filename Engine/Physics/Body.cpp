@@ -190,33 +190,32 @@ namespace {
 		return Multiply(minPentrationDepth, minPenetrationAxis);
 	}
 
-	yunity::Body::PersistentManifold* GetNewManifold(yunity::Body* bodyA, yunity::Body* bodyB) {
-		yunity::Body::PersistentManifold* persistentManifold = new yunity::Body::PersistentManifold();
-
+	yunity::Body::PersistentManifold GetNewManifold(yunity::Body* bodyA, yunity::Body* bodyB) {
+		yunity::Body::PersistentManifold persistentManifold;
 		// ボディー
 		/*persistentManifold->bodyA = bodyA;
 		persistentManifold->bodyB = bodyB;*/
-		persistentManifold->massA = bodyA->GetMass();
-		persistentManifold->massB = bodyB->GetMass();
-		persistentManifold->velocityA = bodyA->GetVelocity();
-		persistentManifold->velocityB = bodyB->GetVelocity();
-		persistentManifold->angularVelocityA = bodyA->GetAngularVelocity();
-		persistentManifold->angularVelocityB = bodyB->GetAngularVelocity();
-		persistentManifold->inversInertiaTensorA = bodyA->GetInertiaTensor();
-		persistentManifold->inversInertiaTensorB = bodyB->GetInertiaTensor();
+		persistentManifold.massA = bodyA->GetMass();
+		persistentManifold.massB = bodyB->GetMass();
+		persistentManifold.velocityA = bodyA->GetVelocity();
+		persistentManifold.velocityB = bodyB->GetVelocity();
+		persistentManifold.angularVelocityA = bodyA->GetAngularVelocity();
+		persistentManifold.angularVelocityB = bodyB->GetAngularVelocity();
+		persistentManifold.inversInertiaTensorA = bodyA->GetInertiaTensor();
+		persistentManifold.inversInertiaTensorB = bodyB->GetInertiaTensor();
 
 		// 接触点での法線ベクトル
 		Matrix4x4 rotateA = MakeRotateXYZMatrix(bodyA->GetWorldTransform()->rotation_);
 		Vector3 orientationsA[3] = { {rotateA.m[0][0], rotateA.m[0][1], rotateA.m[0][2]}, {rotateA.m[1][0], rotateA.m[1][1], rotateA.m[1][2]}, {rotateA.m[2][0], rotateA.m[2][1], rotateA.m[2][2]} };
 		Matrix4x4 rotateB = MakeRotateXYZMatrix(bodyB->GetWorldTransform()->rotation_);
 		Vector3 orientationsB[3] = { {rotateB.m[0][0], rotateB.m[0][1], rotateB.m[0][2]}, {rotateB.m[1][0], rotateB.m[1][1], rotateB.m[1][2]}, {rotateB.m[2][0], rotateB.m[2][1], rotateB.m[2][2]} };
-		persistentManifold->contactNormal = GetPushback(OBB{ bodyA->GetMatWorldTranslation(), orientationsA[0], orientationsA[1], orientationsA[2], bodyA->GetHitBoxSize() }, OBB{ bodyB->GetMatWorldTranslation(), orientationsB[0], orientationsB[1], orientationsB[2], bodyB->GetHitBoxSize() }).Normalize();
+		persistentManifold.contactNormal = GetPushback(OBB{ bodyA->GetMatWorldTranslation(), orientationsA[0], orientationsA[1], orientationsA[2], bodyA->GetHitBoxSize() }, OBB{ bodyB->GetMatWorldTranslation(), orientationsB[0], orientationsB[1], orientationsB[2], bodyB->GetHitBoxSize() }).Normalize();
 
 		// 接触点
-		persistentManifold->contactPoint = GetContactPoint(OBB{ bodyA->GetMatWorldTranslation(), orientationsA[0], orientationsA[1], orientationsA[2], bodyA->GetHitBoxSize() }, OBB{ bodyB->GetMatWorldTranslation(), orientationsB[0], orientationsB[1], orientationsB[2], bodyB->GetHitBoxSize() });
+		persistentManifold.contactPoint = GetContactPoint(OBB{ bodyA->GetMatWorldTranslation(), orientationsA[0], orientationsA[1], orientationsA[2], bodyA->GetHitBoxSize() }, OBB{ bodyB->GetMatWorldTranslation(), orientationsB[0], orientationsB[1], orientationsB[2], bodyB->GetHitBoxSize() });
 
 		// 位置ベクトル X 法線ベクトル
-		persistentManifold->crossNormal = Cross(Subtract(persistentManifold->contactPoint, bodyA->GetMatWorldTranslation()), persistentManifold->contactNormal);
+		persistentManifold.crossNormal = Cross(Subtract(persistentManifold.contactPoint, bodyA->GetMatWorldTranslation()), persistentManifold.contactNormal);
 
 		return persistentManifold;
 	}
@@ -368,31 +367,31 @@ void yunity::Body::SolveConstraints(/*float time*/)
 
 	for (auto& c : persistentManifold_) {
 		// 反発
-		Vector3 relativeVelocity = Subtract(c->velocityA, c->velocityB);
-		float velocityAlongNormal = Dot(relativeVelocity, c->contactNormal);
+		Vector3 relativeVelocity = Subtract(c.velocityA, c.velocityB);
+		float velocityAlongNormal = Dot(relativeVelocity, c.contactNormal);
 		float impulseMagnitude = 0.0f;
-		if (c->restitution == 0.0f) {
-			if (c->massB != 0.0f) {
-				impulseMagnitude = -velocityAlongNormal / (1.0f / c->massA + 1.0f / c->massB);
+		if (c.restitution == 0.0f) {
+			if (c.massB != 0.0f) {
+				impulseMagnitude = -velocityAlongNormal / (1.0f / c.massA + 1.0f / c.massB);
 			}
 			else {
-				impulseMagnitude = -velocityAlongNormal / (1.0f / (c->massA));
+				impulseMagnitude = -velocityAlongNormal / (1.0f / (c.massA));
 			}
 		}
 		else {
-			if (c->massB != 0.0f) {
-				impulseMagnitude = -(1.0f + c->restitution) * velocityAlongNormal / (1.0f / c->massA + 1.0f / c->massB);
+			if (c.massB != 0.0f) {
+				impulseMagnitude = -(1.0f + c.restitution) * velocityAlongNormal / (1.0f / c.massA + 1.0f / c.massB);
 			}
 			else {
-				impulseMagnitude = -(1.0f + c->restitution) * velocityAlongNormal / (1.0f / (c->massA));
+				impulseMagnitude = -(1.0f + c.restitution) * velocityAlongNormal / (1.0f / (c.massA));
 			}
 		}
 
-		Vector3 impulse = Multiply(impulseMagnitude, c->contactNormal);
+		Vector3 impulse = Multiply(impulseMagnitude, c.contactNormal);
 		AddForce(impulse, ForceMode::kImpulse);
 
 		// 摩擦
-		Vector3 tangentVelocity = Subtract(relativeVelocity, Multiply(velocityAlongNormal, c->contactNormal));
+		Vector3 tangentVelocity = Subtract(relativeVelocity, Multiply(velocityAlongNormal, c.contactNormal));
 		Vector3 frictionForce = Multiply(-magnitude_ /** impulseMagnitude*/, tangentVelocity);
 		float maxStaticFriction = magnitude_ * impulseMagnitude;
 		if (Length(frictionForce) > maxStaticFriction) {
@@ -544,8 +543,8 @@ void yunity::Body::OnCollision(Body* body)
 			pushback = Multiply(0.5f, pushback);
 		}
 		pushback_ = Add(pushback_, pushback);
-		PersistentManifold* persistentManifold = GetNewManifold(this, body);
-		persistentManifold->penetrationDepth = penetrationDepth;
+		PersistentManifold persistentManifold = GetNewManifold(this, body);
+		persistentManifold.penetrationDepth = penetrationDepth;
 
 		float miu = 0.0f;
 		switch (frictionCombine_)
@@ -569,7 +568,7 @@ void yunity::Body::OnCollision(Body* body)
 			magnitude_ = miu * Length(Multiply(-mass_, world_->GetGravity()));
 			break;
 		}
-		persistentManifold->friction = magnitude_;
+		persistentManifold.friction = magnitude_;
 
 		float e = 0.0f;
 		switch (bounceCombine_)
@@ -594,7 +593,7 @@ void yunity::Body::OnCollision(Body* body)
 			restitution_ = e;
 		}
 
-		persistentManifold->restitution = e;
+		persistentManifold.restitution = e;
 		persistentManifold_.emplace_back(persistentManifold);
 
 		normalVector_ = pushback;

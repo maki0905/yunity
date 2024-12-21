@@ -17,7 +17,8 @@ yunity::RootSignature::RootSignature(ID3D12Device* device, UINT numRootParameter
 void yunity::RootSignature::Reset(UINT numRootParameters, UINT numStaticSamplers)
 {
 	if (numRootParameters > 0) {
-		parameterArray_.reset(new RootParameter[numRootParameters]);
+		std::unique_ptr<RootParameter[]> rootParameter = std::make_unique<RootParameter[]>(numRootParameters);
+		parameterArray_.reset(rootParameter.release());
 	}
 	else {
 		parameterArray_ = nullptr;
@@ -25,7 +26,8 @@ void yunity::RootSignature::Reset(UINT numRootParameters, UINT numStaticSamplers
 	numParameters_ = numRootParameters;
 
 	if (numStaticSamplers > 0) {
-		samplerArray_.reset(new D3D12_STATIC_SAMPLER_DESC[numStaticSamplers]);
+		std::unique_ptr<D3D12_STATIC_SAMPLER_DESC[]> samplerDesc = std::make_unique<D3D12_STATIC_SAMPLER_DESC[]>(numStaticSamplers);
+		samplerArray_.reset(samplerDesc.release());
 	}
 	else {
 		samplerArray_ = nullptr;

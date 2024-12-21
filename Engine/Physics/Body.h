@@ -227,7 +227,7 @@ namespace yunity {
 		Vector3 pushback_;
 		// 垂直抗力
 		Vector3 vertical_;
-		std::vector<PersistentManifold*> persistentManifold_;
+		std::vector<PersistentManifold> persistentManifold_;
 		float restitution_;
 		bool isTrigger_;
 

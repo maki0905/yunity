@@ -46,7 +46,7 @@ void yunity::ModelManager::Take(Model* model)
 
 yunity::Model* yunity::ModelManager::CreateModel(const Format& format, const std::string& folderName, const std::string& fileName, ModelType modelType)
 {
-	Model* model = new Model();
+	std::unique_ptr<Model> model = std::make_unique<Model>();
 	std::string path = folderName;
 	if (fileName.size() != 0) {
 		path = path + "/" + fileName;
@@ -56,8 +56,9 @@ yunity::Model* yunity::ModelManager::CreateModel(const Format& format, const std
 		modelDataStorage_[path] = LoadModelFile(format, folderName, fileName);
 	}
 	model->Initialize(path, modelType, modelDataStorage_[path]);
-	models_.emplace_back(model);
-	return models_.back();
+	models_.emplace_back(model.get());
+	//return models_.back();
+	return model.release();
 }
 
 yunity::Model::ModelData& yunity::ModelManager::GetModelData(const Format& format, const std::string& folderName, const std::string& fileName)

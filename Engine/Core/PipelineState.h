@@ -126,7 +126,7 @@ namespace yunity {
         ID3D12PipelineState* GetPipelineStateObject() { return graphicsPipelineState_.Get(); }
 
     protected:
-        Microsoft::WRL::ComPtr<ID3D12Device> device_ = nullptr;
+        ID3D12Device* device_ = nullptr;
         RootSignature* rootSignature_ = nullptr;
 
         Microsoft::WRL::ComPtr<ID3D12PipelineState> graphicsPipelineState_;

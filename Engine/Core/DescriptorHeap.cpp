@@ -24,7 +24,8 @@ void yunity::DescriptorHeap::Create(D3D12_DESCRIPTOR_HEAP_TYPE heapType, uint32_
 	freeDescriptors_ = heapDesc_.NumDescriptors;
 
 	if (shaderVisible) {
-		//firstHandle_ = new DescriptorHandle(heap_->GetCPUDescriptorHandleForHeapStart(), heap_->GetGPUDescriptorHandleForHeapStart());
+		//firstHandle_ = 
+		// DescriptorHandle(heap_->GetCPUDescriptorHandleForHeapStart(), heap_->GetGPUDescriptorHandleForHeapStart());
 		firstHandle_ = std::make_unique< DescriptorHandle>(heap_->GetCPUDescriptorHandleForHeapStart(), heap_->GetGPUDescriptorHandleForHeapStart());
 	}
 	else {

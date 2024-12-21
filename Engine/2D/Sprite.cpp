@@ -14,7 +14,7 @@
 /// 静的メンバ変数の実体
 /// </summary>
 UINT yunity::Sprite::descriptorHandleIncrementSize_;
-Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> yunity::Sprite::commandList_ = nullptr;
+ID3D12GraphicsCommandList* yunity::Sprite::commandList_ = nullptr;
 std::unique_ptr<yunity::RootSignature> yunity::Sprite::rootSignature_;
 std::unique_ptr<yunity::PipelineState> yunity::Sprite::pipelineState_;
 Matrix4x4  yunity::Sprite::matProjection_;
@@ -373,7 +373,7 @@ void  yunity::Sprite::Draw()
 	// 定数バッファビューをセット
 	commandList_->SetGraphicsRootConstantBufferView(0, constBuff_->GetGPUVirtualAddress());
 	// シェーダリソースビューをセット
-	TextureManager::GetInstance()->SetGraphicsRootDescriptorTable(commandList_.Get(), 1, textureHandle_);
+	TextureManager::GetInstance()->SetGraphicsRootDescriptorTable(commandList_, 1, textureHandle_);
 	// 描画コマンド
 	commandList_->DrawInstanced(4, 1, 0, 0);
 

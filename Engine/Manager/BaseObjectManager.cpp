@@ -185,14 +185,16 @@ void yunity::BaseObjectManager::LoadJoint(const JointData& jointData)
 	for (auto& joint : jointData.springJoints) {
 		jointData_[joint.id].objA = nullptr;
 		jointData_[joint.id].objB = nullptr;
-		jointData_[joint.id].jointData = joint;
+		jointData_[joint.id].jointData.id = joint.id;
+		jointData_[joint.id].jointData.type = joint.type;
 		jointData_[joint.id].springJointData = joint;
 	}
 	// PulleyJoint
 	for (auto& joint : jointData.pulleyJoints) {
 		jointData_[joint.id].objA = nullptr;
 		jointData_[joint.id].objB = nullptr;
-		jointData_[joint.id].jointData = joint;
+		jointData_[joint.id].jointData.id = joint.id;
+		jointData_[joint.id].jointData.type = joint.type;
 		jointData_[joint.id].pulleyJointData = joint;
 	}
 }
@@ -235,7 +237,7 @@ void yunity::BaseObjectManager::CreateJoint()
 
 void yunity::BaseObjectManager::InitializeSpringJoint(const JointObject& joint)
 {
-	yunity::SpringJoint* springJoint = new yunity::SpringJoint();
+	std::unique_ptr<SpringJoint> springJoint = std::make_unique<SpringJoint>();
 	springJoint->CreateSpringJoint(joint.objA, joint.objB);
 	for (uint32_t i = 0; i < 3; i++) {
 		springJoint->EnableSpring(i, joint.springJointData.springEnabled[i]);
@@ -243,20 +245,20 @@ void yunity::BaseObjectManager::InitializeSpringJoint(const JointObject& joint)
 		springJoint->SetStiffness(i, joint.springJointData.stiffness[i]);
 		springJoint->SetDamping(i, joint.springJointData.dampingCoefficient[i]);
 	}
-	joints_.emplace_back(springJoint);
-	world_->AddJoint(springJoint);
+	joints_.emplace_back(std::move(springJoint));
+	world_->AddJoint(joints_.back().get());
 }
 
 void yunity::BaseObjectManager::InitializePulleyJoint(const JointObject& joint)
 {
-	yunity::PulleyJoint* pulleyJoint = new yunity::PulleyJoint();
+	std::unique_ptr<PulleyJoint> pulleyJoint = std::make_unique<PulleyJoint>();
 	pulleyJoint->CreatePulleyJoint(
 		joint.objA, joint.objB,
 		joint.pulleyJointData.groundAnchorA, joint.pulleyJointData.groundAnchorB,
 		joint.pulleyJointData.anchorA, joint.pulleyJointData.anchorB,
 		joint.pulleyJointData.ratio);
-	joints_.emplace_back(pulleyJoint);
-	world_->AddJoint(pulleyJoint);
+	joints_.emplace_back(std::move(pulleyJoint));
+	world_->AddJoint(joints_.back().get());
 }
 
 

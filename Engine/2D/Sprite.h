@@ -68,7 +68,7 @@ namespace yunity {
 		// ディスクリプタサイズ
 		static UINT descriptorHandleIncrementSize_;
 		// コマンドリスト
-		static Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> commandList_;
+		static ID3D12GraphicsCommandList* commandList_;
 		//// ルートシグネチャー
 		static std::unique_ptr<RootSignature> rootSignature_;
 		//// パイプラインステートオブジェクト

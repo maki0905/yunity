@@ -21,11 +21,6 @@ public:
 	/// 初期化
 	/// </summary>
 	void Initialize();
-	
-	/// <summary>
-	/// ファイナライザ
-	/// </summary>
-	void Finalize();
 
 	/// <summary>
 	/// 更新
@@ -35,7 +30,7 @@ public:
 	yunity::Camera* GetCamera() { return camera_.get(); }
 private:
 	std::unique_ptr<yunity::Camera> camera_;
-	yunity::DebugCamera* debugCamera_;
+	std::unique_ptr<yunity::DebugCamera> debugCamera_;
 	bool isDebug_;
 
 };

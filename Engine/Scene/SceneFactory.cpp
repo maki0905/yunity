@@ -7,23 +7,20 @@
 #include "ClearScene.h"
 #pragma endregion 
 
-yunity::IScene* yunity::SceneFactory::CreateScene(const std::string& sceneName)
+std::unique_ptr<yunity::IScene> yunity::SceneFactory::CreateScene(const std::string& sceneName)
 {
-    // 次のシーンを生成
-    yunity::IScene* newScene = nullptr;
-
     if (sceneName == "TITLE") {
-        newScene = new TitleScene();
+        return std::make_unique<TitleScene>();
     }
     else if (sceneName == "SELECT") {
-        newScene = new SelectScene();
+        return std::make_unique<SelectScene>();
     }
     else if (sceneName == "GAMESTAGE") {
-        newScene = new StageScene();
+        return std::make_unique<StageScene>();
     }
     else if (sceneName == "CLEAR") {
-        newScene = new ClearScene();
+        return std::make_unique<ClearScene>();
     }
 
-    return newScene;
+    return nullptr;
 }

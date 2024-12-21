@@ -69,10 +69,7 @@ void yunity::DirectXCore::Initialize()
 	GraphicsPipelineManager::GetInstance()->Initialize();
 }
 
-void yunity::DirectXCore::Finalize()
-{
-	RenderTexture::GetInstance()->Finalize();
-}
+
 
 void yunity::DirectXCore::PreDrawRenderTexture()
 {

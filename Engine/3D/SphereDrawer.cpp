@@ -10,15 +10,11 @@
 #include "Common.h"
 #include "TextureManager.h"
 
-ID3D12Device* yunity::SphereDrawer::device_ = nullptr;
 ID3D12GraphicsCommandList* yunity::SphereDrawer::commandList_ = nullptr;
-yunity::RootSignature* yunity::SphereDrawer::rootSignature_ = nullptr;
-yunity::PipelineState* yunity::SphereDrawer::pipelineState_ = nullptr;
-
+std::unique_ptr<yunity::RootSignature> yunity::SphereDrawer::rootSignature_;
+std::unique_ptr<yunity::PipelineState> yunity::SphereDrawer::pipelineState_;
 void yunity::SphereDrawer::StaticInitialize()
 {
-	device_ = Device::GetInstance()->GetDevice();
-
 	InitializeGraphicsPipeline();
 }
 
@@ -39,15 +35,16 @@ void yunity::SphereDrawer::PostDraw()
 
 yunity::SphereDrawer* yunity::SphereDrawer::Create(const std::string& textureName)
 {
-	SphereDrawer* sphereDrawer = new SphereDrawer();
+	std::unique_ptr<SphereDrawer> sphereDrawer = std::make_unique<SphereDrawer>();
 	sphereDrawer->Initialize();
 	sphereDrawer->SetTextureHandle(textureName);
-	return sphereDrawer;
+	return sphereDrawer.release();
 }
 
 void yunity::SphereDrawer::InitializeGraphicsPipeline()
 {
-	rootSignature_ = new RootSignature(device_, static_cast<int>(RootBindings::kCount), 1);
+
+	rootSignature_ = std::make_unique<RootSignature>(Device::GetInstance()->GetDevice(), static_cast<int>(RootBindings::kCount), 1);
 
 	D3D12_STATIC_SAMPLER_DESC staticSamplers = {};
 	staticSamplers.Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;
@@ -70,7 +67,7 @@ void yunity::SphereDrawer::InitializeGraphicsPipeline()
 
 	rootSignature_->Finalize(D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
 
-	pipelineState_ = new yunity::PipelineState(device_, rootSignature_);
+	pipelineState_ = std::make_unique<PipelineState>(Device::GetInstance()->GetDevice(), rootSignature_.get());
 
 	// InputLayout
 	D3D12_INPUT_ELEMENT_DESC inputElementDescs[] = {
@@ -132,7 +129,6 @@ void yunity::SphereDrawer::Initialize()
 
 void yunity::SphereDrawer::Draw(const WorldTransform& worldTransform)
 {
-	assert(device_);
 	assert(commandList_);
 	assert(worldTransform.constBuff_.Get());
 
@@ -159,7 +155,7 @@ void yunity::SphereDrawer::Draw(const WorldTransform& worldTransform)
 	commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(RootBindings::kCamera), camera_->GetCameraForGPU()->GetGPUVirtualAddress());
 
 	TextureManager::GetInstance()->SetGraphicsRootDescriptorTable(commandList_, static_cast<UINT>(RootBindings::kTexture), textureHandle_);
-	
+
 	commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(RootBindings::kPointLight), pointLightResource_->GetGPUVirtualAddress());
 
 	commandList_->DrawIndexedInstanced(kSubdivision * kSubdivision * 6, 1, 0, 0, 0);
@@ -183,10 +179,10 @@ void yunity::SphereDrawer::CreateMesh()
 {
 
 	// 頂点リソース
-	vertexResource_ = CreateBufferResource(sizeof(VertexData)* kSubdivision * kSubdivision * 4);
+	vertexResource_ = CreateBufferResource(sizeof(VertexData) * kSubdivision * kSubdivision * 4);
 	// 頂点バッファビュー
 	vertexBufferView_.BufferLocation = vertexResource_->GetGPUVirtualAddress(); // リソースの先頭のアドレスから使う
-	vertexBufferView_.SizeInBytes = UINT(sizeof(VertexData)  * kSubdivision * kSubdivision * 4); // 使用するリソースのサイズは頂点サイズ
+	vertexBufferView_.SizeInBytes = UINT(sizeof(VertexData) * kSubdivision * kSubdivision * 4); // 使用するリソースのサイズは頂点サイズ
 	vertexBufferView_.StrideInBytes = sizeof(VertexData); // 1頂点当たりのサイズ
 
 	// 頂点リソースにデータを書き込む

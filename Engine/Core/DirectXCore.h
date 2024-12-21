@@ -49,11 +49,6 @@ namespace yunity {
 		void Initialize();
 
 		/// <summary>
-		/// ファイナライザ
-		/// </summary>
-		void Finalize();
-
-		/// <summary>
 		/// レンダーテクスチャ事前処理
 		/// </summary>
 		void PreDrawRenderTexture();
