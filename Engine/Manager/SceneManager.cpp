@@ -12,7 +12,7 @@ yunity::SceneManager* yunity::SceneManager::GetInstance()
 
 void yunity::SceneManager::Initialize()
 {
-	sceneFactory_ = new SceneFactory();
+	sceneFactory_ = std::make_unique<SceneFactory>();
 }
 
 void yunity::SceneManager::Update()

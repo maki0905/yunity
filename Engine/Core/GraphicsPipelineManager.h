@@ -4,6 +4,7 @@
 #include <unordered_map>
 #include <wrl.h>
 #include <memory>
+#include <array>
 
 #include "PipelineState.h"
 #include "RootSignature.h"
@@ -19,6 +20,7 @@ namespace yunity {
 		kSkinning,
 		kShadowMap,
 		kObject3dShadowMap,
+		kSkyBox,
 		kCount,
 	};
 
@@ -92,6 +94,11 @@ namespace yunity {
 		/// </summary>
 		void CreateObject3dShadowMap();
 
+		/// <summary>
+		/// スカイボックス用のパイプライン生成
+		/// </summary>
+		void CreateSkyBox();
+
 	private:
 		GraphicsPipelineManager() = default;
 		~GraphicsPipelineManager() = default;
@@ -99,7 +106,7 @@ namespace yunity {
 		GraphicsPipelineManager& operator=(const GraphicsPipelineManager&) = delete;
 	private:
 		GraphicsCommon* graphicsCommon_;
-		std::unique_ptr<GraphicsPipeline> graphicsPipelines_[PipelineType::kCount];
+		std::array<std::unique_ptr<GraphicsPipeline>, PipelineType::kCount> graphicsPipelines_;
 
 	};
 }

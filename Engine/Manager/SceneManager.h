@@ -55,7 +55,7 @@ namespace yunity {
 		const SceneManager& operator=(const SceneManager&) = delete;
 	private:
 		// シーンファクトリー
-		SceneFactory* sceneFactory_ = nullptr;
+		std::unique_ptr<SceneFactory> sceneFactory_ = nullptr;
 		// 今のシーン
 		std::unique_ptr<IScene> scene_ = nullptr;
 		//次のシーン

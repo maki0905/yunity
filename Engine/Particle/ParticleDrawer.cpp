@@ -27,9 +27,9 @@ void yunity::ParticleDrawer::PostDraw()
 
 yunity::ParticleDrawer* yunity::ParticleDrawer::Create(const std::string& modelname)
 {
-	ParticleDrawer* particleDrawer = new ParticleDrawer();
+	std::unique_ptr<ParticleDrawer> particleDrawer = std::make_unique<ParticleDrawer>();
 	particleDrawer->Initialize(modelname);
-	return particleDrawer;
+	return particleDrawer.release();
 }
 
 

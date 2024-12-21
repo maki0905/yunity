@@ -30,7 +30,6 @@ void yunity::Framework::Initialize()
 
 	// 基本形状
 	primitive_ = std::make_unique<PrimitiveDrawer>();
-	primitive_->StaticInitialize();
 
 	// テクスチャマネージャー
 	TextureManager::GetInstance()->Initialize();
@@ -47,7 +46,6 @@ void yunity::Framework::Initialize()
 
 	// Skybox
 	skybox_ = std::make_unique<SkyBox>();
-	skybox_->StaticInitialize();
 
 	// パーティクル
 	particleDrawer_ = std::make_unique<ParticleDrawer>();
@@ -58,8 +56,6 @@ void yunity::Framework::Initialize()
 
 void yunity::Framework::Finalize()
 {
-	skybox_->Finalize();
-	primitive_->Finalize();
 	ImGuiManager::GetInstance()->Finalize();
 	WindowsAPI::GetInstance()->TerminateGameWindow();
 }

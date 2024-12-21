@@ -10,13 +10,7 @@
 #include <GraphicsPipelineManager.h>
 
 ID3D12GraphicsCommandList* yunity::PrimitiveDrawer::commandList_ = nullptr;
-yunity::RootSignature* yunity::PrimitiveDrawer::rootSignature_ = nullptr;
-yunity::PipelineState* yunity::PrimitiveDrawer::pipelineState_ = nullptr;
 
-void yunity::PrimitiveDrawer::StaticInitialize()
-{
-	InitializeGraphicsPipeline();
-}
 
 void yunity::PrimitiveDrawer::PreDraw(ID3D12GraphicsCommandList* commandList)
 {
@@ -49,95 +43,13 @@ yunity::PrimitiveDrawer* yunity::PrimitiveDrawer::Create(Type type)
 	return primitiveDrawer;
 }
 
-void yunity::PrimitiveDrawer::InitializeGraphicsPipeline()
-{
-	rootSignature_ = new RootSignature(Device::GetInstance()->GetDevice(), static_cast<int>(RootBindings::kCount), 1);
-
-	D3D12_STATIC_SAMPLER_DESC staticSamplers = {};
-	staticSamplers.Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;
-	staticSamplers.AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP; //0~1の範囲外をリピート
-	staticSamplers.AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
-	staticSamplers.AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
-	staticSamplers.ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER; //比較しない
-	staticSamplers.MaxLOD = D3D12_FLOAT32_MAX;
-	staticSamplers.ShaderRegister = 0; //レジスタ番号0を使う
-	staticSamplers.ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL; //PixelShaderを使う
-	rootSignature_->InitializeStaticSampler(0, staticSamplers, D3D12_SHADER_VISIBILITY_PIXEL);
-
-	rootSignature_->GetParameter(static_cast<size_t>(RootBindings::kWorldTransform)).InitializeAsConstantBuffer(0);
-	rootSignature_->GetParameter(static_cast<size_t>(RootBindings::kViewProjection)).InitializeAsConstantBuffer(1);
-
-
-	rootSignature_->Finalize(D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
-
-	pipelineState_ = new PipelineState(Device::GetInstance()->GetDevice(), rootSignature_);
-
-	// InputLayout
-	D3D12_INPUT_ELEMENT_DESC inputElementDescs[] = {
-		{.SemanticName = "POSITION", .SemanticIndex = 0, .Format = DXGI_FORMAT_R32G32B32A32_FLOAT, .AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT},
-		{.SemanticName = "COLOR", .SemanticIndex = 0, .Format = DXGI_FORMAT_R32G32B32A32_FLOAT, .AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT}
-	};
-
-	D3D12_INPUT_LAYOUT_DESC inputLayoutDesc{};
-	inputLayoutDesc.pInputElementDescs = inputElementDescs;
-	inputLayoutDesc.NumElements = _countof(inputElementDescs);
-
-	// BlendState
-	D3D12_BLEND_DESC blendDesc{};
-	// すべての色要素を書き込む
-	blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
-
-	//RasiterzerStateの設定
-	D3D12_RASTERIZER_DESC rasterizerDesc{};
-	//裏面(時計回り)を表示しない
-	rasterizerDesc.CullMode = D3D12_CULL_MODE_NONE;
-	//三角形の中を塗りつぶす
-	rasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
-
-	// DepthStencilStateの設定
-	D3D12_DEPTH_STENCIL_DESC depthStencilDesc{};
-	// Depthの機能を有効化する
-	depthStencilDesc.DepthEnable = false;
-	// 書き込みします
-	depthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
-	// 比較関数はLessEqual。つまり、近ければ描画される
-	depthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
-
-	pipelineState_->SetInputLayout(inputLayoutDesc);
-	pipelineState_->SetShader(PipelineState::ShaderType::kVS, ShaderCompiler::GetInstance()->Get("Primitive", ShaderCompiler::ShaderType::kVS));
-	pipelineState_->SetShader(PipelineState::ShaderType::kPS, ShaderCompiler::GetInstance()->Get("Primitive", ShaderCompiler::ShaderType::kPS));
-	pipelineState_->SetBlendState(blendDesc);
-	pipelineState_->SetRasterizerState(rasterizerDesc);
-	pipelineState_->SetDepthStencilState(depthStencilDesc);
-	pipelineState_->SetRenderTargetFormat(DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, DXGI_FORMAT_D24_UNORM_S8_UINT);
-	pipelineState_->SetPrimitiveTopologyType(D3D12_PRIMITIVE_TOPOLOGY_TYPE_LINE);
-	pipelineState_->SetSampleMask(D3D12_DEFAULT_SAMPLE_MASK);
-	pipelineState_->Finalize();
-
-
-
-}
-
-void yunity::PrimitiveDrawer::Finalize()
-{
-	if (rootSignature_) {
-		delete rootSignature_;
-	}
-	if (pipelineState_) {
-		delete pipelineState_;
-	}
-	if (commandList_) {
-		commandList_->Release();
-	}
-}
 
 void yunity::PrimitiveDrawer::Draw(const WorldTransform& worldTransform)
 {
 	assert(commandList_);
 	assert(worldTransform.constBuff_.Get());
 
-	commandList_->SetGraphicsRootSignature(rootSignature_->GetSignature());
-	commandList_->SetPipelineState(pipelineState_->GetPipelineStateObject());
+	GraphicsPipelineManager::GetInstance()->SetCommandList(commandList_, PipelineType::kPrimitive, BlendModeType::kNone);
 	commandList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
 
 	// 頂点バッファの設定

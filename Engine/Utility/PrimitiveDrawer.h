@@ -45,12 +45,6 @@ namespace yunity {
 
 	public:
 		/// <summary>
-		/// 静的初期化
-		/// </summary>
-		/// <param name="device">デバイス</param>
-		static void StaticInitialize();
-
-		/// <summary>
 		/// 描画前処理
 		/// </summary>
 		/// <param name="commandList">描画コマンドリスト</param>
@@ -67,18 +61,7 @@ namespace yunity {
 		/// <returns></returns>
 		static PrimitiveDrawer* Create(Type type = Type::kLine);
 
-		/// <summary>
-		/// グラフィックスパイプライン生成
-		/// </summary>
-		static void InitializeGraphicsPipeline();
-
-
-
 	public:
-		/// <summary>
-		/// ファイナライザ
-		/// </summary>
-		void Finalize();
 
 		/// <summary>
 		/// 描画
@@ -132,8 +115,6 @@ namespace yunity {
 
 	private:
 		static ID3D12GraphicsCommandList* commandList_;
-		static RootSignature* rootSignature_;
-		static PipelineState* pipelineState_;
 
 	private:
 		Camera* camera_ = nullptr;

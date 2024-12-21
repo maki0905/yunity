@@ -9,16 +9,9 @@
 #include "PipelineState.h"
 #include "ShaderCompiler.h"
 #include "TextureManager.h"
+#include "GraphicsPipelineManager.h"
 
 ID3D12GraphicsCommandList* yunity::SkyBox::commandList_ = nullptr;
-yunity::RootSignature* yunity::SkyBox::rootSignature_ = nullptr;
-yunity::PipelineState* yunity::SkyBox::pipelineState_ = nullptr;
-
-void yunity::SkyBox::StaticInitialize()
-{
-
-	InitializeGraphicsPipeline();
-}
 
 void yunity::SkyBox::PreDraw(ID3D12GraphicsCommandList* commandList)
 {
@@ -41,93 +34,12 @@ yunity::SkyBox* yunity::SkyBox::Create()
 	return skyBox;
 }
 
-void yunity::SkyBox::InitializeGraphicsPipeline()
-{
-	rootSignature_ = new RootSignature(Device::GetInstance()->GetDevice(), static_cast<int>(RootBindings::kCount), 1);
-
-	D3D12_STATIC_SAMPLER_DESC staticSamplers = {};
-	staticSamplers.Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;
-	staticSamplers.AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP; //0~1の範囲外をリピート
-	staticSamplers.AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
-	staticSamplers.AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
-	staticSamplers.ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER; //比較しない
-	staticSamplers.MaxLOD = D3D12_FLOAT32_MAX;
-	staticSamplers.ShaderRegister = 0; //レジスタ番号0を使う
-	staticSamplers.ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL; //PixelShaderを使う
-	rootSignature_->InitializeStaticSampler(0, staticSamplers, D3D12_SHADER_VISIBILITY_PIXEL);
-
-	rootSignature_->GetParameter(static_cast<UINT>(RootBindings::kWorldTransform)).InitializeAsConstantBuffer(0);
-	rootSignature_->GetParameter(static_cast<UINT>(RootBindings::kViewProjection)).InitializeAsConstantBuffer(1);
-	rootSignature_->GetParameter(static_cast<UINT>(RootBindings::kTexture)).InitializeAsDescriptorRange(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 0, 1, D3D12_SHADER_VISIBILITY_PIXEL);
-
-
-	rootSignature_->Finalize(D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
-
-	pipelineState_ = new PipelineState(Device::GetInstance()->GetDevice(), rootSignature_);
-
-	// InputLayout
-	D3D12_INPUT_ELEMENT_DESC inputElementDescs[] = {
-		{.SemanticName = "POSITION", .SemanticIndex = 0, .Format = DXGI_FORMAT_R32G32B32A32_FLOAT,.AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT},
-		{.SemanticName = "TEXCOORD", .SemanticIndex = 0, .Format = DXGI_FORMAT_R32G32_FLOAT,.AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT},
-		{.SemanticName = "NORMAL", .SemanticIndex = 0, .Format = DXGI_FORMAT_R32G32B32_FLOAT,.AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT},
-	};
-
-	D3D12_INPUT_LAYOUT_DESC inputLayoutDesc{};
-	inputLayoutDesc.pInputElementDescs = inputElementDescs;
-	inputLayoutDesc.NumElements = _countof(inputElementDescs);
-
-	// BlendState
-	D3D12_BLEND_DESC blendDesc{};
-	// すべての色要素を書き込む
-	blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
-
-
-	//RasiterzerStateの設定
-	D3D12_RASTERIZER_DESC rasterizerDesc{};
-	//裏面(時計回り)を表示しない
-	rasterizerDesc.CullMode = D3D12_CULL_MODE_NONE;
-	//三角形の中を塗りつぶす
-	rasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
-
-	// DepthStencilStateの設定
-	D3D12_DEPTH_STENCIL_DESC depthStencilDesc{};
-	depthStencilDesc.DepthEnable = true; // Depthの機能を有効化する
-	depthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ZERO; // 全ピクセルがz=1に出力されるので、わざわざ書き込む必要がない
-	depthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL; // 比較関数はLessEqual。つまり、近ければ描画される
-
-	pipelineState_->SetInputLayout(inputLayoutDesc);
-	pipelineState_->SetShader(PipelineState::ShaderType::kVS, ShaderCompiler::GetInstance()->Get("Skybox", ShaderCompiler::ShaderType::kVS));
-	pipelineState_->SetShader(PipelineState::ShaderType::kPS, ShaderCompiler::GetInstance()->Get("Skybox", ShaderCompiler::ShaderType::kPS));
-	pipelineState_->SetBlendState(blendDesc);
-	pipelineState_->SetRasterizerState(rasterizerDesc);
-	pipelineState_->SetDepthStencilState(depthStencilDesc);
-	pipelineState_->SetRenderTargetFormat(DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, DXGI_FORMAT_D24_UNORM_S8_UINT);
-	pipelineState_->SetPrimitiveTopologyType(D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE);
-	pipelineState_->SetSampleMask(D3D12_DEFAULT_SAMPLE_MASK);
-	pipelineState_->Finalize();
-}
-
-void yunity::SkyBox::Finalize()
-{
-	if (rootSignature_) {
-		delete rootSignature_;
-	}
-	if (pipelineState_) {
-		delete pipelineState_;
-	}
-	if (commandList_) {
-		commandList_->Release();
-	}
-}
-
 void yunity::SkyBox::Draw(const WorldTransform& worldTransform)
 {
 	assert(commandList_);
 	assert(worldTransform.constBuff_.Get());
 
-	commandList_->SetGraphicsRootSignature(rootSignature_->GetSignature());
-	commandList_->SetPipelineState(pipelineState_->GetPipelineStateObject());
-	commandList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	GraphicsPipelineManager::GetInstance()->SetCommandList(commandList_, PipelineType::kSkyBox, BlendModeType::kNone);
 
 	// 頂点バッファの設定
 	commandList_->IASetVertexBuffers(0, 1, &vertexBufferView_);

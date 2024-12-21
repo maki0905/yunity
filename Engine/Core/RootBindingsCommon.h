@@ -72,3 +72,10 @@ enum class Object3dShadowMapRootBindings {
 	kLightViewProjection, // ライトビュープロジェクション
 	kCount,          // 最大数
 };
+
+enum class SkyBoxRootBindings {
+	kWorldTransform,
+	kViewProjection,
+	kTexture,
+	kCount
+};

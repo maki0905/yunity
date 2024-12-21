@@ -18,6 +18,7 @@ void yunity::GraphicsPipelineManager::Initialize()
 	CreateSkinning();
 	CreateShadowMap();
 	CreateObject3dShadowMap();
+	CreateSkyBox();
 
 }
 
@@ -375,6 +376,49 @@ void yunity::GraphicsPipelineManager::CreateObject3dShadowMap()
 		graphicsPipelines_[PipelineType::kObject3dShadowMap]->pso_[blendModeType]->SetSampleMask(D3D12_DEFAULT_SAMPLE_MASK);
 		graphicsPipelines_[PipelineType::kObject3dShadowMap]->pso_[blendModeType]->Finalize();
 	}
+}
+
+void yunity::GraphicsPipelineManager::CreateSkyBox()
+{
+	graphicsPipelines_[PipelineType::kSkyBox]->rooSignature_ = std::make_unique<RootSignature>(Device::GetInstance()->GetDevice(), static_cast<UINT>(SkyBoxRootBindings::kCount), 1);
+	D3D12_STATIC_SAMPLER_DESC staticSamplers = graphicsCommon_->StaticSampler;
+	staticSamplers.ShaderRegister = 0;
+	staticSamplers.ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+	graphicsPipelines_[PipelineType::kSkyBox]->rooSignature_->InitializeStaticSampler(0, staticSamplers, D3D12_SHADER_VISIBILITY_PIXEL);
+
+	graphicsPipelines_[PipelineType::kSkyBox]->rooSignature_->GetParameter(static_cast<UINT>(SkyBoxRootBindings::kWorldTransform)).InitializeAsConstantBuffer(0, D3D12_SHADER_VISIBILITY_VERTEX);
+	graphicsPipelines_[PipelineType::kSkyBox]->rooSignature_->GetParameter(static_cast<UINT>(SkyBoxRootBindings::kViewProjection)).InitializeAsConstantBuffer(1, D3D12_SHADER_VISIBILITY_VERTEX);
+	graphicsPipelines_[PipelineType::kSkyBox]->rooSignature_->GetParameter(static_cast<UINT>(SkyBoxRootBindings::kTexture)).InitializeAsDescriptorRange(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 0, 1, D3D12_SHADER_VISIBILITY_PIXEL);
+	graphicsPipelines_[PipelineType::kSkyBox]->rooSignature_->Finalize(D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
+
+	// InputLayout
+	D3D12_INPUT_ELEMENT_DESC object3DInputElementDescs[] = {
+		{.SemanticName = "POSITION", .SemanticIndex = 0, .Format = DXGI_FORMAT_R32G32B32A32_FLOAT,.AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT},
+		{.SemanticName = "TEXCOORD", .SemanticIndex = 0, .Format = DXGI_FORMAT_R32G32_FLOAT,.AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT},
+		{.SemanticName = "NORMAL", .SemanticIndex = 0, .Format = DXGI_FORMAT_R32G32B32_FLOAT,.AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT},
+	};
+	D3D12_INPUT_LAYOUT_DESC inputLayoutDesc;
+	inputLayoutDesc.pInputElementDescs = object3DInputElementDescs;
+	inputLayoutDesc.NumElements = _countof(object3DInputElementDescs);
+
+	//RasiterzerStateの設定
+	D3D12_RASTERIZER_DESC rasterizerDesc = GraphicsPipelineManager::graphicsCommon_->RasterizerDefault;
+
+	// DepthStencilStateの設定
+	D3D12_DEPTH_STENCIL_DESC depthStencilDesc = GraphicsPipelineManager::graphicsCommon_->DepthStateReadWrite;
+
+	graphicsPipelines_[PipelineType::kSkyBox]->pso_[0] = std::make_unique<PipelineState>(Device::GetInstance()->GetDevice(), graphicsPipelines_[PipelineType::kSkyBox]->rooSignature_.get());
+	graphicsPipelines_[PipelineType::kSkyBox]->pso_[0]->SetInputLayout(inputLayoutDesc);
+	graphicsPipelines_[PipelineType::kSkyBox]->pso_[0]->SetShader(PipelineState::ShaderType::kVS, ShaderCompiler::GetInstance()->Get("Skybox", ShaderCompiler::ShaderType::kVS));
+	graphicsPipelines_[PipelineType::kSkyBox]->pso_[0]->SetShader(PipelineState::ShaderType::kPS, ShaderCompiler::GetInstance()->Get("Skybox", ShaderCompiler::ShaderType::kPS));
+	graphicsPipelines_[PipelineType::kSkyBox]->pso_[0]->SetBlendState(graphicsCommon_->blendDescs[1]);
+	//graphicsPipelines_[PipelineType::kObject3d]->pso_[blendModeType]->SetBlendState(blendDesc);
+	graphicsPipelines_[PipelineType::kSkyBox]->pso_[0]->SetRasterizerState(rasterizerDesc);
+	graphicsPipelines_[PipelineType::kSkyBox]->pso_[0]->SetDepthStencilState(depthStencilDesc);
+	graphicsPipelines_[PipelineType::kSkyBox]->pso_[0]->SetRenderTargetFormat(DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, DXGI_FORMAT_D24_UNORM_S8_UINT);
+	graphicsPipelines_[PipelineType::kSkyBox]->pso_[0]->SetPrimitiveTopologyType(D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE);
+	graphicsPipelines_[PipelineType::kSkyBox]->pso_[0]->SetSampleMask(D3D12_DEFAULT_SAMPLE_MASK);
+	graphicsPipelines_[PipelineType::kSkyBox]->pso_[0]->Finalize();
 }
 
 yunity::GraphicsPipelineManager* yunity::GraphicsPipelineManager::GetInstance()
