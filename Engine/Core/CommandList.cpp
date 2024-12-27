@@ -71,10 +71,10 @@ void yunity::CommandList::OMSetRenderTargets(const D3D12_CPU_DESCRIPTOR_HANDLE* 
 	}
 }
 
-void yunity::CommandList::OMSetRenderTargets(const D3D12_CPU_DESCRIPTOR_HANDLE* cpuDescHandleRTV, D3D12_CPU_DESCRIPTOR_HANDLE* dsvHandle)
+void yunity::CommandList::OMSetRenderTargets(UINT numRenderTarget, const D3D12_CPU_DESCRIPTOR_HANDLE* cpuDescHandleRTV, D3D12_CPU_DESCRIPTOR_HANDLE* dsvHandle)
 {
 	// レンダーターゲットをセット
-	commandList_->OMSetRenderTargets(1, cpuDescHandleRTV, false, dsvHandle);
+	commandList_->OMSetRenderTargets(numRenderTarget, cpuDescHandleRTV, false, dsvHandle);
 }
 
 void yunity::CommandList::ClearRenderTargetView(const Vector4 clearColorValue, const D3D12_CPU_DESCRIPTOR_HANDLE cpuDescHandleRTV)

@@ -67,6 +67,18 @@ void yunity::DirectXCore::Initialize()
 	GraphicsCommon::GetInstance()->Initialize();
 
 	GraphicsPipelineManager::GetInstance()->Initialize();
+
+	shadowBuffer_ = std::make_unique<DepthBuffer>();
+	shadowBuffer_->Initialize(DXGI_FORMAT_D32_FLOAT, D3D12_RESOURCE_STATE_GENERIC_READ);
+	D3D12_SHADER_RESOURCE_VIEW_DESC depthTextureSrvDesc{};
+	depthTextureSrvDesc.Format = DXGI_FORMAT_R32_FLOAT;
+	depthTextureSrvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+	depthTextureSrvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+	depthTextureSrvDesc.Texture2D.MipLevels = 1;
+	DescriptorHandle descriptorHandleSRV_ = descriptorHeaps_[static_cast<int>(HeapType::kSRV)]->Alloc();
+	shadowCpuDescHandleSRV_ = descriptorHandleSRV_.GetCPUHandle();
+	shadowGpuDescHandleSRV_ = descriptorHandleSRV_.GetGPUHandle();
+	Device::GetInstance()->GetDevice()->CreateShaderResourceView(shadowBuffer_->GetDepthStencil(), &depthTextureSrvDesc, shadowCpuDescHandleSRV_);
 }
 
 
@@ -136,7 +148,21 @@ void yunity::DirectXCore::PostDrawSwapchain()
 	}*/
 }
 
+void yunity::DirectXCore::PreDrawShadow()
+{
+	commandList_->BarrierChange(shadowBuffer_->GetDepthStencil(), D3D12_RESOURCE_STATE_GENERIC_READ, D3D12_RESOURCE_STATE_DEPTH_WRITE);
+	commandList_->ClearDepthStencilView(shadowBuffer_->GetDescriptorHeap());
+	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle =
+		D3D12_CPU_DESCRIPTOR_HANDLE(shadowBuffer_->GetDescriptorHeap()->GetCPUDescriptorHandleForHeapStart());
+	commandList_->OMSetRenderTargets(0, nullptr, &dsvHandle);
+	commandList_->RSSetViewports(float(windowWidth_), float(windowHeight_));
+	commandList_->RSSetScissorRects(windowWidth_, windowHeight_);
+}
 
+void yunity::DirectXCore::PostDrawShadow()
+{
+	commandList_->BarrierChange(shadowBuffer_->GetDepthStencil(), D3D12_RESOURCE_STATE_DEPTH_WRITE, D3D12_RESOURCE_STATE_GENERIC_READ);
+}
 
 void yunity::DirectXCore::InitializeFixFPS()
 {

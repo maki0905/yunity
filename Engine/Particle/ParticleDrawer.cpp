@@ -10,7 +10,7 @@
 #include "Common.h"
 
 ID3D12GraphicsCommandList* yunity::ParticleDrawer::commandList_ = nullptr;
-
+yunity::PipelineType yunity::ParticleDrawer::pipelineType_ = yunity::PipelineType::kCount;
 
 void yunity::ParticleDrawer::PreDraw(ID3D12GraphicsCommandList* commandList)
 {
@@ -20,9 +20,19 @@ void yunity::ParticleDrawer::PreDraw(ID3D12GraphicsCommandList* commandList)
 	commandList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }
 
+void yunity::ParticleDrawer::PreDraw(ID3D12GraphicsCommandList* commandList, const PipelineType& pipelineType)
+{
+	assert(commandList_ == nullptr);
+	commandList_ = commandList;
+	pipelineType_ = pipelineType;
+}
+
 void yunity::ParticleDrawer::PostDraw()
 {
 	commandList_ = nullptr;
+	if (pipelineType_ != PipelineType::kCount) {
+		pipelineType_ = PipelineType::kCount;
+	}
 }
 
 yunity::ParticleDrawer* yunity::ParticleDrawer::Create(const std::string& modelname)
@@ -55,50 +65,57 @@ void yunity::ParticleDrawer::Initialize(const Model::ModelData& modelData)
 
 void yunity::ParticleDrawer::Draw(std::list<Particle> particles)
 {
-	assert(commandList_);
+	//assert(commandList_);
 
-	GraphicsPipelineManager::GetInstance()->SetCommandList(commandList_, PipelineType::kParticle, blendModeType_);
-	commandList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	if (commandList_ != nullptr) {
+		GraphicsPipelineManager::GetInstance()->SetCommandList(commandList_, PipelineType::kParticle, blendModeType_);
+		if (pipelineType_ != PipelineType::kCount) {
+			GraphicsPipelineManager::GetInstance()->SetCommandList(commandList_, pipelineType_, blendModeType_);
+		}
+		commandList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	uint32_t numInstance = 0;
+		uint32_t numInstance = 0;
 
-	for (uint32_t index = 0; auto& particle : particles) {
-		instancingData_[index].world = particle.particleForCPU.world;
-		instancingData_[index].color = particle.particleForCPU.color;
-		index++;
-		++numInstance;
+		for (uint32_t index = 0; auto & particle : particles) {
+			instancingData_[index].world = particle.particleForCPU.world;
+			instancingData_[index].color = particle.particleForCPU.color;
+			index++;
+			++numInstance;
 
-		if (numInstance >= kNumMaxInstance) {
-			break;
+			if (numInstance >= kNumMaxInstance) {
+				break;
+			}
+		}
+
+
+
+		// デスクリプタヒープの配列をセットするコマンド
+		ID3D12DescriptorHeap* ppHeaps[] = { /*srvHeap_.Get()*/ srvHeap_->GetHeapPointer() };
+		commandList_->SetDescriptorHeaps(_countof(ppHeaps), ppHeaps);
+
+		// 頂点バッファの設定
+		commandList_->IASetVertexBuffers(0, 1, &vertexBufferView_);
+
+		// CBVをセット(ワールド行列)
+		//commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(RootBindings::kWorldTransform), worldTransform.constBuff_->GetGPUVirtualAddress());
+		commandList_->SetGraphicsRootDescriptorTable(static_cast<UINT>(RootBindings::kWorldTransform), instancingSrvHandleGPU_);
+		// CBVをセット(ビュープロジェクション行列)
+		commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(RootBindings::kViewProjection), camera_->GetConstBuff()->GetGPUVirtualAddress());
+		commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(RootBindings::kMaterial), materialResource_->GetGPUVirtualAddress());
+
+
+		// SRVをセット
+		TextureManager::GetInstance()->SetGraphicsRootDescriptorTable(commandList_, static_cast<UINT>(RootBindings::kTexture), textureHandle_);
+
+		if (modelData_.indices.size() != 0) {
+			commandList_->DrawIndexedInstanced((UINT)modelData_.indices.size(), numInstance, 0, 0, 0);
+		}
+		else {
+			commandList_->DrawInstanced(UINT(modelData_.vertices.size()), numInstance, 0, 0);
 		}
 	}
 
-
-
-	// デスクリプタヒープの配列をセットするコマンド
-	ID3D12DescriptorHeap* ppHeaps[] = { /*srvHeap_.Get()*/ srvHeap_->GetHeapPointer() };
-	commandList_->SetDescriptorHeaps(_countof(ppHeaps), ppHeaps);
-
-	// 頂点バッファの設定
-	commandList_->IASetVertexBuffers(0, 1, &vertexBufferView_);
-
-	// CBVをセット(ワールド行列)
-	//commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(RootBindings::kWorldTransform), worldTransform.constBuff_->GetGPUVirtualAddress());
-	commandList_->SetGraphicsRootDescriptorTable(static_cast<UINT>(RootBindings::kWorldTransform), instancingSrvHandleGPU_);
-	// CBVをセット(ビュープロジェクション行列)
-	commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(RootBindings::kViewProjection), camera_->GetConstBuff()->GetGPUVirtualAddress());
-	commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(RootBindings::kMaterial), materialResource_->GetGPUVirtualAddress());
-
-
-	// SRVをセット
-	TextureManager::GetInstance()->SetGraphicsRootDescriptorTable(commandList_, static_cast<UINT>(RootBindings::kTexture), textureHandle_);
-
-	if (modelData_.indices.size() != 0) {
-		commandList_->DrawIndexedInstanced((UINT)modelData_.indices.size(), numInstance, 0, 0, 0);
-	}
-	else {
-		commandList_->DrawInstanced(UINT(modelData_.vertices.size()), numInstance, 0, 0);
-	}
+	
 }
 
 void yunity::ParticleDrawer::SetMaterial(const Vector4& color)

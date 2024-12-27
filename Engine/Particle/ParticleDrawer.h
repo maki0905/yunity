@@ -13,6 +13,7 @@
 #include "DescriptorHeap.h"
 #include "Particle.h"
 #include "Model.h"
+#include "GraphicsPipelineManager.h"
 
 namespace yunity {
 	class ParticleDrawer
@@ -55,6 +56,13 @@ namespace yunity {
 		/// </summary>
 		/// <param name="commandList">描画コマンドリスト</param>
 		static void PreDraw(ID3D12GraphicsCommandList* commandList);
+
+		/// <summary>
+		/// 描画前処理
+		/// </summary>
+		/// <param name="commandList"></param>
+		/// <param name="pipelineType"></param>
+		static void PreDraw(ID3D12GraphicsCommandList* commandList, const PipelineType& pipelineType);
 
 		/// <summary>
 		/// 描画後処理
@@ -108,6 +116,7 @@ namespace yunity {
 	private:
 
 		static ID3D12GraphicsCommandList* commandList_;
+		static PipelineType pipelineType_;
 
 	private:
 		// ブレンドモード

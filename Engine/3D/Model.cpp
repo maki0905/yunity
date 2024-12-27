@@ -10,12 +10,12 @@
 #include "PipelineState.h"
 #include "ShaderCompiler.h"
 #include "ModelManager.h"
-#include "GraphicsPipelineManager.h"
+
 #include "RootBindingsCommon.h"
 #include "ModelManager.h"
 
 ID3D12GraphicsCommandList* yunity::Model::commandList_ = nullptr;
-bool yunity::Model::isShadowMap_ = false;
+yunity::PipelineType yunity::Model::pipelineType_ = yunity::PipelineType::kCount;
 
 
 void yunity::Model::PreDraw(ID3D12GraphicsCommandList* commandList)
@@ -24,27 +24,25 @@ void yunity::Model::PreDraw(ID3D12GraphicsCommandList* commandList)
 	commandList_ = commandList;
 }
 
+void yunity::Model::PreDraw(ID3D12GraphicsCommandList* commandList, const PipelineType& pipelineType)
+{
+	assert(commandList_ == nullptr);
+	commandList_ = commandList;
+	pipelineType_ = pipelineType;
+}
+
 void yunity::Model::PostDraw()
 {
 	commandList_ = nullptr;
-}
-
-void yunity::Model::PreDrawShadowMap(ID3D12GraphicsCommandList* commandList)
-{
-	PreDraw(commandList);
-	isShadowMap_ = true;
-}
-
-void yunity::Model::PostDrawShadowMap()
-{
-	isShadowMap_ = false;
+	if (pipelineType_ != PipelineType::kCount) {
+		pipelineType_ = PipelineType::kCount;
+	}
 }
 
 yunity::Model::~Model()
 {
 	ModelManager::GetInstance()->Take(this);
 }
-
 
 
 void yunity::Model::Initialize(const std::string& name, const ModelType& modelType, const ModelData& modelData)
@@ -80,6 +78,7 @@ void yunity::Model::Draw(const WorldTransform& worldTransform, uint32_t textureH
 	assert(commandList_);
 	assert(worldTransform.constBuff_.Get());
 
+	
 	if (modelType_ == ModelType::kSkin) {
 		GraphicsPipelineManager::GetInstance()->SetCommandList(commandList_, PipelineType::kSkinning, blendModeType_);
 		commandList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -99,6 +98,8 @@ void yunity::Model::Draw(const WorldTransform& worldTransform, uint32_t textureH
 		TextureManager::GetInstance()->SetGraphicsRootDescriptorTable(commandList_, static_cast<UINT>(SkinningRootBindings::kEnvironmentMap), textureCubeHandle_);
 	}
 	else {
+
+		
 		GraphicsPipelineManager::GetInstance()->SetCommandList(commandList_, PipelineType::kObject3d, blendModeType_);
 		commandList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		// 頂点バッファの設定
@@ -107,23 +108,43 @@ void yunity::Model::Draw(const WorldTransform& worldTransform, uint32_t textureH
 		//TextureManager::GetInstance()->SetGraphicsRootDescriptorTable(commandList_, static_cast<UINT>(Object3dRootBindings::kEnvironmentMap), textureCubeHandle_);
 	}
 
+	if (pipelineType_ != PipelineType::kCount) {
+		GraphicsPipelineManager::GetInstance()->SetCommandList(commandList_, pipelineType_, blendModeType_);
+	}
+
 	//インデックスバッファの設定
 	commandList_->IASetIndexBuffer(&indexBufferView_);
 
-	commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(Object3dRootBindings::kWorldTransform), worldTransform.constBuff_->GetGPUVirtualAddress());
-	commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(Object3dRootBindings::kViewProjection), camera_->GetConstBuff()->GetGPUVirtualAddress());
-	commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(Object3dRootBindings::kMaterial), materialResource_->GetGPUVirtualAddress());
-	commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(Object3dRootBindings::kLight), directionalLightResource_->GetGPUVirtualAddress());
-	commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(Object3dRootBindings::kCamera), camera_->GetCameraForGPU()->GetGPUVirtualAddress());
-	commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(Object3dRootBindings::kPointLight), pointLightResource_->GetGPUVirtualAddress());
+	if (pipelineType_ == PipelineType::kShadowMap) {
+		commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(Object3dRootBindings::kWorldTransform), worldTransform.constBuff_->GetGPUVirtualAddress());
+		commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(Object3dRootBindings::kViewProjection), lightVPBuff_->GetGPUVirtualAddress());
 
-	TextureManager::GetInstance()->SetGraphicsRootDescriptorTable(commandList_, static_cast<UINT>(Object3dRootBindings::kTexture), textureHandle);
-
-	if (modelType_ == ModelType::kSkin) {
-		commandList_->DrawIndexedInstanced((UINT)modelData_.indices.size(), UINT(skeleton_.joints.size()), 0, 0, 0);
+		if (materialData_->enableLighting) {
+			if (modelType_ == ModelType::kSkin) {
+				commandList_->DrawIndexedInstanced((UINT)modelData_.indices.size(), UINT(skeleton_.joints.size()), 0, 0, 0);
+			}
+			else {
+				commandList_->DrawIndexedInstanced((UINT)modelData_.indices.size(), 1, 0, 0, 0);
+			}
+		}
 	}
 	else {
-		commandList_->DrawIndexedInstanced((UINT)modelData_.indices.size(), 1, 0, 0, 0);
+		commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(Object3dRootBindings::kWorldTransform), worldTransform.constBuff_->GetGPUVirtualAddress());
+		commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(Object3dRootBindings::kViewProjection), camera_->GetConstBuff()->GetGPUVirtualAddress());
+		commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(Object3dRootBindings::kMaterial), materialResource_->GetGPUVirtualAddress());
+		commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(Object3dRootBindings::kLight), directionalLightResource_->GetGPUVirtualAddress());
+		commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(Object3dRootBindings::kCamera), camera_->GetCameraForGPU()->GetGPUVirtualAddress());
+		commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(Object3dRootBindings::kPointLight), pointLightResource_->GetGPUVirtualAddress());
+
+		// SRVをセット
+		TextureManager::GetInstance()->SetGraphicsRootDescriptorTable(commandList_, static_cast<UINT>(Object3dRootBindings::kTexture), textureHandle);
+
+		if (modelType_ == ModelType::kSkin) {
+			commandList_->DrawIndexedInstanced((UINT)modelData_.indices.size(), UINT(skeleton_.joints.size()), 0, 0, 0);
+		}
+		else {
+			commandList_->DrawIndexedInstanced((UINT)modelData_.indices.size(), 1, 0, 0, 0);
+		}
 	}
 }
 
@@ -152,6 +173,9 @@ void yunity::Model::Draw(const WorldTransform& worldTransform)
 	}
 	else {
 		GraphicsPipelineManager::GetInstance()->SetCommandList(commandList_, PipelineType::kObject3d, blendModeType_);
+		/*if (materialData_->enableLighting) {
+			GraphicsPipelineManager::GetInstance()->SetCommandList(commandList_, PipelineType::kObject3dShadowMap, blendModeType_);
+		}*/
 		commandList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		// 頂点バッファの設定
 		commandList_->IASetVertexBuffers(0, 1, &vertexBufferView_);
@@ -159,27 +183,51 @@ void yunity::Model::Draw(const WorldTransform& worldTransform)
 		//TextureManager::GetInstance()->SetGraphicsRootDescriptorTable(commandList_, static_cast<UINT>(Object3dRootBindings::kEnvironmentMap), textureCubeHandle_);
 	}
 
+	if (pipelineType_ != PipelineType::kCount) {
+		GraphicsPipelineManager::GetInstance()->SetCommandList(commandList_, pipelineType_, blendModeType_);
+	}
+
 	//インデックスバッファの設定
 	commandList_->IASetIndexBuffer(&indexBufferView_);
 
-	commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(Object3dRootBindings::kWorldTransform), worldTransform.constBuff_->GetGPUVirtualAddress());
-	commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(Object3dRootBindings::kViewProjection), camera_->GetConstBuff()->GetGPUVirtualAddress());
-	commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(Object3dRootBindings::kMaterial), materialResource_->GetGPUVirtualAddress());
-	commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(Object3dRootBindings::kLight), directionalLightResource_->GetGPUVirtualAddress());
-	commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(Object3dRootBindings::kCamera), camera_->GetCameraForGPU()->GetGPUVirtualAddress());
-	commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(Object3dRootBindings::kPointLight), pointLightResource_->GetGPUVirtualAddress());
+	if (pipelineType_ == PipelineType::kShadowMap) {
+		commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(Object3dRootBindings::kWorldTransform), worldTransform.constBuff_->GetGPUVirtualAddress());
+		commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(Object3dRootBindings::kViewProjection), lightVPBuff_->GetGPUVirtualAddress());
 
-	// SRVをセット
-	if (textureHandle_ != TextureManager::Load(modelData_.material.textureFilePath)) {
-		textureHandle_ = TextureManager::Load(modelData_.material.textureFilePath);
-	}
-	TextureManager::GetInstance()->SetGraphicsRootDescriptorTable(commandList_, static_cast<UINT>(Object3dRootBindings::kTexture), textureHandle_);
-
-	if (modelType_ == ModelType::kSkin) {
-		commandList_->DrawIndexedInstanced((UINT)modelData_.indices.size(), UINT(skeleton_.joints.size()), 0, 0, 0);
+		if (materialData_->enableLighting) {
+			if (modelType_ == ModelType::kSkin) {
+				commandList_->DrawIndexedInstanced((UINT)modelData_.indices.size(), UINT(skeleton_.joints.size()), 0, 0, 0);
+			}
+			else {
+				commandList_->DrawIndexedInstanced((UINT)modelData_.indices.size(), 1, 0, 0, 0);
+			}
+		}
 	}
 	else {
-		commandList_->DrawIndexedInstanced((UINT)modelData_.indices.size(), 1, 0, 0, 0);
+		commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(Object3dRootBindings::kWorldTransform), worldTransform.constBuff_->GetGPUVirtualAddress());
+		commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(Object3dRootBindings::kViewProjection), camera_->GetConstBuff()->GetGPUVirtualAddress());
+		commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(Object3dRootBindings::kMaterial), materialResource_->GetGPUVirtualAddress());
+		commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(Object3dRootBindings::kLight), directionalLightResource_->GetGPUVirtualAddress());
+		commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(Object3dRootBindings::kCamera), camera_->GetCameraForGPU()->GetGPUVirtualAddress());
+		commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(Object3dRootBindings::kPointLight), pointLightResource_->GetGPUVirtualAddress());
+
+		/*if (materialData_->enableLighting) {
+			commandList_->SetGraphicsRootDescriptorTable(static_cast<UINT>(Object3dShadowMapRootBindings::kShadowMap), DirectXCore::GetInstance()->GetShdowHandle());
+			commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(Object3dShadowMapRootBindings::kLightViewProjection), lightVPBuff_->GetGPUVirtualAddress());
+		}*/
+
+		// SRVをセット
+		if (textureHandle_ != TextureManager::Load(modelData_.material.textureFilePath)) {
+			textureHandle_ = TextureManager::Load(modelData_.material.textureFilePath);
+		}
+		TextureManager::GetInstance()->SetGraphicsRootDescriptorTable(commandList_, static_cast<UINT>(Object3dRootBindings::kTexture), textureHandle_);
+
+		if (modelType_ == ModelType::kSkin) {
+			commandList_->DrawIndexedInstanced((UINT)modelData_.indices.size(), UINT(skeleton_.joints.size()), 0, 0, 0);
+		}
+		else {
+			commandList_->DrawIndexedInstanced((UINT)modelData_.indices.size(), 1, 0, 0, 0);
+		}
 	}
 	
 }
@@ -196,6 +244,11 @@ void yunity::Model::SetDirectionalLight(const DirectionalLight& directionalLight
 	directionalLightData_->color = directionalLight.color;
 	directionalLightData_->direction = directionalLight.direction;
 	directionalLightData_->intensity = directionalLight.intensity;
+	EulerTransform transform = { .scale = {1.0f, 1.0f, 1.0f}, .rotate = {1.0f, 0.0f, 0.0f}, .translate = {0.0f, 100.0f, 0.0f} };
+	Matrix4x4 worldMatrix = MakeAffineMatrix(transform);
+	lightVP->view = Inverse(worldMatrix);
+	//lightVP->view = MakeMatrixLookAt({ 0.0f, 100.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }, { 0.0f, 1.0f, 0.0f });
+	lightVP->projection = MakeOrthographicMatrix(-1000.0f, 1000.0f, 1000.0f, -1000.0f, 0.1f, 100.0f);
 }
 
 void yunity::Model::SetAnimation(std::string name, const Animation& animation, AnimationCommon::AnimationMode mode)
@@ -414,6 +467,9 @@ void yunity::Model::InitializeDirectionalLight()
 	pointLightData_->position = { 0.0f, 2.0f, 0.0f };
 	pointLightData_->intensity = 1.0f;
 
+	lightVPBuff_ = CreateBufferResource(sizeof(ConstBufferDataViewProjection));
+	lightVP = nullptr;
+	lightVPBuff_->Map(0, nullptr, (void**)&lightVP);
 
 }
 

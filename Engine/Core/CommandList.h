@@ -55,7 +55,7 @@ namespace yunity {
 		/// </summary>
 		/// <param name="cpuDescHandleRTV">RTVハンドル</param>
 		/// <param name="dsvHandle">DSVハンドル</param>
-		void OMSetRenderTargets(const D3D12_CPU_DESCRIPTOR_HANDLE* cpuDescHandleRTV, D3D12_CPU_DESCRIPTOR_HANDLE* dsvHandle);
+		void OMSetRenderTargets(UINT numRenderTarget,  const D3D12_CPU_DESCRIPTOR_HANDLE* cpuDescHandleRTV, D3D12_CPU_DESCRIPTOR_HANDLE* dsvHandle);
 
 		/// <summary>
 		/// ClearRenderTargetViewの設定

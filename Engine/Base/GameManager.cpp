@@ -28,6 +28,17 @@ void GameManager::Update()
 
 void GameManager::Draw()
 {
+#pragma region シャドウ描画
+	yunity::DirectXCore::GetInstance()->PreDrawShadow();
+	skybox_->PreDraw(yunity::DirectXCore::GetInstance()->GetCommandList(), yunity::PipelineType::kShadowMap);
+	model_->PreDraw(yunity::DirectXCore::GetInstance()->GetCommandList(), yunity::PipelineType::kShadowMap);
+	// 描画
+	yunity::SceneManager::GetInstance()->Draw3D();
+	model_->PostDraw();
+	skybox_->PostDraw();
+	yunity::DirectXCore::GetInstance()->PostDrawShadow();
+#pragma endregion
+
 	yunity::DirectXCore::GetInstance()->PreDrawRenderTexture();
 #pragma region 背景描画
 	sprite_->PreDraw(yunity::DirectXCore::GetInstance()->GetCommandList());
@@ -36,10 +47,7 @@ void GameManager::Draw()
 #pragma endregion 
 
 #pragma region 3D描画
-	//ID3D12GraphicsCommandList* commandList = yunity::DirectXCore::GetInstance()->GetCommandList();
-
-
-
+	// 通常描画用
 	skybox_->PreDraw(yunity::DirectXCore::GetInstance()->GetCommandList());
 	model_->PreDraw(yunity::DirectXCore::GetInstance()->GetCommandList());
 	particleDrawer_->PreDraw(yunity::DirectXCore::GetInstance()->GetCommandList());

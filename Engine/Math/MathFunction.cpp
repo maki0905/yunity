@@ -653,6 +653,50 @@ Matrix4x4 MakeViewMatrix(const Quaternion& quaternion, const Vector3& translate)
 	return result;
 }
 
+Matrix4x4 MakeMatrixLookAt(const Vector3& eyePosition, const Vector3& targetPosition, const Vector3& upDirection)
+{
+	Vector3 eyeDirection = Subtract(targetPosition, eyePosition);
+
+	Vector3 normal0 = Normalize(eyeDirection);
+
+	Vector3 cross0 = Cross(upDirection, normal0);
+	cross0 = Normalize(cross0);
+
+	Vector3 cross1 = Cross(normal0, cross0);
+
+	Vector3 negEyePosition = Multiply(-1.0f, eyePosition);
+
+	float dot0 = Dot(cross0, negEyePosition);
+	float dot1 = Dot(cross1, negEyePosition);
+	float dot2 = Dot(normal0, negEyePosition);
+
+	Matrix4x4 result;
+	result.m[0][0] = cross0.x;
+	result.m[0][1] = cross0.y;
+	result.m[0][2] = cross0.z;
+	result.m[0][3] = dot0;
+
+	result.m[1][0] = cross1.x;
+	result.m[1][1] = cross1.y;
+	result.m[1][2] = cross1.z;
+	result.m[1][3] = dot1;
+
+	result.m[2][0] = normal0.x;
+	result.m[2][1] = normal0.y;
+	result.m[2][2] = normal0.z;
+	result.m[2][3] = dot2;
+
+	result.m[3][0] = 0.0f;
+	result.m[3][1] = 0.0f;
+	result.m[3][2] = 0.0f;
+	result.m[3][3] = 1.0f;
+
+	result = Transpose(result);
+
+	return result;
+
+}
+
 Vector3 MapWorldToScreen(const Vector3& worldPosition, const Matrix4x4& matView, const Matrix4x4& matProjection, float width, float height)
 {
 	Vector3 result{};

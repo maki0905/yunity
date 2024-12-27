@@ -213,6 +213,8 @@ Vector3 GetZAxis(const Matrix4x4& m);
 /// <returns></returns>
 Vector3 ConvertToRadians(const Vector3& v);
 
+
+
 /// <summary>
 /// 加法
 /// </summary>
@@ -395,6 +397,15 @@ Matrix4x4 MakeViewMatrix(const Vector3& rotate, const Vector3& translate);
 /// <param name="translate"></param>
 /// <returns></returns>
 Matrix4x4 MakeViewMatrix(const Quaternion& quaternion, const Vector3& translate);
+
+/// <summary>
+/// ビュー行列
+/// </summary>
+/// <param name="eyePostion"></param>
+/// <param name="targetPosition"></param>
+/// <param name="upDirection"></param>
+/// <returns></returns>
+Matrix4x4 MakeMatrixLookAt(const Vector3& eyePosition, const Vector3& targetPosition, const Vector3& upDirection);
 
 
 /// <summary>

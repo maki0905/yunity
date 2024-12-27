@@ -69,6 +69,16 @@ namespace yunity {
 		void PostDrawSwapchain();
 
 		/// <summary>
+		/// シャドウ描画前処理
+		/// </summary>
+		void PreDrawShadow();
+
+		/// <summary>
+		/// シャドウ描画後処理
+		/// </summary>
+		void PostDrawShadow();
+
+		/// <summary>
 		/// getter
 		/// </summary>
 		/// <param name="heapType"></param>
@@ -76,6 +86,7 @@ namespace yunity {
 		yunity::DescriptorHeap* GetDescriptorHeap(HeapType heapType) { return descriptorHeaps_[static_cast<int>(heapType)].get(); }
 		ID3D12GraphicsCommandList* GetCommandList() { return commandList_->GetCommandList(); }
 		UINT GetBackBufferCount() { return backBuffer_->GetBackBufferCount(); }
+		D3D12_GPU_DESCRIPTOR_HANDLE GetShdowHandle() { return shadowGpuDescHandleSRV_; }
 
 
 	private:
@@ -107,6 +118,13 @@ namespace yunity {
 		std::unique_ptr<yunity::DescriptorHeap> descriptorHeaps_[static_cast<int>(HeapType::kCount)];
 
 		std::chrono::steady_clock::time_point reference_;
+
+		// シャドウバッファ
+		std::unique_ptr<DepthBuffer> shadowBuffer_;
+		// シェーダリソースビューのハンドル(CPU)
+		D3D12_CPU_DESCRIPTOR_HANDLE shadowCpuDescHandleSRV_;
+		// シェーダリソースビューのハンドル(GPU)
+		D3D12_GPU_DESCRIPTOR_HANDLE shadowGpuDescHandleSRV_;
 	};
 
 }

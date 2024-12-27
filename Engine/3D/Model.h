@@ -136,20 +136,16 @@ namespace yunity {
 		static void PreDraw(ID3D12GraphicsCommandList* commandList);
 
 		/// <summary>
+		/// 描画前処理
+		/// </summary>
+		/// <param name="commandList"></param>
+		/// <param name="pipelineType"></param>
+		static void PreDraw(ID3D12GraphicsCommandList* commandList, const PipelineType& pipelineType);
+
+		/// <summary>
 		/// 描画後処理
 		/// </summary>
 		static void PostDraw();
-
-		/// <summary>
-		/// 描画前処理
-		/// </summary>
-		/// <param name="commandList">描画コマンドリスト</param>
-		static void PreDrawShadowMap(ID3D12GraphicsCommandList* commandList);
-
-		/// <summary>
-		/// 描画後処理
-		/// </summary>
-		static void PostDrawShadowMap();
 
 	public:
 		/// <summary>
@@ -300,6 +296,7 @@ namespace yunity {
 
 	private:
 		static ID3D12GraphicsCommandList* commandList_;
+		static PipelineType pipelineType_;
 	private:
 		ModelType modelType_ = ModelType::kRigid;
 		BlendModeType blendModeType_ = BlendModeType::kNormal;
@@ -326,6 +323,8 @@ namespace yunity {
 		Microsoft::WRL::ComPtr<ID3D12Resource> directionalLightResource_;
 		DirectionalLight* directionalLightData_;
 
+		Microsoft::WRL::ComPtr<ID3D12Resource> lightVPBuff_;
+		ConstBufferDataViewProjection* lightVP = nullptr;
 
 		// マテリアル
 		Microsoft::WRL::ComPtr<ID3D12Resource> materialResource_;
@@ -350,8 +349,6 @@ namespace yunity {
 		float transitionSecound_;
 
 		std::string modelName_;
-
-		static bool isShadowMap_;
 	};
 }
 

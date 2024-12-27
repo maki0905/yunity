@@ -10,7 +10,7 @@
 #include <GraphicsPipelineManager.h>
 
 ID3D12GraphicsCommandList* yunity::PrimitiveDrawer::commandList_ = nullptr;
-
+yunity::PipelineType yunity::PrimitiveDrawer::pipelineType_ = yunity::PipelineType::kCount;
 
 void yunity::PrimitiveDrawer::PreDraw(ID3D12GraphicsCommandList* commandList)
 {
@@ -19,9 +19,19 @@ void yunity::PrimitiveDrawer::PreDraw(ID3D12GraphicsCommandList* commandList)
 	commandList_ = commandList;
 }
 
+void yunity::PrimitiveDrawer::PreDraw(ID3D12GraphicsCommandList* commandList, const PipelineType& pipelineType)
+{
+	assert(commandList_ == nullptr);
+	commandList_ = commandList;
+	pipelineType_ = pipelineType;
+}
+
 void yunity::PrimitiveDrawer::PostDraw()
 {
 	commandList_ = nullptr;
+	if (pipelineType_ != PipelineType::kCount) {
+		pipelineType_ = PipelineType::kCount;
+	}
 }
 
 yunity::PrimitiveDrawer* yunity::PrimitiveDrawer::Create(Type type)
@@ -46,47 +56,52 @@ yunity::PrimitiveDrawer* yunity::PrimitiveDrawer::Create(Type type)
 
 void yunity::PrimitiveDrawer::Draw(const WorldTransform& worldTransform)
 {
-	assert(commandList_);
-	assert(worldTransform.constBuff_.Get());
+	if (commandList_ != nullptr) {
+		//assert(commandList_);
+		assert(worldTransform.constBuff_.Get());
 
-	GraphicsPipelineManager::GetInstance()->SetCommandList(commandList_, PipelineType::kPrimitive, BlendModeType::kNone);
-	commandList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
+		GraphicsPipelineManager::GetInstance()->SetCommandList(commandList_, PipelineType::kPrimitive, BlendModeType::kNone);
+		if (pipelineType_ != PipelineType::kCount) {
+			GraphicsPipelineManager::GetInstance()->SetCommandList(commandList_, pipelineType_, BlendModeType::kNone);
+		}
+		commandList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
 
-	// 頂点バッファの設定
-	commandList_->IASetVertexBuffers(0, 1, &vertexBufferView_);
+		// 頂点バッファの設定
+		commandList_->IASetVertexBuffers(0, 1, &vertexBufferView_);
 
-	commandList_->IASetIndexBuffer(&indexBufferView_);
+		commandList_->IASetIndexBuffer(&indexBufferView_);
 
-	// CBVをセット(ワールド行列)
-	commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(RootBindings::kWorldTransform), worldTransform.constBuff_->GetGPUVirtualAddress());
+		// CBVをセット(ワールド行列)
+		commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(RootBindings::kWorldTransform), worldTransform.constBuff_->GetGPUVirtualAddress());
 
-	// CBVをセット(ビュープロジェクション行列)
-	commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(RootBindings::kViewProjection), camera_->GetConstBuff()->GetGPUVirtualAddress());
+		// CBVをセット(ビュープロジェクション行列)
+		commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(RootBindings::kViewProjection), camera_->GetConstBuff()->GetGPUVirtualAddress());
 
-	commandList_->DrawIndexedInstanced(static_cast<UINT>(indices_.size()), 1, 0, 0, 0);
-
-
+		commandList_->DrawIndexedInstanced(static_cast<UINT>(indices_.size()), 1, 0, 0, 0);
+	}
 }
 
 void yunity::PrimitiveDrawer::Draw(const Vector3& start, const Vector3& end, const Vector4& color)
 {
-	assert(commandList_);
+	if (commandList_ != nullptr) {
+		//assert(commandList_);
 
-	GraphicsPipelineManager::GetInstance()->SetCommandList(commandList_, PipelineType::kLine, BlendModeType::kNone);
-	commandList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
+		GraphicsPipelineManager::GetInstance()->SetCommandList(commandList_, PipelineType::kLine, BlendModeType::kNone);
+		commandList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
 
-	vertexData_[0].position = { start.x, start.y, start.z, 1.0f };
-	vertexData_[0].color = color;
-	vertexData_[1].position = { end.x, end.y, end.z, 1.0f };
-	vertexData_[1].color = color;
+		vertexData_[0].position = { start.x, start.y, start.z, 1.0f };
+		vertexData_[0].color = color;
+		vertexData_[1].position = { end.x, end.y, end.z, 1.0f };
+		vertexData_[1].color = color;
 
-	// 頂点バッファの設定
-	commandList_->IASetVertexBuffers(0, 1, &vertexBufferView_);
+		// 頂点バッファの設定
+		commandList_->IASetVertexBuffers(0, 1, &vertexBufferView_);
 
-	// CBVをセット(ビュープロジェクション行列)
-	commandList_->SetGraphicsRootConstantBufferView(0, camera_->GetConstBuff()->GetGPUVirtualAddress());
+		// CBVをセット(ビュープロジェクション行列)
+		commandList_->SetGraphicsRootConstantBufferView(0, camera_->GetConstBuff()->GetGPUVirtualAddress());
 
-	commandList_->DrawInstanced(2, 1, 0, 0);
+		commandList_->DrawInstanced(2, 1, 0, 0);
+	}
 }
 
 void yunity::PrimitiveDrawer::CreateMesh()

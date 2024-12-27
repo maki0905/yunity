@@ -12,6 +12,8 @@
 #include "GraphicsPipelineManager.h"
 
 ID3D12GraphicsCommandList* yunity::SkyBox::commandList_ = nullptr;
+yunity::PipelineType yunity::SkyBox::pipelineType_ = yunity::PipelineType::kCount;
+
 
 void yunity::SkyBox::PreDraw(ID3D12GraphicsCommandList* commandList)
 {
@@ -20,9 +22,19 @@ void yunity::SkyBox::PreDraw(ID3D12GraphicsCommandList* commandList)
 	commandList_ = commandList;
 }
 
+void yunity::SkyBox::PreDraw(ID3D12GraphicsCommandList* commandList, const PipelineType& pipelineType)
+{
+	assert(commandList_ == nullptr);
+	commandList_ = commandList;
+	pipelineType_ = pipelineType;
+}
+
 void yunity::SkyBox::PostDraw()
 {
 	commandList_ = nullptr;
+	if (pipelineType_ != PipelineType::kCount) {
+		pipelineType_ = PipelineType::kCount;
+	}
 }
 
 yunity::SkyBox* yunity::SkyBox::Create()
@@ -40,6 +52,10 @@ void yunity::SkyBox::Draw(const WorldTransform& worldTransform)
 	assert(worldTransform.constBuff_.Get());
 
 	GraphicsPipelineManager::GetInstance()->SetCommandList(commandList_, PipelineType::kSkyBox, BlendModeType::kNone);
+
+	if (pipelineType_ != PipelineType::kCount) {
+		GraphicsPipelineManager::GetInstance()->SetCommandList(commandList_, pipelineType_, BlendModeType::kNone);
+	}
 
 	// 頂点バッファの設定
 	commandList_->IASetVertexBuffers(0, 1, &vertexBufferView_);
