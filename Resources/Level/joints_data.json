@@ -15,13 +15,463 @@
                 0.0
             ],
             "stiffness": [
-                1.0,
-                1.0,
-                1.0
+                50.0,
+                50.0,
+                0.0
             ],
             "dampingCoefficient": [
+                1.0,
+                1.0,
+                0.0
+            ]
+        },
+        {
+            "ID": "1",
+            "object_name": "",
+            "type": "springJoint",
+            "springEnabled": [
+                1.0,
+                1.0,
+                0.0
+            ],
+            "equilibriumPoint": [
                 0.0,
                 0.0,
+                0.0
+            ],
+            "stiffness": [
+                50.0,
+                50.0,
+                0.0
+            ],
+            "dampingCoefficient": [
+                1.0,
+                1.0,
+                0.0
+            ]
+        },
+        {
+            "ID": "2",
+            "object_name": "",
+            "type": "springJoint",
+            "springEnabled": [
+                1.0,
+                1.0,
+                0.0
+            ],
+            "equilibriumPoint": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "stiffness": [
+                50.0,
+                50.0,
+                0.0
+            ],
+            "dampingCoefficient": [
+                1.0,
+                1.0,
+                0.0
+            ]
+        },
+        {
+            "ID": "3",
+            "object_name": "",
+            "type": "springJoint",
+            "springEnabled": [
+                1.0,
+                1.0,
+                0.0
+            ],
+            "equilibriumPoint": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "stiffness": [
+                50.0,
+                50.0,
+                0.0
+            ],
+            "dampingCoefficient": [
+                1.0,
+                1.0,
+                0.0
+            ]
+        },
+        {
+            "ID": "4",
+            "object_name": "",
+            "type": "springJoint",
+            "springEnabled": [
+                1.0,
+                1.0,
+                0.0
+            ],
+            "equilibriumPoint": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "stiffness": [
+                50.0,
+                50.0,
+                0.0
+            ],
+            "dampingCoefficient": [
+                1.0,
+                1.0,
+                0.0
+            ]
+        },
+        {
+            "ID": "5",
+            "object_name": "",
+            "type": "springJoint",
+            "springEnabled": [
+                1.0,
+                1.0,
+                0.0
+            ],
+            "equilibriumPoint": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "stiffness": [
+                50.0,
+                50.0,
+                0.0
+            ],
+            "dampingCoefficient": [
+                1.0,
+                1.0,
+                0.0
+            ]
+        },
+        {
+            "ID": "6",
+            "object_name": "",
+            "type": "springJoint",
+            "springEnabled": [
+                1.0,
+                1.0,
+                0.0
+            ],
+            "equilibriumPoint": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "stiffness": [
+                50.0,
+                50.0,
+                0.0
+            ],
+            "dampingCoefficient": [
+                1.0,
+                1.0,
+                0.0
+            ]
+        },
+        {
+            "ID": "7",
+            "object_name": "",
+            "type": "springJoint",
+            "springEnabled": [
+                1.0,
+                1.0,
+                0.0
+            ],
+            "equilibriumPoint": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "stiffness": [
+                50.0,
+                50.0,
+                0.0
+            ],
+            "dampingCoefficient": [
+                1.0,
+                1.0,
+                0.0
+            ]
+        },
+        {
+            "ID": "8",
+            "object_name": "",
+            "type": "springJoint",
+            "springEnabled": [
+                1.0,
+                1.0,
+                0.0
+            ],
+            "equilibriumPoint": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "stiffness": [
+                50.0,
+                50.0,
+                0.0
+            ],
+            "dampingCoefficient": [
+                1.0,
+                1.0,
+                0.0
+            ]
+        },
+        {
+            "ID": "9",
+            "object_name": "",
+            "type": "springJoint",
+            "springEnabled": [
+                1.0,
+                1.0,
+                0.0
+            ],
+            "equilibriumPoint": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "stiffness": [
+                50.0,
+                50.0,
+                0.0
+            ],
+            "dampingCoefficient": [
+                1.0,
+                1.0,
+                0.0
+            ]
+        },
+        {
+            "ID": "10",
+            "object_name": "",
+            "type": "springJoint",
+            "springEnabled": [
+                1.0,
+                1.0,
+                0.0
+            ],
+            "equilibriumPoint": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "stiffness": [
+                50.0,
+                50.0,
+                0.0
+            ],
+            "dampingCoefficient": [
+                1.0,
+                1.0,
+                0.0
+            ]
+        },
+        {
+            "ID": "11",
+            "object_name": "",
+            "type": "springJoint",
+            "springEnabled": [
+                1.0,
+                1.0,
+                0.0
+            ],
+            "equilibriumPoint": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "stiffness": [
+                50.0,
+                50.0,
+                0.0
+            ],
+            "dampingCoefficient": [
+                1.0,
+                1.0,
+                0.0
+            ]
+        },
+        {
+            "ID": "12",
+            "object_name": "",
+            "type": "springJoint",
+            "springEnabled": [
+                1.0,
+                1.0,
+                0.0
+            ],
+            "equilibriumPoint": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "stiffness": [
+                50.0,
+                50.0,
+                0.0
+            ],
+            "dampingCoefficient": [
+                1.0,
+                1.0,
+                0.0
+            ]
+        },
+        {
+            "ID": "13",
+            "object_name": "",
+            "type": "springJoint",
+            "springEnabled": [
+                1.0,
+                1.0,
+                0.0
+            ],
+            "equilibriumPoint": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "stiffness": [
+                50.0,
+                50.0,
+                0.0
+            ],
+            "dampingCoefficient": [
+                1.0,
+                1.0,
+                0.0
+            ]
+        },
+        {
+            "ID": "14",
+            "object_name": "",
+            "type": "springJoint",
+            "springEnabled": [
+                1.0,
+                1.0,
+                0.0
+            ],
+            "equilibriumPoint": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "stiffness": [
+                50.0,
+                50.029998779296875,
+                0.0
+            ],
+            "dampingCoefficient": [
+                1.0,
+                1.0,
+                0.0
+            ]
+        },
+        {
+            "ID": "15",
+            "object_name": "",
+            "type": "springJoint",
+            "springEnabled": [
+                1.0,
+                1.0,
+                0.0
+            ],
+            "equilibriumPoint": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "stiffness": [
+                50.0,
+                50.0,
+                0.0
+            ],
+            "dampingCoefficient": [
+                1.0,
+                1.0,
+                0.0
+            ]
+        },
+        {
+            "ID": "16",
+            "object_name": "",
+            "type": "springJoint",
+            "springEnabled": [
+                1.0,
+                1.0,
+                0.0
+            ],
+            "equilibriumPoint": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "stiffness": [
+                50.0,
+                50.0,
+                0.0
+            ],
+            "dampingCoefficient": [
+                1.0,
+                1.0,
+                0.0
+            ]
+        },
+        {
+            "ID": "17",
+            "object_name": "",
+            "type": "springJoint",
+            "springEnabled": [
+                1.0,
+                1.0,
+                0.0
+            ],
+            "equilibriumPoint": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "stiffness": [
+                50.0,
+                50.0,
+                0.0
+            ],
+            "dampingCoefficient": [
+                1.0,
+                1.0,
+                0.0
+            ]
+        },
+        {
+            "ID": "18",
+            "object_name": "",
+            "type": "springJoint",
+            "springEnabled": [
+                1.0,
+                1.0,
+                0.0
+            ],
+            "equilibriumPoint": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "stiffness": [
+                50.0,
+                50.0,
+                0.0
+            ],
+            "dampingCoefficient": [
+                1.0,
+                1.0,
                 0.0
             ]
         }
