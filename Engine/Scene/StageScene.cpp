@@ -74,41 +74,6 @@ void StageScene::Initialize()
 	isDebt_ = false;
 	resetTime_ = 0.0f;
 	sizeTime_ = 0.0f;
-
-	for (uint32_t i = 0; i < springBoardCount_; i++) {
-		springTops_[i] = std::make_unique<SpringBoard>();
-		springAnchors_[i] = std::make_unique<yunity::Object3D>();
-		Vector3 pos;
-		if (i == 0) {
-			pos = { 103.0f, 2.5f, 0.0f };
-		}
-		else {
-			pos = { 395.0f, 26.0f, 0.0f };
-		}
-
-		springTops_[i]->Initialize(yunity::ModelManager::GetInstance()->CreateModel(obj, "Wood"), world_.get(), yunity::Collider::kAABB);
-		springTops_[i]->SetTranslation(pos);
-		springTops_[i]->SetMass(1.0f);
-		springTops_[i]->SetHitBoxSize({ 2.0f, 2.0f, 2.0f });
-		springTops_[i]->SetScale({ 6.5f, 1.0f, 8.5f });
-		springTops_[i]->SetCamera(camera_);
-		springTops_[i]->SetCollisionAttribute(kCollisionAttributeTrampoline);
-		springTops_[i]->SetFixedPosition(pos);
-		springTops_[i]->SetDirectionalLight(l);
-		world_->Add(springTops_[i].get());
-
-		springAnchors_[i]->Initialize(world_.get(), yunity::Collider::kAABB);
-		springAnchors_[i]->SetTranslation({ pos.x, pos.y - 1.0f, pos.z });
-		springAnchors_[i]->SetCamera(camera_);
-		springAnchors_[i]->SetCollisionAttribute(kCollisionAttributeFloor);
-		world_->Add(springAnchors_[i].get());
-
-		springTops_[i]->SetSpringJoint(springAnchors_[i].get());
-
-		springLines_[i] = std::make_unique<yunity::PrimitiveDrawer>();
-		springLines_[i].reset(yunity::PrimitiveDrawer::Create());
-		springLines_[i]->SetCamera(camera_);
-	}
 }
 
 void StageScene::Update()
@@ -166,10 +131,6 @@ void StageScene::Update()
 	}
 
 	world_->Solve();
-
-	for (uint32_t i = 0; i < springBoardCount_; i++) {
-		springTops_[i]->Update();
-	}
 
 	if (yunity::Input::GetInstance()->TriggerKey(DIK_LSHIFT)) {
 		isDebug_ ^= true;
@@ -304,10 +265,6 @@ void StageScene::Draw3D()
 
 	skydome_->Draw();
 	objectManager_->Draw();
-	for (uint32_t i = 0; i < springBoardCount_; i++) {
-		springLines_[i]->Draw(springTops_[i]->GetMatWorldTranslation(), springAnchors_[i]->GetMatWorldTranslation(), { 0.0f, 0.0f, 0.0f, 1.0f });
-		springTops_[i]->Draw();
-	}
 	start_->Draw(startWT_, textureTV_);
 	end_->Draw(endWT_, textureTV_);
 	player_->Draw();

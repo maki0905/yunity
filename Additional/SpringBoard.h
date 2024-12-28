@@ -8,6 +8,11 @@ class SpringBoard : public yunity::Object3D {
 public:
 
 	/// <summary>
+	/// 初期化
+	/// </summary>
+	void Initialize();
+
+	/// <summary>
 	/// 更新
 	/// </summary>
 	virtual void Update();
@@ -18,7 +23,7 @@ public:
 	/// スプリングジョイントの設定
 	/// </summary>
 	/// <param name="obj"></param>
-	void SetSpringJoint(yunity::Object3D* obj);
+	void SetSpringJoint();
 
 	/// <summary>
 	/// 衝突時のイベント
@@ -27,6 +32,8 @@ public:
 
 private:
 	std::unique_ptr<yunity::SpringJoint> springJoint_;
+
+	std::unique_ptr<yunity::Object3D> anchor_;
 
 	Vector3 fixedPosition_;
 

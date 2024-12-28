@@ -2,6 +2,18 @@
 
 
 
+void SpringBoard::Initialize()
+{
+	anchor_ = std::make_unique<yunity::Object3D>();
+	anchor_->Initialize(GetWorld(), Shape::kAABB);
+	anchor_->SetCollisionAttribute(kCollisionAttributeFloor);
+	//anchor_->SetIsTrigger(true);
+	anchor_->SetPosition({worldTransform_.translation_.x, worldTransform_.translation_.y - 1.0f, worldTransform_.translation_.z });
+	GetWorld()->Add(anchor_.get());
+	SetSpringJoint();
+	fixedPosition_ = worldTransform_.translation_;
+}
+
 void SpringBoard::Update()
 {
 	worldTransform_.translation_.x = fixedPosition_.x;
@@ -14,10 +26,10 @@ void SpringBoard::Update()
 
 }
 
-void SpringBoard::SetSpringJoint(Object3D* obj)
+void SpringBoard::SetSpringJoint()
 {
 	springJoint_ = std::make_unique<yunity::SpringJoint>();
-	springJoint_->CreateSpringJoint(this, obj);
+	springJoint_->CreateSpringJoint(this, anchor_.get());
 	springJoint_->SetDamping(1, damping_);
 	springJoint_->SetStiffness(1, 20.0f);
 	springJoint_->SetEquilibriumPoint(1, equilibriumPoint_);

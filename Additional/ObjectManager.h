@@ -7,6 +7,7 @@
 #include "ForceField.h"
 #include "Pillar.h"
 #include "RotationCube.h"
+#include "SpringBoard.h"
 
 class ObjectManager : public yunity::BaseObjectManager {
 public:

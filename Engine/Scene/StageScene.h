@@ -116,11 +116,5 @@ private:
 	float time_;
 	Vector3 playerPos_;
 	Vector3 cameraPos_;
-
-	// ジャンプ台
-	static const uint32_t springBoardCount_ = 2;
-	std::array<std::unique_ptr<SpringBoard>, springBoardCount_> springTops_;
-	std::array<std::unique_ptr<yunity::Object3D>, springBoardCount_> springAnchors_;
-	std::array<std::unique_ptr<yunity::PrimitiveDrawer>, springBoardCount_> springLines_;
 };
 

@@ -10,5 +10,6 @@ enum class Tag {
 	kPillar,
 	kClockwise,
 	kCounterClockwise,
+	kSpringBoard,
 	kTagCount
 };

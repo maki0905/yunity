@@ -65,6 +65,12 @@ void ObjectManager::Load(const std::string& objectFileName, yunity::Camera* came
 			AddObject(std::move(newObject));
 
 		}
+		else if (objectData.tag_ == Tag::kSpringBoard) {
+			std::unique_ptr<SpringBoard> newObject = std::make_unique<SpringBoard>();
+			SetInitalizeData(objectData, newObject.get(), camera);
+			newObject->Initialize();
+			AddObject(std::move(newObject));
+		}
 		else {
 			CreateBasicObject(objectData, camera, world);
 		}
