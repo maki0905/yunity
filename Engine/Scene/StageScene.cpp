@@ -114,7 +114,7 @@ void StageScene::Initialize()
 		bridge_[i] = std::make_unique<yunity::Object3D>();
 		bridge_[i]->SetPosition(Vector3{ 868.677f + i * 15.0f,  53.5f, 0.0f });
 		if (i > 0 && i < bridgeCount_ - 1) {
-			bridge_[i]->SetMass(5.0f);
+			bridge_[i]->SetMass(10.0f);
 		}
 		bridge_[i]->Initialize(yunity::ModelManager::GetInstance()->CreateModel(obj,/* ""*/"Wood"), world_.get(), yunity::Collider::Shape::kAABB);
 		bridge_[i]->SetCamera(camera_);
@@ -150,7 +150,7 @@ void StageScene::Initialize()
 		bridge2_[i] = std::make_unique<yunity::Object3D>();
 		bridge2_[i]->SetPosition(Vector3{ 751.0f + i * 5.0f,  53.5f, 0.0f });
 		if (i > 0 && i < bridge2Count_ - 1) {
-			bridge2_[i]->SetMass(2.0f);
+			bridge2_[i]->SetMass(5.0f);
 		}
 		bridge2_[i]->Initialize(yunity::ModelManager::GetInstance()->CreateModel(obj,/* ""*/"Wood"), world_.get(), yunity::Collider::Shape::kAABB);
 		bridge2_[i]->SetCamera(camera_);

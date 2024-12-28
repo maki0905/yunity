@@ -108,11 +108,10 @@ private:
 	const uint32_t limitTime_ = 30;
 
 	// TV
-	static const uint32_t tvCount_ = 3;
-	std::unique_ptr<yunity::Model> models_[tvCount_];
-	yunity::WorldTransform TVworldTransform_[tvCount_];
-	uint32_t textureTV_[3];
-	bool isActiveTV_[3];
+	std::unique_ptr<yunity::Model> TVmodel_;	
+	yunity::WorldTransform TVworldTransform_;
+	uint32_t textureTV_;
+	bool isActiveTV_;
 
 	// プレイヤー
 	std::unique_ptr<Player> player_;
@@ -122,8 +121,8 @@ private:
 	int preNum_;
 
 	// TV出現演出用
-	Easing grow_[tvCount_];
-	Easing shrink_[tvCount_];
+	Easing grow_;
+	Easing shrink_;
 
 	// カメラワーク用
 	static const uint32_t cameraworkCount_ = 2;

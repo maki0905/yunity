@@ -54,22 +54,19 @@ void TitleScene::Initialize()
 	isStart_ = false;
 
 	TVConstant tvConstant;
-	for (uint32_t index = 0; index < tvCount_; index++) {
-		models_[index] = std::make_unique<yunity::Model>();
-		models_[index].reset(yunity::ModelManager::GetInstance()->CreateModel(obj, "TV"));
-		models_[index]->SetCamera(camera_);
-		models_[index]->SetEnableLighting(false);
-		TVworldTransform_[index].Initialize();
-		TVworldTransform_[index].translation_ = { tvConstant.translation.x + tvConstant.addition * index, tvConstant.translation.y, tvConstant.translation.z };
-		TVworldTransform_[index].rotation_.x = tvConstant.rotationX;
-		TVworldTransform_[index].scale_ = { 0.0f, 0.0f, 0.0f };
-		isActiveTV_[index] = false;
-		grow_[index] = { false, 0.0f };
-		shrink_[index] = { false, 0.0f };
-	}
-	textureTV_[0] = yunity::TextureManager::Load("Models/TV/TV1.png");
-	textureTV_[1] = yunity::TextureManager::Load("Models/TV/TV2.png");
-	textureTV_[2] = yunity::TextureManager::Load("Models/TV/TV3.png");
+	TVmodel_ = std::make_unique<yunity::Model>();
+	TVmodel_.reset(yunity::ModelManager::GetInstance()->CreateModel(obj, "TV"));
+	TVmodel_->SetCamera(camera_);
+	TVmodel_->SetEnableLighting(false);
+	TVworldTransform_.Initialize();
+	TVworldTransform_.translation_ = { tvConstant.translation.x , tvConstant.translation.y, tvConstant.translation.z };
+	TVworldTransform_.rotation_.x = tvConstant.rotationX;
+	TVworldTransform_.scale_ = { 0.0f, 0.0f, 0.0f };
+	isActiveTV_ = false;
+	grow_ = { false, 0.0f };
+	shrink_ = { false, 0.0f };
+	
+	textureTV_ = yunity::TextureManager::Load("Models/TV/TV1.png");
 
 	preNum_ = CommonData::GetInstance()->stageNum_;
 	camera_->SetTranslate(cameraPos_);
@@ -89,16 +86,14 @@ void TitleScene::Update()
 
 	if (player_->GetSelect()) {
 		if (preNum_ != CommonData::GetInstance()->stageNum_) {
-			grow_[CommonData::GetInstance()->stageNum_] = { true, 0.0f, TVworldTransform_[CommonData::GetInstance()->stageNum_].scale_ };
+			grow_ = { true, 0.0f, TVworldTransform_.scale_ };
 		}
 
-		for (int index = 0; index < tvCount_; index++) {
-			if (index != CommonData::GetInstance()->stageNum_) {
-				grow_[index] = { false, 0.0f };
-			}
-		}
+	/*	if (index != CommonData::GetInstance()->stageNum_) {
+			grow_ = { false, 0.0f };
+		}*/
 
-		isActiveTV_[CommonData::GetInstance()->stageNum_] = true;
+		isActiveTV_ = true;
 
 		if (yunity::Input::GetInstance()->IsControllerConnected()) {
 			if (yunity::Input::GetInstance()->GetJoystickState(0, pad_)) {
@@ -118,10 +113,8 @@ void TitleScene::Update()
 		}
 	}
 	else {
-		for (uint32_t index = 0; index < tvCount_; index++) {
-			if (isActiveTV_[index] && !shrink_[index].flag) {
-				shrink_[index] = { true, 0.0f, TVworldTransform_[index].scale_ };
-			}
+		if (isActiveTV_ && !shrink_.flag) {
+			shrink_ = { true, 0.0f, TVworldTransform_.scale_ };
 		}
 
 	}
@@ -180,30 +173,26 @@ void TitleScene::Update()
 		yunity::SceneManager::GetInstance()->ChangeScene("GAMESTAGE");
 	}
 
-	for (uint32_t index = 0; index < tvCount_; index++) {
-		if (grow_[index].flag) {
-			grow_[index].t += yunity::fixedTimeStep_;
-			if (grow_[index].t > 1.0f) {
-				grow_[index].flag = false;
-			}
-			TVworldTransform_[index].scale_ = Lerp({ 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f, 1.0f }, std::clamp(grow_[index].t, 0.0f, 1.0f));
+	if (grow_.flag) {
+		grow_.t += yunity::fixedTimeStep_;
+		if (grow_.t > 1.0f) {
+			grow_.flag = false;
 		}
-		if (shrink_[index].flag) {
-			shrink_[index].t += yunity::fixedTimeStep_;
-			if (shrink_[index].t > 1.0f) {
-				shrink_[index].flag = false;
-				isActiveTV_[index] = false;
-			}
-			TVworldTransform_[index].scale_ = Lerp(shrink_[index].scale, { 0.0f, 0.0f, 0.0f }, std::clamp(shrink_[index].t, 0.0f, 1.0f));
+		TVworldTransform_.scale_ = Lerp({ 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f, 1.0f }, std::clamp(grow_.t, 0.0f, 1.0f));
+	}
+	if (shrink_.flag) {
+		shrink_.t += yunity::fixedTimeStep_;
+		if (shrink_.t > 1.0f) {
+			shrink_.flag = false;
+			isActiveTV_ = false;
 		}
+		TVworldTransform_.scale_ = Lerp(shrink_.scale, { 0.0f, 0.0f, 0.0f }, std::clamp(shrink_.t, 0.0f, 1.0f));
 	}
 
 	preNum_ = CommonData::GetInstance()->stageNum_;
 	CommonData::GetInstance()->stageNum_ = -1;
 
-	for (uint32_t index = 0; index < tvCount_; index++) {
-		TVworldTransform_[index].UpdateMatrix();
-	}
+	TVworldTransform_.UpdateMatrix();
 
 	world_->Solve();
 
@@ -252,10 +241,8 @@ void TitleScene::Draw3D()
 	player_->Draw();
 	model_->Draw(worldTransform_);
 
-	for (uint32_t index = 0; index < tvCount_; index++) {
-		if (isActiveTV_[index]) {
-			models_[index]->Draw(TVworldTransform_[index], textureTV_[index]);
-		}
+	if (isActiveTV_) {
+		TVmodel_->Draw(TVworldTransform_, textureTV_);
 	}
 }
 

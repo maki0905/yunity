@@ -129,13 +129,13 @@ private:
 	std::array<std::unique_ptr<yunity::PrimitiveDrawer>, bridgeCount_ - 1> bridgeLines_;
 	std::array<std::unique_ptr<yunity::SpringJoint>, bridgeCount_ - 1> bridgesJoint_;
 	const float stiffness_ = 5.0f;
-	const float damper_ = 0.1f;
+	const float damper_ = 1.0f;
 
 	static const uint32_t bridge2Count_ = 16;
 	std::array<std::unique_ptr<yunity::Object3D>, bridge2Count_> bridge2_;
 	std::array<std::unique_ptr<yunity::PrimitiveDrawer>, bridge2Count_ - 1> bridge2Lines_;
 	std::array<std::unique_ptr<yunity::SpringJoint>, bridge2Count_ - 1> bridges2Joint_;
 	const float stiffness2_ = 10.0f;
-	const float damper2_ = 0.1f;
+	const float damper2_ = 1.0f;
 };
 

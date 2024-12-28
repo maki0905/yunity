@@ -38,7 +38,7 @@ void ForceField::OnTriggerEvent()
 {
 	if (isWind_) {
 		if (GetHitBody()->GetCollisionAttribute() == kCollisionAttributeTrampoline) {
-			GetHitBody()->AddForce({ 0.0f, 4.0f, 0.0f }, ForceMode::kImpulse);
+			GetHitBody()->AddForce({ 0.0f, 10.0f, 0.0f }, ForceMode::kImpulse);
 		}
 	}
 }
