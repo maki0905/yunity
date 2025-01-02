@@ -1,6 +1,6 @@
 #include "SpringBoard.h"
 
-
+#include "ModelManager.h"
 
 void SpringBoard::Initialize()
 {
@@ -12,6 +12,12 @@ void SpringBoard::Initialize()
 	GetWorld()->Add(anchor_.get());
 	SetSpringJoint();
 	fixedPosition_ = worldTransform_.translation_;
+
+	springModel_ = std::make_unique<yunity::Model>();
+	springModel_.reset((yunity::ModelManager::GetInstance()->CreateModel(obj, "Spring")));
+	springModel_->SetCamera(camera_);
+	springWorldTransform_.Initialize();
+	springWorldTransform_.translation_ = worldTransform_.translation_;
 }
 
 void SpringBoard::Update()
@@ -23,7 +29,15 @@ void SpringBoard::Update()
 		time_ = std::clamp(time_, 0.0f, 1.0f);
 		springJoint_->SetEquilibriumPoint(1, Lerp({ 0.0f, equilibriumPoint_, 0.0f }, { 0.0f, 0.0f, 0.0f }, time_).y);
 	}
+	float scale = worldTransform_.translation_.y - fixedPosition_.y;
+	springWorldTransform_.scale_.y = 1.0f + scale;
+	springWorldTransform_.UpdateMatrix();
+}
 
+void SpringBoard::Draw()
+{
+	model_->Draw(worldTransform_);
+	springModel_->Draw(springWorldTransform_);
 }
 
 void SpringBoard::SetSpringJoint()

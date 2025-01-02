@@ -15,7 +15,12 @@ public:
 	/// <summary>
 	/// 更新
 	/// </summary>
-	virtual void Update();
+	void Update() override;
+
+	/// <summary>
+	/// 描画
+	/// </summary>
+	void Draw() override;
 
 	void SetFixedPosition(Vector3 fixedPosition) { fixedPosition_ = fixedPosition; }
 
@@ -34,6 +39,9 @@ private:
 	std::unique_ptr<yunity::SpringJoint> springJoint_;
 
 	std::unique_ptr<yunity::Object3D> anchor_;
+
+	std::unique_ptr<yunity::Model> springModel_;
+	yunity::WorldTransform springWorldTransform_;
 
 	Vector3 fixedPosition_;
 

@@ -14,6 +14,7 @@ void ObjectManager::Load(const std::string& objectFileName, yunity::Camera* came
 	}
 
 	world_ = world;
+	camera_ = camera;
 
 	for (auto& objectData : levelData->objects) {
 		if (objectData.tag_ == Tag::kMoveFloor_L || objectData.tag_ == Tag::kMoveFloor_R) {

@@ -2,6 +2,7 @@
 
 #include "ModelManager.h"
 
+
 void yunity::BaseObjectManager::Initialize(Camera* camera)
 {
 	objects_.clear();
@@ -9,13 +10,9 @@ void yunity::BaseObjectManager::Initialize(Camera* camera)
 	for (uint32_t i = 0; i < jointNumber_; i++) {
 		jointData_[i].objA = nullptr;
 		jointData_[i].objB = nullptr;
-		springLines_[i].objA = nullptr;
-		springLines_[i].objB = nullptr;
-		springLines_[i].line = std::make_unique<PrimitiveDrawer>();
-		springLines_[i].line.reset(PrimitiveDrawer::Create());
-		springLines_[i].line->SetCamera(camera);
-		springLines_[i].isActive_ = false;
 	}
+	springLines_.clear();
+	camera_ = camera;
 
 }
 
@@ -30,8 +27,8 @@ void yunity::BaseObjectManager::Draw()
 {
 
 	for (auto& springLine : springLines_) {
-		if (springLine.isActive_) {
-			springLine.line->Draw(springLine.objA->GetMatWorldTranslation(), springLine.objB->GetMatWorldTranslation(), { 0.0f, 0.0f, 0.0f, 1.0f });
+		if (springLine->isActive_) {
+			springLine->line->Draw(springLine->objA->GetMatWorldTranslation(), springLine->objB->GetMatWorldTranslation(), { 0.0f, 0.0f, 0.0f, 1.0f });
 		}
 	}
 
@@ -50,6 +47,7 @@ void yunity::BaseObjectManager::Load(const std::string& objectFileName, Camera* 
 	levelData = LevelEditor::GetInstance()->LoadFile(objectFileName);
 	JointData* jointData = nullptr;
 	bool jointDataCheck = false;
+	camera_ = camera;
 	if (jointFileName.size() != 0) {
 		jointData = LevelEditor::GetInstance()->LoadJointFile(jointFileName);
 		jointDataCheck = true;
@@ -226,6 +224,7 @@ void yunity::BaseObjectManager::CreateJoint()
 			break;
 		case JointType::kSpring:
 			InitializeSpringJoint(joint);
+			InitializeSpringLine(joint);
 			break;
 		case JointType::kPulley:
 			InitializePulleyJoint(joint);
@@ -247,6 +246,18 @@ void yunity::BaseObjectManager::InitializeSpringJoint(const JointObject& joint)
 	}
 	joints_.emplace_back(std::move(springJoint));
 	world_->AddJoint(joints_.back().get());
+}
+
+void yunity::BaseObjectManager::InitializeSpringLine(const JointObject& joint)
+{
+	std::unique_ptr<SpringJointLine> line = std::make_unique<SpringJointLine>();
+	line->objA = joint.objA;
+	line->objB = joint.objB;
+	line->isActive_ = true;
+	line->line = std::make_unique<PrimitiveDrawer>();
+	line->line.reset(PrimitiveDrawer::Create());
+	line->line->SetCamera(camera_);
+	springLines_.push_back(std::move(line));
 }
 
 void yunity::BaseObjectManager::InitializePulleyJoint(const JointObject& joint)

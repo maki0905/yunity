@@ -1,6 +1,7 @@
 #pragma once
 
 #include <unordered_map>
+#include <memory>
 #include <vector>
 #include <string>
 
@@ -168,6 +169,13 @@ namespace yunity {
 		void InitializeSpringJoint(const JointObject& joint);
 
 		/// <summary>
+		/// Spring1用のLine初期化
+		/// </summary>
+		/// <param name="joint"></param>
+		/// <param name="camera"></param>
+		void InitializeSpringLine(const JointObject& joint);
+
+		/// <summary>
 		/// PulleyJoint初期化
 		/// </summary>
 		/// <param name="joint"></param>
@@ -177,9 +185,10 @@ namespace yunity {
 		std::vector<std::unique_ptr<Object3D>> objects_;
 		std::vector<std::unique_ptr<Joint>> joints_;
 		World* world_;
+		Camera* camera_;
 		static const uint32_t jointNumber_ = 100;
 		std::array<JointObject, jointNumber_> jointData_;
-		std::array<SpringJointLine, jointNumber_> springLines_;
+		std::vector<std::unique_ptr<SpringJointLine>> springLines_;
 	};
 
 }
