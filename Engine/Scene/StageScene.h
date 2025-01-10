@@ -22,7 +22,7 @@
 class StageScene : public yunity::IScene
 {
 	struct EndConstant {
-		const Vector3 pos = { 997.0f, 60.0f, 10.0f };
+		const Vector3 pos = { 1145.0f, 60.0f, 10.0f };
 		const Vector3 scale = { 1.5f, 1.5f, 1.5f };
 	};
 

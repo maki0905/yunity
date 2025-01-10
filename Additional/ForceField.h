@@ -32,6 +32,6 @@ private:
 	const float limitTime_ = 5.0f;
 	float time_ = 0;
 	const float force_ = 10.0f;
-	//std::unique_ptr<WindParticle> windParticle_;
+	std::unique_ptr<WindParticle> windParticle_;
 
 };

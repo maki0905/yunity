@@ -152,7 +152,7 @@ void Player::Update()
 					AddForce(move, Body::ForceMode::kImpulse);
 				}
 
-				if ((pad_.Gamepad.wButtons & XINPUT_GAMEPAD_A) && !(prePad_.Gamepad.wButtons & XINPUT_GAMEPAD_A)) {
+				if ((pad_.Gamepad.wButtons & XINPUT_GAMEPAD_A) && !(prePad_.Gamepad.wButtons & XINPUT_GAMEPAD_A) && !isSelect_) {
 					if (!isJunp_) {
 						isJunp_ = true;
 						AddForce({ 0.0f, 35.0f, 0.0f }, Body::ForceMode::kImpulse);
@@ -376,6 +376,9 @@ void Player::OnTriggerEvent()
 	if (GetHitBody()->GetCollisionAttribute() == kCollisionAttributeCoin) {
 		scoreUI_->AddScore(10);
 	}
+	if (GetHitBody()->GetCollisionAttribute() == kCollisionAttributeCheckPoint) {
+		
+	}
 }
 
 void Player::ResetPos(const Vector3& pos)
@@ -386,7 +389,6 @@ void Player::ResetPos(const Vector3& pos)
 	apexWorldTransform_.translation_ = worldTransform_.translation_;
 	isWire_ = false;
 	isActive_ = true;
-	scoreUI_->Reset();
 }
 
 bool Player::Result()
@@ -399,7 +401,6 @@ bool Player::Result()
 	else if (displayTime_ != 1.0f) {
 		displayTime_ += 1.0f / 180.0f;
 		displayTime_ = std::clamp(displayTime_, 0.0f, 1.0f);
-		scoreUI_->SetDisplayHiScore(true);
 		if (scoreUI_->GetScore() > CommonData::GetInstance()->hiScore_) {
 			CommonData::GetInstance()->hiScore_ = scoreUI_->GetScore();
 			scoreUI_->SetDisplayHiScore(true);

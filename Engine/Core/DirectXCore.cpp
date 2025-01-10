@@ -151,9 +151,9 @@ void yunity::DirectXCore::PostDrawSwapchain()
 void yunity::DirectXCore::PreDrawShadow()
 {
 	commandList_->BarrierChange(shadowBuffer_->GetDepthStencil(), D3D12_RESOURCE_STATE_GENERIC_READ, D3D12_RESOURCE_STATE_DEPTH_WRITE);
-	commandList_->ClearDepthStencilView(shadowBuffer_->GetDescriptorHeap());
+	commandList_->ClearDepthStencilView(shadowBuffer_->GetCpuHandle());
 	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle =
-		D3D12_CPU_DESCRIPTOR_HANDLE(shadowBuffer_->GetDescriptorHeap()->GetCPUDescriptorHandleForHeapStart());
+		D3D12_CPU_DESCRIPTOR_HANDLE(shadowBuffer_->GetCpuHandle());
 	commandList_->OMSetRenderTargets(0, nullptr, &dsvHandle);
 	commandList_->RSSetViewports(float(windowWidth_), float(windowHeight_));
 	commandList_->RSSetScissorRects(windowWidth_, windowHeight_);

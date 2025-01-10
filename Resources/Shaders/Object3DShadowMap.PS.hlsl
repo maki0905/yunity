@@ -117,10 +117,11 @@ PixelShaderOutput main(VertexShaderOutput input)
     float32_t sm = gShadowMap.Sample(gSampler2, input.shadowMapPosition.xy);
     float32_t sma = (input.shadowMapPosition.z - 0.005f < sm) ? 1.0f : 0.5f;
     
-    output.color *= sma;
+    output.color.rgb *= sma;
     
     //output.color.rgb = environamentColor.rgb;
     
     return output;
+
 }
 

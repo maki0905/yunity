@@ -71,6 +71,12 @@ namespace yunity {
 		void ClearDepthStencilView(ID3D12DescriptorHeap* dsvHeap);
 
 		/// <summary>
+		/// ClearRenderTargetViewの設定
+		/// </summary>
+		/// <param name="dsvHandle"></param>
+		void ClearDepthStencilView(D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle);
+
+		/// <summary>
 		/// ビューポート設定
 		/// </summary>
 		/// <param name="width">幅</param>

@@ -22,12 +22,17 @@ void yunity::DepthBuffer::Initialize(DXGI_FORMAT format, D3D12_RESOURCE_STATES s
 	// 深度ビュー用デスクリプタヒープ作成。DSV用のヒープでディスクリプタの数は1。
 	dsvHeap_ = DirectXCore::GetInstance()->GetDescriptorHeap(DirectXCore::HeapType::kDSV);
 
+	DescriptorHandle descriptorHandle = dsvHeap_->Alloc();
+
+	cpuHandle_ = descriptorHandle.GetCPUHandle();
+	gpuHandle_ = descriptorHandle.GetGPUHandle();
+
 	// 深度ビュー作成
 	D3D12_DEPTH_STENCIL_VIEW_DESC dsvDesc{};
 	dsvDesc.Format = format/*DXGI_FORMAT_D24_UNORM_S8_UINT*/; // Format。基本的にはResourceに合わせる
 	dsvDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D; // 2dTexture
 	// DSVHeapの先頭にDSVをつくる
-	Device::GetInstance()->GetDevice()->CreateDepthStencilView(depthStencilResource_.Get(), &dsvDesc, /*dsvHeap_->GetHeapPointer()->GetCPUDescriptorHandleForHeapStart()*/dsvHeap_->Alloc().GetCPUHandle());
+	Device::GetInstance()->GetDevice()->CreateDepthStencilView(depthStencilResource_.Get(), &dsvDesc, /*dsvHeap_->GetHeapPointer()->GetCPUDescriptorHandleForHeapStart()*//*dsvHeap_->Alloc().GetCPUHandle()*/descriptorHandle.GetCPUHandle());
 }
 
 void yunity::DepthBuffer::ClearDepthView()

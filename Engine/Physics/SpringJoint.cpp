@@ -55,15 +55,26 @@ void yunity::SpringJoint::SetEquilibriumPoint(int index, float value)
 
 void yunity::SpringJoint::Solve()
 {
-	Vector3 force;
+	Vector3 force1;
+	Vector3 force2;
 	for (int index = 0; index < 3; index++) {
 		if (!springEnabled_[index]) {
 			continue;
 		}
-		force = Spring(bodyA_, bodyB_, equilibriumPoint_[index], stiffness_[index], dampingCoefficient_[index]);
-		bodyA_->AddForce(force, Body::ForceMode::kForce);
-		force = Spring(bodyB_, bodyA_, equilibriumPoint_[index], stiffness_[index], dampingCoefficient_[index]);
-		bodyB_->AddForce(force, Body::ForceMode::kForce);
+		force1 = Spring(bodyA_, bodyB_, equilibriumPoint_[index], stiffness_[index], dampingCoefficient_[index]);
+		force2 = Spring(bodyB_, bodyA_, equilibriumPoint_[index], stiffness_[index], dampingCoefficient_[index]);
+		if (index == 0) {
+			bodyA_->AddForce(Vector3(force1.x, 0.0f, 0.0f), Body::ForceMode::kForce);
+			bodyB_->AddForce(Vector3(force2.x, 0.0f, 0.0f), Body::ForceMode::kForce);
+		}
+		else if (index == 1) {
+			bodyA_->AddForce(Vector3(0.0f, force1.y, 0.0f), Body::ForceMode::kForce);
+			bodyB_->AddForce(Vector3(0.0f, force2.y, 0.0f), Body::ForceMode::kForce);
+		}
+		else {
+			bodyA_->AddForce(Vector3(0.0f, 0.0f, force1.z), Body::ForceMode::kForce);
+			bodyB_->AddForce(Vector3(0.0f, 0.0f, force2.z), Body::ForceMode::kForce);
+		}
 
 	}
 

@@ -369,6 +369,16 @@ Matrix4x4 MakeOrthographicMatrix(
     float left, float top, float right, float bottom, float nearClip, float farClip);
 
 /// <summary>
+/// 正射影行列
+/// </summary>
+/// <param name="viewWidth"></param>
+/// <param name="viewHight"></param>
+/// <param name="nearZ"></param>
+/// <param name="farZ"></param>
+/// <returns></returns>
+Matrix4x4 MakeOrthographicMatrix(float viewWidth, float viewHight, float nearZ, float farZ);
+
+/// <summary>
 /// ビューポート変更行列
 /// </summary>
 /// <param name="left"></param>

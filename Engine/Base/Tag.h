@@ -11,5 +11,7 @@ enum class Tag {
 	kClockwise,
 	kCounterClockwise,
 	kSpringBoard,
+	kSignboard,
+	kSelectTV,
 	kTagCount
 };

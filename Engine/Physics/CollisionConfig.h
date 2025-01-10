@@ -25,4 +25,6 @@ const uint32_t kCollisionAttributeTV3 = 0b1 << 10;
 const uint32_t kCollisionAttributeForceField = 0b1 << 11;
 // ポール
 const uint32_t kCollisionAttributePillar = 0b1 << 12;
+// チェックポイント
+const uint32_t kCollisionAttributeCheckPoint = 0b1 << 13;
 

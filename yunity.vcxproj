@@ -108,6 +108,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Additional\CheckPoint.cpp" />
     <ClCompile Include="Additional\Cloth.cpp" />
     <ClCompile Include="Additional\Coin.cpp" />
     <ClCompile Include="Additional\FloatingParticle.cpp" />
@@ -118,6 +119,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Additional\PointParticle.cpp" />
     <ClCompile Include="Additional\RotationCube.cpp" />
     <ClCompile Include="Additional\Score.cpp" />
+    <ClCompile Include="Additional\SelectTV.cpp" />
+    <ClCompile Include="Additional\Signboard.cpp" />
     <ClCompile Include="Additional\SmokeParticle.cpp" />
     <ClCompile Include="Additional\SpringBoard.cpp" />
     <ClCompile Include="Additional\StartObject.cpp" />
@@ -206,6 +209,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Additional\MoveFloor.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Additional\CheckPoint.h" />
     <ClInclude Include="Additional\Cloth.h" />
     <ClInclude Include="Additional\Coin.h" />
     <ClInclude Include="Additional\EndObject.h" />
@@ -217,6 +221,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Additional\PointParticle.h" />
     <ClInclude Include="Additional\RotationCube.h" />
     <ClInclude Include="Additional\Score.h" />
+    <ClInclude Include="Additional\SelectTV.h" />
+    <ClInclude Include="Additional\Signboard.h" />
     <ClInclude Include="Additional\SmokeParticle.h" />
     <ClInclude Include="Additional\SpringBoard.h" />
     <ClInclude Include="Additional\StartObject.h" />

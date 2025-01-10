@@ -159,5 +159,7 @@ private:
 	Random::RandomNumberGenerator rng;
 	std::array<std::unique_ptr<FireworksParticle>, 10> fireworksParticles_;
 
+	Vector3 spawnPoint_;
+
 };
 

@@ -8,6 +8,8 @@
 #include "Pillar.h"
 #include "RotationCube.h"
 #include "SpringBoard.h"
+#include "Signboard.h"
+#include "SelectTV.h"
 
 class ObjectManager : public yunity::BaseObjectManager {
 public:

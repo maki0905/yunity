@@ -617,6 +617,24 @@ Matrix4x4 MakeOrthographicMatrix(
 	return result;
 }
 
+Matrix4x4 MakeOrthographicMatrix(float viewWidth, float viewHight, float nearZ, float farZ)
+{
+	Matrix4x4 result;
+	for (int line = 0; line < 4; line++) {
+		for (int column = 0; column < 4; column++) {
+			result.m[line][column] = 0;
+		}
+	}
+
+	result.m[0][0] = 2.0f / viewWidth;
+	result.m[1][1] = 2.0f / viewHight;
+	result.m[2][2] = 1.0f / farZ - nearZ;
+	result.m[3][3] = 1.0f;
+	result.m[3][2] = -nearZ / (farZ - nearZ);
+
+	return result;
+}
+
 Matrix4x4 MakeViewportMatrix(
 	float left, float top, float width, float height, float minDepth, float maxDepth) {
 	Matrix4x4 result;

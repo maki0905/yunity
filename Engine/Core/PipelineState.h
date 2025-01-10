@@ -119,6 +119,12 @@ namespace yunity {
         void SetCullMode(D3D12_CULL_MODE cullMode);
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="format"></param>
+        void SetDSVFormat(DXGI_FORMAT format);
+
+        /// <summary>
         /// ファイナライザ
         /// </summary>
         void Finalize();

@@ -103,6 +103,11 @@ void yunity::PipelineState::SetCullMode(D3D12_CULL_MODE cullMode)
 	psoDesc_.RasterizerState.CullMode = cullMode;
 }
 
+void yunity::PipelineState::SetDSVFormat(DXGI_FORMAT format)
+{
+	psoDesc_.DSVFormat = format;
+}
+
 void yunity::PipelineState::Finalize()
 {
 	HRESULT result = S_FALSE;

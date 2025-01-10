@@ -94,6 +94,9 @@ void yunity::CommandList::ClearDepthStencilView(ID3D12DescriptorHeap* dsvHeap)
 	commandList_->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 }
 
+void yunity::CommandList::ClearDepthStencilView(D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle) {
+	commandList_->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
+}
 
 void yunity::CommandList::RSSetViewports(float width, float height)
 {

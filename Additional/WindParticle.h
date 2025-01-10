@@ -9,11 +9,12 @@ class WindParticle : public yunity::BaseParticle {
 public:
 	void Initialize(yunity::Camera* camera);
 	void Spawn(const Vector3& position) override;
+	void Clear();
 	void Update() override;
 private:
 	Random::RandomNumberGenerator rng;
 	// 上昇量
-	const float ascent_ = 0.1f;
+	const float ascent_ = 1.0f;
 	// 生存時間
-	const float lifeTime_ = 2.0f;
+	const float lifeTime_ = 10.0f;
 };

@@ -37,12 +37,6 @@ class TitleScene : public yunity::IScene
 		const float rotationX = -15.0f * DegToRad();
 	};
 
-	struct  Signboardconstant {
-		const float limit = 10.0f;
-		const float addition = 0.5f;
-		const Vector3 pos = { 25.0f, -7.0f, 6.0f };
-	};
-
 public:
 	/// <summary>
 	/// 初期化
@@ -73,8 +67,6 @@ private:
 	// カメラ
 	yunity::Camera* camera_;
 	const Vector3 cameraPos_ = { 0.0f, 10.0f, -50.0f };
-	const Vector3 endCamerPos = { 0.0f, 20.0f, -60.0f };
-	const float fixedEndCameraPosZ = 12.0f;
 
 	// コントローラー
 	XINPUT_STATE pad_;
@@ -91,13 +83,6 @@ private:
 	std::unique_ptr<yunity::Skydome> skydome_;
 	const Vector3 skydomeScale_ = { 5.0f, 5.0f, 5.0f };
 
-	// 看板
-	std::unique_ptr<yunity::Model> model_ = nullptr;
-	yunity::WorldTransform worldTransform_;
-	Signboardconstant signboardconstant_;
-	float amplitude_ = signboardconstant_.addition;
-	float wavelength_ = 0.0f;
-
 	// ボタンスプライト
 	std::unique_ptr<yunity::Sprite> bottonSprite_ = nullptr;
 	std::unique_ptr<yunity::Sprite> bottonPushSprite_ = nullptr;
@@ -107,29 +92,13 @@ private:
 	uint32_t time_;
 	const uint32_t limitTime_ = 30;
 
-	// TV
-	std::unique_ptr<yunity::Model> TVmodel_;	
-	yunity::WorldTransform TVworldTransform_;
-	uint32_t textureTV_;
-	bool isActiveTV_;
-
 	// プレイヤー
 	std::unique_ptr<Player> player_;
 	const float targetPoint_ = 35.0f;
 	const float playerMass_ = 2.0f;
+
+
 	
-	int preNum_;
-
-	// TV出現演出用
-	Easing grow_;
-	Easing shrink_;
-
-	// カメラワーク用
-	static const uint32_t cameraworkCount_ = 2;
-	bool isMoveCamera[cameraworkCount_];
-	float moveCameraTimer_;
-	Vector3 oldCameraPos_;
-
-	//std::unique_ptr<Coin> coin_;
+	//int preNum_;
 };
 

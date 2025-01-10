@@ -19,7 +19,7 @@ void WindParticle::Spawn(const Vector3& position)
 	if (particles_.size() < 100) {
 		Particle particle;
 		particle.transform.translate = position;
-		particle.transform.translate.x += rng.NextFloatRange(-5.0f, 5.0f);
+		particle.transform.translate.x += rng.NextFloatRange(-35.0f, 35.0f);
 		particle.transform.translate.y += rng.NextFloatRange(-2.0f, 2.0f);
 		particle.transform.scale = { 0.2f, 1.0f, 1.0f };
 		particle.particleForCPU.color = { 1.0f, 1.0f, 1.0f , 1.0f };
@@ -27,6 +27,11 @@ void WindParticle::Spawn(const Vector3& position)
 		particle.currentTime = 0.0f;
 		particles_.push_back(particle);
 	}
+}
+
+void WindParticle::Clear()
+{
+	particles_.clear();
 }
 
 void WindParticle::Update()

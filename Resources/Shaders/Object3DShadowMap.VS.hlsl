@@ -21,7 +21,7 @@ VertexShaderOutput main(VertexShaderInput input)
     float32_t4 pos = float32_t4(input.position.xyz, 1.0f);
     pos = mul(pos, gWorldTransform.world);
     pos = mul(pos, mul(gLightViewProjection.view, gLightViewProjection.projection));
-    pos.xyz = pos.xyz / pos.w;
+    pos.xyz /=  pos.w;
     output.shadowMapPosition.x = (1.0f + pos.x) / 2.0f;
     output.shadowMapPosition.y = (1.0f - pos.y) / 2.0f;
     output.shadowMapPosition.z = pos.z;

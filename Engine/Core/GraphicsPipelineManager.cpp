@@ -289,10 +289,10 @@ void yunity::GraphicsPipelineManager::CreateShadowMap()
 	rasterizerDesc.DepthClipEnable = TRUE;
 
 	D3D12_DEPTH_STENCIL_DESC depthStencilDesc = GraphicsPipelineManager::graphicsCommon_->DepthStateReadWrite;
-	depthStencilDesc.DepthEnable = TRUE;
+	/*depthStencilDesc.DepthEnable = TRUE;
 	depthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
 	depthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
-	depthStencilDesc.StencilEnable = FALSE;
+	depthStencilDesc.StencilEnable = FALSE;*/
 
 	for (uint32_t blendModeType = 0; blendModeType < BlendModeType::kBlendCount; blendModeType++) {
 		graphicsPipelines_[PipelineType::kShadowMap]->pso_[blendModeType] = std::make_unique<PipelineState>(
@@ -304,9 +304,10 @@ void yunity::GraphicsPipelineManager::CreateShadowMap()
 		graphicsPipelines_[PipelineType::kShadowMap]->pso_[blendModeType]->SetBlendState(graphicsCommon_->blendDescs[blendModeType]);
 		graphicsPipelines_[PipelineType::kShadowMap]->pso_[blendModeType]->SetRasterizerState(rasterizerDesc);
 		graphicsPipelines_[PipelineType::kShadowMap]->pso_[blendModeType]->SetDepthStencilState(depthStencilDesc);
-		graphicsPipelines_[PipelineType::kShadowMap]->pso_[blendModeType]->SetRenderTargetFormat(DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, DXGI_FORMAT_D24_UNORM_S8_UINT);
+		graphicsPipelines_[PipelineType::kShadowMap]->pso_[blendModeType]->SetRenderTargetFormat(DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, DXGI_FORMAT_D32_FLOAT);
 		graphicsPipelines_[PipelineType::kShadowMap]->pso_[blendModeType]->SetPrimitiveTopologyType(D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE);
 		graphicsPipelines_[PipelineType::kShadowMap]->pso_[blendModeType]->SetSampleMask(D3D12_DEFAULT_SAMPLE_MASK);
+		graphicsPipelines_[PipelineType::kShadowMap]->pso_[blendModeType]->SetDSVFormat(DXGI_FORMAT_D32_FLOAT);
 		graphicsPipelines_[PipelineType::kShadowMap]->pso_[blendModeType]->Finalize();
 	}
 }
