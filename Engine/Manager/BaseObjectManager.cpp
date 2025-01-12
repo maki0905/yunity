@@ -126,6 +126,13 @@ void yunity::BaseObjectManager::SetEnableLighting(bool onOff)
 	}
 }
 
+void yunity::BaseObjectManager::SetDirectionLight(DirectionLight* directionLight)
+{
+	for (auto& obj : objects_) {
+		obj->SetDirectionLight(directionLight);
+	}
+}
+
 void yunity::BaseObjectManager::CreateBasicObject(const LevelData::ObjectData& objectData, Camera* camera, World* world)
 {
 	if (objectData.serialNumber != -1) { // イベントトリガー

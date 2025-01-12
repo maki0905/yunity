@@ -72,6 +72,7 @@ namespace yunity {
 		void SetDirectionalLight(Model::DirectionalLight directionalLight);
 		void SetFileName(const std::string fileName) { fileName_ = fileName; }
 		void SetHitBody(Body* body) { hitBody_ = body; }
+		void SetDirectionLight(DirectionLight* directionLight);
 
 		/// <summary>
 		/// getter

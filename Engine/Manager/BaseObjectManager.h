@@ -117,6 +117,12 @@ namespace yunity {
 		/// <param name="active"></param>
 		//void SetActive(const std::string& fileName, uint32_t index, bool active);
 
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="directionLight"></param>
+		void SetDirectionLight(DirectionLight* directionLight);
+
 	protected:
 		/// <summary>
 		/// 基本オブジェクト生成

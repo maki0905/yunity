@@ -626,11 +626,18 @@ Matrix4x4 MakeOrthographicMatrix(float viewWidth, float viewHight, float nearZ, 
 		}
 	}
 
-	result.m[0][0] = 2.0f / viewWidth;
-	result.m[1][1] = 2.0f / viewHight;
-	result.m[2][2] = 1.0f / farZ - nearZ;
+	float left = -viewWidth / 2.0f;
+	float right = viewWidth / 2.0f;
+	float top = viewHight / 2.0f;
+	float bottom = -viewHight / 2.0f;
+
+	result.m[0][0] = 2.0f / (right - left);
+	result.m[1][1] = 2.0f / (top - bottom);
+	result.m[2][2] = 1.0f / (farZ - nearZ);
 	result.m[3][3] = 1.0f;
-	result.m[3][2] = -nearZ / (farZ - nearZ);
+	result.m[3][0] = (left + right) / (left - right);
+	result.m[3][1] = (top + bottom) / (bottom - top);
+	result.m[3][2] = nearZ / (nearZ - farZ);
 
 	return result;
 }

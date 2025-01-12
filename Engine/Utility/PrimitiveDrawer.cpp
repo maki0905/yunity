@@ -104,6 +104,14 @@ void yunity::PrimitiveDrawer::Draw(const Vector3& start, const Vector3& end, con
 	}
 }
 
+void yunity::PrimitiveDrawer::SetColor(const Vector4& color)
+{
+	for (auto& vertex : vertices_) {
+		vertex.color = color;
+	}
+	std::memcpy(vertexData_, vertices_.data(), sizeof(VertexData) * vertices_.size());
+}
+
 void yunity::PrimitiveDrawer::CreateMesh()
 {
 	// 頂点リソース
@@ -202,6 +210,8 @@ void yunity::PrimitiveDrawer::CreateSphere()
 		}
 
 	}
+
+	type_ = Type::kSphere;
 }
 
 void yunity::PrimitiveDrawer::CreateBox()
@@ -242,6 +252,8 @@ void yunity::PrimitiveDrawer::CreateBox()
 	for (int32_t i = 0; i < 24; i++) {
 		indices_.push_back(indexData[i]);
 	}
+
+	type_ = Type::kBox;
 }
 
 void yunity::PrimitiveDrawer::CreateLine()
@@ -253,6 +265,8 @@ void yunity::PrimitiveDrawer::CreateLine()
 	for (int32_t i = 0; i < 2; i++) {
 		vertices_.push_back(vertexData[i]);
 	}
+
+	type_ = Type::kLine;
 }
 
 

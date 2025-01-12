@@ -15,6 +15,9 @@ void TitleScene::Initialize()
 	world_ = std::make_unique<yunity::World>();
 	world_->Initialize(gravity_);
 
+	directionLight_ = std::make_unique<yunity::DirectionLight>();
+	directionLight_->Initialize({ 0.0f, 40.0f, 0.0f }, { 1.0f, 0.0f, 1.0f }, { 0.0f, 1.0f, 0.0f }, 40.0f, 40.0f, 0.0f, 20.0f);
+
 	bottonSprite_ = std::make_unique<yunity::Sprite>();
 	bottonSprite_.reset(yunity::Sprite::Create(yunity::TextureManager::GetInstance()->Load("ABotton.dds"), spritePos_));
 	bottonPushSprite_ = std::make_unique<yunity::Sprite>();
@@ -26,6 +29,7 @@ void TitleScene::Initialize()
 
 	player_ = std::make_unique<Player>();
 	player_->Initialize(camera_, world_.get());
+	player_->SetDirectionLight(directionLight_.get());
 	player_->SetDirectionalLight(l);
 	player_->SetMass(0.0f);
 	player_->SetInGame(true);
@@ -35,6 +39,7 @@ void TitleScene::Initialize()
 	objectManager_->Initialize();
 	objectManager_->Load("title", camera_, world_.get());
 	objectManager_->SetDirectionalLight(l);
+	objectManager_->SetDirectionLight(directionLight_.get());
 
 
 	skydome_ = std::make_unique<yunity::Skydome>();
@@ -104,6 +109,8 @@ void TitleScene::Update()
 
 	}
 
+	directionLight_->Update();
+
 #ifdef _DEBUG
 
 
@@ -121,6 +128,7 @@ void TitleScene::Draw3D()
 	objectManager_->Draw();
 
 	player_->Draw();
+	directionLight_->Draw();
 }
 
 void TitleScene::DrawFront()

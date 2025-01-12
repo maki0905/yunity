@@ -381,10 +381,20 @@ void Player::OnTriggerEvent()
 	}
 }
 
-void Player::ResetPos(const Vector3& pos)
+void Player::Reset()
+{
+	worldTransform_.translation_ = spawnPoint_;
+	Body::Reset();
+	point_ = worldTransform_.translation_;
+	apexWorldTransform_.translation_ = worldTransform_.translation_;
+	isWire_ = false;
+	isActive_ = true;
+}
+
+void Player::Reset(const Vector3& pos)
 {
 	worldTransform_.translation_ = pos;
-	Reset();
+	Body::Reset();
 	point_ = worldTransform_.translation_;
 	apexWorldTransform_.translation_ = worldTransform_.translation_;
 	isWire_ = false;

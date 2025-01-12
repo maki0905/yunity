@@ -114,3 +114,26 @@ void yunity::Object3D::SetDirectionalLight(Model::DirectionalLight directionalLi
 	}
 	
 }
+
+void yunity::Object3D::SetDirectionLight(DirectionLight* directionLight)
+{
+	if (model_) {
+		model_->SetDirectionLight(directionLight);
+		model_->SetEnableLighting(true);
+	}
+	if (models_.size()) {
+		std::vector<std::string> keys;
+		keys.reserve(models_.size());
+
+		for (const auto& model : models_) {
+			keys.push_back(model.first);
+		}
+
+		for (const auto& key : keys) {
+			models_[key]->SetDirectionLight(directionLight);
+			models_[key]->SetEnableLighting(true);
+		}
+
+
+	}
+}

@@ -15,6 +15,8 @@
 #include "PointLight.h"
 #include "Animation.h"
 #include "GraphicsPipelineManager.h"
+#include "DirectionLight.h"
+
 
 class PipelineState;
 class RootSignature;
@@ -186,6 +188,7 @@ namespace yunity {
 		void SetAnimation(std::string name, const Animation& animation, AnimationCommon::AnimationMode mode = AnimationCommon::AnimationMode::kStopped);
 		bool IsAnimation() { return isAnimation_; }
 		void PlayAnimation() { isAnimation_ = true; }
+		void SetDirectionLight(DirectionLight* directionLight) { directionLight_ = directionLight; }
 
 		/// <summary>
 		/// getter
@@ -325,6 +328,7 @@ namespace yunity {
 
 		Microsoft::WRL::ComPtr<ID3D12Resource> lightVPBuff_;
 		ConstBufferDataViewProjection* lightVP = nullptr;
+		DirectionLight* directionLight_;
 
 		// マテリアル
 		Microsoft::WRL::ComPtr<ID3D12Resource> materialResource_;

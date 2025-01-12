@@ -64,11 +64,16 @@ public:
 	/// </summary>
 	void OnTriggerEvent() override;
 
+
 	/// <summary>
-	/// プレイヤーの位置変更
+	/// リセット
 	/// </summary>
-	/// <param name="pos">位置</param>
-	void ResetPos(const Vector3& pos);
+	void Reset();
+
+	/// <summary>
+	/// リセット
+	/// </summary>
+	void Reset(const Vector3& pos);
 
 	/// <summary>
 	/// リザルト
@@ -89,6 +94,7 @@ public:
 	void SetSelect(bool isSelect) { isSelect_ = isSelect; }
 	void SetDisplayUI(bool flag, UI ui);
 	void SetInGame(bool flag) { inGame_ = flag; }
+	void SetSpawnPoint(const Vector3& spawnPoint) { spawnPoint_ = spawnPoint; }
 
 private:
 	XINPUT_STATE pad_;

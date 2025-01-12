@@ -9,10 +9,8 @@
 #include "World.h"
 #include "Player.h"
 #include "Skydome.h"
-#include "Cloth.h"
 #include "ObjectManager.h"
-#include "WindParticle.h"
-#include "Coin.h"
+#include "DirectionLight.h"
 
 /*
 * @brief タイトルクラス
@@ -97,7 +95,7 @@ private:
 	const float targetPoint_ = 35.0f;
 	const float playerMass_ = 2.0f;
 
-
+	std::unique_ptr<yunity::DirectionLight> directionLight_;
 	
 	//int preNum_;
 };

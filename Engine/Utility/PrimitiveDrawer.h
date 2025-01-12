@@ -92,6 +92,8 @@ namespace yunity {
 		/// <param name="camera"></param>
 		void SetCamera(Camera* camera) { camera_ = camera; }
 
+		void SetColor(const Vector4& color);
+
 	private:
 
 		/// <summary>
@@ -143,6 +145,9 @@ namespace yunity {
 		// 頂点インデックスデータ
 		std::vector<uint32_t> indices_;
 		uint32_t* indexData_;
+
+		Type type_;
+
 	};
 }
 

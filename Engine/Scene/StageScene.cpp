@@ -46,7 +46,7 @@ void StageScene::Initialize()
 	startWT_.translation_ = objectManager_->GetPos("startBox");
 	startPos_ = startWT_.translation_;
 	//startPos_ = { 730.0f, 63.0f, 0.0f };
-	player_->ResetPos(startPos_);
+	player_->Reset(startPos_);
 
 	start_ = std::make_unique<yunity::Model>();
 	start_.reset(yunity::ModelManager::GetInstance()->CreateModel(obj, "TV"));
@@ -123,7 +123,7 @@ void StageScene::Update()
 			camera_->SetTranslate(Lerp(dieCamera_, { startPos_.x, startPos_.y + camera_->GetOffset().y, dieCamera_.z }, resetTime_));
 			player_->SetTranslation(Lerp(diePos_, startPos_, resetTime_));
 			if (resetTime_ == 1.0f) {
-				player_->ResetPos(startPos_);
+				player_->Reset(startPos_);
 				player_->SetIsTrigger(false);
 				camera_->SetTarget(player_->GetWorldTransform());
 			}

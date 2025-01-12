@@ -191,13 +191,12 @@ void yunity::Model::Draw(const WorldTransform& worldTransform)
 
 	//インデックスバッファの設定
 	commandList_->IASetIndexBuffer(&indexBufferView_);
-
 	if (pipelineType_ == PipelineType::kShadowMap) {
-		commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(Object3dRootBindings::kWorldTransform), worldTransform.constBuff_->GetGPUVirtualAddress());
-		commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(Object3dRootBindings::kViewProjection), lightVPBuff_->GetGPUVirtualAddress());
 		//commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(Object3dRootBindings::kViewProjection), camera_->GetConstBuff()->GetGPUVirtualAddress());
 
 		if (materialData_->enableLighting) {
+			commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(Object3dRootBindings::kWorldTransform), worldTransform.constBuff_->GetGPUVirtualAddress());
+			commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(Object3dRootBindings::kViewProjection), directionLight_->GetLightBuff()->GetGPUVirtualAddress());
 			if (modelType_ == ModelType::kSkin) {
 				commandList_->DrawIndexedInstanced((UINT)modelData_.indices.size(), UINT(skeleton_.joints.size()), 0, 0, 0);
 			}
@@ -216,7 +215,7 @@ void yunity::Model::Draw(const WorldTransform& worldTransform)
 
 		if (materialData_->enableLighting) {
 			commandList_->SetGraphicsRootDescriptorTable(static_cast<UINT>(Object3dShadowMapRootBindings::kShadowMap), DirectXCore::GetInstance()->GetShdowHandle());
-			commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(Object3dShadowMapRootBindings::kLightViewProjection), lightVPBuff_->GetGPUVirtualAddress());
+			commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(Object3dShadowMapRootBindings::kLightViewProjection), directionLight_->GetLightBuff()->GetGPUVirtualAddress());
 			//commandList_->SetGraphicsRootConstantBufferView(static_cast<UINT>(Object3dShadowMapRootBindings::kLightViewProjection), camera_->GetConstBuff()->GetGPUVirtualAddress());
 		}
 
@@ -251,10 +250,9 @@ void yunity::Model::SetDirectionalLight(const DirectionalLight& directionalLight
 	EulerTransform transform = { .scale = {1.0f, 1.0f, 1.0f}, .rotate = {0.0f, 0.0f, 0.0f}, .translate = {0.0f, 5.0f, 0.0f}};
 	Matrix4x4 worldMatrix = MakeAffineMatrix(transform);
 	lightVP->view = Inverse(worldMatrix);
-	lightVP->view = MakeMatrixLookAt({ 0.0f, 10.0f, 0.0f }, { 0.0f, 0.0f, 1.0f }, { 0.0f, 1.0f, 0.0f });
+	lightVP->view = MakeMatrixLookAt({ 0.0f, 5.0f, 0.0f }, { 1.0f, 0.0f, 1.0f }, { 0.0f, 1.0f, 0.0f });
 	//lightVP->projection = MakeOrthographicMatrix(-10.0f, 10.0f, 10.0f, -5.0f, 1.0f, 10.0f);
-	//float yscale = 1.0f / (1280.0f / 720.0f);
-	lightVP->projection = MakeOrthographicMatrix(40.0f,40.0f, 1.0f, 20.0f);
+	lightVP->projection = MakeOrthographicMatrix(10.0f,10.0f, 1.0f, 20.0f);
 	//lightVP->projection = MakePerspectiveFovMatrix(45.0f * DegToRad(), 1.0f, 1.0f, 15.0f);
 }
 
