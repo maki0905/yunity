@@ -13,5 +13,6 @@ enum class Tag {
 	kSpringBoard,
 	kSignboard,
 	kSelectTV,
+	kCheckPoint,
 	kTagCount
 };

@@ -15,6 +15,7 @@
 #include "SpringBoard.h"
 #include "FireworksParticle.h"
 #include "Random.h"
+#include "DirectionLight.h"
 
 /*
 * @brief ステージシーンクラス
@@ -78,6 +79,9 @@ private:
 	// 物理空間
 	const Vector3 gravity_ = { 0.0f, -30.0f, 0.0f };
 	std::unique_ptr<yunity::World> world_;
+
+	// ライト
+	std::unique_ptr<yunity::DirectionLight> directionLight_;
 
 	// ステージ名
 	std::string stageName_ = "stage4";

@@ -28,10 +28,7 @@ void Player::Initialize(yunity::Camera* camera, yunity::World* world)
 
 	isCrouching_ = false;
 
-	stiffness_ = 1.0f;
-	dampar_ = 0.1f;
 	mass_ = 1.0f;
-	limitLength_ = 15.0f;
 
 	world->Add(this);
 
@@ -73,6 +70,8 @@ void Player::Initialize(yunity::Camera* camera, yunity::World* world)
 	springJoint_->SetStiffness(1, stiffness_);
 	springJoint_->SetDamping(0, dampar_);
 	springJoint_->SetDamping(1, dampar_);
+
+	world->AddJoint(springJoint_.get());
 
 
 	isWire_ = false;
@@ -182,20 +181,24 @@ void Player::Update()
 						if (!isWire_) {
 							if (isHit && hit.collider->GetCollisionAttribute() != kCollisionAttributeCoin) {
 								isWire_ = true;
-								//GetWorld()->AddJoint(springJoint_.get());
-								//point_ = hit.collider->GetTranslation();
+								springJoint_->EnableSpring(0, true);
+								springJoint_->EnableSpring(1, true);
 								point_ = hit.point;
 								apexWorldTransform_.translation_ = hit.point;
 								apexBody_->SetMatTranslation(hit.point);
 								if (hit.collider->GetCollisionAttribute() == kCollisionAttributeMoveFloor || hit.collider->GetCollisionAttribute() == kCollisionAttributeTrampoline || hit.collider->GetCollisionAttribute() == kCollisionAttributePillar) {
 									fixedJoint_->CreateFixedJoint(hit.collider, apexBody_.get());
+									GetWorld()->AddJoint(fixedJoint_.get());
 								}
 								pointParticle_->Spawn(hit.point);
 							}
 						}
 						else {
 							isWire_ = false;
+							springJoint_->EnableSpring(0, false);
+							springJoint_->EnableSpring(1, false);
 							fixedJoint_->Clear();
+							GetWorld()->TakeJoint(fixedJoint_.get());
 							if (apexWorldTransform_.parent_) {
 								apexWorldTransform_.parent_ = nullptr;
 							}
@@ -219,7 +222,7 @@ void Player::Update()
 			reticleWorldTransform_.translation_ = Multiply(limitLength_, dir);
 		}
 
-		if (!isWire_) {
+		/*if (!isWire_) {
 			apexWorldTransform_.translation_ = worldTransform_.translation_;
 			apexBody_->SetTranslation(worldTransform_.translation_);
 		}
@@ -227,7 +230,7 @@ void Player::Update()
 			AddForce(Spring(apexWorldTransform_.GetMatWorldTranslation(), GetMatWorldTranslation(), 0.0f, stiffness_, dampar_), Body::ForceMode::kForce);
 			AddForce(RubberMovement(GetMatWorldTranslation(), apexWorldTransform_.GetMatWorldTranslation(), limitLength_, stiffness_, dampar_), Body::ForceMode::kForce);
 			fixedJoint_->Solve();
-		}
+		}*/
 
 		reticleWorldTransform_.UpdateMatrix();
 		apexWorldTransform_.UpdateMatrix();
@@ -377,7 +380,8 @@ void Player::OnTriggerEvent()
 		scoreUI_->AddScore(10);
 	}
 	if (GetHitBody()->GetCollisionAttribute() == kCollisionAttributeCheckPoint) {
-		
+		spawnPoint_ = GetHitBody()->GetMatWorldTranslation();
+		spawnPoint_.z = 0.0f;
 	}
 }
 

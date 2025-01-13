@@ -83,6 +83,12 @@ void ObjectManager::Load(const std::string& objectFileName, yunity::Camera* came
 			newObject->Initialize();
 			AddObject(std::move(newObject));
 		}
+		else if (objectData.tag_ == Tag::kCheckPoint) {
+			std::unique_ptr<CheckPoint> newObject = std::make_unique<CheckPoint>();
+			SetInitalizeData(objectData, newObject.get(), camera);
+			newObject->Initialize(camera);
+			AddObject(std::move(newObject));
+		}
 		else {
 			CreateBasicObject(objectData, camera, world);
 		}

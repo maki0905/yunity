@@ -86,6 +86,7 @@ public:
 
 	bool GetActive() { return isActive_; }
 	bool GetSelect() { return isSelect_; }
+	Vector3 GetSpawnPoint() { return spawnPoint_; }
 
 	/// <summary>
 	/// setter
@@ -107,10 +108,10 @@ private:
 
 	bool inGame_;
 
-	float stiffness_;
-	float dampar_;
+	const float stiffness_ = 2.0f;
+	const float dampar_ = 0.0f;
 	float mass_;
-	float limitLength_;
+	const float limitLength_ = 15.0f;
 
 	bool isCrouching_;
 	bool isHit_;

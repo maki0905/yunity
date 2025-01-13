@@ -10,6 +10,7 @@
 #include "SpringBoard.h"
 #include "Signboard.h"
 #include "SelectTV.h"
+#include "CheckPoint.h"
 
 class ObjectManager : public yunity::BaseObjectManager {
 public:

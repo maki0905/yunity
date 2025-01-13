@@ -31,9 +31,13 @@ void StageScene::Initialize()
 	world_ = std::make_unique<yunity::World>();
 	world_->Initialize(gravity_);
 
+	directionLight_ = std::make_unique<yunity::DirectionLight>();
+	directionLight_->Initialize({ 0.0f, 40.0f, 0.0f }, { 1.0f, 0.0f, 1.0f }, { 0.0f, 1.0f, 0.0f }, 40.0f, 40.0f, 0.0f, 20.0f);
+
 	player_ = std::make_unique<Player>();
 	player_->Initialize(camera_, world_.get());
 	player_->SetDirectionalLight(l);
+	player_->SetDirectionLight(directionLight_.get());
 	camera_->SetTarget(player_->GetWorldTransform());
 
 	startWT_.Initialize();
@@ -43,6 +47,7 @@ void StageScene::Initialize()
 	objectManager_->Initialize(camera_);
 	objectManager_->Load(stageName_, camera_, world_.get(), "joints_data");
 	objectManager_->SetDirectionalLight(l);
+	objectManager_->SetDirectionLight(directionLight_.get());
 	startWT_.translation_ = objectManager_->GetPos("startBox");
 	startPos_ = startWT_.translation_;
 	//startPos_ = { 730.0f, 63.0f, 0.0f };
@@ -120,10 +125,11 @@ void StageScene::Update()
 		else {
 			resetTime_ += 1.0f / 30.0f;
 			resetTime_ = std::clamp(resetTime_, 0.0f, 1.0f);
-			camera_->SetTranslate(Lerp(dieCamera_, { startPos_.x, startPos_.y + camera_->GetOffset().y, dieCamera_.z }, resetTime_));
-			player_->SetTranslation(Lerp(diePos_, startPos_, resetTime_));
+			Vector3 spawnPoint = player_->GetSpawnPoint();
+			camera_->SetTranslate(Lerp(dieCamera_, { spawnPoint.x, spawnPoint.y + camera_->GetOffset().y, dieCamera_.z}, resetTime_));
+			player_->SetTranslation(Lerp(diePos_, spawnPoint, resetTime_));
 			if (resetTime_ == 1.0f) {
-				player_->Reset(startPos_);
+				player_->Reset();
 				player_->SetIsTrigger(false);
 				camera_->SetTarget(player_->GetWorldTransform());
 			}

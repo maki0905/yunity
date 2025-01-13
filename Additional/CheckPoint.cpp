@@ -9,7 +9,7 @@ void CheckPoint::Initialize(yunity::Camera* camera)
 	models_["OFF"]->SetCamera(camera);
 
 	models_["ON"] = std::make_unique<yunity::Model>();
-	models_["ON"].reset(yunity::ModelManager::GetInstance()->CreateModel(obj, "TV"));
+	models_["ON"].reset(yunity::ModelManager::GetInstance()->CreateModel(obj, "CheckPoint"));
 	models_["ON"]->SetCamera(camera);
 
 	isActive_ = false;
