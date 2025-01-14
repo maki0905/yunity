@@ -19,6 +19,7 @@ void Player::Initialize(yunity::Camera* camera, yunity::World* world)
 	SetBounceCombine(BounceCombine::kMaximum);
 	SetBounciness(0.0f);
 	SetFixedMove(2, true);
+	SetDrag(0.0f);
 
 	models_["player"] = std::make_unique<yunity::Model>();
 	models_["player"].reset(yunity::ModelManager::GetInstance()->CreateModel(obj, "Player"));
@@ -273,8 +274,6 @@ void Player::Update()
 	ImGui::Begin("Player");
 	ImGui::DragFloat3("translate", &worldTransform_.translation_.x);
 	ImGui::DragFloat("mass", &mass_);
-	ImGui::DragFloat("stiffness", &stiffness_);
-	ImGui::DragFloat("damping", &dampar_);
 	Vector3 velocity = GetVelocity();
 	ImGui::DragFloat3("velocity", &velocity.x);
 	if (ImGui::Button("reset")) {

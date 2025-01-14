@@ -15,9 +15,6 @@ void TitleScene::Initialize()
 	world_ = std::make_unique<yunity::World>();
 	world_->Initialize(gravity_);
 
-	directionLight_ = std::make_unique<yunity::DirectionLight>();
-	directionLight_->Initialize({ 0.0f, 40.0f, 0.0f }, { 1.0f, 0.0f, 1.0f }, { 0.0f, 1.0f, 0.0f }, 40.0f, 40.0f, 0.0f, 20.0f);
-
 	bottonSprite_ = std::make_unique<yunity::Sprite>();
 	bottonSprite_.reset(yunity::Sprite::Create(yunity::TextureManager::GetInstance()->Load("ABotton.dds"), spritePos_));
 	bottonPushSprite_ = std::make_unique<yunity::Sprite>();
@@ -26,6 +23,8 @@ void TitleScene::Initialize()
 
 	DirectionLight directionLight;
 	yunity::Model::DirectionalLight l = { .color = directionLight.color, .direction = directionLight.direction, .intensity = directionLight.intensity };
+	directionLight_ = std::make_unique<yunity::DirectionLight>();
+	directionLight_->Initialize(directionLight.eyePosition, directionLight.targetPosition, directionLight.upDirection, directionLight.viewWidth, directionLight.viewHight, directionLight.nearClip, directionLight.farClip);
 
 	player_ = std::make_unique<Player>();
 	player_->Initialize(camera_, world_.get());

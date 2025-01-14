@@ -26,7 +26,14 @@ class TitleScene : public yunity::IScene
 	struct DirectionLight {
 		const Vector4 color = { 1.0f, 1.0f, 1.0f, 1.0f };
 		const Vector3 direction = { 1.0f, -1.0f, 0.0f };
+		const Vector3 eyePosition = {0.0f, 44.0f, 0.0f};
+		const Vector3 targetPosition = {0.0f, 0.0f, 1.0f};
+		const Vector3 upDirection = {0.0f, 1.0f, 0.0f};
 		const float intensity = 1.0f;
+		const float viewWidth = 250;
+		const float viewHight = 106.0f;
+		const float nearClip = 0.0f;
+		const float farClip = 72.0f;
 	};
 
 	struct TVConstant {

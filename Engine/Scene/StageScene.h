@@ -30,7 +30,14 @@ class StageScene : public yunity::IScene
 	struct DirectionLight {
 		const Vector4 color = { 1.0f, 1.0f, 1.0f, 1.0f };
 		const Vector3 direction = { 1.0f, -1.0f, 0.0f };
+		const Vector3 eyePosition = { 0.0f, 160.0f, 0.0f };
+		const Vector3 targetPosition = { 0.0f, 0.0f, 1.0f };
+		const Vector3 upDirection = { 0.0f, 1.0f, 0.0f };
 		const float intensity = 1.0f;
+		const float viewWidth = 2324;
+		const float viewHight = 142.0f;
+		const float nearClip = 0.0f;
+		const float farClip = 600.0f;
 	};
 
 	struct StartConstant {

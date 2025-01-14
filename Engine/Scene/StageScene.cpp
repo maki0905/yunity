@@ -32,7 +32,7 @@ void StageScene::Initialize()
 	world_->Initialize(gravity_);
 
 	directionLight_ = std::make_unique<yunity::DirectionLight>();
-	directionLight_->Initialize({ 0.0f, 40.0f, 0.0f }, { 1.0f, 0.0f, 1.0f }, { 0.0f, 1.0f, 0.0f }, 40.0f, 40.0f, 0.0f, 20.0f);
+	directionLight_->Initialize(directionLight.eyePosition, directionLight.targetPosition, directionLight.upDirection, directionLight.viewWidth, directionLight.viewHight, directionLight.nearClip, directionLight.farClip);
 
 	player_ = std::make_unique<Player>();
 	player_->Initialize(camera_, world_.get());
@@ -251,7 +251,7 @@ void StageScene::Update()
 	if (yunity::Input::GetInstance()->TriggerKey(DIK_T)) {
 		yunity::SceneManager::GetInstance()->ChangeScene("TITLE");
 	}
-
+	directionLight_->Update();
 
 
 #ifdef _DEBUG
