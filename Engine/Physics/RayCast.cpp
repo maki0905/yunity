@@ -13,7 +13,7 @@ bool RayCast(const Vector3& origin, const Vector3& direction, RayCastHit* hitInf
 	ray.diff = Multiply(maxDistance, direction);
 
 	for (auto& obj : world->GetAllocator()) {
-		if ((mask ^ obj->GetCollisionAttribute()) == 0) {
+		if ((mask & obj->GetCollisionAttribute()) == 0) {
 			continue;
 		}
 

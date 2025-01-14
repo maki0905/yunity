@@ -109,9 +109,8 @@ private:
 	bool inGame_;
 
 	const float stiffness_ = 2.0f;
-	const float dampar_ = 0.0f;
-	float mass_;
-	const float limitLength_ = 15.0f;
+	const float dampar_ = 0.1f;
+	const float limitLength_ = 20.0f;
 
 	bool isCrouching_;
 	bool isHit_;
@@ -133,8 +132,11 @@ private:
 
 	std::unique_ptr<yunity::Sprite> reticle_;
 	yunity::WorldTransform reticleWorldTransform_;
+	std::unique_ptr<yunity::Sprite> landingPoint_;
+	yunity::WorldTransform landingPointWorldTrans_;
 	uint32_t onReticle_;
 	uint32_t offReticle_;
+	bool isHitRay_;
 
 	bool isMoving_;
 

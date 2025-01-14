@@ -29,8 +29,6 @@ void Player::Initialize(yunity::Camera* camera, yunity::World* world)
 
 	isCrouching_ = false;
 
-	mass_ = 1.0f;
-
 	world->Add(this);
 
 	isHit_ = false;
@@ -49,10 +47,16 @@ void Player::Initialize(yunity::Camera* camera, yunity::World* world)
 	offReticle_ = yunity::TextureManager::GetInstance()->Load("offReticle.png");
 	reticle_ = std::make_unique<yunity::Sprite>();
 	reticle_.reset(yunity::Sprite::Create(offReticle_, { 0.0f, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.5f, 0.5f }));
+	landingPoint_ = std::make_unique<yunity::Sprite>();
+	landingPoint_.reset(yunity::Sprite::Create(onReticle_, { 0.0f, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.5f, 0.5f }));
+	isHitRay_ = false;
 
 	reticleWorldTransform_.Initialize();
 	reticleWorldTransform_.translation_.x = 3.0f;
 	reticleWorldTransform_.parent_ = &worldTransform_;
+	landingPointWorldTrans_.Initialize();
+	
+
 
 	apex_ = std::make_unique<yunity::Model>();
 	apex_.reset(yunity::ModelManager::GetInstance()->CreateModel(obj, "apex"));
@@ -173,7 +177,8 @@ void Player::Update()
 					lenght = limitLength_;
 				}
 				direction.Normalize();
-				isHit = RayCast(worldTransform_.translation_, direction, &hit, lenght, GetWorld(), kCollisionAttributePlayer);
+				uint32_t rayMask = ~(kCollisionAttributePlayer | kCollisionAttributeCoin);
+				isHit = RayCast(worldTransform_.translation_, direction, &hit, lenght, GetWorld(), rayMask);
 
 
 				// ワイヤー
@@ -208,10 +213,16 @@ void Player::Update()
 				}
 
 				if (isHit) {
-					reticle_->SetTextureHandle(onReticle_);
+					if (!isWire_) {
+						Vector3 landingPoint = MapWorldToScreen(hit.point, camera_->GetViewMatrix(), camera_->GetProjectionMatrix(), 1280.0f, 720.0f);
+						landingPoint_->SetPosition({ landingPoint.x, landingPoint.y });
+					}
+					isHitRay_ = true;
 				}
 				else {
-					reticle_->SetTextureHandle(offReticle_);
+					if (!isWire_) {
+						isHitRay_ = false;
+					}
 				}
 
 
@@ -273,7 +284,6 @@ void Player::Update()
 #ifdef _DEBUG
 	ImGui::Begin("Player");
 	ImGui::DragFloat3("translate", &worldTransform_.translation_.x);
-	ImGui::DragFloat("mass", &mass_);
 	Vector3 velocity = GetVelocity();
 	ImGui::DragFloat3("velocity", &velocity.x);
 	if (ImGui::Button("reset")) {
@@ -314,7 +324,11 @@ void Player::Draw()
 void Player::DrawUI()
 {
 	if (isReticle_) {
+		if (isHitRay_) {
+			landingPoint_->Draw();
+		}
 		reticle_->Draw();
+		
 	}
 	if (isScore_) {
 		scoreUI_->Draw();
@@ -390,6 +404,8 @@ void Player::Reset()
 	Body::Reset();
 	point_ = worldTransform_.translation_;
 	apexWorldTransform_.translation_ = worldTransform_.translation_;
+	springJoint_->EnableSpring(0, false);
+	springJoint_->EnableSpring(1, false);
 	isWire_ = false;
 	isActive_ = true;
 }
