@@ -3,13 +3,14 @@
 
 #include "Device.h"
 #include "Input.h"
-
+#include "CommonData.h"
 
 void GameManager::Initialize()
 {
 	Framework::Initialize();
 	yunity::SceneManager::GetInstance()->ChangeScene("TITLE");
 	CameraManager::GetInstance()->Initialize();
+	CommonData::GetInstance()->Initialize();
 }
 
 void GameManager::Finalize()

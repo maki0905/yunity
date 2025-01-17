@@ -11,6 +11,7 @@ CommonData* CommonData::GetInstance()
 void CommonData::Initialize()
 {
 	isGoal_ = false;
+	start_.Initialize();
 }
 
 std::string CommonData::GetStageName()

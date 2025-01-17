@@ -67,12 +67,8 @@ namespace yunity {
 
 	protected:
 		bool endRequest_;
-		// シーンを保持するメンバ変数
-		std::unique_ptr<IScene> sceneArr_[COUNT];
-
-		// シーン管理用の変数
-		int currentSceneNo_; // 現在のシーン
-		int prevSceneNo_; // 前のシーン
+		
+		std::unique_ptr<AbstractSceneFactory> sceneFactory_;
 
 		std::unique_ptr<Model> model_ = nullptr;
 		std::unique_ptr<Sprite> sprite_ = nullptr;

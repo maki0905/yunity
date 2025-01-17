@@ -98,15 +98,7 @@ private:
 	Vector3 oldCameraPos_;
 
 	// スタート
-	std::unique_ptr<yunity::Model> start_;
-	yunity::WorldTransform startWT_;
 	Vector3 startPos_;
-
-	// ゴール
-	std::unique_ptr<yunity::Model> end_;
-	yunity::WorldTransform endWT_;
-	EndConstant endConstant_;
-	uint32_t textureTV_;
 
 	// オブジェクトマネージャー
 	std::unique_ptr<ObjectManager> objectManager_;

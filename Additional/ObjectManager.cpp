@@ -1,6 +1,7 @@
 #include "ObjectManager.h"
 
 #include "ModelManager.h"
+#include "CommonData.h"
 
 void ObjectManager::Load(const std::string& objectFileName, yunity::Camera* camera, yunity::World* world, const std::string& jointFileName) {
 	yunity::LevelData* levelData = nullptr;
@@ -89,11 +90,17 @@ void ObjectManager::Load(const std::string& objectFileName, yunity::Camera* came
 			newObject->Initialize(camera);
 			AddObject(std::move(newObject));
 		}
+		else if (objectData.tag_ == Tag::kStartObject) {
+			CommonData::GetInstance()->start_.translation_ = objectData.translation;
+			CommonData::GetInstance()->start_.UpdateMatrix();
+		}
 		else {
 			CreateBasicObject(objectData, camera, world);
 		}
 		if (jointDatacheck) {
-			AddJointData(objectData, objects_.back().get());
+			if (objects_.size() != 0) {
+				AddJointData(objectData, objects_.back().get());
+			}
 		}
 	}
 	if (jointDatacheck) {

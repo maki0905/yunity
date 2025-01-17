@@ -366,9 +366,6 @@
     <ClCompile Include="Additional\TV.cpp">
       <Filter>Add</Filter>
     </ClCompile>
-    <ClCompile Include="Additional\StartObject.cpp">
-      <Filter>Add</Filter>
-    </ClCompile>
     <ClCompile Include="Additional\Score.cpp">
       <Filter>Add</Filter>
     </ClCompile>
@@ -669,9 +666,6 @@
       <Filter>Engine\Scene</Filter>
     </ClInclude>
     <ClInclude Include="Additional\TV.h">
-      <Filter>Add</Filter>
-    </ClInclude>
-    <ClInclude Include="Additional\StartObject.h">
       <Filter>Add</Filter>
     </ClInclude>
     <ClInclude Include="Engine\3D\Animation.h">

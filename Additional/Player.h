@@ -64,7 +64,6 @@ public:
 	/// </summary>
 	void OnTriggerEvent() override;
 
-
 	/// <summary>
 	/// リセット
 	/// </summary>
@@ -81,12 +80,38 @@ public:
 	bool Result();
 
 	/// <summary>
+	/// ステージ入室時演出
+	/// </summary>
+	void InGameProduction();
+
+	/// <summary>
+	/// リセット時演出
+	/// </summary>
+	void ResetProduction();
+
+	/// <summary>
+	/// 死亡時演出
+	/// </summary>
+	void DeathProduction();
+
+	/// <summary>
+	/// ゴール時演出
+	/// </summary>
+	void GoalProduction();
+
+	/// <summary>
+	/// 死亡時の初期化
+	/// </summary>
+	void InitializeDeth();
+
+	/// <summary>
 	/// getter
 	/// </summary>
 
 	bool GetActive() { return isActive_; }
 	bool GetSelect() { return isSelect_; }
 	Vector3 GetSpawnPoint() { return spawnPoint_; }
+	Vector3 GetGoalPoint() { return goalPoint_; }
 
 	/// <summary>
 	/// setter
@@ -101,46 +126,36 @@ private:
 	XINPUT_STATE pad_;
 	XINPUT_STATE prePad_;
 
-	//std::unique_ptr<Model> model_;
-	//WorldTransform worldTransform_;
-
-	//Camera* camera_;
-
+	bool isWire_;
+	bool isJump_;
+	bool isHitRay_;
+	bool isMoving_;
+	bool isSelect_;
 	bool inGame_;
+	bool isCrouching_;
+	bool isHit_;
+	bool isActive_;
 
 	const float stiffness_ = 2.0f;
 	const float dampar_ = 0.1f;
 	const float limitLength_ = 20.0f;
 
-	bool isCrouching_;
-	bool isHit_;
-	bool isActive_;
-
+	// ワイヤー描画用
 	std::unique_ptr<yunity::PrimitiveDrawer> line_;
 	Vector3 point_;
-	bool isWire_;
 
-	bool isJunp_;
-
-	bool isFloot_;
-
+	// 3Dレティクル
 	std::unique_ptr<yunity::Model> reticle3D_;
-	//WorldTransform reticle3DWorldTransform_;
 	std::unique_ptr<yunity::Model> apex_;
 	yunity::WorldTransform apexWorldTransform_;
 
-
+	// 2Dレティクル
 	std::unique_ptr<yunity::Sprite> reticle_;
 	yunity::WorldTransform reticleWorldTransform_;
 	std::unique_ptr<yunity::Sprite> landingPoint_;
 	yunity::WorldTransform landingPointWorldTrans_;
 	uint32_t onReticle_;
 	uint32_t offReticle_;
-	bool isHitRay_;
-
-	bool isMoving_;
-
-	bool isSelect_;
 
 	// スコア
 	bool isScore_;
@@ -156,19 +171,44 @@ private:
 	// 制限速度
 	const float limitSpeed_ = 20.0f;
 
+	// スプリングジョイント
 	std::unique_ptr<yunity::SpringJoint> springJoint_;
-	std::unique_ptr<yunity::Body> apexBody_;
 
+	// 固定ジョイント
 	std::unique_ptr<yunity::FixedJoint> fixedJoint_;
 	std::unique_ptr<yunity::FixedJoint> playerFixedJoint_;
 
+	// ワイヤーの先端のボディ
+	std::unique_ptr<yunity::Body> apexBody_;
+
+	// パーティクル
 	std::unique_ptr<PointParticle> pointParticle_;
 	std::unique_ptr<SmokeParticle> smokeParticle_;
-
 	Random::RandomNumberGenerator rng;
 	std::array<std::unique_ptr<FireworksParticle>, 10> fireworksParticles_;
 
+	// スタート位置
 	Vector3 spawnPoint_;
+
+	// ゴール位置
+	Vector3 goalPoint_;
+
+	// 演出用
+	float time_;
+	Vector3 diePlayerPosition_;
+	Vector3 dieCameraPosition_;
+	Vector3 topPos_;
+	Vector3 clearCameraPosition_;
+	Vector3 oldPlayerPosition_;
+	const Vector3 setCameraPos_ = { 0.0, 5.0f, -50.0f };
+	const Vector3 dieUp_ = { 0.0f, 10.0f, -10.0f };
+	const Vector3 dieDown_ = { 0.0f, -20.0f, -10.0f };
+	const float zeemOutPositionZ = -60.0f;
+	const float resetTime_ = 2.0f;
+	const float dieUpTime_ = 4.0f;
+	const float dieDownTime_ = 2.0f;
+	const float goalTime_ = 0.5f;
+	const float clearTime_ = 2.0f;
 
 };
 

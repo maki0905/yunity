@@ -11,6 +11,17 @@ enum class  Scene
 
 };
 
+enum class FlagState {
+	kInStage,
+	kPlay,
+	kDeth,
+	kReset,
+	kResult,
+	kGoal,
+	kClear,
+	kCount
+};
+
 /*
 * @brief 共通データクラス
 */
@@ -38,6 +49,8 @@ public:
 	int stageNum_ = -1;
 	Scene scene_;
 	uint32_t hiScore_ = 0;
+	yunity::WorldTransform start_;
+	FlagState flagState_ = FlagState::kPlay;
 private:
 	CommonData() = default;
 	~CommonData() = default;

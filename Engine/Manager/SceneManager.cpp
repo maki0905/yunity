@@ -10,9 +10,9 @@ yunity::SceneManager* yunity::SceneManager::GetInstance()
 	return &instance;
 }
 
-void yunity::SceneManager::Initialize()
+void yunity::SceneManager::Initialize(AbstractSceneFactory* sceneFactory)
 {
-	sceneFactory_ = std::make_unique<SceneFactory>();
+	sceneFactory_ = sceneFactory;
 }
 
 void yunity::SceneManager::Update()

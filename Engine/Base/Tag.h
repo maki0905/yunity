@@ -14,5 +14,6 @@ enum class Tag {
 	kSignboard,
 	kSelectTV,
 	kCheckPoint,
+	kStartObject,
 	kTagCount
 };

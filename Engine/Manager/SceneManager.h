@@ -20,7 +20,7 @@ namespace yunity {
 		/// <summary>
 		/// 初期化
 		/// </summary>
-		void Initialize();
+		void Initialize(AbstractSceneFactory* sceneFactory);
 
 		/// <summary>
 		/// 更新
@@ -55,7 +55,7 @@ namespace yunity {
 		const SceneManager& operator=(const SceneManager&) = delete;
 	private:
 		// シーンファクトリー
-		std::unique_ptr<SceneFactory> sceneFactory_ = nullptr;
+		AbstractSceneFactory* sceneFactory_ = nullptr;
 		// 今のシーン
 		std::unique_ptr<IScene> scene_ = nullptr;
 		//次のシーン

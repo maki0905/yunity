@@ -6,6 +6,9 @@
 #include "SceneManager.h"
 #include "CommonData.h"
 #include "Sprite.h"
+#include "Tradition.h"
+#include "EngineTimeStep.h"
+#include "RenderTexture.h"
 
 void Player::Initialize(yunity::Camera* camera, yunity::World* world)
 {
@@ -80,8 +83,7 @@ void Player::Initialize(yunity::Camera* camera, yunity::World* world)
 
 
 	isWire_ = false;
-	isJunp_ = true;
-	isFloot_ = true;
+	isJump_ = true;
 	isMoving_ = false;
 	isSelect_ = false;
 
@@ -117,6 +119,11 @@ void Player::Update()
 	Vector3 move = { 0.0f, 0.0f, 0.0f };
 	Vector3 reticleMove = { 0.0f, 0.0f, 0.0f };
 
+	InGameProduction();
+	ResetProduction();
+	DeathProduction();
+	GoalProduction();
+
 
 	if (!CommonData::GetInstance()->isGoal_ || inGame_) {
 		// ジョイスティック状態取得
@@ -135,6 +142,8 @@ void Player::Update()
 				// 移動量
 				if (isWire_) {
 					move = { (float)pad_.Gamepad.sThumbLX, (float)pad_.Gamepad.sThumbLY,0 };
+					Vector3 landingPoint = MapWorldToScreen(apexWorldTransform_.GetMatWorldTranslation(), camera_->GetViewMatrix(), camera_->GetProjectionMatrix(), 1280.0f, 720.0f);
+					landingPoint_->SetPosition({ landingPoint.x, landingPoint.y });
 				}
 				else {
 					move = { (float)pad_.Gamepad.sThumbLX, 0,0 };
@@ -157,8 +166,8 @@ void Player::Update()
 				}
 
 				if ((pad_.Gamepad.wButtons & XINPUT_GAMEPAD_A) && !(prePad_.Gamepad.wButtons & XINPUT_GAMEPAD_A) && !isSelect_) {
-					if (!isJunp_) {
-						isJunp_ = true;
+					if (!isJump_) {
+						isJump_ = true;
 						AddForce({ 0.0f, 35.0f, 0.0f }, Body::ForceMode::kImpulse);
 						GetWorld()->TakeJoint(playerFixedJoint_.get());
 					}
@@ -234,16 +243,6 @@ void Player::Update()
 			reticleWorldTransform_.translation_ = Multiply(limitLength_, dir);
 		}
 
-		/*if (!isWire_) {
-			apexWorldTransform_.translation_ = worldTransform_.translation_;
-			apexBody_->SetTranslation(worldTransform_.translation_);
-		}
-		else {
-			AddForce(Spring(apexWorldTransform_.GetMatWorldTranslation(), GetMatWorldTranslation(), 0.0f, stiffness_, dampar_), Body::ForceMode::kForce);
-			AddForce(RubberMovement(GetMatWorldTranslation(), apexWorldTransform_.GetMatWorldTranslation(), limitLength_, stiffness_, dampar_), Body::ForceMode::kForce);
-			fixedJoint_->Solve();
-		}*/
-
 		reticleWorldTransform_.UpdateMatrix();
 		apexWorldTransform_.UpdateMatrix();
 		apexBody_->GetWorldTransform()->UpdateMatrix();
@@ -252,7 +251,7 @@ void Player::Update()
 		reticle_->SetPosition(pos);
 
 		if (worldTransform_.translation_.y < -12.0f) {
-			isActive_ = false;
+			InitializeDeth();
 		}
 
 		if (!isMoving_) {
@@ -260,7 +259,6 @@ void Player::Update()
 		}
 
 		isHit_ = false;
-		isFloot_ = true;
 		isSelect_ = false;
 		isMoving_ = false;
 
@@ -324,7 +322,7 @@ void Player::Draw()
 void Player::DrawUI()
 {
 	if (isReticle_) {
-		if (isHitRay_) {
+		if (isHitRay_ || isWire_) {
 			landingPoint_->Draw();
 		}
 		reticle_->Draw();
@@ -349,7 +347,7 @@ void Player::OnCollisionEvent()
 	}
 
 	if (GetHitBody()->GetCollisionAttribute() == kCollisionAttributeSpike) {
-		isActive_ = false;
+		InitializeDeth();
 	}
 
 	if (GetHitBody()->GetCollisionAttribute() == kCollisionAttributeMoveFloor) {
@@ -367,7 +365,7 @@ void Player::OnCollisionEvent()
 
 
 	if (GetNormalVector().y > 0.0f) {
-		isJunp_ = false;
+		isJump_ = false;
 	}
 
 #ifdef _DEBUG
@@ -381,9 +379,14 @@ void Player::OnCollisionEvent()
 
 void Player::OnTriggerEvent()
 {
-	if (GetHitBody()->GetCollisionAttribute() == kCollisionAttributeGoal) {
+	if (GetHitBody()->GetCollisionAttribute() == kCollisionAttributeGoal && CommonData::GetInstance()->flagState_ < FlagState::kGoal) {
 		CommonData::GetInstance()->isGoal_ = true;
+		CommonData::GetInstance()->flagState_ = FlagState::kGoal;
 		SetVelocity({ 0.0f, 0.0f, 0.0f });
+		goalPoint_ = GetHitBody()->GetMatWorldTranslation();
+		oldPlayerPosition_ = GetMatWorldTranslation();
+		time_ = 0.0f;
+
 	}
 	if (GetHitBody()->GetCollisionAttribute() == kCollisionAttributeSelect) {
 		isSelect_ = true;
@@ -453,6 +456,138 @@ bool Player::Result()
 	}
 	return false;
 
+}
+
+void Player::InGameProduction()
+{
+	if (CommonData::GetInstance()->flagState_ == FlagState::kInStage) {
+		if (!Tradition::GetInstance()->GetOut()) {
+			CommonData::GetInstance()->flagState_ = FlagState::kPlay;
+		}
+		Tradition::GetInstance()->Update();
+		camera_->SetOffset(Lerp({ 0.0f, 0.0f, 0.0f }, setCameraPos_, std::clamp(1.0f - Tradition::GetInstance()->GetTime(), 0.0f, 1.0f)));
+		SetScale(Lerp({ 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f, 1.0f }, std::clamp(1.0f - Tradition::GetInstance()->GetTime(), 0.0f, 1.0f)));
+		if(worldTransform_.scale_.x == 1.0f){
+				isScore_ = true;
+				isReticle_ = true;
+		}
+	}
+}
+
+void Player::ResetProduction()
+{
+	if (CommonData::GetInstance()->flagState_ == FlagState::kReset) {
+		if (time_ >= 1.0f) {
+			time_ += yunity::fixedTimeStep_;
+			float t = std::clamp(time_ - 1.0f, 0.0f, 1.0f);
+			SetScale(Lerp({ 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f, 1.0f },t));
+			if (t == 1.0f) {
+				CommonData::GetInstance()->flagState_ = FlagState::kPlay;
+				time_ = 0.0f;
+			}
+		}
+		else {
+			time_ += yunity::fixedTimeStep_ * resetTime_;
+			time_ = std::clamp(time_, 0.0f, 1.0f);
+			camera_->SetTranslate(Lerp(dieCameraPosition_, { spawnPoint_.x, spawnPoint_.y + camera_->GetOffset().y, dieCameraPosition_.z }, time_));
+			SetTranslation(Lerp(diePlayerPosition_, spawnPoint_, time_));
+			if (time_ == 1.0f) {
+				Reset();
+				SetIsTrigger(false);
+				camera_->SetTarget(GetWorldTransform());
+			}
+		}
+	}
+
+}
+
+void Player::DeathProduction()
+{
+	if (CommonData::GetInstance()->flagState_ == FlagState::kDeth) {
+		if (time_ < 1.0f) {
+			time_ += yunity::fixedTimeStep_ * dieUpTime_;
+			time_ = std::clamp(time_, 0.0f, 1.0f);
+			float t = 1.0f - std::powf(1.0f - time_, 5);
+			Vector3 pos = Slerp(diePlayerPosition_, Add(diePlayerPosition_, dieUp_), t);
+			pos.x = diePlayerPosition_.x;
+			SetTranslation(pos);
+			if (time_ == 1.0f) {
+				topPos_ = GetTranslation();
+			}
+		}
+		else if (time_ - 1.0f < 1.0f) {
+			time_ += yunity::fixedTimeStep_ * dieDownTime_;
+			float t = std::clamp(time_ - 1.0f, 0.0f, 1.0f);
+			Vector3 pos = Slerp(topPos_, Add(topPos_, dieDown_), t);
+			pos.x = topPos_.x;
+			SetTranslation(pos);
+		}
+		else {
+			CommonData::GetInstance()->flagState_ = FlagState::kReset;
+			diePlayerPosition_ = GetTranslation();
+			SetIsTrigger(false);
+			SetScale({ 0.0f, 0.0f, 0.0f });
+			time_ = 0.0f;
+		}
+	}
+
+}
+
+void Player::GoalProduction()
+{
+	if (CommonData::GetInstance()->flagState_ == FlagState::kGoal) {
+		time_ += yunity::fixedTimeStep_ * goalTime_;
+		time_ = std::clamp(time_, 0.0f, 1.0f);
+		SetPosition(Lerp(oldPlayerPosition_, { goalPoint_.x, GetMatWorldTranslation().y, 0.0f }, time_));
+
+		if (time_ == 1.0f) {
+			CommonData::GetInstance()->flagState_ = FlagState::kClear;
+			clearCameraPosition_ = camera_->GetTranslate();
+			camera_->SetTarget(nullptr);
+			Tradition::GetInstance()->Initialize();
+			Tradition::GetInstance()->Start();
+			time_ = 0.0f;
+		}
+	}
+	else if (CommonData::GetInstance()->flagState_ == FlagState::kClear) {
+		if (time_ < 1.0f) {
+			if (Result()) {
+				time_ += yunity::fixedTimeStep_ * clearTime_;
+				time_ = std::clamp(time_, 0.0f, 1.0f);
+				camera_->SetTranslate(Lerp(clearCameraPosition_, { clearCameraPosition_.x, goalPoint_.y, zeemOutPositionZ }, time_));
+				if (time_ == 1.0f) {
+					clearCameraPosition_ = camera_->GetTranslate();
+					yunity::RenderTexture::GetInstance()->SelectPostEffect(yunity::PostEffects::kRadialBlur, true);
+				}
+			}
+		}
+		else {
+			time_ += yunity::fixedTimeStep_;
+			float t = std::clamp(time_ - 1.0f, 0.0f, 1.0f);
+			camera_->SetTranslate(Lerp(clearCameraPosition_, GetGoalPoint(), t));
+			Tradition::GetInstance()->Update();
+			if (!Tradition::GetInstance()->GetIn()) {
+				CommonData::GetInstance()->isGoal_ = false;
+				yunity::SceneManager::GetInstance()->ChangeScene("TITLE");
+				isSelect_ = false;
+				Tradition::GetInstance()->Initialize();
+			}
+		}
+		
+	}
+
+}
+
+void Player::InitializeDeth()
+{
+	isActive_ = false;
+	dieCameraPosition_ = camera_->GetTranslate();
+	diePlayerPosition_ = GetMatWorldTranslation();
+	camera_->SetTarget(nullptr);
+	CommonData::GetInstance()->flagState_ = FlagState::kDeth;
+	AddForce({ 0.0f, 10.0f, -1.0f }, yunity::Body::ForceMode::kImpulse);
+	SetIsTrigger(true);
+	time_ = 0.0f;
 }
 
 void Player::SetDisplayUI(bool flag, UI ui)
