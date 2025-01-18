@@ -31,7 +31,6 @@ void TitleScene::Initialize()
 	player_->SetDirectionLight(directionLight_.get());
 	player_->SetDirectionalLight(l);
 	player_->SetMass(0.0f);
-	player_->SetInGame(true);
 	camera_->SetTarget(nullptr);
 
 	objectManager_ = std::make_unique<ObjectManager>();
@@ -127,7 +126,6 @@ void TitleScene::Draw3D()
 	objectManager_->Draw();
 
 	player_->Draw();
-	directionLight_->Draw();
 }
 
 void TitleScene::DrawFront()

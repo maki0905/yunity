@@ -124,150 +124,6 @@ void Player::Update()
 	DeathProduction();
 	GoalProduction();
 
-
-	if (!CommonData::GetInstance()->isGoal_ || inGame_) {
-		// ジョイスティック状態取得
-		if (yunity::Input::GetInstance()->IsControllerConnected()) {
-			if (yunity::Input::GetInstance()->GetJoystickState(0, pad_)) {
-
-				// プレイヤーの動き
-				const float threshold = 0.7f;
-				bool isMoving = false;
-				// 速さ
-				float speed = fixedSpeed_;
-				if (!isHit_ && !isWire_) {
-					speed = floatSpeed_;
-				}
-
-				// 移動量
-				if (isWire_) {
-					move = { (float)pad_.Gamepad.sThumbLX, (float)pad_.Gamepad.sThumbLY,0 };
-					Vector3 landingPoint = MapWorldToScreen(apexWorldTransform_.GetMatWorldTranslation(), camera_->GetViewMatrix(), camera_->GetProjectionMatrix(), 1280.0f, 720.0f);
-					landingPoint_->SetPosition({ landingPoint.x, landingPoint.y });
-				}
-				else {
-					move = { (float)pad_.Gamepad.sThumbLX, 0,0 };
-				}
-
-				if (Length(move) > threshold) {
-					isMoving = true;
-				}
-
-				if (isMoving) {
-					if (isHit_) {
-						smokeParticle_->Spawn({ worldTransform_.GetMatWorldTranslation().x, worldTransform_.GetMatWorldTranslation().y - 2.5f, worldTransform_.GetMatWorldTranslation().z });
-					}
-
-					move.Normalize();
-					// 移動量に速さを反映
-					move = Multiply(speed, move);
-
-					AddForce(move, Body::ForceMode::kImpulse);
-				}
-
-				if ((pad_.Gamepad.wButtons & XINPUT_GAMEPAD_A) && !(prePad_.Gamepad.wButtons & XINPUT_GAMEPAD_A) && !isSelect_) {
-					if (!isJump_) {
-						isJump_ = true;
-						AddForce({ 0.0f, 35.0f, 0.0f }, Body::ForceMode::kImpulse);
-						GetWorld()->TakeJoint(playerFixedJoint_.get());
-					}
-				}
-
-				// レティクルの動き
-				reticleMove = { (float)pad_.Gamepad.sThumbRX, (float)pad_.Gamepad.sThumbRY, 0.0f };
-				reticleMove = Multiply(0.8f, reticleMove.Normalize());
-				reticleWorldTransform_.translation_ = Add(reticleWorldTransform_.translation_, reticleMove);
-
-				bool isHit = false;
-				RayCastHit hit;
-				Vector3 direction = Subtract({ reticleWorldTransform_.matWorld_.m[3][0], reticleWorldTransform_.matWorld_.m[3][1], reticleWorldTransform_.matWorld_.m[3][2] }, worldTransform_.translation_);
-				float lenght = Length(direction);
-				if (lenght > limitLength_) {
-					lenght = limitLength_;
-				}
-				direction.Normalize();
-				uint32_t rayMask = ~(kCollisionAttributePlayer | kCollisionAttributeCoin);
-				isHit = RayCast(worldTransform_.translation_, direction, &hit, lenght, GetWorld(), rayMask);
-
-
-				// ワイヤー
-				if (CommonData::GetInstance()->scene_ == Scene::kStage) {
-					if ((pad_.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) && !(prePad_.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER)) {
-						if (!isWire_) {
-							if (isHit && hit.collider->GetCollisionAttribute() != kCollisionAttributeCoin) {
-								isWire_ = true;
-								springJoint_->EnableSpring(0, true);
-								springJoint_->EnableSpring(1, true);
-								point_ = hit.point;
-								apexWorldTransform_.translation_ = hit.point;
-								apexBody_->SetMatTranslation(hit.point);
-								if (hit.collider->GetCollisionAttribute() == kCollisionAttributeMoveFloor || hit.collider->GetCollisionAttribute() == kCollisionAttributeTrampoline || hit.collider->GetCollisionAttribute() == kCollisionAttributePillar) {
-									fixedJoint_->CreateFixedJoint(hit.collider, apexBody_.get());
-									GetWorld()->AddJoint(fixedJoint_.get());
-								}
-								pointParticle_->Spawn(hit.point);
-							}
-						}
-						else {
-							isWire_ = false;
-							springJoint_->EnableSpring(0, false);
-							springJoint_->EnableSpring(1, false);
-							fixedJoint_->Clear();
-							GetWorld()->TakeJoint(fixedJoint_.get());
-							if (apexWorldTransform_.parent_) {
-								apexWorldTransform_.parent_ = nullptr;
-							}
-						}
-					}
-				}
-
-				if (isHit) {
-					if (!isWire_) {
-						Vector3 landingPoint = MapWorldToScreen(hit.point, camera_->GetViewMatrix(), camera_->GetProjectionMatrix(), 1280.0f, 720.0f);
-						landingPoint_->SetPosition({ landingPoint.x, landingPoint.y });
-					}
-					isHitRay_ = true;
-				}
-				else {
-					if (!isWire_) {
-						isHitRay_ = false;
-					}
-				}
-
-
-			}
-		}
-
-		if (Length(reticleWorldTransform_.translation_) > limitLength_) {
-			Vector3 dir = reticleWorldTransform_.translation_.Normalize();
-			reticleWorldTransform_.translation_ = Multiply(limitLength_, dir);
-		}
-
-		reticleWorldTransform_.UpdateMatrix();
-		apexWorldTransform_.UpdateMatrix();
-		apexBody_->GetWorldTransform()->UpdateMatrix();
-
-		Vector2 pos = WorldToScreen({ reticleWorldTransform_.matWorld_.m[3][0], reticleWorldTransform_.matWorld_.m[3][1], reticleWorldTransform_.matWorld_.m[3][2] }, camera_->GetViewMatrix(), camera_->GetProjectionMatrix(), 1280.0f, 720.0f);
-		reticle_->SetPosition(pos);
-
-		if (worldTransform_.translation_.y < -12.0f) {
-			InitializeDeth();
-		}
-
-		if (!isMoving_) {
-			GetWorld()->TakeJoint(playerFixedJoint_.get());
-		}
-
-		isHit_ = false;
-		isSelect_ = false;
-		isMoving_ = false;
-
-	}
-	else {
-		isReticle_ = false;
-	}
-
-
 	scoreUI_->Update();
 
 	if (std::abs(GetVelocity().x) > limitSpeed_) {
@@ -275,6 +131,147 @@ void Player::Update()
 		float pandm = velocity.x / std::abs(velocity.x);
 		SetVelocity({ limitSpeed_ * pandm, velocity.y, velocity.z });
 	}
+
+	if (CommonData::GetInstance()->isGoal_) {
+		isReticle_ = false;
+		return;
+	}
+
+	// ジョイスティック状態取得
+	if (yunity::Input::GetInstance()->IsControllerConnected()) {
+		if (yunity::Input::GetInstance()->GetJoystickState(0, pad_)) {
+
+			// プレイヤーの動き
+			const float threshold = 0.7f;
+			bool isMoving = false;
+			// 速さ
+			float speed = fixedSpeed_;
+			if (!isHit_ && !isWire_) {
+				speed = floatSpeed_;
+			}
+
+			// 移動量
+			if (isWire_) {
+				move = { (float)pad_.Gamepad.sThumbLX, (float)pad_.Gamepad.sThumbLY,0 };
+				Vector3 landingPoint = MapWorldToScreen(apexWorldTransform_.GetMatWorldTranslation(), camera_->GetViewMatrix(), camera_->GetProjectionMatrix(), 1280.0f, 720.0f);
+				landingPoint_->SetPosition({ landingPoint.x, landingPoint.y });
+			}
+			else {
+				move = { (float)pad_.Gamepad.sThumbLX, 0,0 };
+			}
+
+			if (Length(move) > threshold) {
+				isMoving = true;
+			}
+
+			if (isMoving) {
+				if (isHit_) {
+					smokeParticle_->Spawn({ worldTransform_.GetMatWorldTranslation().x, worldTransform_.GetMatWorldTranslation().y - 2.5f, worldTransform_.GetMatWorldTranslation().z });
+				}
+
+				move.Normalize();
+				// 移動量に速さを反映
+				move = Multiply(speed, move);
+
+				AddForce(move, Body::ForceMode::kImpulse);
+			}
+
+			if ((pad_.Gamepad.wButtons & XINPUT_GAMEPAD_A) && !(prePad_.Gamepad.wButtons & XINPUT_GAMEPAD_A) && !isSelect_) {
+				if (!isJump_) {
+					isJump_ = true;
+					AddForce({ 0.0f, 35.0f, 0.0f }, Body::ForceMode::kImpulse);
+					GetWorld()->TakeJoint(playerFixedJoint_.get());
+				}
+			}
+
+			// レティクルの動き
+			reticleMove = { (float)pad_.Gamepad.sThumbRX, (float)pad_.Gamepad.sThumbRY, 0.0f };
+			reticleMove = Multiply(0.8f, reticleMove.Normalize());
+			reticleWorldTransform_.translation_ = Add(reticleWorldTransform_.translation_, reticleMove);
+
+			bool isHit = false;
+			RayCastHit hit;
+			Vector3 direction = Subtract({ reticleWorldTransform_.matWorld_.m[3][0], reticleWorldTransform_.matWorld_.m[3][1], reticleWorldTransform_.matWorld_.m[3][2] }, worldTransform_.translation_);
+			float lenght = Length(direction);
+			if (lenght > limitLength_) {
+				lenght = limitLength_;
+			}
+			direction.Normalize();
+			uint32_t rayMask = ~(kCollisionAttributePlayer | kCollisionAttributeCoin);
+			isHit = RayCast(worldTransform_.translation_, direction, &hit, lenght, GetWorld(), rayMask);
+
+
+			// ワイヤー
+			if (CommonData::GetInstance()->scene_ == Scene::kStage) {
+				if ((pad_.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) && !(prePad_.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER)) {
+					if (!isWire_) {
+						if (isHit && hit.collider->GetCollisionAttribute() != kCollisionAttributeCoin) {
+							isWire_ = true;
+							springJoint_->EnableSpring(0, true);
+							springJoint_->EnableSpring(1, true);
+							point_ = hit.point;
+							apexWorldTransform_.translation_ = hit.point;
+							apexBody_->SetMatTranslation(hit.point);
+							if (hit.collider->GetCollisionAttribute() == kCollisionAttributeMoveFloor || hit.collider->GetCollisionAttribute() == kCollisionAttributeTrampoline || hit.collider->GetCollisionAttribute() == kCollisionAttributePillar) {
+								fixedJoint_->CreateFixedJoint(hit.collider, apexBody_.get());
+								GetWorld()->AddJoint(fixedJoint_.get());
+							}
+							pointParticle_->Spawn(hit.point);
+						}
+					}
+					else {
+						isWire_ = false;
+						springJoint_->EnableSpring(0, false);
+						springJoint_->EnableSpring(1, false);
+						fixedJoint_->Clear();
+						GetWorld()->TakeJoint(fixedJoint_.get());
+						if (apexWorldTransform_.parent_) {
+							apexWorldTransform_.parent_ = nullptr;
+						}
+					}
+				}
+			}
+
+			if (isHit) {
+				if (!isWire_) {
+					Vector3 landingPoint = MapWorldToScreen(hit.point, camera_->GetViewMatrix(), camera_->GetProjectionMatrix(), 1280.0f, 720.0f);
+					landingPoint_->SetPosition({ landingPoint.x, landingPoint.y });
+				}
+				isHitRay_ = true;
+			}
+			else {
+				if (!isWire_) {
+					isHitRay_ = false;
+				}
+			}
+
+
+		}
+	}
+
+	if (Length(reticleWorldTransform_.translation_) > limitLength_) {
+		Vector3 dir = reticleWorldTransform_.translation_.Normalize();
+		reticleWorldTransform_.translation_ = Multiply(limitLength_, dir);
+	}
+
+	reticleWorldTransform_.UpdateMatrix();
+	apexWorldTransform_.UpdateMatrix();
+	apexBody_->GetWorldTransform()->UpdateMatrix();
+
+	Vector2 pos = WorldToScreen({ reticleWorldTransform_.matWorld_.m[3][0], reticleWorldTransform_.matWorld_.m[3][1], reticleWorldTransform_.matWorld_.m[3][2] }, camera_->GetViewMatrix(), camera_->GetProjectionMatrix(), 1280.0f, 720.0f);
+	reticle_->SetPosition(pos);
+
+	if (worldTransform_.translation_.y < -12.0f) {
+		InitializeDeth();
+	}
+
+	if (!isMoving_) {
+		GetWorld()->TakeJoint(playerFixedJoint_.get());
+	}
+
+	isHit_ = false;
+	isSelect_ = false;
+	isMoving_ = false;
 
 	smokeParticle_->Update();
 	pointParticle_->Update();

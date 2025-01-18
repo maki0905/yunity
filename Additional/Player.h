@@ -119,7 +119,6 @@ public:
 
 	void SetSelect(bool isSelect) { isSelect_ = isSelect; }
 	void SetDisplayUI(bool flag, UI ui);
-	void SetInGame(bool flag) { inGame_ = flag; }
 	void SetSpawnPoint(const Vector3& spawnPoint) { spawnPoint_ = spawnPoint; }
 
 private:
@@ -131,7 +130,6 @@ private:
 	bool isHitRay_;
 	bool isMoving_;
 	bool isSelect_;
-	bool inGame_;
 	bool isCrouching_;
 	bool isHit_;
 	bool isActive_;
