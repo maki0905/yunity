@@ -15,11 +15,6 @@ void StageScene::Initialize()
 
 	inStage_ = false;
 
-	isGoal_ = false;
-	isClear_ = false;
-	playerPos_ = { 0.0f, 0.0f, 0.0f };
-	cameraPos_ = { 0.0f, 0.0f, 0.0f };
-
 	camera_ = CameraManager::GetInstance()->GetCamera();
 	camera_->SetFixedAxis({ 0.0f, 0.0f, 1.0f });
 	debugCamera_ = std::make_unique<yunity::DebugCamera>();
@@ -34,35 +29,26 @@ void StageScene::Initialize()
 	directionLight_ = std::make_unique<yunity::DirectionLight>();
 	directionLight_->Initialize(directionLight.eyePosition, directionLight.targetPosition, directionLight.upDirection, directionLight.viewWidth, directionLight.viewHight, directionLight.nearClip, directionLight.farClip);
 
-	player_ = std::make_unique<Player>();
-	player_->Initialize(camera_, world_.get());
-	player_->SetDirectionalLight(l);
-	player_->SetDirectionLight(directionLight_.get());
-	camera_->SetTarget(player_->GetWorldTransform());
-
 	objectManager_ = std::make_unique<ObjectManager>();
 	objectManager_->Initialize(camera_);
 	objectManager_->Load(stageName_, camera_, world_.get(), "joints_data");
+	objectManager_->CreatePlayer(camera_, world_.get());
 	objectManager_->SetDirectionalLight(l);
 	objectManager_->SetDirectionLight(directionLight_.get());
+
+	player_ = dynamic_cast<Player*>(objectManager_->GetObj(Tag::kPlayer).back());
 	player_->Reset(CommonData::GetInstance()->start_.GetMatWorldTranslation());
+	camera_->SetTarget(player_->GetWorldTransform());
 
 	skydome_ = std::make_unique<yunity::Skydome>();
 	skydome_->Initialize(camera_, { 10.0f, 10.0f, 10.0f });
 
 	CommonData::GetInstance()->scene_ = Scene::kStage;
 	CommonData::GetInstance()->flagState_ = FlagState::kInStage;
-
-	isReset_ = false;
-	isDebt_ = false;
-	resetTime_ = 0.0f;
-	sizeTime_ = 0.0f;
 }
 
 void StageScene::Update()
 {
-
-	player_->Update();
 	objectManager_->Update();
 
 	world_->Solve();
@@ -106,10 +92,8 @@ void StageScene::DrawBack()
 
 void StageScene::Draw3D()
 {
-
 	skydome_->Draw();
 	objectManager_->Draw();
-	player_->Draw();
 }
 
 void StageScene::DrawFront()

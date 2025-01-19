@@ -26,30 +26,26 @@ void TitleScene::Initialize()
 	directionLight_ = std::make_unique<yunity::DirectionLight>();
 	directionLight_->Initialize(directionLight.eyePosition, directionLight.targetPosition, directionLight.upDirection, directionLight.viewWidth, directionLight.viewHight, directionLight.nearClip, directionLight.farClip);
 
-	player_ = std::make_unique<Player>();
-	player_->Initialize(camera_, world_.get());
-	player_->SetDirectionLight(directionLight_.get());
-	player_->SetDirectionalLight(l);
-	player_->SetMass(0.0f);
 	camera_->SetTarget(nullptr);
 
 	objectManager_ = std::make_unique<ObjectManager>();
 	objectManager_->Initialize();
 	objectManager_->Load("title", camera_, world_.get());
+	objectManager_->CreatePlayer(camera_, world_.get());
 	objectManager_->SetDirectionalLight(l);
 	objectManager_->SetDirectionLight(directionLight_.get());
 
+	player_ = dynamic_cast<Player*>(objectManager_->GetObj(Tag::kPlayer).back());
+	player_->SetMass(0.0f);
 
 	skydome_ = std::make_unique<yunity::Skydome>();
 	skydome_->Initialize(camera_, skydomeScale_);
-
-	CommonData::GetInstance()->stageNum_ = -1;
-	CommonData::GetInstance()->scene_ = Scene::kTitle;
 
 	isStart_ = false;
 
 	camera_->SetTranslate(cameraPos_);
 	CommonData::GetInstance()->scene_ = Scene::kTitle;
+	CommonData::GetInstance()->flagState_ = FlagState::kCount;
 
 }
 
@@ -61,7 +57,8 @@ void TitleScene::Update()
 		yunity::RenderTexture::GetInstance()->SelectPostEffect(yunity::PostEffects::kRadialBlur, false);
 		if (isStart_) {
 			player_->SetMass(playerMass_);
-			player_->Update();
+			CommonData::GetInstance()->flagState_ = FlagState::kPlay;
+			//player_->Update();
 		}
 		if (player_->GetWorldTransform()->GetMatWorldTranslation().x >= targetPoint_ && camera_->GetTarget() == nullptr) {
 			camera_->SetTarget(player_->GetWorldTransform());
@@ -125,7 +122,7 @@ void TitleScene::Draw3D()
 	skydome_->Draw();
 	objectManager_->Draw();
 
-	player_->Draw();
+	//player_->Draw();
 }
 
 void TitleScene::DrawFront()

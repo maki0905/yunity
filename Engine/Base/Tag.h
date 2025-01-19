@@ -15,5 +15,6 @@ enum class Tag {
 	kSelectTV,
 	kCheckPoint,
 	kStartObject,
+	kPlayer,
 	kTagCount
 };

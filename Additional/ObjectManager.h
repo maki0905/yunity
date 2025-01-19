@@ -11,8 +11,10 @@
 #include "Signboard.h"
 #include "SelectTV.h"
 #include "CheckPoint.h"
+#include "Player.h"
 
 class ObjectManager : public yunity::BaseObjectManager {
 public:
+	void CreatePlayer(yunity::Camera* camera, yunity::World* world);
 	void Load(const std::string& objectFileName, yunity::Camera* camera, yunity::World* world, const std::string& jointFileName = "") override;
 };

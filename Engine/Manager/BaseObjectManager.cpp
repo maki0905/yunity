@@ -78,6 +78,7 @@ void yunity::BaseObjectManager::SetInitalizeData(const LevelData::ObjectData& ob
 		newObject->Initialize(world_, objectData.shape);
 	}
 	newObject->SetCamera(camera);
+	newObject->SetTag(objectData.tag_);
 }
 
 void yunity::BaseObjectManager::AddObject(std::unique_ptr<Object3D> newObject)
@@ -96,6 +97,19 @@ Vector3 yunity::BaseObjectManager::GetPos(const std::string& modelName)
 		}
 	}
 	return Vector3();
+}
+
+std::vector<yunity::Object3D*> yunity::BaseObjectManager::GetObj(const Tag& tag)
+{
+	std::vector<Object3D*> result;
+
+	for (auto& obj : objects_) {
+		if (obj->GetTag() == tag) {
+			result.push_back(obj.get());
+		}
+	}
+
+	return result;
 }
 
 void yunity::BaseObjectManager::Clear()

@@ -98,12 +98,10 @@ private:
 	const uint32_t limitTime_ = 30;
 
 	// プレイヤー
-	std::unique_ptr<Player> player_;
+	Player* player_;
 	const float targetPoint_ = 35.0f;
 	const float playerMass_ = 2.0f;
 
 	std::unique_ptr<yunity::DirectionLight> directionLight_;
-	
-	//int preNum_;
 };
 

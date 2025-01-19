@@ -137,3 +137,27 @@ void yunity::Object3D::SetDirectionLight(DirectionLight* directionLight)
 
 	}
 }
+
+yunity::Model* yunity::Object3D::GetModel()
+{
+	Model* result = nullptr;
+
+	if (model_.get() != nullptr) {
+		result = model_.get();
+	}
+	else if (models_.size()) {
+
+		std::vector<std::string> keys;
+		keys.reserve(models_.size());
+
+		for (const auto& model : models_) {
+			keys.push_back(model.first);
+		}
+
+		for (const auto& key : keys) {
+			result = models_[key].get();
+		}
+	}
+
+	return result;
+}

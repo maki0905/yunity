@@ -132,7 +132,7 @@ void Player::Update()
 		SetVelocity({ limitSpeed_ * pandm, velocity.y, velocity.z });
 	}
 
-	if (CommonData::GetInstance()->isGoal_) {
+	if (CommonData::GetInstance()->isGoal_ || CommonData::GetInstance()->flagState_ == FlagState::kCount) {
 		isReticle_ = false;
 		return;
 	}

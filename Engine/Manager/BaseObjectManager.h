@@ -83,6 +83,8 @@ namespace yunity {
 		/// <returns></returns>
 		Vector3 GetPos(const std::string& modelName);
 
+		std::vector<Object3D*> GetObj(const Tag& tag);
+
 		/// <summary>
 		/// クリア処理
 		/// </summary>

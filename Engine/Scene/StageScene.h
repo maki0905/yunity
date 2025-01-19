@@ -81,7 +81,7 @@ private:
 	std::unique_ptr<yunity::Skydome> skydome_;
 
 	// プレイヤー
-	std::unique_ptr<Player> player_;
+	Player* player_;
 
 	// 物理空間
 	const Vector3 gravity_ = { 0.0f, -30.0f, 0.0f };
@@ -102,22 +102,5 @@ private:
 
 	// オブジェクトマネージャー
 	std::unique_ptr<ObjectManager> objectManager_;
-
-	bool isReset_;
-	bool isDebt_;
-	float upTime_;
-	float downTime_;
-	float resetTime_;
-	float sizeTime_;
-	Vector3 dieCamera_;
-	Vector3 diePos_;
-	Vector3 topPos_;
-
-	bool isGoal_;
-	bool isScore_;
-	bool isClear_;
-	float time_;
-	Vector3 playerPos_;
-	Vector3 cameraPos_;
 };
 

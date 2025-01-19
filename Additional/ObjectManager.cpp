@@ -3,6 +3,15 @@
 #include "ModelManager.h"
 #include "CommonData.h"
 
+void ObjectManager::CreatePlayer(yunity::Camera* camera, yunity::World* world)
+{
+	std::unique_ptr<Player> newObject = std::make_unique<Player>();
+	newObject->SetTag(Tag::kPlayer);
+	newObject->Initialize(camera, world);
+	objects_.push_back(std::move(newObject));
+
+}
+
 void ObjectManager::Load(const std::string& objectFileName, yunity::Camera* camera, yunity::World* world, const std::string& jointFileName) {
 	yunity::LevelData* levelData = nullptr;
 	levelData = yunity::LevelEditor::GetInstance()->LoadFile(objectFileName);

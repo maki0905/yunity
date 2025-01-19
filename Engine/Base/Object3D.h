@@ -5,6 +5,7 @@
 #include "Camera.h"
 #include "World.h"
 #include "Body.h"
+#include "Tag.h"
 
 namespace yunity {
 
@@ -73,15 +74,17 @@ namespace yunity {
 		void SetFileName(const std::string fileName) { fileName_ = fileName; }
 		void SetHitBody(Body* body) { hitBody_ = body; }
 		void SetDirectionLight(DirectionLight* directionLight);
+		void SetTag(const Tag& tag) { tag_ = tag; }
 
 		/// <summary>
 		/// getter
 		/// </summary>
 
 		Vector3 GetTranslation() { return worldTransform_.translation_; }
-		Model* GetModel() { return model_.get(); }
+		Model* GetModel();
 		Model* GetModel(const std::string& modelName) { return models_[modelName].get(); }
 		Object3D::Body* GetHitBody() { return hitBody_; }
+		Tag GetTag() { return tag_; }
 
 	protected:
 		WorldTransform worldTransform_;
@@ -93,5 +96,6 @@ namespace yunity {
 		uint32_t texture_;
 		std::string fileName_;
 		Object3D::Body* hitBody_;
+		Tag tag_ = Tag::kDefalt;
 	};
 }
