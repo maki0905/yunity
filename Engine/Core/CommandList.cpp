@@ -28,7 +28,6 @@ void yunity::CommandList::BarrierChange(IDXGISwapChain4* swapChain, D3D12_RESOUR
 	// バックバッファのリソースを取得
 	ID3D12Resource* pResource = nullptr;
 	result = swapChain->GetBuffer(bbIndex, IID_PPV_ARGS(&pResource));
-	//result = swapChain->GetBuffer(bbIndex, IID_PPV_ARGS(&barrier.Transition.pResource));
 	// バリア設定
 	barrier.Transition.pResource = pResource;
 	barrier.Transition.StateBefore = before;

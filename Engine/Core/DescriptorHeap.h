@@ -77,9 +77,7 @@ namespace yunity {
 		D3D12_DESCRIPTOR_HEAP_DESC heapDesc_;
 		uint32_t descriptorSize_;
 		uint32_t freeDescriptors_;
-		//DescriptorHandle* firstHandle_;
 		std::unique_ptr<DescriptorHandle> firstHandle_;
-		//DescriptorHandle* nextFreeHandle_;
 		std::unique_ptr<DescriptorHandle> nextFreeHandle_;
 
 	};

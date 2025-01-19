@@ -3,12 +3,7 @@
 #include <memory>
 
 #include "IScene.h"
-#include "CameraManager.h"
-#include "Sprite.h"
-#include "Model.h"
-#include "World.h"
-#include "Player.h"
-#include "Skydome.h"
+
 
 /*
 * @brief セレクトシーンクラス
@@ -42,8 +37,4 @@ public:
 	void DrawFront() override;
 
 private:
-	yunity::Camera* camera_;
-
-	XINPUT_STATE pad_;
-	XINPUT_STATE prePad_;
 };

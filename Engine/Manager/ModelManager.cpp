@@ -57,7 +57,6 @@ yunity::Model* yunity::ModelManager::CreateModel(const Format& format, const std
 	}
 	model->Initialize(path, modelType, modelDataStorage_[path]);
 	models_.emplace_back(model.get());
-	//return models_.back();
 	return model.release();
 }
 

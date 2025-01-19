@@ -34,7 +34,6 @@ void yunity::BackBuffer::Create(IDXGISwapChain4* swapChain)
 		// スワップチェーンからバッファを取得
 		result = swapChain->GetBuffer(i, IID_PPV_ARGS(&backBuffers_[i]));
 		assert(SUCCEEDED(result));
-		/*rtvDescriptorHeap_->GetCPUDescriptorHandleForHeapStart()*/;
 		handle.ptr += (desriptorSizeRTV * i);
 		// レンダーターゲットビューの設定
 		D3D12_RENDER_TARGET_VIEW_DESC renderTargetViewDesc{};
@@ -45,7 +44,7 @@ void yunity::BackBuffer::Create(IDXGISwapChain4* swapChain)
 		yunity::Device::GetInstance()->GetDevice()->CreateRenderTargetView(backBuffers_[i].Get(), &renderTargetViewDesc, handle);
 	}
 
-	rtvHandles_[0] = rtvDescriptorHeap_->GetHeapPointer()->GetCPUDescriptorHandleForHeapStart()/*rtvDescriptorHeap_->GetCPUDescriptorHandleForHeapStart()*/;
+	rtvHandles_[0] = rtvDescriptorHeap_->GetHeapPointer()->GetCPUDescriptorHandleForHeapStart();
 	rtvHandles_[1].ptr = rtvHandles_[0].ptr + yunity::Device::GetInstance()->GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 
 }

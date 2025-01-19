@@ -9,7 +9,6 @@ public:
 	void Initialize(yunity::Camera* camera);
 	void Spawn(const Vector3& position) override;
 	void Update() override;
-	//void Draw() override;
 private:
 	Random::RandomNumberGenerator rng;
 	std::unique_ptr<yunity::Model> model_;

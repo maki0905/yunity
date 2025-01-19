@@ -68,14 +68,6 @@ namespace yunity {
 		void AddObject(std::unique_ptr<Object3D> newObject);
 
 		/// <summary>
-		/// 指定オブジェクト群取得
-		/// </summary>
-		/// <param name="fileName"></param>
-		/// <returns></returns>
-		//std::vector<std::unique_ptr<Object3D>> GetObjects(const std::string& fileName);
-		//std::vector<Object3D*> GetObj(const std::string& fileName, const std::string& modelName);
-
-		/// <summary>
 		/// 指定オブジェクト群
 		/// </summary>
 		/// <param name="fileName"></param>

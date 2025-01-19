@@ -39,12 +39,6 @@ public:
 	/// </summary>
 	void Initialize();
 
-	/// <summary>
-	/// ステージ名取得
-	/// </summary>
-	/// <returns></returns>
-	std::string GetStageName();
-
 	bool isGoal_;
 	int stageNum_ = -1;
 	Scene scene_;

@@ -3,6 +3,9 @@
 #include "ParticleDrawer.h"
 #include "Random.h"
 
+/*
+* @brief 浮遊パーティクル
+*/
 class FloatingParticle : public yunity::BaseParticle {
 public:
 

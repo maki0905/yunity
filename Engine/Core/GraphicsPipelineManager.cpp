@@ -68,7 +68,6 @@ void yunity::GraphicsPipelineManager::CreateObject3d()
 		graphicsPipelines_[PipelineType::kObject3d]->pso_[blendModeType]->SetShader(PipelineState::ShaderType::kVS, ShaderCompiler::GetInstance()->Get("Object3d", ShaderCompiler::ShaderType::kVS));
 		graphicsPipelines_[PipelineType::kObject3d]->pso_[blendModeType]->SetShader(PipelineState::ShaderType::kPS, ShaderCompiler::GetInstance()->Get("Object3d", ShaderCompiler::ShaderType::kPS));
 		graphicsPipelines_[PipelineType::kObject3d]->pso_[blendModeType]->SetBlendState(graphicsCommon_->blendDescs[blendModeType]);
-		//graphicsPipelines_[PipelineType::kObject3d]->pso_[blendModeType]->SetBlendState(blendDesc);
 		graphicsPipelines_[PipelineType::kObject3d]->pso_[blendModeType]->SetRasterizerState(rasterizerDesc);
 		graphicsPipelines_[PipelineType::kObject3d]->pso_[blendModeType]->SetDepthStencilState(depthStencilDesc);
 		graphicsPipelines_[PipelineType::kObject3d]->pso_[blendModeType]->SetRenderTargetFormat(DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, DXGI_FORMAT_D24_UNORM_S8_UINT);
@@ -174,7 +173,6 @@ void yunity::GraphicsPipelineManager::CreatePrimitive()
 	staticSamplers.ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
 	graphicsPipelines_[PipelineType::kPrimitive]->rooSignature_->InitializeStaticSampler(0, staticSamplers, D3D12_SHADER_VISIBILITY_PIXEL);
 
-	//rootSignature_->GetParameter(static_cast<size_t>(RootBindings::kWorldTransform)).InitializeAsConstantBuffer(0, D3D12_SHADER_VISIBILITY_VERTEX);
 	graphicsPipelines_[PipelineType::kPrimitive]->rooSignature_->GetParameter(static_cast<size_t>(PrimitiveRootBindings::kWorldTransform)).InitializeAsConstantBuffer(static_cast<int>(PrimitiveRootBindings::kWorldTransform));
 	graphicsPipelines_[PipelineType::kPrimitive]->rooSignature_->GetParameter(static_cast<size_t>(PrimitiveRootBindings::kViewProjection)).InitializeAsConstantBuffer(static_cast<int>(PrimitiveRootBindings::kViewProjection));
 
@@ -289,10 +287,6 @@ void yunity::GraphicsPipelineManager::CreateShadowMap()
 	rasterizerDesc.DepthClipEnable = TRUE;
 
 	D3D12_DEPTH_STENCIL_DESC depthStencilDesc = GraphicsPipelineManager::graphicsCommon_->DepthStateReadWrite;
-	/*depthStencilDesc.DepthEnable = TRUE;
-	depthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
-	depthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
-	depthStencilDesc.StencilEnable = FALSE;*/
 
 	for (uint32_t blendModeType = 0; blendModeType < BlendModeType::kBlendCount; blendModeType++) {
 		graphicsPipelines_[PipelineType::kShadowMap]->pso_[blendModeType] = std::make_unique<PipelineState>(
@@ -300,7 +294,6 @@ void yunity::GraphicsPipelineManager::CreateShadowMap()
 		graphicsPipelines_[PipelineType::kShadowMap]->pso_[blendModeType]->SetInputLayout(inputLayoutDesc);
 		graphicsPipelines_[PipelineType::kShadowMap]->pso_[blendModeType]->SetShader(
 			PipelineState::ShaderType::kVS, ShaderCompiler::GetInstance()->Get("ShadowMap", ShaderCompiler::ShaderType::kVS));
-		//graphicsPipelines_[PipelineType::kShadowMap]->pso_[blendModeType]->SetShader(PipelineState::ShaderType::kPS, nullptr); // ピクセルシェーダなし
 		graphicsPipelines_[PipelineType::kShadowMap]->pso_[blendModeType]->SetBlendState(graphicsCommon_->blendDescs[blendModeType]);
 		graphicsPipelines_[PipelineType::kShadowMap]->pso_[blendModeType]->SetRasterizerState(rasterizerDesc);
 		graphicsPipelines_[PipelineType::kShadowMap]->pso_[blendModeType]->SetDepthStencilState(depthStencilDesc);
@@ -413,7 +406,6 @@ void yunity::GraphicsPipelineManager::CreateSkyBox()
 	graphicsPipelines_[PipelineType::kSkyBox]->pso_[0]->SetShader(PipelineState::ShaderType::kVS, ShaderCompiler::GetInstance()->Get("Skybox", ShaderCompiler::ShaderType::kVS));
 	graphicsPipelines_[PipelineType::kSkyBox]->pso_[0]->SetShader(PipelineState::ShaderType::kPS, ShaderCompiler::GetInstance()->Get("Skybox", ShaderCompiler::ShaderType::kPS));
 	graphicsPipelines_[PipelineType::kSkyBox]->pso_[0]->SetBlendState(graphicsCommon_->blendDescs[1]);
-	//graphicsPipelines_[PipelineType::kObject3d]->pso_[blendModeType]->SetBlendState(blendDesc);
 	graphicsPipelines_[PipelineType::kSkyBox]->pso_[0]->SetRasterizerState(rasterizerDesc);
 	graphicsPipelines_[PipelineType::kSkyBox]->pso_[0]->SetDepthStencilState(depthStencilDesc);
 	graphicsPipelines_[PipelineType::kSkyBox]->pso_[0]->SetRenderTargetFormat(DXGI_FORMAT_R8G8B8A8_UNORM_SRGB, DXGI_FORMAT_D24_UNORM_S8_UINT);

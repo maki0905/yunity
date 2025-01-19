@@ -15,20 +15,6 @@ void yunity::BaseParticle::Update()
 	}
 }
 
-//std::list<Particle> yunity::BaseParticle::Update(std::list<Particle> particles)
-//{
-//	for (std::list<Particle>::iterator particleIterator = particles.begin(); particleIterator != particles.end();) {
-//		if ((*particleIterator).lifeTime <= (*particleIterator).currentTime) {
-//			particleIterator = particles_.erase(particleIterator);
-//			continue;
-//		}
-//		(*particleIterator).currentTime += fixedTime_;
-//		// 次のイテレーターへ
-//		++particleIterator;
-//	}
-//	return particles;
-//}
-
 void yunity::BaseParticle::Update(std::list<Particle>* particles)
 {
     if (!particles) {

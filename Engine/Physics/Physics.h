@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "MathFunction.h"
 
 struct Spring {
@@ -40,7 +40,3 @@ struct ConicalPendulum {
 };
 
 const Vector3 kGravity{ 0.0f, -9.8f, 0.0f };
-
-void DrawBall(const Ball& ball, const Matrix4x4& viewProjectionMatrix, const Matrix4x4& viewportMatrix, uint32_t color);
-
-Vector3 Reflect(const Vector3& input, const Vector3& normal);

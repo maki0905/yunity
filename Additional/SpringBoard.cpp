@@ -7,7 +7,6 @@ void SpringBoard::Initialize()
 	anchor_ = std::make_unique<yunity::Object3D>();
 	anchor_->Initialize(GetWorld(), Shape::kAABB);
 	anchor_->SetCollisionAttribute(kCollisionAttributeFloor);
-	//anchor_->SetIsTrigger(true);
 	anchor_->SetPosition({worldTransform_.translation_.x, worldTransform_.translation_.y - 1.0f, worldTransform_.translation_.z });
 	GetWorld()->Add(anchor_.get());
 	SetSpringJoint();

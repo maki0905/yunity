@@ -28,9 +28,6 @@ namespace yunity {
 	* @brief グラフィックパイプラインマネージャークラス
 	*/
 	class GraphicsPipelineManager {
-		/*struct GraphicsPipeline {
-			std::unordered_map<BlendModeType, PipelineState*> pso_;
-		};*/
 
 		// 
 		struct GraphicsPipeline {

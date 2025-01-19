@@ -13,23 +13,3 @@ void CommonData::Initialize()
 	isGoal_ = false;
 	start_.Initialize();
 }
-
-std::string CommonData::GetStageName()
-{
-	std::string result;
-
-	switch (stageNum_)
-	{
-	case 0:
-		result = "stage4";
-		break;
-	case 1:
-		result = "stage2";
-		break;
-	case 2:
-		result = "stage4";
-		break;
-	}
-
-	return result;
-}

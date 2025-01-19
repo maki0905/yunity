@@ -1,16 +1,6 @@
 #pragma once
 #include <memory>
 
-#include "IScene.h"
-#include "Camera.h"
-#include "DebugCamera.h"
-#include "Model.h"
-#include "World.h"
-#include "SkyBox.h"
-#include "Player.h"
-#include "World.h"
-#include "Object3D.h"
-
 /*
 * @brief クリアシーンクラス
 */
@@ -45,23 +35,5 @@ public:
 
 
 private:
-	bool isDebug_ = false;
-
-	yunity::Camera* camera_;
-	std::unique_ptr<yunity::DebugCamera> debugCamera_;
-
-	std::vector<yunity::Object3D*> objects_;
-
-	std::unique_ptr<yunity::Model> model0_;
-	yunity::WorldTransform worldTransform0_;
-	std::unique_ptr<yunity::Model> model1_;
-	yunity::WorldTransform worldTransform1_;
-	std::unique_ptr<yunity::Model> model2_;
-	yunity::WorldTransform worldTransform2_;
-	std::unique_ptr<yunity::SkyBox> skybox_;
-	std::unique_ptr<Player> player_;
-
-	std::unique_ptr<yunity::World> world_;
-
 };
 

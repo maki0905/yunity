@@ -143,9 +143,6 @@ void yunity::DirectXCore::PostDrawSwapchain()
 	// FPS固定
 	UpdateFixFPS();
 	commandList_->CommandClear();
-	/*for (auto& list : cmdLists) {
-		list = nullptr;
-	}*/
 }
 
 void yunity::DirectXCore::PreDrawShadow()
