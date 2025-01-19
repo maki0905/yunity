@@ -58,7 +58,6 @@ void TitleScene::Update()
 		if (isStart_) {
 			player_->SetMass(playerMass_);
 			CommonData::GetInstance()->flagState_ = FlagState::kPlay;
-			//player_->Update();
 		}
 		if (player_->GetWorldTransform()->GetMatWorldTranslation().x >= targetPoint_ && camera_->GetTarget() == nullptr) {
 			camera_->SetTarget(player_->GetWorldTransform());

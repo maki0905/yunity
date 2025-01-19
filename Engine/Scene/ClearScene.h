@@ -1,6 +1,8 @@
 #pragma once
 #include <memory>
 
+#include "IScene.h"
+
 /*
 * @brief クリアシーンクラス
 */

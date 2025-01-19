@@ -4,6 +4,7 @@
 #include "EngineTimeStep.h"
 #include "MathFunction.h"
 #include "RenderTexture.h"
+#include "CommonData.h"
 
 void SelectTV::Initialize()
 {
@@ -51,8 +52,16 @@ void SelectTV::Update()
 						moveCameraTimer_ = 0.0f;
 						Tradition::GetInstance()->Initialize();
 						Tradition::GetInstance()->Start();
-						camera_->SetTarget(nullptr);
+						float lenght = Length(Subtract(Vector3(player_->GetMatWorldTranslation().x, 0.0f, 0.0f), Vector3(tvWorldTransform_.GetMatWorldTranslation().x, 0.0f, 0.0f)));
+						if (lenght == 0.0f) {
+							camera_->SetTarget(nullptr);
+						}
 						currentEvnectNo_ = SelectEvent::ZoomOut;
+						CommonData::GetInstance()->flagState_ = FlagState::kCount;
+
+						oldPlayerPosition_ = player_->GetMatWorldTranslation();
+						movePlayerTime_ = 0.0f;
+
 					}
 
 				}
@@ -81,6 +90,7 @@ void SelectTV::OnTriggerEvent()
 {
 	if (GetHitBody()->GetCollisionAttribute() == kCollisionAttributePlayer) {
 		isPlayerHit_ = true;
+		player_ = GetHitBody();
 		if (currentEvnectNo_ == SelectEvent::COUNT || currentEvnectNo_ == SelectEvent::SHRINK) {
 			currentEvnectNo_ = SelectEvent::GROW;
 			grow_ = { true, 0.0f, tvWorldTransform_.scale_ };
@@ -118,14 +128,26 @@ void SelectTV::ZoomIn()
 
 void SelectTV::ZoomOut()
 {
-	moveCameraTimer_ += yunity::fixedTimeStep_;
-	moveCameraTimer_ = std::clamp(moveCameraTimer_, 0.0f, 1.0f);
-	camera_->SetTranslate(Lerp(oldCameraPos_, { oldCameraPos_.x, endCamerPos.y, endCamerPos.z }, moveCameraTimer_));
-	if (moveCameraTimer_ >= 1.0f) {
-		moveCameraTimer_ = 0.0f;
-		oldCameraPos_ = camera_->GetTranslate();
-		yunity::RenderTexture::GetInstance()->SelectPostEffect(yunity::PostEffects::kRadialBlur, true);
-		currentEvnectNo_ = SelectEvent::ZoomIn;
+	float lenght = Length(Subtract(Vector3(player_->GetMatWorldTranslation().x, 0.0f, 0.0f), Vector3(tvWorldTransform_.GetMatWorldTranslation().x, 0.0f, 0.0f)));
+	if (lenght != 0.0f) {
+		movePlayerTime_ += yunity::fixedTimeStep_;
+		movePlayerTime_ = std::clamp(movePlayerTime_, 0.0f, 1.0f);
+		player_->SetTranslation(Lerp({oldPlayerPosition_.x, player_->GetMatWorldTranslation().y, 0.0f}, {tvWorldTransform_.GetMatWorldTranslation().x, player_->GetMatWorldTranslation().y, 0.0f}, movePlayerTime_));
+	}
+	else {
+		if (camera_->GetTarget() != nullptr) {
+			camera_->SetTarget(nullptr);
+			oldCameraPos_ = camera_->GetTranslate();
+		}
+		moveCameraTimer_ += yunity::fixedTimeStep_;
+		moveCameraTimer_ = std::clamp(moveCameraTimer_, 0.0f, 1.0f);
+		camera_->SetTranslate(Lerp(oldCameraPos_, { oldCameraPos_.x, endCamerPos.y, endCamerPos.z }, moveCameraTimer_));
+		if (moveCameraTimer_ >= 1.0f) {
+			moveCameraTimer_ = 0.0f;
+			oldCameraPos_ = camera_->GetTranslate();
+			yunity::RenderTexture::GetInstance()->SelectPostEffect(yunity::PostEffects::kRadialBlur, true);
+			currentEvnectNo_ = SelectEvent::ZoomIn;
+		}
 	}
 }
 

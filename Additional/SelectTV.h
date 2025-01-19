@@ -74,6 +74,11 @@ private:
 
 	yunity::WorldTransform tvWorldTransform_;
 
+	// プレイヤー移動用
+	yunity::Body* player_;
+	Vector3 oldPlayerPosition_;
+	float movePlayerTime_;
+
 	// TV出現演出用
 	Easing grow_;
 	Easing shrink_;
