@@ -1,0 +1,27 @@
+{
+    "WindParticle": {
+        "Ascent": 1.0,
+        "LifeTime": 10.0,
+        "ParticleColor": [
+            1.0,
+            1.0,
+            1.0,
+            0.3
+
+        ],
+        "MaxParticle": 100,
+        "MinTranslate": [
+            -35.0,
+            -2.0
+        ],
+        "MaxTranslate": [
+            35.0,
+            2.0
+        ],
+        "ParticleScale": [
+            0.2,
+            1.0,
+            1.0
+        ]
+    }
+}

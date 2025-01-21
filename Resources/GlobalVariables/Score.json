@@ -1,0 +1,36 @@
+{
+    "Score": {
+        "BaseScorePosition": [
+            84.0,
+            84.0
+        ],
+        "Period0": 0.5,
+        "Period1": 1.0,
+        "ScoreBackSize": [
+            120.0,
+            120.0
+        ],
+        "HiScorePosition": [
+            0.0,
+            60.0
+        ],
+        "MinHiScoreSize": [
+            120.0,
+            30.0
+        ],
+        "MaxHiScoreSize": [
+            180.0,
+            45.0
+        ],
+        "ScoreNumberSize": [
+            44.0,
+            44.0
+        ],
+        "ScoreNumberTexBase": [
+            0.0,
+            0.0
+        ],
+        "ScoreNumberTextureSize": 64.0,
+        "ScoreNumberWidth": 16.0
+    }
+}

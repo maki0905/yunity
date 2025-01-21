@@ -1,0 +1,11 @@
+{
+    "SelectTV": {
+        "EndCamerPos": [
+            0.0,
+            20.0,
+            -60.0
+        ],
+        "FixedEndCameraPosZ": 12.0
+       
+    }
+}

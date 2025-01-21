@@ -24,22 +24,16 @@ class TitleScene : public yunity::IScene
 	};
 
 	struct DirectionLight {
-		const Vector4 color = { 1.0f, 1.0f, 1.0f, 1.0f };
-		const Vector3 direction = { 1.0f, -1.0f, 0.0f };
-		const Vector3 eyePosition = {0.0f, 44.0f, 0.0f};
-		const Vector3 targetPosition = {0.0f, 0.0f, 1.0f};
-		const Vector3 upDirection = {0.0f, 1.0f, 0.0f};
-		const float intensity = 1.0f;
-		const float viewWidth = 250;
-		const float viewHight = 106.0f;
-		const float nearClip = 0.0f;
-		const float farClip = 72.0f;
-	};
-
-	struct TVConstant {
-		const Vector3 translation = { 80.0f, 18.0f, 12.0f };
-		const float addition = 30.0f;
-		const float rotationX = -15.0f * DegToRad();
+		Vector4 color;
+		Vector3 direction;
+		Vector3 eyePosition;
+		Vector3 targetPosition;
+		Vector3 upDirection;
+		float intensity;
+		float viewWidth;
+		float viewHight;
+		float nearClip;
+		float farClip;
 	};
 
 public:
@@ -71,7 +65,7 @@ public:
 private:
 	// カメラ
 	yunity::Camera* camera_;
-	const Vector3 cameraPos_ = { 0.0f, 10.0f, -50.0f };
+	Vector3 cameraPos_;
 
 	// コントローラー
 	XINPUT_STATE pad_;
@@ -79,28 +73,28 @@ private:
 
 	// 物理空間
 	std::unique_ptr<yunity::World> world_;
-	const Vector3 gravity_ = { 0.0f, -30.0f, 0.0f };
+	Vector3 gravity_;
 
 	// オブジェクトマネージャー
 	std::unique_ptr<ObjectManager> objectManager_;
 
 	// skydome
 	std::unique_ptr<yunity::Skydome> skydome_;
-	const Vector3 skydomeScale_ = { 5.0f, 5.0f, 5.0f };
+	Vector3 skydomeScale_;
 
 	// ボタンスプライト
 	std::unique_ptr<yunity::Sprite> bottonSprite_ = nullptr;
 	std::unique_ptr<yunity::Sprite> bottonPushSprite_ = nullptr;
-	const Vector2 spritePos_ = { 610.0f, 520.0f };
+	Vector2 spritePos_;
 	bool isStart_ = false;
 	bool isDraw_;
-	uint32_t time_;
-	const uint32_t limitTime_ = 30;
+	float time_;
+	float limitTime_;
 
 	// プレイヤー
 	Player* player_;
-	const float targetPoint_ = 35.0f;
-	const float playerMass_ = 2.0f;
+	float targetPoint_;
+	float playerMass_;
 
 	std::unique_ptr<yunity::DirectionLight> directionLight_;
 };

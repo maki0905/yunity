@@ -1,0 +1,10 @@
+{
+    "PointParticle": {
+        "Power": 0.2,
+        "DirectionDegree": 90.0,
+        "Degree0": 135.0,
+        "Degree1": 45.0,
+        "LifeTime0": 0.2,
+        "LifeTime1": 0.2
+    }
+}

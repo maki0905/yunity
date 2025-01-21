@@ -1,0 +1,11 @@
+{
+    "SmokeParticle": {
+        "SpawnInterval": 0.05,
+        "Ascent": 0.05,
+        "LifeTime": 1.0,
+        "MinScale": 0.0,
+        "MaxScale": 0.5,
+        "MinTranslate": 0.0,
+        "MaxTranslate": 0.5
+    }
+}

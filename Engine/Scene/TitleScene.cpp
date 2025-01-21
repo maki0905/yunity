@@ -8,9 +8,33 @@
 #include "CommonData.h"
 #include "Tradition.h"
 #include "EngineTimeStep.h"
+#include "GlobalVariables.h"
+#include "EngineTimeStep.h"
 
 void TitleScene::Initialize()
 {
+	yunity::GlobalVariables* globalVariables = yunity::GlobalVariables::GetInstance();
+	const char* groupName = "TitleScene";
+	cameraPos_ = globalVariables->GetVector3Value(groupName, "CameraPos");
+	gravity_ = globalVariables->GetVector3Value(groupName, "Gravity");
+	skydomeScale_ = globalVariables->GetVector3Value(groupName, "SkydomeScale");
+	spritePos_ = globalVariables->GetVector2Value(groupName, "SpritePos");
+	limitTime_ = globalVariables->GetFloatValue(groupName, "LimitTime");
+	targetPoint_ = globalVariables->GetFloatValue(groupName, "TargetPoint");
+	playerMass_ = globalVariables->GetFloatValue(groupName, "PlayerMass");
+	DirectionLight directionLight;
+	directionLight.color = globalVariables->GetVector4Value(groupName, "DirectionLightColor");
+	directionLight.direction = globalVariables->GetVector3Value(groupName, "DirectionLightDirection");
+	directionLight.eyePosition = globalVariables->GetVector3Value(groupName, "DirectionLightEyePosition");
+	directionLight.targetPosition = globalVariables->GetVector3Value(groupName, "DirectionLightTargetPosition");
+	directionLight.upDirection = globalVariables->GetVector3Value(groupName, "DirectionLightUpDirection");
+	directionLight.intensity = globalVariables->GetFloatValue(groupName, "DirectionLightIntensity");
+	directionLight.viewWidth = globalVariables->GetFloatValue(groupName, "DirectionLightViewWidth");
+	directionLight.viewHight = globalVariables->GetFloatValue(groupName, "DirectionLightViewHight");
+	directionLight.nearClip = globalVariables->GetFloatValue(groupName, "DirectionLightNearClip");
+	directionLight.farClip = globalVariables->GetFloatValue(groupName, "DirectionLightFarClip");
+
+
 	camera_ = CameraManager::GetInstance()->GetCamera();
 	world_ = std::make_unique<yunity::World>();
 	world_->Initialize(gravity_);
@@ -21,7 +45,6 @@ void TitleScene::Initialize()
 	bottonPushSprite_.reset(yunity::Sprite::Create(yunity::TextureManager::GetInstance()->Load("ABottonPush.png"), spritePos_));
 	time_ = 0;
 
-	DirectionLight directionLight;
 	yunity::Model::DirectionalLight l = { .color = directionLight.color, .direction = directionLight.direction, .intensity = directionLight.intensity };
 	directionLight_ = std::make_unique<yunity::DirectionLight>();
 	directionLight_->Initialize(directionLight.eyePosition, directionLight.targetPosition, directionLight.upDirection, directionLight.viewWidth, directionLight.viewHight, directionLight.nearClip, directionLight.farClip);
@@ -89,15 +112,13 @@ void TitleScene::Update()
 		yunity::SceneManager::GetInstance()->ChangeScene("GAMESTAGE");
 	}
 
-	CommonData::GetInstance()->stageNum_ = -1;
-
 	objectManager_->Update();
 
 	world_->Solve();
 
 
-	time_++;
-	if (time_ % limitTime_ == 0) {
+	time_ += yunity::fixedTimeStep_;
+	if (time_ > limitTime_) {
 		time_ = 0;
 		isDraw_ ^= true;
 
@@ -120,13 +141,11 @@ void TitleScene::Draw3D()
 {
 	skydome_->Draw();
 	objectManager_->Draw();
-
-	//player_->Draw();
 }
 
 void TitleScene::DrawFront()
 {
-	if (player_->GetSelect() || !isStart_) {
+	if ((player_->GetSelect() && CommonData::GetInstance()->flagState_ == FlagState::kPlay) || !isStart_) {
 		if (isDraw_) {
 			bottonSprite_->Draw();
 		}

@@ -9,7 +9,7 @@ public:
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Initialize(float torque);
+	void Initialize(float direction);
 
 	/// <summary>
 	/// 更新

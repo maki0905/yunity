@@ -1,0 +1,13 @@
+{
+    "SpringBoard": {
+        "Stiffness": 20.0,
+        "EquilibriumPoint": 10.0,
+        "Damping": 1.0,
+        "AnchorPosition": [
+            0.0,
+            -1.0,
+            0.0
+        ],
+        "ElongationTime": 2.0
+    }
+}

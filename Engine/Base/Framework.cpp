@@ -1,5 +1,7 @@
 #include "Framework.h"
 
+#include "GlobalVariables.h"
+
 void yunity::Framework::Initialize()
 {
 	// WindowsAPI
@@ -51,6 +53,8 @@ void yunity::Framework::Initialize()
 	// パーティクル
 	particleDrawer_ = std::make_unique<ParticleDrawer>();
 
+	GlobalVariables::GetInstance()->LoadFiles();
+
 #pragma endregion
 
 }
@@ -67,6 +71,10 @@ void yunity::Framework::Update()
 	ImGuiManager::GetInstance()->Begin();
 
 	Input::GetInstance()->Update();
+
+#ifdef _DEBUG
+	GlobalVariables::GetInstance()->Updata();
+#endif 
 
 	SceneManager::GetInstance()->Update();
 	ModelManager::GetInstance()->Update();

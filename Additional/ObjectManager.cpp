@@ -54,13 +54,6 @@ void ObjectManager::Load(const std::string& objectFileName, yunity::Camera* came
 			newObject->Initialize();
 			AddObject(std::move(newObject));
 		}
-		else if (objectData.tag_ == Tag::kPillar) {
-			std::unique_ptr<Pillar> newObject = std::make_unique<Pillar>();
-			SetInitalizeData(objectData, newObject.get(), camera);
-			newObject->Initialize();
-			AddObject(std::move(newObject));
-
-		}
 		else if (objectData.tag_ == Tag::kClockwise) {
 			std::unique_ptr<RotationCube> newObject = std::make_unique<RotationCube>();
 			SetInitalizeData(objectData, newObject.get(), camera);
@@ -85,6 +78,7 @@ void ObjectManager::Load(const std::string& objectFileName, yunity::Camera* came
 		else if (objectData.tag_ == Tag::kSignboard) {
 			std::unique_ptr<Signboard> newObject = std::make_unique<Signboard>();
 			SetInitalizeData(objectData, newObject.get(), camera);
+			newObject->Initialize();
 			AddObject(std::move(newObject));
 		}
 		else if (objectData.tag_ == Tag::kSelectTV) {

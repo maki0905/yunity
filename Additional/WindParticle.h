@@ -14,7 +14,17 @@ public:
 private:
 	Random::RandomNumberGenerator rng;
 	// 上昇量
-	const float ascent_ = 1.0f;
+	float ascent_;
 	// 生存時間
-	const float lifeTime_ = 10.0f;
+	float lifeTime_;
+	// パーティクルカラー
+	Vector4 particleColor_;
+	// パーティクルの最大数
+	int maxParticle_;
+	// パーティクルの最小位置
+	Vector2 minTranslate_;
+	// パーティクルの最大位置
+	Vector2 maxTranslate_;
+	// パーティクルのスケール
+	Vector3 particleScale_;
 };

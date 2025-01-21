@@ -110,6 +110,18 @@ void Player::Initialize(yunity::Camera* camera, yunity::World* world)
 		fireworksParticles_[i]->Initialize(camera_);
 	}
 
+	guideATexture_[0] = yunity::TextureManager::GetInstance()->Load("ABotton.png");
+	guideATexture_[1] = yunity::TextureManager::GetInstance()->Load("ABottonPush.png");
+	guideA_ = std::make_unique<yunity::Sprite>();
+	guideA_.reset(yunity::Sprite::Create(guideATexture_[0], { 96.0f, 600.0f}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
+	guideA_->SetSize({ 96.0f, 96.0f });
+
+	guideRBTexture_[0] = yunity::TextureManager::GetInstance()->Load("RBotton.png");
+	guideRBTexture_[1] = yunity::TextureManager::GetInstance()->Load("RBottonPush.png");
+	guideRB_ = std::make_unique<yunity::Sprite>();
+	guideRB_.reset(yunity::Sprite::Create(guideRBTexture_[0], { 96.0f, 660.0f}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
+	guideRB_->SetSize({ 96.0f, 96.0f });
+
 }
 
 void Player::Update()
@@ -125,6 +137,9 @@ void Player::Update()
 	GoalProduction();
 
 	scoreUI_->Update();
+
+	guideRB_->SetTextureHandle(guideRBTexture_[0]);
+	guideA_->SetTextureHandle(guideATexture_[0]);
 
 	if (std::abs(GetVelocity().x) > limitSpeed_) {
 		Vector3 velocity = GetVelocity();
@@ -178,6 +193,7 @@ void Player::Update()
 
 			if ((pad_.Gamepad.wButtons & XINPUT_GAMEPAD_A) && !(prePad_.Gamepad.wButtons & XINPUT_GAMEPAD_A) && !isSelect_) {
 				if (!isJump_) {
+					guideA_->SetTextureHandle(guideATexture_[1]);
 					isJump_ = true;
 					AddForce({ 0.0f, 35.0f, 0.0f }, Body::ForceMode::kImpulse);
 					GetWorld()->TakeJoint(playerFixedJoint_.get());
@@ -204,6 +220,7 @@ void Player::Update()
 			// ワイヤー
 			if (CommonData::GetInstance()->scene_ == Scene::kStage) {
 				if ((pad_.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) && !(prePad_.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER)) {
+					guideRB_->SetTextureHandle(guideRBTexture_[1]);
 					if (!isWire_) {
 						if (isHit && hit.collider->GetCollisionAttribute() != kCollisionAttributeCoin) {
 							isWire_ = true;
@@ -306,7 +323,7 @@ void Player::Draw()
 
 	smokeParticle_->Draw();
 	pointParticle_->Draw();
-	for (int i = 0; i < 10; i++) {
+	for (int i = 0; i < fireworksParticleQuantity_; i++) {
 		fireworksParticles_[i]->Draw();
 	}
 
@@ -323,26 +340,20 @@ void Player::DrawUI()
 			landingPoint_->Draw();
 		}
 		reticle_->Draw();
+
+		guideA_->Draw();
+		guideRB_->Draw();
 		
 	}
 	if (isScore_) {
 		scoreUI_->Draw();
 	}
+
+
 }
 
 void Player::OnCollisionEvent()
 {
-	if (GetHitBody()->GetCollisionAttribute() == kCollisionAttributeTrampoline) {
-		AABB aabb = GetAABB();
-		AABB other = GetHitBody()->GetAABB();
-		if (aabb.min.y >= other.max.y) {
-			if (aabb.min.x < other.max.x && aabb.max.x > other.min.x) {
-				AddForce({ 0.0f, 30.0f, 0.0f }, Body::ForceMode::kImpulse);
-			}
-
-		}
-	}
-
 	if (GetHitBody()->GetCollisionAttribute() == kCollisionAttributeSpike) {
 		InitializeDeth();
 	}
@@ -351,7 +362,7 @@ void Player::OnCollisionEvent()
 		AABB aabb = GetAABB();
 		AABB other = GetHitBody()->GetAABB();
 		if (aabb.min.y >= (other.max.y + other.min.y) / 2.0f) {
-			if (aabb.min.x + 1.0f < other.max.x && aabb.max.x + 1.0f > other.min.x) {
+			if (aabb.min.x + toleranceLevel < other.max.x && aabb.max.x + toleranceLevel > other.min.x) {
 				playerFixedJoint_->CreateFixedJoint(GetHitBody(), this);
 				GetWorld()->AddJoint(playerFixedJoint_.get());
 				isMoving_ = true;
@@ -390,7 +401,7 @@ void Player::OnTriggerEvent()
 
 	}
 	if (GetHitBody()->GetCollisionAttribute() == kCollisionAttributeCoin) {
-		scoreUI_->AddScore(10);
+		scoreUI_->AddScore(coinValue_);
 	}
 	if (GetHitBody()->GetCollisionAttribute() == kCollisionAttributeCheckPoint) {
 		spawnPoint_ = GetHitBody()->GetMatWorldTranslation();

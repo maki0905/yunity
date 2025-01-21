@@ -1,6 +1,8 @@
 #include "TV.h"
 
 #include "TextureManager.h"
+#include "EngineTimeStep.h"
+#include "GlobalVariables.h"
 
 void TV::InitializeTexture()
 {
@@ -17,14 +19,15 @@ void TV::InitializeTexture()
 		textureHandle_[1] = yunity::TextureManager::Load("Models/TV/TVRBottonPush.png");
 	}
 
+	yunity::GlobalVariables* globalVariables = yunity::GlobalVariables::GetInstance();
+	const char* groupName = "TV";
+	changeTime_ = globalVariables->GetFloatValue(groupName, "ChangeTime");
 }
 
 void TV::Update()
 {
-	
-
-	time_ += 1.0f;
-	if (time_ > 30.0f) {
+	time_ += yunity::fixedTimeStep_;
+	if (time_ > changeTime_) {
 		change_ ^= true;
 		time_ = 0.0f;
 	}
@@ -44,6 +47,9 @@ void TV::Draw()
 
 #ifdef _DEBUG
 	Collider::HitBox(camera_);
+	yunity::GlobalVariables* globalVariables = yunity::GlobalVariables::GetInstance();
+	const char* groupName = "TV";
+	changeTime_ = globalVariables->GetFloatValue(groupName, "ChangeTime");
 #endif // _DEBUG
 
 

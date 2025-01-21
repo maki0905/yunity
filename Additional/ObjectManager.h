@@ -5,7 +5,6 @@
 #include "TV.h"
 #include "Coin.h"
 #include "ForceField.h"
-#include "Pillar.h"
 #include "RotationCube.h"
 #include "SpringBoard.h"
 #include "Signboard.h"

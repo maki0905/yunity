@@ -8,11 +8,15 @@
 */
 class Signboard : public yunity::Object3D {
 	struct  Signboardconstant {
-		const float limit = 10.0f;
-		const float addition = 0.5f;
-		const Vector3 pos = { 25.0f, -7.0f, 6.0f };
+		float limit = 10.0f;
+		float addition = 0.5f;
 	};
 public:
+	
+	/// <summary>
+	/// 初期化
+	/// </summary>
+	void Initialize();
 	/// <summary>
 	/// 更新
 	/// </summary>

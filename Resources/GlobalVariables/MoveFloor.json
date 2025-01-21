@@ -1,0 +1,6 @@
+{
+    "MoveFloor": {
+        "Amplitude": 0.08,
+        "Cycle": 5.0
+    }
+}

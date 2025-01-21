@@ -9,9 +9,25 @@
 #include "CommonData.h"
 #include "Tradition.h"
 #include "RenderTexture.h"
+#include "GlobalVariables.h"
 
 void StageScene::Initialize()
 {
+	yunity::GlobalVariables* globalVariables = yunity::GlobalVariables::GetInstance();
+	const char* groupName = "StageScene";
+	gravity_ = globalVariables->GetVector3Value(groupName, "Gravity");
+	skydomeScale_ = globalVariables->GetVector3Value(groupName, "SkydomeScale");
+	DirectionLight directionLight;
+	directionLight.color = globalVariables->GetVector4Value(groupName, "DirectionLightColor");
+	directionLight.direction = globalVariables->GetVector3Value(groupName, "DirectionLightDirection");
+	directionLight.eyePosition = globalVariables->GetVector3Value(groupName, "DirectionLightEyePosition");
+	directionLight.targetPosition = globalVariables->GetVector3Value(groupName, "DirectionLightTargetPosition");
+	directionLight.upDirection = globalVariables->GetVector3Value(groupName, "DirectionLightUpDirection");
+	directionLight.intensity = globalVariables->GetFloatValue(groupName, "DirectionLightIntensity");
+	directionLight.viewWidth = globalVariables->GetFloatValue(groupName, "DirectionLightViewWidth");
+	directionLight.viewHight = globalVariables->GetFloatValue(groupName, "DirectionLightViewHight");
+	directionLight.nearClip = globalVariables->GetFloatValue(groupName, "DirectionLightNearClip");
+	directionLight.farClip = globalVariables->GetFloatValue(groupName, "DirectionLightFarClip");
 
 	inStage_ = false;
 
@@ -20,7 +36,6 @@ void StageScene::Initialize()
 	debugCamera_ = std::make_unique<yunity::DebugCamera>();
 	isDebug_ = false;
 
-	DirectionLight directionLight;
 	yunity::Model::DirectionalLight l = { .color = directionLight.color, .direction = directionLight.direction, .intensity = directionLight.intensity };
 
 	world_ = std::make_unique<yunity::World>();
@@ -41,7 +56,7 @@ void StageScene::Initialize()
 	camera_->SetTarget(player_->GetWorldTransform());
 
 	skydome_ = std::make_unique<yunity::Skydome>();
-	skydome_->Initialize(camera_, { 10.0f, 10.0f, 10.0f });
+	skydome_->Initialize(camera_, skydomeScale_);
 
 	CommonData::GetInstance()->scene_ = Scene::kStage;
 	CommonData::GetInstance()->flagState_ = FlagState::kInStage;

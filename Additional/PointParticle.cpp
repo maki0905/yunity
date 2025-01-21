@@ -1,5 +1,7 @@
 #include "PointParticle.h"
 
+#include "GlobalVariables.h"
+
 void PointParticle::Initialize(yunity::Camera* camera)
 {
 	isActive_ = true;
@@ -18,7 +20,14 @@ void PointParticle::Initialize(yunity::Camera* camera)
 	circleParticles_.clear();
 	particles_.clear();
 
-	SetFixedTime(1.0f / 30.0f);
+	yunity::GlobalVariables* globalVariables = yunity::GlobalVariables::GetInstance();
+	const char* groupName = "PointParticle";
+	power_ = globalVariables->GetFloatValue(groupName, "Power");
+	directionDegree_ = globalVariables->GetFloatValue(groupName, "DirectionDegree");
+	for (int i = 0; i < particleQuantity_; i++) {
+		degree_[i] = globalVariables->GetFloatValue(groupName, "Degree" + std::to_string(i));
+		lifeTime_[i] = globalVariables->GetFloatValue(groupName, "LifeTime" + std::to_string(i));
+	}
 
 }
 
@@ -34,19 +43,20 @@ void PointParticle::Spawn(const Vector3& position)
 	circleParticle.currentTime = 0.0f;
 	circleParticles_.push_back(circleParticle);
 
-	for (uint32_t i = 0; i < 4; ++i) {
+	for (int i = 0; i < spawnQuantity_; ++i) {
 		Particle particle;
 		particle.transform.translate = position;
 
-		if (i % 2 == 0) {
-			particle.transform.rotate.z = degree_ * 1.5f * DegToRad();
+		/*if (i % 2 == 0) {
+			particle.transform.rotate.z = degree_[i % 2] * 1.5f * DegToRad();
 		}
 		else {
 			particle.transform.rotate.z = degree_ * 0.5f * DegToRad();
-		}
+		}*/
+		particle.transform.rotate.z = degree_[i % 2]  * DegToRad();
 		particle.velocity = {
-			float(power_ * std::cosf(degree_ * i * DegToRad()) - power_ * std::sinf(degree_ * i * DegToRad())),
-			float(power_ * std::sinf(degree_ * i * DegToRad()) + power_ * std::cosf(degree_ * i * DegToRad())),
+			float(power_ * std::cosf(directionDegree_ * i * DegToRad()) - power_ * std::sinf(directionDegree_ * i * DegToRad())),
+			float(power_ * std::sinf(directionDegree_ * i * DegToRad()) + power_ * std::cosf(directionDegree_ * i * DegToRad())),
 			0.0f
 		};
 
@@ -73,6 +83,19 @@ void PointParticle::Update()
 	}
 	BaseParticle::Update(&circleParticles_);
 	BaseParticle::Update();
+
+#ifdef _DEBUG
+	yunity::GlobalVariables* globalVariables = yunity::GlobalVariables::GetInstance();
+	const char* groupName = "PointParticle";
+	power_ = globalVariables->GetFloatValue(groupName, "Power");
+	directionDegree_ = globalVariables->GetFloatValue(groupName, "DirectionDegree");
+	for (int i = 0; i < particleQuantity_; i++) {
+		degree_[i] = globalVariables->GetFloatValue(groupName, "Degree" + std::to_string(i));
+		lifeTime_[i] = globalVariables->GetFloatValue(groupName, "LifeTime" + std::to_string(i));
+	}
+#endif // _DEBUG
+
+
 }
 
 void PointParticle::Draw()

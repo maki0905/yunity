@@ -110,6 +110,13 @@ void yunity::LevelEditor::LoadObjectRecursive(LevelData* levelData, nlohmann::js
 	for (nlohmann::json& object : deserialized["objects"]) {
 		assert(object.contains("type"));
 
+		if (object["disabled"].contains("disabled")) {
+			bool disabled = object["disabled"].get<bool>();
+			if (disabled) {
+				continue;
+			}
+		}
+
 		// 種別を取得
 		std::string type = object["type"].get<std::string>();
 

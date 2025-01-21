@@ -1,6 +1,9 @@
 #include "SmokeParticle.h"
 
 #include "ModelManager.h"
+#include "GlobalVariables.h"
+#include "EngineTimeStep.h"
+
 
 void SmokeParticle::Initialize(yunity::Camera* camera)
 {
@@ -13,14 +16,22 @@ void SmokeParticle::Initialize(yunity::Camera* camera)
 	particleDrawer_->SetCamera(camera);
 	particles_.clear();
 
-	frequencyTime_ = 0.0f;
-	SetFixedTime(fixedTime_);
 	spawnTime_ = 0.0f;
+
+	yunity::GlobalVariables* globalVariables = yunity::GlobalVariables::GetInstance();
+	const char* groupName = "SmokeParticle";
+	spawnInterval_ = globalVariables->GetFloatValue(groupName, "SpawnInterval");
+	ascent_ = globalVariables->GetFloatValue(groupName, "Ascent");
+	lifeTime_ = globalVariables->GetFloatValue(groupName, "LifeTime");
+	minScale_ = globalVariables->GetFloatValue(groupName, "MinScale");
+	maxScale_ = globalVariables->GetFloatValue(groupName, "MaxScale");
+	minTranslate_ = globalVariables->GetFloatValue(groupName, "MinTranslate");
+	maxTranslate_ = globalVariables->GetFloatValue(groupName, "MaxTranslate");
+
 }
 
 void SmokeParticle::Spawn(const Vector3& position)
 {
-	//particles_.clear();
 	if (!spawnTime_) {
 		Particle particle;
 		particle.transform.translate = position;
@@ -37,21 +48,29 @@ void SmokeParticle::Spawn(const Vector3& position)
 
 void SmokeParticle::Update()
 {
-	frequencyTime_ += fixedTime_;
-
 	if (spawnTime_) {
-		spawnTime_ -= fixedTime_;
-		spawnTime_ = std::clamp(spawnTime_, 0.0f, 2.0f);
+		spawnTime_ -= yunity::fixedTimeStep_;
+		spawnTime_ = std::clamp(spawnTime_, 0.0f, 1.0f);
 	}
 
 	for (auto& particle : particles_) {
-		/*float scale = particle.currentTime;
-		scale = std::clamp(scale, 0.0f, 1.0f);
-		particle.transform.scale = { scale, scale, scale };*/
-		particle.transform.scale = Add(particle.transform.scale, { fixedTime_ / 2.0f, fixedTime_ / 2.0f, 0.0f });
+		particle.transform.scale = Add(particle.transform.scale, { yunity::fixedTimeStep_, yunity::fixedTimeStep_, 0.0f });
 		particle.transform.translate.y += std::powf(particle.currentTime / particle.lifeTime, 5.0f) * ascent_;
 		particle.particleForCPU.color.w = 1.0f - (particle.currentTime / particle.lifeTime);
 		particle.BillboardMatrix(*camera_);
 	}
 	BaseParticle::Update();
+
+#ifdef _DEBUG
+	yunity::GlobalVariables* globalVariables = yunity::GlobalVariables::GetInstance();
+	const char* groupName = "SmokeParticle";
+	spawnInterval_ = globalVariables->GetFloatValue(groupName, "SpawnInterval");
+	ascent_ = globalVariables->GetFloatValue(groupName, "Ascent");
+	lifeTime_ = globalVariables->GetFloatValue(groupName, "LifeTime");
+	minScale_ = globalVariables->GetFloatValue(groupName, "MinScale");
+	maxScale_ = globalVariables->GetFloatValue(groupName, "MaxScale");
+	minTranslate_ = globalVariables->GetFloatValue(groupName, "MinTranslate");
+	maxTranslate_ = globalVariables->GetFloatValue(groupName, "MaxTranslate");
+#endif // _DEBUG
+
 }

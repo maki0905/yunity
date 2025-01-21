@@ -29,6 +29,7 @@ public:
 
 private:
 	float time_;
+	float changeTime_;
 	bool isActive_;
 	bool change_;
 	uint32_t textureHandle_[2];

@@ -17,14 +17,11 @@ namespace yunity {
 		bool GetIsActive() { return isActive_; }
 
 		void SetCamera(yunity::Camera* camera) { camera_ = camera; }
-		void SetFixedTime(float fixedTime) { fixedTime_ = fixedTime; }
 
 	protected:
 		bool isActive_ = true;
 		yunity::Camera* camera_;
 		std::list<Particle> particles_;
 		std::unique_ptr<yunity::ParticleDrawer> particleDrawer_;
-	private:
-		float fixedTime_;
 	};
 }

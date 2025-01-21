@@ -29,9 +29,12 @@ public:
 private:
 	bool isActive_ = true;
 	bool isWind_ = false;
-	const float limitTime_ = 5.0f;
 	float time_ = 0;
-	const float force_ = 10.0f;
+	// 制限時間
+	float limitTime_;
+	// 上昇量
+	float force_ ;
+	// パーティクル
 	std::unique_ptr<WindParticle> windParticle_;
 
 };

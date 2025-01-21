@@ -2,6 +2,7 @@
 
 #include "EngineTimeStep.h"
 #include "ModelManager.h"
+#include "GlobalVariables.h"
 
 void ForceField::Initialize()
 {
@@ -11,6 +12,11 @@ void ForceField::Initialize()
 	windParticle_->Initialize(camera_);
 	model_ = std::make_unique<yunity::Model>();
 	model_.reset(yunity::ModelManager::GetInstance()->CreateModel(obj, "Cube"));
+
+	yunity::GlobalVariables* globalVariables = yunity::GlobalVariables::GetInstance();
+	const char* groupName = "ForceField";
+	limitTime_ = globalVariables->GetFloatValue(groupName, "LimitTime");
+	force_ = globalVariables->GetFloatValue(groupName, "Force");
 }
 
 void ForceField::Update()
@@ -31,6 +37,12 @@ void ForceField::Update()
 		windParticle_->Clear();
 	}
 	windParticle_->Update();
+#ifdef _DEBUG
+	yunity::GlobalVariables* globalVariables = yunity::GlobalVariables::GetInstance();
+	const char* groupName = "ForceField";
+	limitTime_ = globalVariables->GetFloatValue(groupName, "LimitTime");
+	force_ = globalVariables->GetFloatValue(groupName, "Force");
+#endif // _DEBUG
 }
 
 void ForceField::Draw()

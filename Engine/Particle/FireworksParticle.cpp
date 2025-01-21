@@ -11,8 +11,6 @@ void FireworksParticle::Initialize(yunity::Camera* camera)
 	particleDrawer_->Initialize("white1x1.png");
 	particleDrawer_->SetBlendModeType(yunity::BlendModeType::kAdd);
 	particleDrawer_->SetCamera(camera);
-
-	SetFixedTime(1.0f / 30.0f);
 }
 
 void FireworksParticle::Spawn(const Vector3& position)

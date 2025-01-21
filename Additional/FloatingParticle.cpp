@@ -1,6 +1,8 @@
 #include "FloatingParticle.h"
 
 #include "EngineTimeStep.h"
+
+#include "GlobalVariables.h"
 void FloatingParticle::Initialize(yunity::Camera* camera)
 {
 	isActive_ = true;
@@ -14,6 +16,11 @@ void FloatingParticle::Initialize(yunity::Camera* camera)
 	particles_.clear();
 	angle_ = 0.0f;
 	isLerp_ = false;
+	yunity::GlobalVariables* globalVariables = yunity::GlobalVariables::GetInstance();
+	const char* groupName = "FloatingParticle";
+	lifeTime_ = globalVariables->GetFloatValue(groupName, "LifeTime");
+	power_ = globalVariables->GetFloatValue(groupName, "Power");
+	speedDegree_ = globalVariables->GetFloatValue(groupName, "SpeedDegree");
 }
 
 void FloatingParticle::Spawn(const Vector3& position)
@@ -40,7 +47,7 @@ void FloatingParticle::Update()
 	for (auto& particle : particles_) {
 		if (Length(targetPosition_) > 0.0f) {
 			float t = 1.0f - std::powf(1.0f - particle.currentTime, 2);
-			particle.transform.translate = Lerp(/*centerPosition_*/particle.transform.translate, targetPosition_, t);
+			particle.transform.translate = Lerp(particle.transform.translate, targetPosition_, t);
 			particle.transform.translate = Add(particle.transform.translate, { 0.0f, particle.velocity.y * std::cosf(particle.currentTime * particle.velocity.y), 0.0f });
 			particle.particleForCPU.color.w = 1.0f - (particle.currentTime / particle.lifeTime);
 		}
@@ -60,5 +67,14 @@ void FloatingParticle::Update()
 	if (particles_.size() == 0) {
 		isActive_ = false;
 	}
+
+#ifdef _DEBUG
+	yunity::GlobalVariables* globalVariables = yunity::GlobalVariables::GetInstance();
+	const char* groupName = "FloatingParticle";
+	lifeTime_ = globalVariables->GetFloatValue(groupName, "LifeTime");
+	power_ = globalVariables->GetFloatValue(groupName, "Power");
+	speedDegree_ = globalVariables->GetFloatValue(groupName, "SpeedDegree");
+#endif // _DEBUG
+
 
 }

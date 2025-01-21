@@ -5,10 +5,10 @@
 #include "MathFunction.h"
 #include "RenderTexture.h"
 #include "CommonData.h"
+#include "GlobalVariables.h"
 
 void SelectTV::Initialize()
 {
-	TVConstant tvConstant;
 	tvWorldTransform_.Initialize();
 	tvWorldTransform_.translation_ = worldTransform_.translation_;
 	tvWorldTransform_.scale_ = { 0.0f, 0.0f, 0.0f };
@@ -19,6 +19,10 @@ void SelectTV::Initialize()
 	shrink_ = { false, 0.0f };
 	moveCameraTimer_ = 0.0f;
 	
+	yunity::GlobalVariables* globalVariables = yunity::GlobalVariables::GetInstance();
+	const char* groupName = "SelectTV";
+	endCamerPos = globalVariables->GetVector3Value(groupName, "EndCamerPos");
+	fixedEndCameraPosZ = globalVariables->GetFloatValue(groupName, "FixedEndCameraPosZ");
 }
 
 void SelectTV::Update()
@@ -77,6 +81,15 @@ void SelectTV::Update()
 
 	isPlayerHit_ = false;
 	tvWorldTransform_.UpdateMatrix();
+
+
+#ifdef _DEBUG
+	yunity::GlobalVariables* globalVariables = yunity::GlobalVariables::GetInstance();
+	const char* groupName = "SelectTV";
+	endCamerPos = globalVariables->GetVector3Value(groupName, "EndCamerPos");
+	fixedEndCameraPosZ = globalVariables->GetFloatValue(groupName, "FixedEndCameraPosZ");
+#endif // _DEBUG
+
 }
 
 void SelectTV::Draw()

@@ -1,0 +1,57 @@
+{
+    "TitleScene": {
+        "CameraPos": [
+            0.0,
+            10.0,
+            -50.0
+        ],
+        "Gravity":[
+            0.0,
+            -30.0,
+            0.0
+        ],
+        "SkydomeScale":[
+            5.0,
+            5.0,
+            5.0
+        ],
+        "SpritePos": [
+            610.0,
+            520.0
+        ],
+        "LimitTime": 0.5,
+        "TargetPoint": 35.0,
+        "PlayerMass": 2.0,
+        "DirectionLightColor":[
+            1.0,
+            1.0,
+            1.0,
+            1.0
+        ],
+        "DirectionLightDirection": [
+            1.0,
+            -1.0,
+            0.0
+        ],
+        "DirectionLightEyePosition": [
+            0.0,
+            44.0,
+            0.0
+        ],
+        "DirectionLightTargetPosition": [
+            0.0,
+            0.0,
+            1.0
+        ],
+        "DirectionLightUpDirection": [
+            0.0,
+            1.0,
+            0.0
+        ],
+        "DirectionLightIntensity": 1.0,
+        "DirectionLightViewWidth": 250.0,
+        "DirectionLightViewHight": 106.0,
+        "DirectionLightNearClip": 0.0,
+        "DirectionLightFarClip": 72.0
+    }
+}

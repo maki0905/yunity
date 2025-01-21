@@ -1,13 +1,23 @@
 #include "SpringBoard.h"
 
 #include "ModelManager.h"
+#include "EngineTimeStep.h"
+#include "GlobalVariables.h"
 
 void SpringBoard::Initialize()
 {
+	yunity::GlobalVariables* globalVariables = yunity::GlobalVariables::GetInstance();
+	const char* groupName = "SpringBoard";
+	stiffness_ = globalVariables->GetFloatValue(groupName, "Stiffness");
+	equilibriumPoint_ = globalVariables->GetFloatValue(groupName, "EquilibriumPoint");
+	damping_ = globalVariables->GetFloatValue(groupName, "Damping");
+	anchorPosition_ = globalVariables->GetVector3Value(groupName, "AnchorPosition");
+	elongationTime_ = globalVariables->GetFloatValue(groupName, "ElongationTime");
+
 	anchor_ = std::make_unique<yunity::Object3D>();
 	anchor_->Initialize(GetWorld(), Shape::kAABB);
 	anchor_->SetCollisionAttribute(kCollisionAttributeFloor);
-	anchor_->SetPosition({worldTransform_.translation_.x, worldTransform_.translation_.y - 1.0f, worldTransform_.translation_.z });
+	anchor_->SetPosition(Add(worldTransform_.translation_, anchorPosition_));
 	GetWorld()->Add(anchor_.get());
 	SetSpringJoint();
 	fixedPosition_ = worldTransform_.translation_;
@@ -24,9 +34,9 @@ void SpringBoard::Update()
 	worldTransform_.translation_.x = fixedPosition_.x;
 	worldTransform_.translation_.z = fixedPosition_.z;
 	if (flag_) {
-		time_ += 1.0f / 120.0f;
-		time_ = std::clamp(time_, 0.0f, 1.0f);
-		springJoint_->SetEquilibriumPoint(1, Lerp({ 0.0f, equilibriumPoint_, 0.0f }, { 0.0f, 0.0f, 0.0f }, time_).y);
+		time_ += yunity::fixedTimeStep_;
+		time_ = std::clamp(time_, 0.0f, elongationTime_);
+		springJoint_->SetEquilibriumPoint(1, Lerp({ 0.0f, equilibriumPoint_, 0.0f }, { 0.0f, 0.0f, 0.0f }, time_ / elongationTime_).y);
 	}
 	float scale = worldTransform_.translation_.y - fixedPosition_.y;
 	springWorldTransform_.scale_.y = 1.0f + scale;
@@ -44,7 +54,7 @@ void SpringBoard::SetSpringJoint()
 	springJoint_ = std::make_unique<yunity::SpringJoint>();
 	springJoint_->CreateSpringJoint(this, anchor_.get());
 	springJoint_->SetDamping(1, damping_);
-	springJoint_->SetStiffness(1, 20.0f);
+	springJoint_->SetStiffness(1, stiffness_);
 	springJoint_->SetEquilibriumPoint(1, equilibriumPoint_);
 	springJoint_->EnableSpring(1, false);
 	GetWorld()->AddJoint(springJoint_.get());

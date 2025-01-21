@@ -1,9 +1,14 @@
 #include "RotationCube.h"
 
+#include "GlobalVariables.h"
 
-void RotationCube::Initialize(float torque)
+void RotationCube::Initialize(float direction)
 {
-	torque_ = torque;
+	yunity::GlobalVariables* globalVariables = yunity::GlobalVariables::GetInstance();
+	const char* groupName = "RotationCude";
+	torque_ = globalVariables->GetFloatValue(groupName, "Torque");
+
+	torque_ *= direction;
 	SetShape(Shape::kOBB);
 }
 
@@ -13,4 +18,13 @@ void RotationCube::Update()
 	if (worldTransform_.rotation_.z >= 360.0f * DegToRad() || worldTransform_.rotation_.z <= -360.0f * DegToRad()) {
 		worldTransform_.rotation_.z = 0.0f;
 	}
+
+#ifdef _DEBUG
+	yunity::GlobalVariables* globalVariables = yunity::GlobalVariables::GetInstance();
+	const char* groupName = "RotationCude";
+	torque_ /= std::abs(torque_);
+	torque_ *= globalVariables->GetFloatValue(groupName, "Torque");
+#endif // _DEBUG
+
+
 }

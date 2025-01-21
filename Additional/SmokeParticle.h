@@ -5,25 +5,26 @@
 #include "Random.h"
 
 class SmokeParticle : public yunity::BaseParticle {
-	struct smoke : public Particle {
-		bool flag;
-	};
-
 public:
 	void Initialize(yunity::Camera* camera);
 	void Spawn(const Vector3& position) override;
 	void Update() override;
 private:
 	Random::RandomNumberGenerator rng;
-	// 進行時間
-	const float fixedTime_ = 1.0f / 30.0f;
 	// 発生間隔
-	const float spawnInterval_ = 0.05f;
+	float spawnInterval_ = 0.05f;
 	// 上昇量
-	const float ascent_ = 0.05f;
+	float ascent_ = 0.05f;
 	// 生存時間
-	const float lifeTime_ = 1.0f;
-
-	float frequencyTime_;
+	float lifeTime_ = 1.0f;
+	// 最小スケール
+	float minScale_;
+	// 最大スケール
+	float maxScale_;
+	// 最小位置
+	float minTranslate_;
+	// 最大位置
+	float maxTranslate_;
+	// 生成時間
 	float spawnTime_;
 };

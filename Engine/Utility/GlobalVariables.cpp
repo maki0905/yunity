@@ -1,40 +1,37 @@
-﻿#include "GlobalVariables.h"
+#include "GlobalVariables.h"
 
 #include <cassert>
-//#include "Externals/imgui/imgui.h"
 #include "imgui/imgui.h"
-//#include "imgui.h"
-//#include "Externals/nlohmann/json.hpp"
 #include "json.hpp"
 #include <fstream>
 #include <Windows.h>
 
 
 
-GlobalVariables* GlobalVariables::GetInstance() { 
+yunity::GlobalVariables* yunity::GlobalVariables::GetInstance() {
 	static GlobalVariables instance;
 
 	return &instance;
 }
 
-void GlobalVariables::CreateGroup(const std::string& groupName) {
+void yunity::GlobalVariables::CreateGroup(const std::string& groupName) {
 	// 指定名のオブジェクトがなければ追加する
 	datas_[groupName];
 
 }
 
-void GlobalVariables::Updata() { 
+void yunity::GlobalVariables::Updata() {
 	if (!ImGui::Begin("Global Variables", nullptr, ImGuiWindowFlags_MenuBar)) {
 		ImGui::End();
 		return;
-	} 
+	}
 	if (!ImGui::BeginMenuBar()) {
 		return;
 	}
 
 	// 各グループについて
 	for (std::map<std::string, Group>::iterator itGroup = datas_.begin(); itGroup != datas_.end();
-	     ++itGroup) {
+		++itGroup) {
 		// グループ名を取得
 		const std::string& groupName = itGroup->first;
 		// グループの参照を取得
@@ -45,7 +42,7 @@ void GlobalVariables::Updata() {
 
 		// 各項目について
 		for (std::map<std::string, Item>::iterator itItem = group.begin();
-		     itItem != group.end(); ++itItem) {
+			itItem != group.end(); ++itItem) {
 			// 項目名を取得
 			const std::string& itemName = itItem->first;
 			// 項目の参照を取得
@@ -63,12 +60,23 @@ void GlobalVariables::Updata() {
 				ImGui::SliderFloat(itemName.c_str(), ptr, 0.0f, 1.0f);
 			}
 
-			// Vec型の値を保持していれば
+			// Vecter3型の値を保持していれば
 			else if (std::holds_alternative<Vector3>(item)) {
 				Vector3* ptr = std::get_if<Vector3>(&item);
 				ImGui::SliderFloat3(itemName.c_str(), reinterpret_cast<float*>(ptr), -10.0f, 10.0f);
 			}
-		
+
+			// Vecter2型の値を保持していれば
+			else if (std::holds_alternative<Vector2>(item)) {
+				Vector2* ptr = std::get_if<Vector2>(&item);
+				ImGui::SliderFloat3(itemName.c_str(), reinterpret_cast<float*>(ptr), -10.0f, 10.0f);
+			}
+
+			// Vecter4型の値を保持していれば
+			else if (std::holds_alternative<Vector4>(item)) {
+				Vector4* ptr = std::get_if<Vector4>(&item);
+				ImGui::SliderFloat3(itemName.c_str(), reinterpret_cast<float*>(ptr), -10.0f, 10.0f);
+			}
 		}
 
 		// 改行
@@ -81,7 +89,7 @@ void GlobalVariables::Updata() {
 		}
 
 		ImGui::EndMenu();
-	
+
 	}
 
 
@@ -90,7 +98,7 @@ void GlobalVariables::Updata() {
 
 }
 
-void GlobalVariables::SaveFile(const std::string& groupName) {
+void yunity::GlobalVariables::SaveFile(const std::string& groupName) {
 	std::map<std::string, Group>::iterator itGroup = datas_.find(groupName);
 
 	// 未登録チェック
@@ -104,7 +112,7 @@ void GlobalVariables::SaveFile(const std::string& groupName) {
 
 	// 各項目について
 	for (std::map<std::string, Item>::iterator itItem = itGroup->second.begin();
-	     itItem != itGroup->second.end(); ++itItem) {
+		itItem != itGroup->second.end(); ++itItem) {
 
 		// 項目名を取得
 		const std::string& itemName = itItem->first;
@@ -123,12 +131,26 @@ void GlobalVariables::SaveFile(const std::string& groupName) {
 		}
 		// Vector3型の値を保持していれば
 		else if (std::holds_alternative<Vector3>(item)) {
-			// float型のjson配列登録
+			// Vector3型のjson配列登録
 			Vector3 value = std::get<Vector3>(item);
-			root[groupName][itemName] = nlohmann::json::array({value.x, value.y, value.z});
-		
+			root[groupName][itemName] = nlohmann::json::array({ value.x, value.y, value.z });
+
 		}
-	
+		// Vector2型の値を保持していれば
+		else if (std::holds_alternative<Vector2>(item)) {
+			// Vector2型のjson配列登録
+			Vector2 value = std::get<Vector2>(item);
+			root[groupName][itemName] = nlohmann::json::array({ value.x, value.y});
+
+		}
+		// Vector4型の値を保持していれば
+		else if (std::holds_alternative<Vector4>(item)) {
+			// Vector4型のjson配列登録
+			Vector4 value = std::get<Vector4>(item);
+			root[groupName][itemName] = nlohmann::json::array({ value.x, value.y });
+
+		}
+
 	}
 
 	// ディレクトリがなければ作成する
@@ -159,7 +181,7 @@ void GlobalVariables::SaveFile(const std::string& groupName) {
 
 }
 
-void GlobalVariables::LoadFile(const std::string& groupName) {
+void yunity::GlobalVariables::LoadFile(const std::string& groupName) {
 	// 読み込むJSONファイルのフルパスを合成
 	std::string filePath = kDirectoryPath + groupName + ".json";
 	// 読み込み用ファイルストリーム
@@ -207,14 +229,26 @@ void GlobalVariables::LoadFile(const std::string& groupName) {
 		// 要素数3の配列であれば
 		else if (itItem->is_array() && itItem->size() == 3) {
 			// float型のjson配列登録
-			Vector3 value = {itItem->at(0), itItem->at(1), itItem->at(2)};
+			Vector3 value = { itItem->at(0), itItem->at(1), itItem->at(2) };
+			SetValue(groupName, itemName, value);
+		}
+		// 要素数2の配列であれば
+		else if (itItem->is_array() && itItem->size() == 2) {
+			// float型のjson配列登録
+			Vector2 value = { itItem->at(0), itItem->at(1)};
+			SetValue(groupName, itemName, value);
+		}
+		// 要素数4の配列であれば
+		else if (itItem->is_array() && itItem->size() == 4) {
+			// float型のjson配列登録
+			Vector4 value = { itItem->at(0), itItem->at(1), itItem->at(2), itItem->at(3)};
 			SetValue(groupName, itemName, value);
 		}
 	}
 
 }
 
-void GlobalVariables::LoadFiles() {
+void yunity::GlobalVariables::LoadFiles() {
 	const std::string LocalDirectoryPath = "Resources/GlobalVariables/";
 	// ディレクトリがなければスキップする
 	if (!std::filesystem::exists(LocalDirectoryPath)) {
@@ -234,12 +268,11 @@ void GlobalVariables::LoadFiles() {
 
 		// ファイル読み込み
 		LoadFile(filePath.stem().string());
-	
+
 	}
 }
 
-void GlobalVariables::SetValue(
-    const std::string& groupName, const std::string& key, int32_t value) {
+void yunity::GlobalVariables::SetValue(const std::string& groupName, const std::string& key, int32_t value) {
 	// グループの参照を取得
 	Group& group = datas_[groupName];
 	// 新しい項目のデータを設定
@@ -249,8 +282,7 @@ void GlobalVariables::SetValue(
 	group[key] = newItem;
 }
 
-void GlobalVariables::SetValue(
-	const std::string& groupName, const std::string& key, float value) {
+void yunity::GlobalVariables::SetValue(const std::string& groupName, const std::string& key, float value) {
 	// グループの参照を取得 
 	Group& group = datas_[groupName];
 	// 新しい項目のデータを設定
@@ -260,8 +292,7 @@ void GlobalVariables::SetValue(
 	group[key] = newItem;
 }
 
-void GlobalVariables::SetValue(
-    const std::string& groupName, const std::string& key, Vector3 value) {
+void yunity::GlobalVariables::SetValue(const std::string& groupName, const std::string& key, Vector3 value) {
 	// グループの参照を取得 
 	Group& group = datas_[groupName];
 	// 新しい項目のデータを設定
@@ -271,7 +302,29 @@ void GlobalVariables::SetValue(
 	group[key] = newItem;
 }
 
-void GlobalVariables::AddItem(const std::string& groupName, const std::string& key, int32_t value) {
+void yunity::GlobalVariables::SetValue(const std::string& groupName, const std::string& key, Vector2 value)
+{
+	// グループの参照を取得 
+	Group& group = datas_[groupName];
+	// 新しい項目のデータを設定
+	Item newItem{};
+	newItem = value;
+	// 設定した項目をstd::mapに追加
+	group[key] = newItem;
+}
+
+void yunity::GlobalVariables::SetValue(const std::string& groupName, const std::string& key, Vector4 value)
+{
+	// グループの参照を取得 
+	Group& group = datas_[groupName];
+	// 新しい項目のデータを設定
+	Item newItem{};
+	newItem = value;
+	// 設定した項目をstd::mapに追加
+	group[key] = newItem;
+}
+
+void yunity::GlobalVariables::AddItem(const std::string& groupName, const std::string& key, int32_t value) {
 	std::map<std::string, Group>::iterator itGroup = datas_.find(groupName);
 	// 項目が未登録なら
 	if (itGroup != datas_.end()) {
@@ -279,22 +332,38 @@ void GlobalVariables::AddItem(const std::string& groupName, const std::string& k
 	}
 }
 
-void GlobalVariables::AddItem(const std::string& groupName, const std::string& key, float value) {
+void yunity::GlobalVariables::AddItem(const std::string& groupName, const std::string& key, float value) {
 	std::map<std::string, Group>::iterator itGroup = datas_.find(groupName);
 	if (itGroup != datas_.end()) {
 		SetValue(groupName, key, value);
 	}
 }
 
-void GlobalVariables::AddItem(const std::string& groupName, const std::string& key, Vector3 value) {
+void yunity::GlobalVariables::AddItem(const std::string& groupName, const std::string& key, Vector3 value) {
 	std::map<std::string, Group>::iterator itGroup = datas_.find(groupName);
 	if (itGroup != datas_.end()) {
 		SetValue(groupName, key, value);
 	}
-	
+
 }
 
-int32_t GlobalVariables::GetIntValue(const std::string& groupName, const std::string& key)  {
+void yunity::GlobalVariables::AddItem(const std::string& groupName, const std::string& key, Vector2 value)
+{
+	std::map<std::string, Group>::iterator itGroup = datas_.find(groupName);
+	if (itGroup != datas_.end()) {
+		SetValue(groupName, key, value);
+	}
+}
+
+void yunity::GlobalVariables::AddItem(const std::string& groupName, const std::string& key, Vector4 value)
+{
+	std::map<std::string, Group>::iterator itGroup = datas_.find(groupName);
+	if (itGroup != datas_.end()) {
+		SetValue(groupName, key, value);
+	}
+}
+
+int32_t yunity::GlobalVariables::GetIntValue(const std::string& groupName, const std::string& key) {
 	// 読み込むJSONファイルのフルパスを合成
 	std::string filePath = kDirectoryPath + groupName + ".json";
 	// 読み込み用ファイルストリーム
@@ -323,7 +392,7 @@ int32_t GlobalVariables::GetIntValue(const std::string& groupName, const std::st
 	return std::get<int32_t>(group[key]);
 }
 
-float GlobalVariables::GetFloatValue(const std::string& groupName, const std::string& key)  {
+float yunity::GlobalVariables::GetFloatValue(const std::string& groupName, const std::string& key) {
 	// 読み込むJSONファイルのフルパスを合成
 	std::string filePath = kDirectoryPath + groupName + ".json";
 	// 読み込み用ファイルストリーム
@@ -353,7 +422,7 @@ float GlobalVariables::GetFloatValue(const std::string& groupName, const std::st
 }
 
 Vector3
-    GlobalVariables::GetVector3Value(const std::string& groupName, const std::string& key)  {
+yunity::GlobalVariables::GetVector3Value(const std::string& groupName, const std::string& key) {
 	// 読み込むJSONファイルのフルパスを合成
 	std::string filePath = kDirectoryPath + groupName + ".json";
 	// 読み込み用ファイルストリーム
@@ -380,4 +449,65 @@ Vector3
 	assert(group.contains(key));
 
 	return std::get<Vector3>(group[key]);
+}
+
+Vector2 yunity::GlobalVariables::GetVector2Value(const std::string& groupName, const std::string& key)
+{
+	// 読み込むJSONファイルのフルパスを合成
+	std::string filePath = kDirectoryPath + groupName + ".json";
+	// 読み込み用ファイルストリーム
+	std::ifstream ifs;
+	// ファイルを読み込み用に開く
+	ifs.open(filePath);
+
+	nlohmann::json root;
+
+	// json文字列からjsonのデータ構造に展開
+	ifs >> root;
+	// ファイルを閉じる
+	ifs.close();
+
+	// グループを検索
+	nlohmann::json::iterator itGroup = root.find(groupName);
+
+	// 未登録チェック
+	assert(itGroup != root.end());
+
+	// グループの参照を取得
+	Group& group = datas_[groupName];
+	// assert(itGroup.key() == key);
+	assert(group.contains(key));
+
+	return std::get<Vector2>(group[key]);
+}
+
+Vector4 yunity::GlobalVariables::GetVector4Value(const std::string& groupName, const std::string& key)
+{
+	// 読み込むJSONファイルのフルパスを合成
+	std::string filePath = kDirectoryPath + groupName + ".json";
+	// 読み込み用ファイルストリーム
+	std::ifstream ifs;
+	// ファイルを読み込み用に開く
+	ifs.open(filePath);
+
+	nlohmann::json root;
+
+	// json文字列からjsonのデータ構造に展開
+	ifs >> root;
+	// ファイルを閉じる
+	ifs.close();
+
+	// グループを検索
+	nlohmann::json::iterator itGroup = root.find(groupName);
+
+	// 未登録チェック
+	assert(itGroup != root.end());
+
+	// グループの参照を取得
+	Group& group = datas_[groupName];
+	// assert(itGroup.key() == key);
+	assert(group.contains(key));
+
+	return std::get<Vector4>(group[key]);
+
 }

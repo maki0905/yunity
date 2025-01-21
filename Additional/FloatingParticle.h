@@ -19,11 +19,11 @@ private:
 	Vector3 targetPosition_;
 	Vector3 centerPosition_;
 	// 移動量
-	const float power_ = 0.2f;
+	float power_;
 	// 生存時間
-	float lifeTime_ = 1.0f;
+	float lifeTime_;
 	// 
-	const float speedDegree_ = 10.0f;
+	float speedDegree_;
 	float angle_;
 	float frequencyTime_;
 	bool isLerp_;

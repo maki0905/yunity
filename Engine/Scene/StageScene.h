@@ -22,29 +22,18 @@
 */
 class StageScene : public yunity::IScene
 {
-	struct EndConstant {
-		const Vector3 pos = { 1145.0f, 60.0f, 10.0f };
-		const Vector3 scale = { 1.5f, 1.5f, 1.5f };
-	};
-
 	struct DirectionLight {
-		const Vector4 color = { 1.0f, 1.0f, 1.0f, 1.0f };
-		const Vector3 direction = { 1.0f, -1.0f, 0.0f };
-		const Vector3 eyePosition = { 0.0f, 160.0f, 0.0f };
-		const Vector3 targetPosition = { 0.0f, 0.0f, 1.0f };
-		const Vector3 upDirection = { 0.0f, 1.0f, 0.0f };
-		const float intensity = 1.0f;
-		const float viewWidth = 2324;
-		const float viewHight = 142.0f;
-		const float nearClip = 0.0f;
-		const float farClip = 600.0f;
+		Vector4 color = { 1.0f, 1.0f, 1.0f, 1.0f };
+		Vector3 direction = { 1.0f, -1.0f, 0.0f };
+		Vector3 eyePosition = { 0.0f, 160.0f, 0.0f };
+		Vector3 targetPosition = { 0.0f, 0.0f, 1.0f };
+		Vector3 upDirection = { 0.0f, 1.0f, 0.0f };
+		float intensity = 1.0f;
+		float viewWidth = 2324;
+		float viewHight = 142.0f;
+		float nearClip = 0.0f;
+		float farClip = 600.0f;
 	};
-
-	struct StartConstant {
-		const Vector3 translation = { 0.0f, 1.0f, 3.0f };
-		const Vector3 scale = { 0.5f, 0.5f, 0.5f };
-	};
-
 public:
 	/// <summary>
 	/// 初期化
@@ -79,12 +68,13 @@ private:
 
 	// skydome
 	std::unique_ptr<yunity::Skydome> skydome_;
+	Vector3 skydomeScale_ = { 10.0f, 10.0f, 10.0f };
 
 	// プレイヤー
 	Player* player_;
 
 	// 物理空間
-	const Vector3 gravity_ = { 0.0f, -30.0f, 0.0f };
+	Vector3 gravity_ = { 0.0f, -30.0f, 0.0f };
 	std::unique_ptr<yunity::World> world_;
 
 	// ライト

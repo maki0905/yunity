@@ -114,8 +114,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Additional\FloatingParticle.cpp" />
     <ClCompile Include="Additional\ForceField.cpp" />
     <ClCompile Include="Additional\ObjectManager.cpp" />
-    <ClCompile Include="Additional\Pillar.cpp" />
-    <ClCompile Include="Additional\PillarTop.cpp" />
     <ClCompile Include="Additional\PointParticle.cpp" />
     <ClCompile Include="Additional\RotationCube.cpp" />
     <ClCompile Include="Additional\Score.cpp" />
@@ -212,12 +210,9 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Additional\CheckPoint.h" />
     <ClInclude Include="Additional\Cloth.h" />
     <ClInclude Include="Additional\Coin.h" />
-    <ClInclude Include="Additional\EndObject.h" />
     <ClInclude Include="Additional\FloatingParticle.h" />
     <ClInclude Include="Additional\ForceField.h" />
     <ClInclude Include="Additional\ObjectManager.h" />
-    <ClInclude Include="Additional\Pillar.h" />
-    <ClInclude Include="Additional\PillarTop.h" />
     <ClInclude Include="Additional\PointParticle.h" />
     <ClInclude Include="Additional\RotationCube.h" />
     <ClInclude Include="Additional\Score.h" />

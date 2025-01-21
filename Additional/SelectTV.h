@@ -7,12 +7,6 @@
 * @brief セレクト用のTVクラス
 */
 class SelectTV : public yunity::Object3D {
-	struct TVConstant {
-		const Vector3 translation = { 80.0f, 18.0f, 12.0f };
-		const float addition = 30.0f;
-		const float rotationX = -15.0f * DegToRad();
-	};
-
 	struct Easing {
 		bool flag;
 		float t;
@@ -86,7 +80,7 @@ private:
 	// カメラワーク用
 	float moveCameraTimer_;
 	Vector3 oldCameraPos_;
-	const Vector3 endCamerPos = { 0.0f, 20.0f, -60.0f };
-	const float fixedEndCameraPosZ = 12.0f;
+	Vector3 endCamerPos = { 0.0f, 20.0f, -60.0f };
+	float fixedEndCameraPosZ = 12.0f;
 };
 

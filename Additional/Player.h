@@ -124,6 +124,7 @@ public:
 private:
 	XINPUT_STATE pad_;
 	XINPUT_STATE prePad_;
+	float threshold_ = 0.7f;
 
 	bool isWire_;
 	bool isJump_;
@@ -134,6 +135,9 @@ private:
 	bool isHit_;
 	bool isActive_;
 
+	Vector3 hitBoxSize_;
+	Vector3 spawnPosition_;
+
 	const float stiffness_ = 2.0f;
 	const float dampar_ = 0.1f;
 	const float limitLength_ = 20.0f;
@@ -141,6 +145,7 @@ private:
 	// ワイヤー描画用
 	std::unique_ptr<yunity::PrimitiveDrawer> line_;
 	Vector3 point_;
+	Vector4 lineColore_ = { 0.0f, 0.0f, 0.0f, 1.0f };
 
 	// 3Dレティクル
 	std::unique_ptr<yunity::Model> reticle3D_;
@@ -154,6 +159,11 @@ private:
 	yunity::WorldTransform landingPointWorldTrans_;
 	uint32_t onReticle_;
 	uint32_t offReticle_;
+
+	std::unique_ptr<yunity::Sprite> guideA_;
+	std::array<uint32_t, 2> guideATexture_;
+	std::unique_ptr<yunity::Sprite> guideRB_;
+	std::array<uint32_t, 2> guideRBTexture_;
 
 	// スコア
 	bool isScore_;
@@ -183,7 +193,8 @@ private:
 	std::unique_ptr<PointParticle> pointParticle_;
 	std::unique_ptr<SmokeParticle> smokeParticle_;
 	Random::RandomNumberGenerator rng;
-	std::array<std::unique_ptr<FireworksParticle>, 10> fireworksParticles_;
+	static const int fireworksParticleQuantity_ = 10;
+	std::array<std::unique_ptr<FireworksParticle>, fireworksParticleQuantity_> fireworksParticles_;
 
 	// スタート位置
 	Vector3 spawnPoint_;
@@ -207,6 +218,16 @@ private:
 	const float dieDownTime_ = 2.0f;
 	const float goalTime_ = 0.5f;
 	const float clearTime_ = 2.0f;
+
+	Vector2 guideAPosition_;
+	Vector2 guideASize_;
+	Vector2 guideRBPosition_;
+	Vector2 guideRBSize_;
+
+	float deatLine_ = -12.0f;
+
+	float toleranceLevel = 1.0;
+	int coinValue_ = 10;
 
 };
 
