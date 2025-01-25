@@ -36,6 +36,7 @@ namespace yunity {
 			kMultiply // 乗算
 		};
 
+		// 衝突情報
 		struct PersistentManifold {
 			float massA;
 			float massB;
@@ -227,6 +228,7 @@ namespace yunity {
 		Vector3 pushback_;
 		// 垂直抗力
 		Vector3 vertical_;
+		// 衝突情報
 		std::vector<PersistentManifold> persistentManifold_;
 		float restitution_;
 		bool isTrigger_;

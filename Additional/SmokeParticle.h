@@ -12,11 +12,11 @@ public:
 private:
 	Random::RandomNumberGenerator rng;
 	// 発生間隔
-	float spawnInterval_ = 0.05f;
+	float spawnInterval_;
 	// 上昇量
-	float ascent_ = 0.05f;
+	float ascent_;
 	// 生存時間
-	float lifeTime_ = 1.0f;
+	float lifeTime_;
 	// 最小スケール
 	float minScale_;
 	// 最大スケール
@@ -27,4 +27,6 @@ private:
 	float maxTranslate_;
 	// 生成時間
 	float spawnTime_;
+	// 生成位置
+	float spawnY_;
 };

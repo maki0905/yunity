@@ -10,11 +10,6 @@ yunity::SceneManager* yunity::SceneManager::GetInstance()
 	return &instance;
 }
 
-void yunity::SceneManager::Initialize(AbstractSceneFactory* sceneFactory)
-{
-	sceneFactory_ = sceneFactory;
-}
-
 void yunity::SceneManager::Update()
 {
 	// 次のシーンの予約があるなら

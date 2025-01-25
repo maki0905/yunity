@@ -2,6 +2,17 @@
     "FloatingParticle": {
         "LifeTime": 1.0,
         "Power": 0.20000000298023224,
-        "SpeedDegree": 10.0
+        "SpeedDegree": 10.0,
+        "MinPosition": [
+            -2.0,
+            -2.0,
+            0.0
+
+        ],
+        "MaxPosition": [
+            2.0,
+            2.0,
+            0.0
+        ]
     }
 }

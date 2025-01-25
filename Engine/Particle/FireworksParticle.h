@@ -12,6 +12,14 @@ public:
 private:
 	Random::RandomNumberGenerator rng;
 	std::unique_ptr<yunity::Model> model_;
-	const float power_ = 0.1f;
-	const float torqe_ = 0.2f;
+	static const int particleQuantity_ = 10;
+    float power_;
+    float torqe_;
+	float ascent_;
+	float lifeTime_;
+	Vector3 spawnPosition_;
+	Vector3 minSpawnPosition_;
+	Vector3 maxSpawnPosition_;
+	Vector3 minVelocity_;
+	Vector3 maxVelocity_;
 };

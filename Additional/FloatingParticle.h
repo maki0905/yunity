@@ -27,4 +27,6 @@ private:
 	float angle_;
 	float frequencyTime_;
 	bool isLerp_;
+	Vector3 minPosition_ = {-2.0f, -2.0f, 0.0f};
+	Vector3 maxPosition_ = {2.0f, 2.0f, 0.0f};
 };

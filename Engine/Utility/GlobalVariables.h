@@ -45,7 +45,7 @@ namespace yunity {
 		void LoadFiles();
 
 		// 値のセット(int)
-		void SetValue(const std::string& groupName, const std::string& key, int32_t value);
+		void SetValue(const std::string& groupName, const std::string& key, int value);
 		// 値のセット(float)
 		void SetValue(const std::string& groupName, const std::string& key, float value);
 		// 値のセット(Vector3)
@@ -56,7 +56,7 @@ namespace yunity {
 		void SetValue(const std::string& groupName, const std::string& key, Vector4 value);
 
 		// 項目の追加(int)
-		void AddItem(const std::string& groupName, const std::string& key, int32_t value);
+		void AddItem(const std::string& groupName, const std::string& key, int value);
 		// 項目の追加(float)
 		void AddItem(const std::string& groupName, const std::string& key, float value);
 		// 項目の追加(Vector3)
@@ -66,8 +66,8 @@ namespace yunity {
 		// 項目の追加(Vector4)
 		void AddItem(const std::string& groupName, const std::string& key, Vector4 value);
 
-		// 値の取得(int32_t)
-		int32_t GetIntValue(const std::string& groupName, const std::string& key);
+		// 値の取得(int)
+		int GetIntValue(const std::string& groupName, const std::string& key);
 		// 値の取得(float)
 		float GetFloatValue(const std::string& groupName, const std::string& key);
 		// 値の取得(Vector3)
@@ -85,7 +85,7 @@ namespace yunity {
 	private:
 
 		// 項目
-		using Item = std::variant<int32_t, float, Vector3, Vector2, Vector4>;
+		using Item = std::variant<int, float, Vector3, Vector2, Vector4>;
 
 		// グループ
 		using Group = std::map<std::string, Item>;

@@ -37,7 +37,7 @@ namespace yunity{
 		/// オブジェクト追加
 		/// </summary>
 		/// <param name="collider"></param>
-		void Add(Object3D* collider) { allocator_.push_back(collider); };
+		void Add(Object3D* collider) { objectList_.push_back(collider); };
 
 		/// <summary>
 		/// オブジェクト削除
@@ -61,7 +61,7 @@ namespace yunity{
 		/// アロケータ取得
 		/// </summary>
 		/// <returns></returns>
-		std::list<Object3D*> GetAllocator() { return allocator_; }
+		std::list<Object3D*> GetAllocator() { return objectList_; }
 
 		/// <summary>
 		/// 重力設定
@@ -85,12 +85,17 @@ namespace yunity{
 		// デルタタイム
 		float deltaTime_;
 		const float fixedDeltaTime_ = 1.0f / 60.0f;
-
+		// 最後の時間
 		std::chrono::steady_clock::time_point lastTime_;
+		// 衝突マネージャー
 		std::unique_ptr<CollisionManager> collisionManager_;
-		std::list<Object3D*> allocator_;
-		std::list<Joint*> jointAllocator_;
+		// オブジェクトリスト
+		std::list<Object3D*> objectList_;
+		// ジョイントリスト
+		std::list<Joint*> jointList_;
+		// 重力
 		Vector3 gravity_;
+		// 固定時間フラグ
 		bool isFixedTime_;
 
 	};

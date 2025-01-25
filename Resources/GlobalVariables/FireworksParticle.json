@@ -1,0 +1,33 @@
+{
+    "FireworksParticle": {
+        "Power": 0.1,
+        "Torqe": 0.2,
+        "Ascent": 0.01,
+        "LifeTime": 10.0,
+        "SpawnPosition": [
+            4.0,
+            4.0,
+            0.0
+        ],
+        "MinSpawnPosition": [
+            -5.0,
+            5.0,
+            0.0
+        ],
+        "MaxSpawnPosition": [
+            5.0,
+            10.0,
+            0.0
+        ],
+        "MinVelocity": [
+            -0.1,
+            -0.05,
+            -0.1
+        ],
+        "MaxVelocity": [
+            0.1,
+            -0.05,
+            0.1
+        ]
+    }
+}

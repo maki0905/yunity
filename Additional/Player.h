@@ -122,10 +122,15 @@ public:
 	void SetSpawnPoint(const Vector3& spawnPoint) { spawnPoint_ = spawnPoint; }
 
 private:
+	// コントローラー
 	XINPUT_STATE pad_;
 	XINPUT_STATE prePad_;
-	float threshold_ = 0.7f;
 
+	// しきい値
+	float threshold_;
+	float reticleSpeed_;
+
+	// フラグ
 	bool isWire_;
 	bool isJump_;
 	bool isHitRay_;
@@ -135,17 +140,23 @@ private:
 	bool isHit_;
 	bool isActive_;
 
+	// プレイヤーのヒットボックスサイズ
 	Vector3 hitBoxSize_;
-	Vector3 spawnPosition_;
 
-	const float stiffness_ = 2.0f;
-	const float dampar_ = 0.1f;
-	const float limitLength_ = 20.0f;
+	// スタート位置
+	Vector3 startPosition_;
+
+	// プレイヤーの物理パラメータ
+	float mass_;
+	float miu_;
+	float stiffness_;
+	float dampar_;
+	float limitLength_;
 
 	// ワイヤー描画用
 	std::unique_ptr<yunity::PrimitiveDrawer> line_;
 	Vector3 point_;
-	Vector4 lineColore_ = { 0.0f, 0.0f, 0.0f, 1.0f };
+	Vector4 lineColore_ ;
 
 	// 3Dレティクル
 	std::unique_ptr<yunity::Model> reticle3D_;
@@ -160,24 +171,43 @@ private:
 	uint32_t onReticle_;
 	uint32_t offReticle_;
 
+	// ガイド
 	std::unique_ptr<yunity::Sprite> guideA_;
 	std::array<uint32_t, 2> guideATexture_;
 	std::unique_ptr<yunity::Sprite> guideRB_;
 	std::array<uint32_t, 2> guideRBTexture_;
+	std::unique_ptr<yunity::Sprite> guideJump_;
+	std::unique_ptr<yunity::Sprite> guideWire_;
+	std::array<uint32_t, 2> guideWireTexture_;
+	Vector2 guideAPosition_;
+	Vector2 guideASize_;
+	Vector2 guideRBPosition_;
+	Vector2 guideRBSize_;
+	Vector2 guideJumpPosition_;
+	Vector2 guideJumpSize_;
+	Vector2 guideWirePosition_;
+	Vector2 guideWireSize_;
 
 	// スコア
 	bool isScore_;
 	bool isReticle_;
 	std::unique_ptr<Score> scoreUI_;
 	float lerpTime_;
+	float limitLerpTime_;
 	float displayTime_;
+	float limitDisplayeTime_ ;
+	Vector2 scoreStartPosition_;
+	Vector2 scoreEndPosition_;
 
 	// 速度
-	const float fixedSpeed_ = 2.0f;
-	const float floatSpeed_ = 0.1f;
+	float fixedSpeed_;
+	float floatSpeed_;
+
+	// ジャンプ力
+	Vector3 jumpPower_;
 
 	// 制限速度
-	const float limitSpeed_ = 20.0f;
+	float limitSpeed_;
 
 	// スプリングジョイント
 	std::unique_ptr<yunity::SpringJoint> springJoint_;
@@ -209,25 +239,21 @@ private:
 	Vector3 topPos_;
 	Vector3 clearCameraPosition_;
 	Vector3 oldPlayerPosition_;
-	const Vector3 setCameraPos_ = { 0.0, 5.0f, -50.0f };
-	const Vector3 dieUp_ = { 0.0f, 10.0f, -10.0f };
-	const Vector3 dieDown_ = { 0.0f, -20.0f, -10.0f };
-	const float zeemOutPositionZ = -60.0f;
-	const float resetTime_ = 2.0f;
-	const float dieUpTime_ = 4.0f;
-	const float dieDownTime_ = 2.0f;
-	const float goalTime_ = 0.5f;
-	const float clearTime_ = 2.0f;
+	Vector3 setCameraPos_;
+	Vector3 dieUp_;
+	Vector3 dieDown_;
+	Vector3 dieForce_;
+    float zeemOutPositionZ_;
+    float resetTime_;
+    float dieUpTime_;
+    float dieDownTime_;
+    float goalTime_;
+    float clearTime_;
 
-	Vector2 guideAPosition_;
-	Vector2 guideASize_;
-	Vector2 guideRBPosition_;
-	Vector2 guideRBSize_;
+	float deatLine_;
 
-	float deatLine_ = -12.0f;
-
-	float toleranceLevel = 1.0;
-	int coinValue_ = 10;
+	float toleranceLevel_;
+	int coinValue_;
 
 };
 

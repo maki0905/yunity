@@ -21,6 +21,8 @@ void FloatingParticle::Initialize(yunity::Camera* camera)
 	lifeTime_ = globalVariables->GetFloatValue(groupName, "LifeTime");
 	power_ = globalVariables->GetFloatValue(groupName, "Power");
 	speedDegree_ = globalVariables->GetFloatValue(groupName, "SpeedDegree");
+	minPosition_ = globalVariables->GetVector3Value(groupName, "MinPosition");
+	maxPosition_ = globalVariables->GetVector3Value(groupName, "MaxPosition");
 }
 
 void FloatingParticle::Spawn(const Vector3& position)
@@ -30,7 +32,7 @@ void FloatingParticle::Spawn(const Vector3& position)
 	for (uint32_t i = 0; i < 5; ++i) {
 		Particle particle;
 		particle.transform.translate = position;
-		particle.transform.translate = Add(position, { rng.NextFloatRange(-2.0f, 2.0f), rng.NextFloatRange(-2.0f, 2.0f), 0.0f});
+		particle.transform.translate = Add(position, { rng.NextFloatRange(minPosition_.x, maxPosition_.x), rng.NextFloatRange(minPosition_.y, maxPosition_.y), rng.NextFloatRange(minPosition_.z, maxPosition_.z) });
 		particle.velocity = { rng.NextFloatRange(0.0f, 1.0f), rng.NextFloatRange(0.0f, 1.0f), rng.NextFloatRange(0.0f, 1.0f) };
 
 		particle.particleForCPU.color = { rng.NextFloatRange(0.0f, 1.0f), rng.NextFloatRange(0.0f, 1.0f), rng.NextFloatRange(0.0f, 1.0f), 1.0f };
@@ -74,6 +76,8 @@ void FloatingParticle::Update()
 	lifeTime_ = globalVariables->GetFloatValue(groupName, "LifeTime");
 	power_ = globalVariables->GetFloatValue(groupName, "Power");
 	speedDegree_ = globalVariables->GetFloatValue(groupName, "SpeedDegree");
+	minPosition_ = globalVariables->GetVector3Value(groupName, "MinPosition");
+	maxPosition_ = globalVariables->GetVector3Value(groupName, "MaxPosition");
 #endif // _DEBUG
 
 

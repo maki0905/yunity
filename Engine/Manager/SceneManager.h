@@ -18,11 +18,6 @@ namespace yunity {
 		static SceneManager* GetInstance();
 
 		/// <summary>
-		/// 初期化
-		/// </summary>
-		void Initialize(AbstractSceneFactory* sceneFactory);
-
-		/// <summary>
 		/// 更新
 		/// </summary>
 		void Update();
@@ -47,6 +42,8 @@ namespace yunity {
 		/// </summary>
 		/// <param name="sceneName"></param>
 		void ChangeScene(const std::string& sceneName);
+
+		void SetSceneFactory(AbstractSceneFactory* sceneFactory) { sceneFactory_ = sceneFactory; }
 
 	private:
 		SceneManager() = default;

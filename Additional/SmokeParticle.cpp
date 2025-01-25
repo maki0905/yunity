@@ -27,6 +27,7 @@ void SmokeParticle::Initialize(yunity::Camera* camera)
 	maxScale_ = globalVariables->GetFloatValue(groupName, "MaxScale");
 	minTranslate_ = globalVariables->GetFloatValue(groupName, "MinTranslate");
 	maxTranslate_ = globalVariables->GetFloatValue(groupName, "MaxTranslate");
+	spawnY_ = globalVariables->GetFloatValue(groupName, "SpawnY");
 
 }
 
@@ -35,8 +36,9 @@ void SmokeParticle::Spawn(const Vector3& position)
 	if (!spawnTime_) {
 		Particle particle;
 		particle.transform.translate = position;
-		particle.transform.translate.y += rng.NextFloatRange(0.0f, 0.5f);
-		float scale = rng.NextFloatRange(0.0f, 0.5f);
+		particle.transform.translate.y -= spawnY_;
+		particle.transform.translate.y += rng.NextFloatRange(minTranslate_, maxTranslate_);
+		float scale = rng.NextFloatRange(minScale_, maxScale_);
 		particle.transform.scale = { scale, scale, 0.0f };
 		particle.particleForCPU.color = { 1.0f, 1.0f, 1.0f , 1.0f };
 		particle.lifeTime = lifeTime_;

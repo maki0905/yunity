@@ -1,42 +1,119 @@
 {
     "Player": {
-        "Mass": 2.0,
-        "Miu": 2.0,
         "Bounciness": 0.0,
-        "Drag": 0.0,
-        "Stiffness": 2.0,
-        "Dampar": 0.1,
-        "LimitLength": 20.0,
-        "FixedSpeed": 2.0,
-        "FloatSpeed": 0.1,
-        "StartY": 40.0,
-        "ReticlePositionX": 3.0,
+        "ClearTime": 2.0,
+        "CoinValue": 10,
+        "Dampar": 0.10000000149011612,
         "DeadLine": -12.0,
-        "HitBoxSize": [
-            2.0,
-            6.0,
-            2.0
-        ],
-        "ZeemOutPositionZ": -60.0,
-        "ResetTime": 2.0,
-        "DieUpTime": 4.0,
-        "dieDownTime": 2.0,
-        "goalTime": 0.5,
-        "clearTime": 2.0,
-        "SetCameraPosition": [
+        "DeatLine": -12.0,
+        "DieDown": [
             0.0,
-            5.0,
-            -50.0
+            -20.0,
+            -10.0
+        ],
+        "DieDownTime": 2.0,
+        "DieForce": [
+            0.0,
+            0.0,
+            0.0
         ],
         "DieUp": [
             0.0,
             10.0,
             -10.0
         ],
-        "DieDown": [
+        "DieUpTime": 4.0,
+        "Drag": 0.0,
+        "FixedSpeed": 2.0,
+        "FloatSpeed": 0.10000000149011612,
+        "GoalTime": 0.5,
+        "GuideAPosition": [
+            96.0,
+            600.0
+        ],
+        "GuideASize": [
+            96.0,
+            96.0
+        ],
+        "GuideJumpPosition": [
+            200.0,
+            600.0
+        ],
+        "GuideJumpSize": [
+            128.0,
+            64.0
+        ],
+        "GuideRBPosition": [
+            96.0,
+            660.0
+        ],
+        "GuideRBSize": [
+            96.0,
+            96.0
+        ],
+        "GuideWirePosition": [
+            200.0,
+            660.0
+        ],
+        "GuideWireSize": [
+            128.0,
+            64.0
+        ],
+        "HitBoxSize": [
+            2.0,
+            6.0,
+            2.0
+        ],
+        "JumpPower": [
             0.0,
-            -20.0,
-            -10.0
-        ]
+            35.0,
+            0.0
+        ],
+        "LimitDisplayeTime": 3.0,
+        "LimitLength": 20.0,
+        "LimitLerpTime": 0.5,
+        "LimitSpeed": 20.0,
+        "LineColore": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+        ],
+        "Mass": 2.0,
+        "Miu": 2.0,
+        "ResetTime": 2.0,
+        "ReticlePositionX": 3.0,
+        "ReticleSpeed": 0.800000011920929,
+        "ScoreEndPosition": [
+            640.0,
+            360.0
+        ],
+        "ScoreStartPosition": [
+            84.0,
+            84.0
+        ],
+        "SetCameraPos": [
+            0.0,
+            5.0,
+            -50.0
+        ],
+        "SetCameraPosition": [
+            0.0,
+            5.0,
+            -50.0
+        ],
+        "StartPosition": [
+            0.0,
+            40.0,
+            0.0
+        ],
+        "StartY": 40.0,
+        "Stiffness": 2.0,
+        "Threshold": 0.699999988079071,
+        "ToleranceLevel": 1.0,
+        "ZeemOutPositionZ": -60.0,
+        "clearTime": 2.0,
+        "dieDownTime": 2.0,
+        "goalTime": 0.5
     }
 }

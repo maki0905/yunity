@@ -8,6 +8,8 @@
 void GameManager::Initialize()
 {
 	Framework::Initialize();
+	sceneFactory_ = std::make_unique<yunity::SceneFactory>();
+	yunity::SceneManager::GetInstance()->SetSceneFactory(sceneFactory_.get());
 	yunity::SceneManager::GetInstance()->ChangeScene("TITLE");
 	CameraManager::GetInstance()->Initialize();
 	CommonData::GetInstance()->Initialize();

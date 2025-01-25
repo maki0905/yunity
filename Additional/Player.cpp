@@ -9,16 +9,62 @@
 #include "Tradition.h"
 #include "EngineTimeStep.h"
 #include "RenderTexture.h"
+#include "WindowsAPI.h"
+#include "GlobalVariables.h"
 
 void Player::Initialize(yunity::Camera* camera, yunity::World* world)
 {
-	SetHitBoxSize({ 2.0f, 6.0f, 2.0f });
+	yunity::GlobalVariables* globalVariables = yunity::GlobalVariables::GetInstance();
+	const char* groupName = "Player";
+
+	threshold_ = globalVariables->GetFloatValue(groupName, "Threshold");
+	reticleSpeed_ = globalVariables->GetFloatValue(groupName, "ReticleSpeed");
+	mass_ = globalVariables->GetFloatValue(groupName, "Mass");
+	miu_ = globalVariables->GetFloatValue(groupName, "Miu");
+	stiffness_ = globalVariables->GetFloatValue(groupName, "Stiffness");
+	dampar_ = globalVariables->GetFloatValue(groupName, "Dampar");
+	limitLength_ = globalVariables->GetFloatValue(groupName, "LimitLength");
+	lineColore_ = globalVariables->GetVector4Value(groupName, "LineColore");
+	limitLerpTime_ = globalVariables->GetFloatValue(groupName, "LimitLerpTime");
+	limitDisplayeTime_ = globalVariables->GetFloatValue(groupName, "LimitDisplayeTime");
+	scoreStartPosition_ = globalVariables->GetVector2Value(groupName, "ScoreStartPosition");
+	scoreEndPosition_ = globalVariables->GetVector2Value(groupName, "ScoreEndPosition");
+	fixedSpeed_ = globalVariables->GetFloatValue(groupName, "FixedSpeed");
+	floatSpeed_ = globalVariables->GetFloatValue(groupName, "FloatSpeed");
+	jumpPower_ = globalVariables->GetVector3Value(groupName, "JumpPower");
+	limitSpeed_ = globalVariables->GetFloatValue(groupName, "LimitSpeed");
+	hitBoxSize_ = globalVariables->GetVector3Value(groupName, "HitBoxSize");
+	startPosition_ = globalVariables->GetVector3Value(groupName, "StartPosition");
+	setCameraPos_ = globalVariables->GetVector3Value(groupName, "SetCameraPos");
+	dieUp_ = globalVariables->GetVector3Value(groupName, "DieUp");
+	dieDown_ = globalVariables->GetVector3Value(groupName, "DieDown");
+	dieForce_ = globalVariables->GetVector3Value(groupName, "DieForce");
+	zeemOutPositionZ_ = globalVariables->GetFloatValue(groupName, "ZeemOutPositionZ");
+	resetTime_ = globalVariables->GetFloatValue(groupName, "ResetTime");
+	dieUpTime_ = globalVariables->GetFloatValue(groupName, "DieUpTime");
+	dieDownTime_ = globalVariables->GetFloatValue(groupName, "DieDownTime");
+	goalTime_ = globalVariables->GetFloatValue(groupName, "GoalTime");
+	clearTime_ = globalVariables->GetFloatValue(groupName, "ClearTime");
+	guideAPosition_ = globalVariables->GetVector2Value(groupName, "GuideAPosition");
+	guideASize_ = globalVariables->GetVector2Value(groupName, "GuideASize");
+	guideRBPosition_ = globalVariables->GetVector2Value(groupName, "GuideRBPosition");
+	guideRBSize_ = globalVariables->GetVector2Value(groupName, "GuideRBSize");
+	deatLine_ = globalVariables->GetFloatValue(groupName, "DeatLine");
+	toleranceLevel_ = globalVariables->GetFloatValue(groupName, "ToleranceLevel");
+	coinValue_ = globalVariables->GetIntValue(groupName, "CoinValue");
+	guideJumpPosition_ = globalVariables->GetVector2Value(groupName, "GuideJumpPosition");
+	guideJumpSize_ = globalVariables->GetVector2Value(groupName, "GuideJumpSize");
+	guideWirePosition_ = globalVariables->GetVector2Value(groupName, "GuideWirePosition");
+	guideWireSize_ = globalVariables->GetVector2Value(groupName, "GuideWireSize");
+
+
+	SetHitBoxSize(hitBoxSize_);
 	Object3D::Initialize(world, yunity::Collider::Shape::kAABB);
 	worldTransform_.rotateType_ = yunity::RotationType::Quaternion;
-	worldTransform_.translation_.y = 40.0f;
-	SetMass(2.0f);
+	worldTransform_.translation_ = Add(worldTransform_.translation_, startPosition_);
+	SetMass(mass_);
 	SetFirictionCombine(FrictionCombine::kAverage);
-	SetMiu(2.0f);
+	SetMiu(miu_);
 	SetBounceCombine(BounceCombine::kMaximum);
 	SetBounciness(0.0f);
 	SetFixedMove(2, true);
@@ -55,7 +101,6 @@ void Player::Initialize(yunity::Camera* camera, yunity::World* world)
 	isHitRay_ = false;
 
 	reticleWorldTransform_.Initialize();
-	reticleWorldTransform_.translation_.x = 3.0f;
 	reticleWorldTransform_.parent_ = &worldTransform_;
 	landingPointWorldTrans_.Initialize();
 	
@@ -105,7 +150,7 @@ void Player::Initialize(yunity::Camera* camera, yunity::World* world)
 	smokeParticle_ = std::make_unique<SmokeParticle>();
 	smokeParticle_->Initialize(camera);
 
-	for (int i = 0; i < 10; i++) {
+	for (int i = 0; i < fireworksParticleQuantity_; i++) {
 		fireworksParticles_[i] = std::make_unique<FireworksParticle>();
 		fireworksParticles_[i]->Initialize(camera_);
 	}
@@ -113,31 +158,46 @@ void Player::Initialize(yunity::Camera* camera, yunity::World* world)
 	guideATexture_[0] = yunity::TextureManager::GetInstance()->Load("ABotton.png");
 	guideATexture_[1] = yunity::TextureManager::GetInstance()->Load("ABottonPush.png");
 	guideA_ = std::make_unique<yunity::Sprite>();
-	guideA_.reset(yunity::Sprite::Create(guideATexture_[0], { 96.0f, 600.0f}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
-	guideA_->SetSize({ 96.0f, 96.0f });
+	guideA_.reset(yunity::Sprite::Create(guideATexture_[0], guideAPosition_, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
+	guideA_->SetSize(guideASize_);
 
 	guideRBTexture_[0] = yunity::TextureManager::GetInstance()->Load("RBotton.png");
 	guideRBTexture_[1] = yunity::TextureManager::GetInstance()->Load("RBottonPush.png");
 	guideRB_ = std::make_unique<yunity::Sprite>();
-	guideRB_.reset(yunity::Sprite::Create(guideRBTexture_[0], { 96.0f, 660.0f}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
-	guideRB_->SetSize({ 96.0f, 96.0f });
+	guideRB_.reset(yunity::Sprite::Create(guideRBTexture_[0], guideRBPosition_, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
+	guideRB_->SetSize(guideRBSize_);
+
+	guideJump_ = std::make_unique<yunity::Sprite>();
+	guideJump_.reset(yunity::Sprite::Create(yunity::TextureManager::GetInstance()->Load("jump.png"), guideJumpPosition_, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.5f, 0.5f }));
+	guideJump_->SetSize(guideJumpSize_);
+
+	guideWireTexture_[0] = yunity::TextureManager::GetInstance()->Load("shot.png");
+	guideWireTexture_[1] = yunity::TextureManager::GetInstance()->Load("release.png");
+	guideWire_ = std::make_unique<yunity::Sprite>();
+	guideWire_.reset(yunity::Sprite::Create(guideWireTexture_[0], guideWirePosition_, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
+	guideWire_->SetSize(guideWireSize_);
 
 }
 
 void Player::Update()
 {
+	// 前回のジョイスティック状態
 	prePad_ = pad_;
 
+	// プレイヤーとレティクルの移動量を初期化
 	Vector3 move = { 0.0f, 0.0f, 0.0f };
 	Vector3 reticleMove = { 0.0f, 0.0f, 0.0f };
 
+	// 各種演出
 	InGameProduction();
 	ResetProduction();
 	DeathProduction();
 	GoalProduction();
 
+	// スコアUIの更新
 	scoreUI_->Update();
 
+	// ガイドのテクスチャを設定
 	guideRB_->SetTextureHandle(guideRBTexture_[0]);
 	guideA_->SetTextureHandle(guideATexture_[0]);
 
@@ -157,7 +217,6 @@ void Player::Update()
 		if (yunity::Input::GetInstance()->GetJoystickState(0, pad_)) {
 
 			// プレイヤーの動き
-			const float threshold = 0.7f;
 			bool isMoving = false;
 			// 速さ
 			float speed = fixedSpeed_;
@@ -168,20 +227,22 @@ void Player::Update()
 			// 移動量
 			if (isWire_) {
 				move = { (float)pad_.Gamepad.sThumbLX, (float)pad_.Gamepad.sThumbLY,0 };
-				Vector3 landingPoint = MapWorldToScreen(apexWorldTransform_.GetMatWorldTranslation(), camera_->GetViewMatrix(), camera_->GetProjectionMatrix(), 1280.0f, 720.0f);
+				Vector3 landingPoint = MapWorldToScreen(apexWorldTransform_.GetMatWorldTranslation(), camera_->GetViewMatrix(), camera_->GetProjectionMatrix(), yunity::WindowsAPI::kWindowWidth, yunity::WindowsAPI::kWindowHeight);
 				landingPoint_->SetPosition({ landingPoint.x, landingPoint.y });
+				guideWire_->SetTextureHandle(guideWireTexture_[1]);
 			}
 			else {
 				move = { (float)pad_.Gamepad.sThumbLX, 0,0 };
+				guideWire_->SetTextureHandle(guideWireTexture_[0]);
 			}
 
-			if (Length(move) > threshold) {
+			if (Length(move) > threshold_) {
 				isMoving = true;
 			}
 
 			if (isMoving) {
 				if (isHit_) {
-					smokeParticle_->Spawn({ worldTransform_.GetMatWorldTranslation().x, worldTransform_.GetMatWorldTranslation().y - 2.5f, worldTransform_.GetMatWorldTranslation().z });
+					smokeParticle_->Spawn({ worldTransform_.GetMatWorldTranslation().x, worldTransform_.GetMatWorldTranslation().y, worldTransform_.GetMatWorldTranslation().z });
 				}
 
 				move.Normalize();
@@ -195,14 +256,14 @@ void Player::Update()
 				if (!isJump_) {
 					guideA_->SetTextureHandle(guideATexture_[1]);
 					isJump_ = true;
-					AddForce({ 0.0f, 35.0f, 0.0f }, Body::ForceMode::kImpulse);
+					AddForce(jumpPower_, Body::ForceMode::kImpulse);
 					GetWorld()->TakeJoint(playerFixedJoint_.get());
 				}
 			}
 
 			// レティクルの動き
 			reticleMove = { (float)pad_.Gamepad.sThumbRX, (float)pad_.Gamepad.sThumbRY, 0.0f };
-			reticleMove = Multiply(0.8f, reticleMove.Normalize());
+			reticleMove = Multiply(reticleSpeed_, reticleMove.Normalize());
 			reticleWorldTransform_.translation_ = Add(reticleWorldTransform_.translation_, reticleMove);
 
 			bool isHit = false;
@@ -251,7 +312,7 @@ void Player::Update()
 
 			if (isHit) {
 				if (!isWire_) {
-					Vector3 landingPoint = MapWorldToScreen(hit.point, camera_->GetViewMatrix(), camera_->GetProjectionMatrix(), 1280.0f, 720.0f);
+					Vector3 landingPoint = MapWorldToScreen(hit.point, camera_->GetViewMatrix(), camera_->GetProjectionMatrix(), yunity::WindowsAPI::kWindowWidth, yunity::WindowsAPI::kWindowHeight);
 					landingPoint_->SetPosition({ landingPoint.x, landingPoint.y });
 				}
 				isHitRay_ = true;
@@ -275,10 +336,10 @@ void Player::Update()
 	apexWorldTransform_.UpdateMatrix();
 	apexBody_->GetWorldTransform()->UpdateMatrix();
 
-	Vector2 pos = WorldToScreen({ reticleWorldTransform_.matWorld_.m[3][0], reticleWorldTransform_.matWorld_.m[3][1], reticleWorldTransform_.matWorld_.m[3][2] }, camera_->GetViewMatrix(), camera_->GetProjectionMatrix(), 1280.0f, 720.0f);
+	Vector2 pos = WorldToScreen({ reticleWorldTransform_.matWorld_.m[3][0], reticleWorldTransform_.matWorld_.m[3][1], reticleWorldTransform_.matWorld_.m[3][2] }, camera_->GetViewMatrix(), camera_->GetProjectionMatrix(), yunity::WindowsAPI::kWindowWidth, yunity::WindowsAPI::kWindowHeight);
 	reticle_->SetPosition(pos);
 
-	if (worldTransform_.translation_.y < -12.0f) {
+	if (worldTransform_.translation_.y < deatLine_) {
 		InitializeDeth();
 	}
 
@@ -303,6 +364,18 @@ void Player::Update()
 
 	}
 
+	yunity::GlobalVariables* globalVariables = yunity::GlobalVariables::GetInstance();
+	const char* groupName = "Player";
+	guideJumpPosition_ = globalVariables->GetVector2Value(groupName, "GuideJumpPosition");
+	guideJumpSize_ = globalVariables->GetVector2Value(groupName, "GuideJumpSize");
+	guideWirePosition_ = globalVariables->GetVector2Value(groupName, "GuideWirePosition");
+	guideWireSize_ = globalVariables->GetVector2Value(groupName, "GuideWireSize");
+
+	guideJump_->SetPosition(guideJumpPosition_);
+	guideJump_->SetSize(guideJumpSize_);
+	guideWire_->SetPosition(guideWirePosition_);
+	guideWire_->SetSize(guideWireSize_);
+
 	ImGui::End();
 
 #endif
@@ -315,7 +388,7 @@ void Player::Draw()
 		if (CommonData::GetInstance()->scene_ == Scene::kStage) {
 			reticle3D_->Draw(reticleWorldTransform_, yunity::TextureManager::GetInstance()->Load("pink1x1.png"));
 			if (isWire_) {
-				line_->Draw(worldTransform_.translation_, apexBody_->GetMatWorldTranslation(), { 0.0f, 0.0f, 0.0f, 1.0f });
+				line_->Draw(worldTransform_.translation_, apexBody_->GetMatWorldTranslation(), lineColore_);
 				apex_->Draw(*apexBody_->GetWorldTransform(), yunity::TextureManager::GetInstance()->Load("purple1x1.png"));
 			}
 		}
@@ -343,6 +416,8 @@ void Player::DrawUI()
 
 		guideA_->Draw();
 		guideRB_->Draw();
+		guideJump_->Draw();
+		guideWire_->Draw();
 		
 	}
 	if (isScore_) {
@@ -362,7 +437,7 @@ void Player::OnCollisionEvent()
 		AABB aabb = GetAABB();
 		AABB other = GetHitBody()->GetAABB();
 		if (aabb.min.y >= (other.max.y + other.min.y) / 2.0f) {
-			if (aabb.min.x + toleranceLevel < other.max.x && aabb.max.x + toleranceLevel > other.min.x) {
+			if (aabb.min.x + toleranceLevel_ < other.max.x && aabb.max.x + toleranceLevel_ > other.min.x) {
 				playerFixedJoint_->CreateFixedJoint(GetHitBody(), this);
 				GetWorld()->AddJoint(playerFixedJoint_.get());
 				isMoving_ = true;
@@ -433,14 +508,14 @@ void Player::Reset(const Vector3& pos)
 
 bool Player::Result()
 {
-	if (lerpTime_ != 1.0f) {
-		lerpTime_ += 1.0f / 30.0f;
-		lerpTime_ = std::clamp(lerpTime_, 0.0f, 1.0f);
-		scoreUI_->SetPosition(Lerp(Vector2(84.0f, 84.0f), Vector2(640.0f, 360.0f), lerpTime_));
+	if (lerpTime_ / limitLerpTime_ != 1.0f) {
+		lerpTime_ += yunity::fixedTimeStep_;
+		lerpTime_ = std::clamp(lerpTime_, 0.0f, limitLerpTime_);
+		scoreUI_->SetPosition(Lerp(scoreStartPosition_, scoreEndPosition_, lerpTime_));
 	}
-	else if (displayTime_ != 1.0f) {
-		displayTime_ += 1.0f / 180.0f;
-		displayTime_ = std::clamp(displayTime_, 0.0f, 1.0f);
+	else if (displayTime_ / limitDisplayeTime_ != 1.0f) {
+		displayTime_ += yunity::fixedTimeStep_;
+		displayTime_ = std::clamp(displayTime_, 0.0f, limitDisplayeTime_);
 		if (scoreUI_->GetScore() > CommonData::GetInstance()->hiScore_) {
 			CommonData::GetInstance()->hiScore_ = scoreUI_->GetScore();
 			scoreUI_->SetDisplayHiScore(true);
@@ -448,9 +523,9 @@ bool Player::Result()
 		}
 
 		int num = 0;
-		for (int i = 0; i < 10; i++) {
-			if (!fireworksParticles_[i]->GetIsActive() && num < 5) {
-				fireworksParticles_[i]->Spawn({ worldTransform_.GetMatWorldTranslation().x + 4.0f * rng.NextFloatRange(-5.0f, 5.0f), worldTransform_.GetMatWorldTranslation().y + 4.0f * rng.NextFloatRange(5.0f, 10.0f), 0.0f });
+		for (int i = 0; i < fireworksParticleQuantity_; i++) {
+			if (!fireworksParticles_[i]->GetIsActive() && num < fireworksParticleQuantity_ / 2) {
+				fireworksParticles_[i]->Spawn({ worldTransform_.GetMatWorldTranslation().x, worldTransform_.GetMatWorldTranslation().y, 0.0f });
 				num++;
 			}
 
@@ -562,7 +637,7 @@ void Player::GoalProduction()
 			if (Result()) {
 				time_ += yunity::fixedTimeStep_ * clearTime_;
 				time_ = std::clamp(time_, 0.0f, 1.0f);
-				camera_->SetTranslate(Lerp(clearCameraPosition_, { clearCameraPosition_.x, goalPoint_.y, zeemOutPositionZ }, time_));
+				camera_->SetTranslate(Lerp(clearCameraPosition_, { clearCameraPosition_.x, goalPoint_.y, zeemOutPositionZ_ }, time_));
 				if (time_ == 1.0f) {
 					clearCameraPosition_ = camera_->GetTranslate();
 					yunity::RenderTexture::GetInstance()->SelectPostEffect(yunity::PostEffects::kRadialBlur, true);

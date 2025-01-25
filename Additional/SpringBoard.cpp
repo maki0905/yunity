@@ -41,6 +41,18 @@ void SpringBoard::Update()
 	float scale = worldTransform_.translation_.y - fixedPosition_.y;
 	springWorldTransform_.scale_.y = 1.0f + scale;
 	springWorldTransform_.UpdateMatrix();
+
+#ifdef _DEBUG
+	yunity::GlobalVariables* globalVariables = yunity::GlobalVariables::GetInstance();
+	const char* groupName = "SpringBoard";
+	stiffness_ = globalVariables->GetFloatValue(groupName, "Stiffness");
+	equilibriumPoint_ = globalVariables->GetFloatValue(groupName, "EquilibriumPoint");
+	damping_ = globalVariables->GetFloatValue(groupName, "Damping");
+	anchorPosition_ = globalVariables->GetVector3Value(groupName, "AnchorPosition");
+	elongationTime_ = globalVariables->GetFloatValue(groupName, "ElongationTime");
+#endif // _DEBUG
+
+
 }
 
 void SpringBoard::Draw()

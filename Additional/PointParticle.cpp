@@ -47,12 +47,6 @@ void PointParticle::Spawn(const Vector3& position)
 		Particle particle;
 		particle.transform.translate = position;
 
-		/*if (i % 2 == 0) {
-			particle.transform.rotate.z = degree_[i % 2] * 1.5f * DegToRad();
-		}
-		else {
-			particle.transform.rotate.z = degree_ * 0.5f * DegToRad();
-		}*/
 		particle.transform.rotate.z = degree_[i % 2]  * DegToRad();
 		particle.velocity = {
 			float(power_ * std::cosf(directionDegree_ * i * DegToRad()) - power_ * std::sinf(directionDegree_ * i * DegToRad())),

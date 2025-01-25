@@ -6,6 +6,7 @@
 //#include "Shape.h"
 
 namespace {
+	// 押し返しベクトルを取得(AABB, AABB)
 	Vector3 GetPushback(const AABB& a, const AABB& b) {
 
 		float dx1 = b.max.x - a.min.x;
@@ -30,6 +31,7 @@ namespace {
 		}
 	}
 
+	// 押し返しベクトルを取得(Sphere, AABB)
 	Vector3 GetPushback(const Sphere& sphere, const AABB& aabb) {
 		// 最近接点を求める
 		Vector3 closestPoint{ std::clamp(sphere.center.x, aabb.min.x, aabb.max.x), std::clamp(sphere.center.y, aabb.min.y, aabb.max.y), std::clamp(sphere.center.z, aabb.min.z, aabb.max.z) };
@@ -42,6 +44,7 @@ namespace {
 		return Multiply(penetrationDepth, normal);
 	}
 
+	// 押し返しベクトルを取得(AABB, Sphere)
 	Vector3 GetPushback(const AABB& aabb, const Sphere& sphere) {
 		// 最近接点を求める
 		Vector3 closestPoint{ std::clamp(sphere.center.x, aabb.min.x, aabb.max.x), std::clamp(sphere.center.y, aabb.min.y, aabb.max.y), std::clamp(sphere.center.z, aabb.min.z, aabb.max.z) };
@@ -55,7 +58,7 @@ namespace {
 		Vector3 normal = delta.Normalize();
 		return Multiply(penetrationDepth, normal);
 	}
-
+	
 	float GetProjectionRadius(const OBB& obb, const Vector3& axis) {
 		float result;
 		result =
@@ -323,6 +326,7 @@ void yunity::Body::Solve(float time)
 			worldTransform_->rotation_ = Add(worldTransform_->rotation_, Multiply(time, angularVelocity_));
 		}
 
+		// 加速度計算
 		acceleration_ = Add(acceleration_, Multiply(1.0f / mass_, force_));
 
 		force_ = { 0.0f, 0.0f, 0.0f };
@@ -339,8 +343,10 @@ void yunity::Body::Solve(float time)
 			acceleration_.z = 0.0f;
 		}
 
+		// 速度計算
 		velocity_ = Add(velocity_, Multiply(time, acceleration_));
 
+		// 位置計算
 		worldTransform_->translation_ = Add(worldTransform_->translation_, Multiply(time, velocity_));
 
 		magnitude_ = 0.0f;
@@ -349,9 +355,9 @@ void yunity::Body::Solve(float time)
 	worldTransform_->UpdateMatrix();
 }
 
-void yunity::Body::SolveConstraints(/*float time*/)
+void yunity::Body::SolveConstraints()
 {
-
+	// 慣性テンソルの計算
 	Vector3 L = GetHitBoxSize();
 	inertiaTensor_.m[0][0] = (1.0f / 12.0f) * mass_ * (L.y * L.y + L.z * L.z);
 	inertiaTensor_.m[1][1] = (1.0f / 12.0f) * mass_ * (L.x * L.x + L.z * L.z);
@@ -359,42 +365,43 @@ void yunity::Body::SolveConstraints(/*float time*/)
 	inertiaTensor_.m[0][1] = inertiaTensor_.m[1][0] = 0.0f;
 	inertiaTensor_.m[0][2] = inertiaTensor_.m[2][0] = 0.0f;
 	inertiaTensor_.m[1][2] = inertiaTensor_.m[2][1] = 0.0f;
-
 	Matrix3x3 R = MakeRotateMatrix(worldTransform_->rotation_);
 	Matrix3x3 Rt = Transpose(R);
-
 	inertiaTensor_ = Multiply(Multiply(R, inertiaTensor_), Rt);
 
 	for (auto& c : persistentManifold_) {
 		// 反発
+		// 相対速度を計算
 		Vector3 relativeVelocity = Subtract(c.velocityA, c.velocityB);
 		float velocityAlongNormal = Dot(relativeVelocity, c.contactNormal);
 		float impulseMagnitude = 0.0f;
-		if (c.restitution == 0.0f) {
-			if (c.massB != 0.0f) {
+		if (c.restitution == 0.0f) { // 完全非弾性衝突
+			if (c.massB != 0.0f) { // Bが固定されていない場合
 				impulseMagnitude = -velocityAlongNormal / (1.0f / c.massA + 1.0f / c.massB);
 			}
-			else {
+			else { // Bが固定されている場合
 				impulseMagnitude = -velocityAlongNormal / (1.0f / (c.massA));
 			}
 		}
-		else {
-			if (c.massB != 0.0f) {
+		else { // 弾性衝突
+			if (c.massB != 0.0f) { // Bが固定されていない場合
 				impulseMagnitude = -(1.0f + c.restitution) * velocityAlongNormal / (1.0f / c.massA + 1.0f / c.massB);
 			}
-			else {
+			else { // Bが固定されている場合
 				impulseMagnitude = -(1.0f + c.restitution) * velocityAlongNormal / (1.0f / (c.massA));
 			}
 		}
-
+		// 衝突点での力を計算
 		Vector3 impulse = Multiply(impulseMagnitude, c.contactNormal);
 		AddForce(impulse, ForceMode::kImpulse);
 
 		// 摩擦
+		// 相対速度を計算
 		Vector3 tangentVelocity = Subtract(relativeVelocity, Multiply(velocityAlongNormal, c.contactNormal));
-		Vector3 frictionForce = Multiply(-magnitude_ /** impulseMagnitude*/, tangentVelocity);
+		Vector3 frictionForce = Multiply(-magnitude_, tangentVelocity);
+		// 最大静止摩擦力を計算
 		float maxStaticFriction = magnitude_ * impulseMagnitude;
-		if (Length(frictionForce) > maxStaticFriction) {
+		if (Length(frictionForce) > maxStaticFriction) { // 静止摩擦力を超えた場合
 			frictionForce = Normalize(frictionForce);
 			frictionForce = Multiply(maxStaticFriction, frictionForce);
 		}
@@ -431,7 +438,6 @@ Vector3 yunity::Body::Spring(const Vector3& anchor, const Vector3& position, flo
 {
 	Vector3 diff = Subtract(position, anchor);
 	float length = Length(diff);
-	//length = 100f;
 	if (length != 0.0f)
 	{
 		Vector3 direction = Normalize(diff);
@@ -539,53 +545,55 @@ void yunity::Body::OnCollision(Body* body)
 			break;
 		}
 
-		if (body->mass_ != 0.0f) {
+		if (body->mass_ != 0.0f) { // 質量が0でない場合
 			pushback = Multiply(0.5f, pushback);
 		}
 		pushback_ = Add(pushback_, pushback);
 		PersistentManifold persistentManifold = GetNewManifold(this, body);
 		persistentManifold.penetrationDepth = penetrationDepth;
 
+		// 摩擦
 		float miu = 0.0f;
 		switch (frictionCombine_)
 		{
 		case Body::FrictionCombine::kNone:
 			break;
-		case Body::FrictionCombine::kAverage:
+		case Body::FrictionCombine::kAverage: // 平均化
 			miu = (miu_ + body->GetMiu()) / 2.0f;
 			magnitude_ = miu * Length(Multiply(-mass_, world_->GetGravity()));
 			break;
-		case Body::FrictionCombine::kMinimum:
+		case Body::FrictionCombine::kMinimum: // 小さい方
 			miu = std::min(miu_, body->GetMiu());
 			magnitude_ = miu * Length(Multiply(-mass_, world_->GetGravity()));
 			break;
-		case Body::FrictionCombine::kMaximum:
+		case Body::FrictionCombine::kMaximum: // 大きい方
 			miu = max(miu_, body->GetMiu());
 			magnitude_ = miu * Length(Multiply(-mass_, world_->GetGravity()));
 			break;
-		case Body::FrictionCombine::kMultiply:
+		case Body::FrictionCombine::kMultiply: // 乗算
 			miu = miu_ * body->GetMiu();
 			magnitude_ = miu * Length(Multiply(-mass_, world_->GetGravity()));
 			break;
 		}
 		persistentManifold.friction = magnitude_;
 
+		// 反発
 		float e = 0.0f;
 		switch (bounceCombine_)
 		{
 		case Body::BounceCombine::kNone:
 			restitution_ = e;
 			break;
-		case Body::BounceCombine::kAverage:
+		case Body::BounceCombine::kAverage: // 平均化
 			e = (bounciness_ + body->bounciness_) / 2.0f;
 			break;
-		case Body::BounceCombine::kMinimum:
+		case Body::BounceCombine::kMinimum: // 小さい方
 			e = std::min(bounciness_, body->bounciness_);
 			break;
-		case Body::BounceCombine::kMaximum:
+		case Body::BounceCombine::kMaximum: // 大きい方
 			e = max(bounciness_, body->bounciness_);
 			break;
-		case Body::BounceCombine::kMultiply:
+		case Body::BounceCombine::kMultiply: // 乗算
 			e = bounciness_ * body->bounciness_;
 			break;
 		}

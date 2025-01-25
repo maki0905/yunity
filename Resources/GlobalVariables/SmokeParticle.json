@@ -6,6 +6,7 @@
         "MinScale": 0.0,
         "MaxScale": 0.5,
         "MinTranslate": 0.0,
-        "MaxTranslate": 0.5
+        "MaxTranslate": 0.5,
+        "SpawnY": 2.5
     }
 }

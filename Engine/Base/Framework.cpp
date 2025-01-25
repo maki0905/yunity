@@ -40,10 +40,6 @@ void yunity::Framework::Initialize()
 	// オーディオ
 	Audio::GetInstance()->Initialize();
 
-	// シーンマネージャー
-	sceneFactory_ = std::make_unique<SceneFactory>();
-	SceneManager::GetInstance()->Initialize(sceneFactory_.get());
-
 	// CSV
 	CSV::GetInstance()->Initialize();
 
