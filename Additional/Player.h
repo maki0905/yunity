@@ -151,9 +151,15 @@ private:
 	float miu_;
 	float stiffness_;
 	float dampar_;
+
+	// ワイヤーの最大長さ
 	float limitLength_;
+	// ワイヤーのセグメントの長さ
+	float segmentLength_;
 
 	// ワイヤー描画用
+	std::vector<std::unique_ptr<yunity::PrimitiveDrawer>> lines_;
+	std::vector<Vector3> lineVertexs_;
 	std::unique_ptr<yunity::PrimitiveDrawer> line_;
 	Vector3 point_;
 	Vector4 lineColore_ ;

@@ -68,6 +68,13 @@ void StageScene::Update()
 
 	world_->Solve();
 
+	if (yunity::Input::GetInstance()->TriggerKey(DIK_T)) {
+		yunity::SceneManager::GetInstance()->ChangeScene("TITLE");
+	}
+	directionLight_->Update();
+
+
+#ifdef _DEBUG
 	if (yunity::Input::GetInstance()->TriggerKey(DIK_LSHIFT)) {
 		isDebug_ ^= true;
 		if (camera_->GetTarget() == nullptr) {
@@ -86,15 +93,6 @@ void StageScene::Update()
 	else {
 		camera_->Update();
 	}
-
-	if (yunity::Input::GetInstance()->TriggerKey(DIK_T)) {
-		yunity::SceneManager::GetInstance()->ChangeScene("TITLE");
-	}
-	directionLight_->Update();
-
-
-#ifdef _DEBUG
-
 
 #endif
 

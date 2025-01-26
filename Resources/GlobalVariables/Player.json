@@ -71,6 +71,7 @@
         ],
         "LimitDisplayeTime": 3.0,
         "LimitLength": 20.0,
+        "SegmentLength": 1.0,
         "LimitLerpTime": 0.5,
         "LimitSpeed": 20.0,
         "LineColore": [

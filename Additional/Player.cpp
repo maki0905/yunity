@@ -24,6 +24,7 @@ void Player::Initialize(yunity::Camera* camera, yunity::World* world)
 	stiffness_ = globalVariables->GetFloatValue(groupName, "Stiffness");
 	dampar_ = globalVariables->GetFloatValue(groupName, "Dampar");
 	limitLength_ = globalVariables->GetFloatValue(groupName, "LimitLength");
+	segmentLength_ = globalVariables->GetFloatValue(groupName, "SegmentLength");
 	lineColore_ = globalVariables->GetVector4Value(groupName, "LineColore");
 	limitLerpTime_ = globalVariables->GetFloatValue(groupName, "LimitLerpTime");
 	limitDisplayeTime_ = globalVariables->GetFloatValue(groupName, "LimitDisplayeTime");
@@ -177,6 +178,13 @@ void Player::Initialize(yunity::Camera* camera, yunity::World* world)
 	guideWire_.reset(yunity::Sprite::Create(guideWireTexture_[0], guideWirePosition_, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
 	guideWire_->SetSize(guideWireSize_);
 
+	for (int i = 0; i < int(limitLength_ / segmentLength_); i++) {
+		std::unique_ptr<yunity::PrimitiveDrawer> line = std::make_unique<yunity::PrimitiveDrawer>();
+		line.reset(yunity::PrimitiveDrawer::Create());
+		line->SetCamera(camera_);
+		lines_.push_back(std::move(line));
+	}
+
 }
 
 void Player::Update()
@@ -236,12 +244,13 @@ void Player::Update()
 				guideWire_->SetTextureHandle(guideWireTexture_[0]);
 			}
 
-			if (Length(move) > threshold_) {
+			if (Length(move) > threshold_) { // しきい値以上なら
 				isMoving = true;
 			}
 
-			if (isMoving) {
-				if (isHit_) {
+			if (isMoving) { // 動いている時
+				if (isHit_) { // 何かに触れていたら
+					// 足元に煙のパーティクルを生成
 					smokeParticle_->Spawn({ worldTransform_.GetMatWorldTranslation().x, worldTransform_.GetMatWorldTranslation().y, worldTransform_.GetMatWorldTranslation().z });
 				}
 
@@ -266,6 +275,7 @@ void Player::Update()
 			reticleMove = Multiply(reticleSpeed_, reticleMove.Normalize());
 			reticleWorldTransform_.translation_ = Add(reticleWorldTransform_.translation_, reticleMove);
 
+			// レティクル方向に線分を飛ばして設置点を取得
 			bool isHit = false;
 			RayCastHit hit;
 			Vector3 direction = Subtract({ reticleWorldTransform_.matWorld_.m[3][0], reticleWorldTransform_.matWorld_.m[3][1], reticleWorldTransform_.matWorld_.m[3][2] }, worldTransform_.translation_);
@@ -277,12 +287,11 @@ void Player::Update()
 			uint32_t rayMask = ~(kCollisionAttributePlayer | kCollisionAttributeCoin);
 			isHit = RayCast(worldTransform_.translation_, direction, &hit, lenght, GetWorld(), rayMask);
 
-
 			// ワイヤー
 			if (CommonData::GetInstance()->scene_ == Scene::kStage) {
 				if ((pad_.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) && !(prePad_.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER)) {
 					guideRB_->SetTextureHandle(guideRBTexture_[1]);
-					if (!isWire_) {
+					if (!isWire_) { // ワイヤーを発射
 						if (isHit && hit.collider->GetCollisionAttribute() != kCollisionAttributeCoin) {
 							isWire_ = true;
 							springJoint_->EnableSpring(0, true);
@@ -297,7 +306,7 @@ void Player::Update()
 							pointParticle_->Spawn(hit.point);
 						}
 					}
-					else {
+					else { // ワイヤーを解除
 						isWire_ = false;
 						springJoint_->EnableSpring(0, false);
 						springJoint_->EnableSpring(1, false);
@@ -310,7 +319,7 @@ void Player::Update()
 				}
 			}
 
-			if (isHit) {
+			if (isHit) { // レティクル方向にオブジェクトがあった場合
 				if (!isWire_) {
 					Vector3 landingPoint = MapWorldToScreen(hit.point, camera_->GetViewMatrix(), camera_->GetProjectionMatrix(), yunity::WindowsAPI::kWindowWidth, yunity::WindowsAPI::kWindowHeight);
 					landingPoint_->SetPosition({ landingPoint.x, landingPoint.y });
@@ -323,11 +332,28 @@ void Player::Update()
 				}
 			}
 
+			// ワイヤーの紅白描画用の頂点生成
+			lineVertexs_.clear();
+			float currentLength = 0.0f;
+			direction = Subtract(apexBody_->GetMatWorldTranslation(), worldTransform_.translation_);
+			lenght = Length(direction);
+			direction.Normalize();
+			while (currentLength < lenght) {
+				Vector3 startPosition = Add(worldTransform_.translation_, Multiply(currentLength, direction));
+				lineVertexs_.push_back(startPosition);
+
+				float nextLength = std::min(currentLength + segmentLength_, lenght);
+				Vector3 endPosition = Add(worldTransform_.translation_, Multiply(nextLength, direction));
+				lineVertexs_.push_back(endPosition);
+
+				currentLength = nextLength;
+			}
+
 
 		}
 	}
 
-	if (Length(reticleWorldTransform_.translation_) > limitLength_) {
+	if (Length(reticleWorldTransform_.translation_) > limitLength_) { // レティクルの距離が制限以上の場合
 		Vector3 dir = reticleWorldTransform_.translation_.Normalize();
 		reticleWorldTransform_.translation_ = Multiply(limitLength_, dir);
 	}
@@ -353,6 +379,7 @@ void Player::Update()
 
 	smokeParticle_->Update();
 	pointParticle_->Update();
+
 
 #ifdef _DEBUG
 	ImGui::Begin("Player");
@@ -388,7 +415,15 @@ void Player::Draw()
 		if (CommonData::GetInstance()->scene_ == Scene::kStage) {
 			reticle3D_->Draw(reticleWorldTransform_, yunity::TextureManager::GetInstance()->Load("pink1x1.png"));
 			if (isWire_) {
-				line_->Draw(worldTransform_.translation_, apexBody_->GetMatWorldTranslation(), lineColore_);
+				for (int i = 0; i < lineVertexs_.size() / 2; i++) {
+					if (i % 2 == 0) {
+						lines_[i]->Draw(lineVertexs_[i * 2], lineVertexs_[i * 2 + 1], { 1.0f, 0.0f, 0.0f, 1.0f });
+					}
+					else {
+						lines_[i]->Draw(lineVertexs_[i * 2], lineVertexs_[i * 2 + 1], { 1.0f, 1.0f, 1.0f, 1.0f });
+					}
+				}
+				//line_->Draw(worldTransform_.translation_, apexBody_->GetMatWorldTranslation(), lineColore_);
 				apex_->Draw(*apexBody_->GetWorldTransform(), yunity::TextureManager::GetInstance()->Load("purple1x1.png"));
 			}
 		}
