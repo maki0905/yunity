@@ -57,7 +57,7 @@ void Player::Initialize(yunity::Camera* camera, yunity::World* world)
 	guideJumpSize_ = globalVariables->GetVector2Value(groupName, "GuideJumpSize");
 	guideWirePosition_ = globalVariables->GetVector2Value(groupName, "GuideWirePosition");
 	guideWireSize_ = globalVariables->GetVector2Value(groupName, "GuideWireSize");
-
+	maxLines_ = globalVariables->GetIntValue(groupName, "MaxLines");
 
 	SetHitBoxSize(hitBoxSize_);
 	Object3D::Initialize(world, yunity::Collider::Shape::kAABB);
@@ -178,7 +178,7 @@ void Player::Initialize(yunity::Camera* camera, yunity::World* world)
 	guideWire_.reset(yunity::Sprite::Create(guideWireTexture_[0], guideWirePosition_, {1.0f, 1.0f, 1.0f, 1.0f}, {0.5f, 0.5f}));
 	guideWire_->SetSize(guideWireSize_);
 
-	for (int i = 0; i < int(limitLength_ / segmentLength_); i++) {
+	for (int i = 0; i < maxLines_; i++) {
 		std::unique_ptr<yunity::PrimitiveDrawer> line = std::make_unique<yunity::PrimitiveDrawer>();
 		line.reset(yunity::PrimitiveDrawer::Create());
 		line->SetCamera(camera_);
@@ -333,20 +333,23 @@ void Player::Update()
 			}
 
 			// ワイヤーの紅白描画用の頂点生成
-			lineVertexs_.clear();
-			float currentLength = 0.0f;
-			direction = Subtract(apexBody_->GetMatWorldTranslation(), worldTransform_.translation_);
-			lenght = Length(direction);
-			direction.Normalize();
-			while (currentLength < lenght) {
-				Vector3 startPosition = Add(worldTransform_.translation_, Multiply(currentLength, direction));
-				lineVertexs_.push_back(startPosition);
+			if (isWire_) {
+				lineVertexs_.clear();
+				float currentLength = 0.0f;
+				direction = Subtract(apexBody_->GetMatWorldTranslation(), worldTransform_.translation_);
+				lenght = Length(direction);
+				direction.Normalize();
 
-				float nextLength = std::min(currentLength + segmentLength_, lenght);
-				Vector3 endPosition = Add(worldTransform_.translation_, Multiply(nextLength, direction));
-				lineVertexs_.push_back(endPosition);
+				while (currentLength < lenght) {
+					Vector3 startPosition = Add(worldTransform_.translation_, Multiply(currentLength, direction));
+					lineVertexs_.push_back(startPosition);
 
-				currentLength = nextLength;
+					float nextLength = std::min(currentLength + segmentLength_, lenght);
+					Vector3 endPosition = Add(worldTransform_.translation_, Multiply(nextLength, direction));
+					lineVertexs_.push_back(endPosition);
+
+					currentLength = nextLength;
+				}
 			}
 
 
@@ -367,6 +370,7 @@ void Player::Update()
 
 	if (worldTransform_.translation_.y < deatLine_) {
 		InitializeDeth();
+
 	}
 
 	if (!isMoving_) {
@@ -527,8 +531,10 @@ void Player::Reset()
 	apexWorldTransform_.translation_ = worldTransform_.translation_;
 	springJoint_->EnableSpring(0, false);
 	springJoint_->EnableSpring(1, false);
+	fixedJoint_->Clear();
 	isWire_ = false;
 	isActive_ = true;
+	isReticle_ = true;
 }
 
 void Player::Reset(const Vector3& pos)
@@ -546,7 +552,7 @@ bool Player::Result()
 	if (lerpTime_ / limitLerpTime_ != 1.0f) {
 		lerpTime_ += yunity::fixedTimeStep_;
 		lerpTime_ = std::clamp(lerpTime_, 0.0f, limitLerpTime_);
-		scoreUI_->SetPosition(Lerp(scoreStartPosition_, scoreEndPosition_, lerpTime_));
+		scoreUI_->SetPosition(Lerp(scoreStartPosition_, scoreEndPosition_, lerpTime_ / limitLerpTime_));
 	}
 	else if (displayTime_ / limitDisplayeTime_ != 1.0f) {
 		displayTime_ += yunity::fixedTimeStep_;
@@ -706,6 +712,8 @@ void Player::InitializeDeth()
 	AddForce({ 0.0f, 10.0f, -1.0f }, yunity::Body::ForceMode::kImpulse);
 	SetIsTrigger(true);
 	time_ = 0.0f;
+	isWire_ = false;
+	isReticle_ = false;
 }
 
 void Player::SetDisplayUI(bool flag, UI ui)

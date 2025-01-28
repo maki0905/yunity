@@ -115,6 +115,7 @@
         "ZeemOutPositionZ": -60.0,
         "clearTime": 2.0,
         "dieDownTime": 2.0,
-        "goalTime": 0.5
+        "goalTime": 0.5,
+        "MaxLines": 100
     }
 }

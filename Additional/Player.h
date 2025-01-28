@@ -163,6 +163,7 @@ private:
 	std::unique_ptr<yunity::PrimitiveDrawer> line_;
 	Vector3 point_;
 	Vector4 lineColore_ ;
+	int maxLines_;
 
 	// 3Dレティクル
 	std::unique_ptr<yunity::Model> reticle3D_;
