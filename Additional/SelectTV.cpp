@@ -43,8 +43,6 @@ void SelectTV::Update()
 	case SelectTV::SelectEvent::ZoomOut:
 		ZoomOut();
 		break;
-	default:
-		break;
 	}
 
 	if (isPlayerHit_) {
@@ -162,6 +160,7 @@ void SelectTV::ZoomOut()
 			currentEvnectNo_ = SelectEvent::ZoomIn;
 		}
 	}
+	Grow();
 }
 
 

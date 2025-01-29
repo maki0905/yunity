@@ -9,7 +9,7 @@ public:
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Initialize(yunity::Camera* camera);
+	void Initialize();
 
 	/// <summary>
 	/// 描画

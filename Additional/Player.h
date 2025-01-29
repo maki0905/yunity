@@ -105,10 +105,15 @@ public:
 	void InitializeDeth();
 
 	/// <summary>
+	/// 
+	/// </summary>
+	void ApplyGlobalVariables();
+
+	/// <summary>
 	/// getter
 	/// </summary>
 
-	bool GetActive() { return isActive_; }
+	//bool GetActive() { return isActive_; }
 	bool GetSelect() { return isSelect_; }
 	Vector3 GetSpawnPoint() { return spawnPoint_; }
 	Vector3 GetGoalPoint() { return goalPoint_; }
@@ -132,13 +137,11 @@ private:
 
 	// フラグ
 	bool isWire_;
-	bool isJump_;
 	bool isHitRay_;
 	bool isMoving_;
 	bool isSelect_;
 	bool isCrouching_;
 	bool isHit_;
-	bool isActive_;
 
 	// プレイヤーのヒットボックスサイズ
 	Vector3 hitBoxSize_;
@@ -160,8 +163,7 @@ private:
 	// ワイヤー描画用
 	std::vector<std::unique_ptr<yunity::PrimitiveDrawer>> lines_;
 	std::vector<Vector3> lineVertexs_;
-	std::unique_ptr<yunity::PrimitiveDrawer> line_;
-	Vector3 point_;
+	//Vector3 point_;
 	Vector4 lineColore_ ;
 	int maxLines_;
 
@@ -258,8 +260,9 @@ private:
     float clearTime_;
 
 	float deatLine_;
-
+	// 動く床の許容範囲
 	float toleranceLevel_;
+	// コインの加算値
 	int coinValue_;
 
 };

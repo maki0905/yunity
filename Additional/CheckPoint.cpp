@@ -2,15 +2,16 @@
 
 #include "ModelManager.h"
 
-void CheckPoint::Initialize(yunity::Camera* camera)
+void CheckPoint::Initialize()
 {
+
 	models_["OFF"] = std::make_unique<yunity::Model>();
 	models_["OFF"].reset(yunity::ModelManager::GetInstance()->CreateModel(obj, "TV"));
-	models_["OFF"]->SetCamera(camera);
+	models_["OFF"]->SetCamera(camera_);
 
 	models_["ON"] = std::make_unique<yunity::Model>();
 	models_["ON"].reset(yunity::ModelManager::GetInstance()->CreateModel(obj, "CheckPoint"));
-	models_["ON"]->SetCamera(camera);
+	models_["ON"]->SetCamera(camera_);
 
 	isActive_ = false;
 }

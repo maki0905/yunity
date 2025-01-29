@@ -40,7 +40,7 @@ namespace yunity {
 		/// 初期化
 		/// </summary>
 		/// <param name="camera">カメラ</param>
-		void Initialize(Camera* camera = nullptr);
+		void Initialize();
 
 		/// <summary>
 		/// 更新
@@ -62,19 +62,25 @@ namespace yunity {
 		/// <param name="world"></param>
 		virtual void Load(const std::string& objectFileName, Camera* camera, World* world, const std::string& jointFileName = "");
 
-
+		/// <summary>
+		/// 基本データの設定
+		/// </summary>
+		/// <param name="objectData"></param>
+		/// <param name="newObject"></param>
+		/// <param name="camera"></param>
 		void SetInitalizeData(const LevelData::ObjectData& objectData, Object3D* newObject, Camera* camera);
 
+		/// <summary>
+		/// オブジェクト追加
+		/// </summary>
+		/// <param name="newObject"></param>
 		void AddObject(std::unique_ptr<Object3D> newObject);
 
 		/// <summary>
-		/// 指定オブジェクト群
+		/// 指定タグのオブジェクト取得
 		/// </summary>
-		/// <param name="fileName"></param>
-		/// <param name="modelName"></param>
+		/// <param name="tag"></param>
 		/// <returns></returns>
-		Vector3 GetPos(const std::string& modelName);
-
 		std::vector<Object3D*> GetObj(const Tag& tag);
 
 		/// <summary>
@@ -104,20 +110,20 @@ namespace yunity {
 		void SetEnableLighting(/*const std::string& fileName,*/ bool onOff);
 
 		/// <summary>
-		/// アクティブ設定
-		/// </summary>
-		/// <param name="fileName"></param>
-		/// <param name="index"></param>
-		/// <param name="active"></param>
-		//void SetActive(const std::string& fileName, uint32_t index, bool active);
-
-		/// <summary>
 		/// 
 		/// </summary>
 		/// <param name="directionLight"></param>
 		void SetDirectionLight(DirectionLight* directionLight);
 
 	protected:
+		template <typename ObjectType>
+		void CreateObject(const yunity::LevelData::ObjectData& objectData, yunity::Camera* camera) {
+			auto newObject = std::make_unique<ObjectType>();
+			SetInitalizeData(objectData, newObject.get(), camera);
+			newObject->Initialize();
+			AddObject(std::move(newObject));
+		}
+
 		/// <summary>
 		/// 基本オブジェクト生成
 		/// </summary>

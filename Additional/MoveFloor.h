@@ -10,7 +10,7 @@ public:
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void InitializeDirection(Tag type);
+	void Initialize();
 
 	/// <summary>
 	/// 更新

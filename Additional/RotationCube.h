@@ -9,7 +9,7 @@ public:
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Initialize(float direction);
+	void Initialize();
 
 	/// <summary>
 	/// 更新

@@ -45,7 +45,7 @@ void StageScene::Initialize()
 	directionLight_->Initialize(directionLight.eyePosition, directionLight.targetPosition, directionLight.upDirection, directionLight.viewWidth, directionLight.viewHight, directionLight.nearClip, directionLight.farClip);
 
 	objectManager_ = std::make_unique<ObjectManager>();
-	objectManager_->Initialize(camera_);
+	objectManager_->Initialize();
 	objectManager_->Load(stageName_, camera_, world_.get(), "joints_data");
 	objectManager_->CreatePlayer(camera_, world_.get());
 	objectManager_->SetDirectionalLight(l);

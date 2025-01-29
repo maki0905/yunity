@@ -17,3 +17,4 @@ public:
 	void CreatePlayer(yunity::Camera* camera, yunity::World* world);
 	void Load(const std::string& objectFileName, yunity::Camera* camera, yunity::World* world, const std::string& jointFileName = "") override;
 };
+

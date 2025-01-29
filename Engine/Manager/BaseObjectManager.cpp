@@ -3,7 +3,7 @@
 #include "ModelManager.h"
 
 
-void yunity::BaseObjectManager::Initialize(Camera* camera)
+void yunity::BaseObjectManager::Initialize()
 {
 	objects_.clear();
 	joints_.clear();
@@ -12,8 +12,6 @@ void yunity::BaseObjectManager::Initialize(Camera* camera)
 		jointData_[i].objB = nullptr;
 	}
 	springLines_.clear();
-	camera_ = camera;
-
 }
 
 void yunity::BaseObjectManager::Update()
@@ -34,9 +32,7 @@ void yunity::BaseObjectManager::Draw()
 
 	for (auto& object : objects_) {
 		if (object->GetModel() != nullptr) {
-			if (object->GetModel()->GetModelName() != "startBox") {
-				object->Draw();
-			}
+			object->Draw();
 		}
 	}
 }
@@ -85,18 +81,6 @@ void yunity::BaseObjectManager::AddObject(std::unique_ptr<Object3D> newObject)
 {
 	world_->Add(newObject.get());
 	objects_.emplace_back(std::move(newObject));
-}
-
-
-
-Vector3 yunity::BaseObjectManager::GetPos(const std::string& modelName)
-{
-	for (auto& obj : objects_) {
-		if (obj->GetModel()->GetModelName() == modelName) {
-			return obj->GetMatWorldTranslation();
-		}
-	}
-	return Vector3();
 }
 
 std::vector<yunity::Object3D*> yunity::BaseObjectManager::GetObj(const Tag& tag)

@@ -2,13 +2,16 @@
 
 #include "GlobalVariables.h"
 
-void RotationCube::Initialize(float direction)
+void RotationCube::Initialize()
 {
 	yunity::GlobalVariables* globalVariables = yunity::GlobalVariables::GetInstance();
 	const char* groupName = "RotationCude";
 	torque_ = globalVariables->GetFloatValue(groupName, "Torque");
 
-	torque_ *= direction;
+	if (GetTag() == Tag::kCounterClockwise) {
+		torque_ *= -1.0f;
+	}
+
 	SetShape(Shape::kOBB);
 }
 

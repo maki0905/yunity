@@ -14,50 +14,7 @@
 
 void Player::Initialize(yunity::Camera* camera, yunity::World* world)
 {
-	yunity::GlobalVariables* globalVariables = yunity::GlobalVariables::GetInstance();
-	const char* groupName = "Player";
-
-	threshold_ = globalVariables->GetFloatValue(groupName, "Threshold");
-	reticleSpeed_ = globalVariables->GetFloatValue(groupName, "ReticleSpeed");
-	mass_ = globalVariables->GetFloatValue(groupName, "Mass");
-	miu_ = globalVariables->GetFloatValue(groupName, "Miu");
-	stiffness_ = globalVariables->GetFloatValue(groupName, "Stiffness");
-	dampar_ = globalVariables->GetFloatValue(groupName, "Dampar");
-	limitLength_ = globalVariables->GetFloatValue(groupName, "LimitLength");
-	segmentLength_ = globalVariables->GetFloatValue(groupName, "SegmentLength");
-	lineColore_ = globalVariables->GetVector4Value(groupName, "LineColore");
-	limitLerpTime_ = globalVariables->GetFloatValue(groupName, "LimitLerpTime");
-	limitDisplayeTime_ = globalVariables->GetFloatValue(groupName, "LimitDisplayeTime");
-	scoreStartPosition_ = globalVariables->GetVector2Value(groupName, "ScoreStartPosition");
-	scoreEndPosition_ = globalVariables->GetVector2Value(groupName, "ScoreEndPosition");
-	fixedSpeed_ = globalVariables->GetFloatValue(groupName, "FixedSpeed");
-	floatSpeed_ = globalVariables->GetFloatValue(groupName, "FloatSpeed");
-	jumpPower_ = globalVariables->GetVector3Value(groupName, "JumpPower");
-	limitSpeed_ = globalVariables->GetFloatValue(groupName, "LimitSpeed");
-	hitBoxSize_ = globalVariables->GetVector3Value(groupName, "HitBoxSize");
-	startPosition_ = globalVariables->GetVector3Value(groupName, "StartPosition");
-	setCameraPos_ = globalVariables->GetVector3Value(groupName, "SetCameraPos");
-	dieUp_ = globalVariables->GetVector3Value(groupName, "DieUp");
-	dieDown_ = globalVariables->GetVector3Value(groupName, "DieDown");
-	dieForce_ = globalVariables->GetVector3Value(groupName, "DieForce");
-	zeemOutPositionZ_ = globalVariables->GetFloatValue(groupName, "ZeemOutPositionZ");
-	resetTime_ = globalVariables->GetFloatValue(groupName, "ResetTime");
-	dieUpTime_ = globalVariables->GetFloatValue(groupName, "DieUpTime");
-	dieDownTime_ = globalVariables->GetFloatValue(groupName, "DieDownTime");
-	goalTime_ = globalVariables->GetFloatValue(groupName, "GoalTime");
-	clearTime_ = globalVariables->GetFloatValue(groupName, "ClearTime");
-	guideAPosition_ = globalVariables->GetVector2Value(groupName, "GuideAPosition");
-	guideASize_ = globalVariables->GetVector2Value(groupName, "GuideASize");
-	guideRBPosition_ = globalVariables->GetVector2Value(groupName, "GuideRBPosition");
-	guideRBSize_ = globalVariables->GetVector2Value(groupName, "GuideRBSize");
-	deatLine_ = globalVariables->GetFloatValue(groupName, "DeatLine");
-	toleranceLevel_ = globalVariables->GetFloatValue(groupName, "ToleranceLevel");
-	coinValue_ = globalVariables->GetIntValue(groupName, "CoinValue");
-	guideJumpPosition_ = globalVariables->GetVector2Value(groupName, "GuideJumpPosition");
-	guideJumpSize_ = globalVariables->GetVector2Value(groupName, "GuideJumpSize");
-	guideWirePosition_ = globalVariables->GetVector2Value(groupName, "GuideWirePosition");
-	guideWireSize_ = globalVariables->GetVector2Value(groupName, "GuideWireSize");
-	maxLines_ = globalVariables->GetIntValue(groupName, "MaxLines");
+	ApplyGlobalVariables();
 
 	SetHitBoxSize(hitBoxSize_);
 	Object3D::Initialize(world, yunity::Collider::Shape::kAABB);
@@ -83,11 +40,6 @@ void Player::Initialize(yunity::Camera* camera, yunity::World* world)
 
 	isHit_ = false;
 	SetCollisionAttribute(kCollisionAttributePlayer);
-	isActive_ = true;
-
-	line_ = std::make_unique<yunity::PrimitiveDrawer>();
-	line_.reset(yunity::PrimitiveDrawer::Create());
-	line_->SetCamera(camera_);
 
 	reticle3D_ = std::make_unique<yunity::Model>();
 	reticle3D_.reset(yunity::ModelManager::GetInstance()->CreateModel(obj, "apex"));
@@ -105,8 +57,6 @@ void Player::Initialize(yunity::Camera* camera, yunity::World* world)
 	reticleWorldTransform_.parent_ = &worldTransform_;
 	landingPointWorldTrans_.Initialize();
 	
-
-
 	apex_ = std::make_unique<yunity::Model>();
 	apex_.reset(yunity::ModelManager::GetInstance()->CreateModel(obj, "apex"));
 	apex_->SetCamera(camera_);
@@ -129,7 +79,6 @@ void Player::Initialize(yunity::Camera* camera, yunity::World* world)
 
 
 	isWire_ = false;
-	isJump_ = true;
 	isMoving_ = false;
 	isSelect_ = false;
 
@@ -262,9 +211,8 @@ void Player::Update()
 			}
 
 			if ((pad_.Gamepad.wButtons & XINPUT_GAMEPAD_A) && !(prePad_.Gamepad.wButtons & XINPUT_GAMEPAD_A) && !isSelect_) {
-				if (!isJump_) {
+				if (isHit_) {
 					guideA_->SetTextureHandle(guideATexture_[1]);
-					isJump_ = true;
 					AddForce(jumpPower_, Body::ForceMode::kImpulse);
 					GetWorld()->TakeJoint(playerFixedJoint_.get());
 				}
@@ -296,7 +244,6 @@ void Player::Update()
 							isWire_ = true;
 							springJoint_->EnableSpring(0, true);
 							springJoint_->EnableSpring(1, true);
-							point_ = hit.point;
 							apexWorldTransform_.translation_ = hit.point;
 							apexBody_->SetMatTranslation(hit.point);
 							if (hit.collider->GetCollisionAttribute() == kCollisionAttributeMoveFloor || hit.collider->GetCollisionAttribute() == kCollisionAttributeTrampoline || hit.collider->GetCollisionAttribute() == kCollisionAttributePillar) {
@@ -395,20 +342,6 @@ void Player::Update()
 
 	}
 
-	yunity::GlobalVariables* globalVariables = yunity::GlobalVariables::GetInstance();
-	const char* groupName = "Player";
-	guideJumpPosition_ = globalVariables->GetVector2Value(groupName, "GuideJumpPosition");
-	guideJumpSize_ = globalVariables->GetVector2Value(groupName, "GuideJumpSize");
-	guideWirePosition_ = globalVariables->GetVector2Value(groupName, "GuideWirePosition");
-	guideWireSize_ = globalVariables->GetVector2Value(groupName, "GuideWireSize");
-
-	guideJump_->SetPosition(guideJumpPosition_);
-	guideJump_->SetSize(guideJumpSize_);
-	guideWire_->SetPosition(guideWirePosition_);
-	guideWire_->SetSize(guideWireSize_);
-
-	ImGui::End();
-
 #endif
 }
 
@@ -427,7 +360,6 @@ void Player::Draw()
 						lines_[i]->Draw(lineVertexs_[i * 2], lineVertexs_[i * 2 + 1], { 1.0f, 1.0f, 1.0f, 1.0f });
 					}
 				}
-				//line_->Draw(worldTransform_.translation_, apexBody_->GetMatWorldTranslation(), lineColore_);
 				apex_->Draw(*apexBody_->GetWorldTransform(), yunity::TextureManager::GetInstance()->Load("purple1x1.png"));
 			}
 		}
@@ -484,12 +416,6 @@ void Player::OnCollisionEvent()
 
 		}
 	}
-
-
-	if (GetNormalVector().y > 0.0f) {
-		isJump_ = false;
-	}
-
 #ifdef _DEBUG
 	ImGui::Begin("Player");
 	ImGui::Text("Hit");
@@ -527,13 +453,11 @@ void Player::Reset()
 {
 	worldTransform_.translation_ = spawnPoint_;
 	Body::Reset();
-	point_ = worldTransform_.translation_;
 	apexWorldTransform_.translation_ = worldTransform_.translation_;
 	springJoint_->EnableSpring(0, false);
 	springJoint_->EnableSpring(1, false);
 	fixedJoint_->Clear();
 	isWire_ = false;
-	isActive_ = true;
 	isReticle_ = true;
 }
 
@@ -541,10 +465,8 @@ void Player::Reset(const Vector3& pos)
 {
 	worldTransform_.translation_ = pos;
 	Body::Reset();
-	point_ = worldTransform_.translation_;
 	apexWorldTransform_.translation_ = worldTransform_.translation_;
 	isWire_ = false;
-	isActive_ = true;
 }
 
 bool Player::Result()
@@ -704,7 +626,6 @@ void Player::GoalProduction()
 
 void Player::InitializeDeth()
 {
-	isActive_ = false;
 	dieCameraPosition_ = camera_->GetTranslate();
 	diePlayerPosition_ = GetMatWorldTranslation();
 	camera_->SetTarget(nullptr);
@@ -715,6 +636,7 @@ void Player::InitializeDeth()
 	isWire_ = false;
 	isReticle_ = false;
 }
+
 
 void Player::SetDisplayUI(bool flag, UI ui)
 {
@@ -729,4 +651,52 @@ void Player::SetDisplayUI(bool flag, UI ui)
 	default:
 		break;
 	}
+}
+
+void Player::ApplyGlobalVariables()
+{
+	yunity::GlobalVariables* globalVariables = yunity::GlobalVariables::GetInstance();
+	const char* groupName = "Player";
+
+	threshold_ = globalVariables->GetFloatValue(groupName, "Threshold");
+	reticleSpeed_ = globalVariables->GetFloatValue(groupName, "ReticleSpeed");
+	mass_ = globalVariables->GetFloatValue(groupName, "Mass");
+	miu_ = globalVariables->GetFloatValue(groupName, "Miu");
+	stiffness_ = globalVariables->GetFloatValue(groupName, "Stiffness");
+	dampar_ = globalVariables->GetFloatValue(groupName, "Dampar");
+	limitLength_ = globalVariables->GetFloatValue(groupName, "LimitLength");
+	segmentLength_ = globalVariables->GetFloatValue(groupName, "SegmentLength");
+	lineColore_ = globalVariables->GetVector4Value(groupName, "LineColore");
+	limitLerpTime_ = globalVariables->GetFloatValue(groupName, "LimitLerpTime");
+	limitDisplayeTime_ = globalVariables->GetFloatValue(groupName, "LimitDisplayeTime");
+	scoreStartPosition_ = globalVariables->GetVector2Value(groupName, "ScoreStartPosition");
+	scoreEndPosition_ = globalVariables->GetVector2Value(groupName, "ScoreEndPosition");
+	fixedSpeed_ = globalVariables->GetFloatValue(groupName, "FixedSpeed");
+	floatSpeed_ = globalVariables->GetFloatValue(groupName, "FloatSpeed");
+	jumpPower_ = globalVariables->GetVector3Value(groupName, "JumpPower");
+	limitSpeed_ = globalVariables->GetFloatValue(groupName, "LimitSpeed");
+	hitBoxSize_ = globalVariables->GetVector3Value(groupName, "HitBoxSize");
+	startPosition_ = globalVariables->GetVector3Value(groupName, "StartPosition");
+	setCameraPos_ = globalVariables->GetVector3Value(groupName, "SetCameraPos");
+	dieUp_ = globalVariables->GetVector3Value(groupName, "DieUp");
+	dieDown_ = globalVariables->GetVector3Value(groupName, "DieDown");
+	dieForce_ = globalVariables->GetVector3Value(groupName, "DieForce");
+	zeemOutPositionZ_ = globalVariables->GetFloatValue(groupName, "ZeemOutPositionZ");
+	resetTime_ = globalVariables->GetFloatValue(groupName, "ResetTime");
+	dieUpTime_ = globalVariables->GetFloatValue(groupName, "DieUpTime");
+	dieDownTime_ = globalVariables->GetFloatValue(groupName, "DieDownTime");
+	goalTime_ = globalVariables->GetFloatValue(groupName, "GoalTime");
+	clearTime_ = globalVariables->GetFloatValue(groupName, "ClearTime");
+	guideAPosition_ = globalVariables->GetVector2Value(groupName, "GuideAPosition");
+	guideASize_ = globalVariables->GetVector2Value(groupName, "GuideASize");
+	guideRBPosition_ = globalVariables->GetVector2Value(groupName, "GuideRBPosition");
+	guideRBSize_ = globalVariables->GetVector2Value(groupName, "GuideRBSize");
+	deatLine_ = globalVariables->GetFloatValue(groupName, "DeatLine");
+	toleranceLevel_ = globalVariables->GetFloatValue(groupName, "ToleranceLevel");
+	coinValue_ = globalVariables->GetIntValue(groupName, "CoinValue");
+	guideJumpPosition_ = globalVariables->GetVector2Value(groupName, "GuideJumpPosition");
+	guideJumpSize_ = globalVariables->GetVector2Value(groupName, "GuideJumpSize");
+	guideWirePosition_ = globalVariables->GetVector2Value(groupName, "GuideWirePosition");
+	guideWireSize_ = globalVariables->GetVector2Value(groupName, "GuideWireSize");
+	maxLines_ = globalVariables->GetIntValue(groupName, "MaxLines");
 }

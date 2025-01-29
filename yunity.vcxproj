@@ -123,6 +123,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Additional\SpringBoard.cpp" />
     <ClCompile Include="Additional\TV.cpp" />
     <ClCompile Include="Additional\WindParticle.cpp" />
+    <ClCompile Include="Additional\Wire.cpp" />
     <ClCompile Include="Engine\3D\DirectionLight.cpp" />
     <ClCompile Include="Engine\Particle\BaseParticle.cpp" />
     <ClCompile Include="Engine\Manager\CameraManager.cpp" />
@@ -222,6 +223,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Additional\SpringBoard.h" />
     <ClInclude Include="Additional\TV.h" />
     <ClInclude Include="Additional\WindParticle.h" />
+    <ClInclude Include="Additional\Wire.h" />
     <ClInclude Include="Engine\3D\DirectionLight.h" />
     <ClInclude Include="Engine\Base\Tag.h" />
     <ClInclude Include="Engine\Core\ResourceLeakChecker.h" />

@@ -4,7 +4,7 @@
 #include "EngineTimeStep.h"
 #include "GlobalVariables.h"
 
-void TV::InitializeTexture()
+void TV::Initialize()
 {
 	if (GetCollisionAttribute() == kCollisionAttributeTV1) {
 		textureHandle_[0] = yunity::TextureManager::Load("Models/TV/TVABotton.png");
