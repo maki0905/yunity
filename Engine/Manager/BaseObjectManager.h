@@ -116,11 +116,11 @@ namespace yunity {
 		void SetDirectionLight(DirectionLight* directionLight);
 
 	protected:
-		template <typename ObjectType>
-		void CreateObject(const yunity::LevelData::ObjectData& objectData, yunity::Camera* camera) {
+		template <typename ObjectType, typename... Args>
+		void CreateObject(const yunity::LevelData::ObjectData& objectData, yunity::Camera* camera, Args&&... args) {
 			auto newObject = std::make_unique<ObjectType>();
 			SetInitalizeData(objectData, newObject.get(), camera);
-			newObject->Initialize();
+			newObject->Initialize(std::forward<Args>(args)...);
 			AddObject(std::move(newObject));
 		}
 
