@@ -17,7 +17,7 @@ class Player;
 class Wire {
 public:
 	/// <summary>
-	/// 
+	/// 初期化
 	/// </summary>
 	/// <param name="camera"></param>
 	/// <param name="world"></param>
@@ -25,9 +25,27 @@ public:
 	/// <param name="player"></param>
 	void Initialize(yunity::Camera* camera, yunity::World* world, yunity::WorldTransform* worldTransform, Player* player);
 
+	/// <summary>
+	/// 更新
+	/// </summary>
 	void Update();
+
+	/// <summary>
+	/// 3D描画
+	/// </summary>
 	void Draw3D();
+
+	/// <summary>
+	/// UI描画
+	/// </summary>
 	void DrawUI();
+
+	void Reset();
+
+	/// <summary>
+	/// 外部データ読み込み
+	/// </summary>
+	void ApplyGlobalVariables();
 
 	bool GetIsWire() { return isWire_; };
 	void SetIsWire(bool isWire) { isWire_ = isWire; }
@@ -86,6 +104,7 @@ private:
 	std::vector<std::unique_ptr<yunity::PrimitiveDrawer>> lines_;
 	std::vector<Vector3> lineVertexs_;
 	Vector4 lineColore_;
+	// 線の描画の最大数
 	int maxLines_;
 
 	// 設置時パーティクル

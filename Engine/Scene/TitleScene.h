@@ -17,12 +17,6 @@
 */
 class TitleScene : public yunity::IScene
 {
-	struct Easing {
-		bool flag;
-		float t;
-		Vector3 scale;
-	};
-
 	struct DirectionLight {
 		Vector4 color;
 		Vector3 direction;

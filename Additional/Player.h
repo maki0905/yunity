@@ -9,12 +9,17 @@
 #include "WorldTransform.h"
 #include "Object3D.h"
 #include "Score.h"
+
 #include "SpringJoint.h"
 #include "FixedJoint.h"
 
-#include "PointParticle.h"
 #include "SmokeParticle.h"
 #include "FireworksParticle.h"
+
+#include "Wire.h"
+#include "GuideUI.h"
+#include "PlayerProduction.h"
+
 
 namespace yunity {
 	class Sprite;
@@ -80,34 +85,16 @@ public:
 	bool Result();
 
 	/// <summary>
-	/// ステージ入室時演出
-	/// </summary>
-	void InGameProduction();
-
-	/// <summary>
-	/// リセット時演出
-	/// </summary>
-	void ResetProduction();
-
-	/// <summary>
-	/// 死亡時演出
-	/// </summary>
-	void DeathProduction();
-
-	/// <summary>
-	/// ゴール時演出
-	/// </summary>
-	void GoalProduction();
-
-	/// <summary>
 	/// 死亡時の初期化
 	/// </summary>
 	void InitializeDeth();
 
 	/// <summary>
-	/// 
+	/// 外部ファイルからデータ読み込み
 	/// </summary>
 	void ApplyGlobalVariables();
+
+	void ChangeProductionState(std::unique_ptr<PlayerProduction> newState);
 
 	/// <summary>
 	/// getter
@@ -117,6 +104,9 @@ public:
 	bool GetSelect() { return isSelect_; }
 	Vector3 GetSpawnPoint() { return spawnPoint_; }
 	Vector3 GetGoalPoint() { return goalPoint_; }
+	Vector3 GetDeathPosition() { return deathPosition_; }
+	Vector3 GetDeathCameraPosition() { return deathCameraPosition_; }
+	Vector3 GetOldPlayerPosition() { return oldPlayerPosition_; }
 
 	/// <summary>
 	/// setter
@@ -125,6 +115,9 @@ public:
 	void SetSelect(bool isSelect) { isSelect_ = isSelect; }
 	void SetDisplayUI(bool flag, UI ui);
 	void SetSpawnPoint(const Vector3& spawnPoint) { spawnPoint_ = spawnPoint; }
+	void SetIsScore(bool isScore) { isScore_ = isScore; }
+	void SetIsReticle(bool isReticl) { isReticle_ = isReticl; }
+	void SetDeathPosition(const Vector3& deathPosition) { deathPosition_ = deathPosition; }
 
 private:
 	// コントローラー
@@ -133,11 +126,8 @@ private:
 
 	// しきい値
 	float threshold_;
-	float reticleSpeed_;
 
 	// フラグ
-	bool isWire_;
-	bool isHitRay_;
 	bool isMoving_;
 	bool isSelect_;
 	bool isCrouching_;
@@ -152,54 +142,16 @@ private:
 	// プレイヤーの物理パラメータ
 	float mass_;
 	float miu_;
-	float stiffness_;
-	float dampar_;
 
-	// ワイヤーの最大長さ
-	float limitLength_;
-	// ワイヤーのセグメントの長さ
-	float segmentLength_;
-
-	// ワイヤー描画用
-	std::vector<std::unique_ptr<yunity::PrimitiveDrawer>> lines_;
-	std::vector<Vector3> lineVertexs_;
-	//Vector3 point_;
-	Vector4 lineColore_ ;
-	int maxLines_;
-
-	// 3Dレティクル
-	std::unique_ptr<yunity::Model> reticle3D_;
-	std::unique_ptr<yunity::Model> apex_;
-	yunity::WorldTransform apexWorldTransform_;
-
-	// 2Dレティクル
-	std::unique_ptr<yunity::Sprite> reticle_;
-	yunity::WorldTransform reticleWorldTransform_;
-	std::unique_ptr<yunity::Sprite> landingPoint_;
-	yunity::WorldTransform landingPointWorldTrans_;
-	uint32_t onReticle_;
-	uint32_t offReticle_;
+	// ワイヤー
+	std::unique_ptr<Wire> wire_;
+	bool isReticle_;
 
 	// ガイド
-	std::unique_ptr<yunity::Sprite> guideA_;
-	std::array<uint32_t, 2> guideATexture_;
-	std::unique_ptr<yunity::Sprite> guideRB_;
-	std::array<uint32_t, 2> guideRBTexture_;
-	std::unique_ptr<yunity::Sprite> guideJump_;
-	std::unique_ptr<yunity::Sprite> guideWire_;
-	std::array<uint32_t, 2> guideWireTexture_;
-	Vector2 guideAPosition_;
-	Vector2 guideASize_;
-	Vector2 guideRBPosition_;
-	Vector2 guideRBSize_;
-	Vector2 guideJumpPosition_;
-	Vector2 guideJumpSize_;
-	Vector2 guideWirePosition_;
-	Vector2 guideWireSize_;
+	std::unique_ptr<GuideUI> guideUI_;
 
 	// スコア
 	bool isScore_;
-	bool isReticle_;
 	std::unique_ptr<Score> scoreUI_;
 	float lerpTime_;
 	float limitLerpTime_;
@@ -218,20 +170,13 @@ private:
 	// 制限速度
 	float limitSpeed_;
 
-	// スプリングジョイント
-	std::unique_ptr<yunity::SpringJoint> springJoint_;
-
 	// 固定ジョイント
-	std::unique_ptr<yunity::FixedJoint> fixedJoint_;
 	std::unique_ptr<yunity::FixedJoint> playerFixedJoint_;
 
-	// ワイヤーの先端のボディ
-	std::unique_ptr<yunity::Body> apexBody_;
-
-	// パーティクル
-	std::unique_ptr<PointParticle> pointParticle_;
+	// 煙パーティクル
 	std::unique_ptr<SmokeParticle> smokeParticle_;
-	Random::RandomNumberGenerator rng;
+
+	// 紙吹雪パーティクル
 	static const int fireworksParticleQuantity_ = 10;
 	std::array<std::unique_ptr<FireworksParticle>, fireworksParticleQuantity_> fireworksParticles_;
 
@@ -242,22 +187,12 @@ private:
 	Vector3 goalPoint_;
 
 	// 演出用
+	std::unique_ptr<PlayerProduction> productionState_;
 	float time_;
-	Vector3 diePlayerPosition_;
-	Vector3 dieCameraPosition_;
-	Vector3 topPos_;
+	Vector3 deathPosition_;
+	Vector3 deathCameraPosition_;
 	Vector3 clearCameraPosition_;
 	Vector3 oldPlayerPosition_;
-	Vector3 setCameraPos_;
-	Vector3 dieUp_;
-	Vector3 dieDown_;
-	Vector3 dieForce_;
-    float zeemOutPositionZ_;
-    float resetTime_;
-    float dieUpTime_;
-    float dieDownTime_;
-    float goalTime_;
-    float clearTime_;
 
 	float deatLine_;
 	// 動く床の許容範囲

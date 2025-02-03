@@ -54,6 +54,7 @@ void StageScene::Initialize()
 	player_ = dynamic_cast<Player*>(objectManager_->GetObj(Tag::kPlayer).back());
 	player_->Reset(CommonData::GetInstance()->start_.GetMatWorldTranslation());
 	camera_->SetTarget(player_->GetWorldTransform());
+	player_->ChangeProductionState(std::make_unique<InGameProduction>());
 
 	skydome_ = std::make_unique<yunity::Skydome>();
 	skydome_->Initialize(camera_, skydomeScale_);

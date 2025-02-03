@@ -5,13 +5,22 @@
 #include "WindowsAPI.h"
 #include "RayCast.h"
 #include "CommonData.h"
+#include "GlobalVariables.h"
 
 void Wire::Initialize(yunity::Camera* camera, yunity::World* world, yunity::WorldTransform* worldTransform, Player* player)
 {
+	ApplyGlobalVariables();
+
 	isWire_ = false;
 
 	// ワールド取得
 	world_ = world;
+
+	// プレイヤーのワールドトランスフォームを取得
+	playerWorldTransform_ = worldTransform;
+
+	// カメラ取得
+	camera_ = camera;
 
 	// 3Dレティクル
 	reticle3D_ = std::make_unique<yunity::Model>();
@@ -34,6 +43,14 @@ void Wire::Initialize(yunity::Camera* camera, yunity::World* world, yunity::Worl
 	apexWorldTransform_.Initialize();
 	apexBody_ = std::make_unique<yunity::Body>();
 	apexBody_->CreateBody(world, &apexWorldTransform_);
+
+	// ワイヤーの線
+	for (int i = 0; i < maxLines_; i++) {
+		std::unique_ptr<yunity::PrimitiveDrawer> line = std::make_unique<yunity::PrimitiveDrawer>();
+		line.reset(yunity::PrimitiveDrawer::Create());
+		line->SetCamera(camera_);
+		lines_.push_back(std::move(line));
+	}
 
 	// スプリングジョイント
 	springJoint_ = std::make_unique<yunity::SpringJoint>();
@@ -93,6 +110,7 @@ void Wire::Update()
 		lenght = limitLength_;
 	}
 	direction.Normalize();
+	// マスク生成
 	uint32_t rayMask = ~(kCollisionAttributePlayer | kCollisionAttributeCoin);
 	isHit = RayCast(playerWorldTransform_->translation_, direction, &hit, lenght, world_,rayMask);
 
@@ -106,10 +124,12 @@ void Wire::Update()
 					springJoint_->EnableSpring(1, true);
 					apexWorldTransform_.translation_ = hit.point;
 					apexBody_->SetMatTranslation(hit.point);
+					// 動くオブジェクトの場合
 					if (hit.collider->GetCollisionAttribute() == kCollisionAttributeMoveFloor || hit.collider->GetCollisionAttribute() == kCollisionAttributeTrampoline || hit.collider->GetCollisionAttribute() == kCollisionAttributePillar) {
 						fixedJoint_->CreateFixedJoint(hit.collider, apexBody_.get());
 						world_->AddJoint(fixedJoint_.get());
 					}
+					// パーティクル生成
 					pointParticle_->Spawn(hit.point);
 				}
 			}
@@ -159,6 +179,11 @@ void Wire::Update()
 		}
 	}
 
+	if (Length(reticleWorldTransform_.translation_) > limitLength_) { // レティクルの距離が制限以上の場合
+		Vector3 dir = reticleWorldTransform_.translation_.Normalize();
+		reticleWorldTransform_.translation_ = Multiply(limitLength_, dir);
+	}
+
 	reticleWorldTransform_.UpdateMatrix();
 	apexWorldTransform_.UpdateMatrix();
 	apexBody_->GetWorldTransform()->UpdateMatrix();
@@ -185,7 +210,7 @@ void Wire::Draw3D()
 		apex_->Draw(*apexBody_->GetWorldTransform(), yunity::TextureManager::GetInstance()->Load("purple1x1.png"));
 	}
 
-	pointParticle_->Update();
+	pointParticle_->Draw();
 }
 
 void Wire::DrawUI()
@@ -194,4 +219,26 @@ void Wire::DrawUI()
 		landingPoint_->Draw();
 	}
 	reticle_->Draw();
+}
+
+void Wire::Reset()
+{
+	apexWorldTransform_.translation_ = playerWorldTransform_->translation_;
+	springJoint_->EnableSpring(0, false);
+	springJoint_->EnableSpring(1, false);
+	fixedJoint_->Clear();
+	isWire_ = false;
+}
+
+void Wire::ApplyGlobalVariables()
+{
+	yunity::GlobalVariables* globalVariables = yunity::GlobalVariables::GetInstance();
+	const char* groupName = "Wire";
+
+	reticleSpeed_ = globalVariables->GetFloatValue(groupName, "ReticleSpeed");
+	stiffness_ = globalVariables->GetFloatValue(groupName, "Stiffness");
+	dampar_ = globalVariables->GetFloatValue(groupName, "Dampar");
+	limitLength_ = globalVariables->GetFloatValue(groupName, "LimitLength");
+	segmentLength_ = globalVariables->GetFloatValue(groupName, "SegmentLength");
+	maxLines_ = globalVariables->GetIntValue(groupName, "MaxLines");
 }

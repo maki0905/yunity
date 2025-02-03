@@ -1,0 +1,16 @@
+{
+    "DeathProduction": {
+        "DeathUpTime": 0.25,
+        "DeathDownTime": 0.5,
+        "DeathUp": [
+            0.0,
+            10.0,
+            -10.0
+        ],
+        "DeathDown": [
+            0.0,
+            -20.0,
+            -10.0
+        ]
+    }
+}

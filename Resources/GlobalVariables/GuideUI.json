@@ -1,0 +1,36 @@
+{
+    "GuideUI": {
+        "GuideAPosition": [
+            96.0,
+            600.0
+        ],
+        "GuideASize": [
+            96.0,
+            96.0
+        ],
+        "GuideJumpPosition": [
+            200.0,
+            600.0
+        ],
+        "GuideJumpSize": [
+            128.0,
+            64.0
+        ],
+        "GuideRBPosition": [
+            96.0,
+            660.0
+        ],
+        "GuideRBSize": [
+            96.0,
+            96.0
+        ],
+        "GuideWirePosition": [
+            200.0,
+            660.0
+        ],
+        "GuideWireSize": [
+            128.0,
+            64.0
+        ]
+    }
+}

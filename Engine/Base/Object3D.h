@@ -85,6 +85,7 @@ namespace yunity {
 		Model* GetModel(const std::string& modelName) { return models_[modelName].get(); }
 		Object3D::Body* GetHitBody() { return hitBody_; }
 		Tag GetTag() { return tag_; }
+		Camera* GetCamera() { return camera_; }
 
 	protected:
 		WorldTransform worldTransform_;
