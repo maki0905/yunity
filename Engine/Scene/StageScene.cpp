@@ -67,13 +67,11 @@ void StageScene::Update()
 {
 	objectManager_->Update();
 
-	world_->Solve();
-
-	if (yunity::Input::GetInstance()->TriggerKey(DIK_T)) {
-		yunity::SceneManager::GetInstance()->ChangeScene("TITLE");
+	if (!player_->GetIsPose()) {
+		world_->Solve();
 	}
-	directionLight_->Update();
 
+	directionLight_->Update();
 
 #ifdef _DEBUG
 	if (yunity::Input::GetInstance()->TriggerKey(DIK_LSHIFT)) {

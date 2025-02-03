@@ -117,6 +117,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Additional\ObjectManager.cpp" />
     <ClCompile Include="Additional\PlayerProduction.cpp" />
     <ClCompile Include="Additional\PointParticle.cpp" />
+    <ClCompile Include="Additional\Pose.cpp" />
     <ClCompile Include="Additional\RotationCube.cpp" />
     <ClCompile Include="Additional\Score.cpp" />
     <ClCompile Include="Additional\SelectTV.cpp" />
@@ -219,6 +220,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Additional\ObjectManager.h" />
     <ClInclude Include="Additional\PlayerProduction.h" />
     <ClInclude Include="Additional\PointParticle.h" />
+    <ClInclude Include="Additional\Pose.h" />
     <ClInclude Include="Additional\RotationCube.h" />
     <ClInclude Include="Additional\Score.h" />
     <ClInclude Include="Additional\SelectTV.h" />

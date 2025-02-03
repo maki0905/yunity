@@ -2,6 +2,7 @@
 
 #include <cassert>
 #include "ModelManager.h"
+#include "DirectXCore.h"
 
 yunity::SceneManager* yunity::SceneManager::GetInstance()
 {
@@ -20,7 +21,6 @@ void yunity::SceneManager::Update()
 		}
 
 		ModelManager::GetInstance()->Reset();
-
 		// シーン切り替え
 		scene_.reset(nextScene_);
 		nextScene_ = nullptr;

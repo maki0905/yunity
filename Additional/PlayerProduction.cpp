@@ -20,9 +20,9 @@ void InGameProduction::Initialize()
 
 void InGameProduction::Update(Player* player)
 {
-	if (!Tradition::GetInstance()->GetOut()) {
+	/*if (!Tradition::GetInstance()->GetOut()) {
 		CommonData::GetInstance()->flagState_ = FlagState::kPlay;
-	}
+	}*/
 	Tradition::GetInstance()->Update();
 	player->GetCamera()->SetOffset(Lerp({ 0.0f, 0.0f, 0.0f }, endCameraPosition_, std::clamp(1.0f - Tradition::GetInstance()->GetTime(), 0.0f, 1.0f)));
 	player->SetScale(Lerp({ 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f, 1.0f }, std::clamp(1.0f - Tradition::GetInstance()->GetTime(), 0.0f, 1.0f)));
@@ -30,6 +30,7 @@ void InGameProduction::Update(Player* player)
 		player->SetIsScore(true);
 		player->SetIsReticle(true);
 		player->ChangeProductionState(nullptr);
+		CommonData::GetInstance()->flagState_ = FlagState::kPlay;
 	}
 
 }

@@ -81,6 +81,9 @@ void Player::Initialize(yunity::Camera* camera, yunity::World* world)
 		fireworksParticles_[i]->Initialize(camera_);
 	}
 
+	pose_ = std::make_unique<Pose>();
+	pose_->Initialize(this);
+
 }
 
 void Player::Update()
@@ -95,10 +98,6 @@ void Player::Update()
 	// 各種演出
 	if (productionState_.get() != nullptr) {
 		productionState_->Update(this);
-	}
-
-	if (yunity::Input::GetInstance()->TriggerKey(DIK_P)) {
-		worldTransform_.translation_ = { 980.0f, 60.0f, 0.0f };
 	}
 
 	// スコアUIの更新
@@ -117,6 +116,10 @@ void Player::Update()
 
 	if (CommonData::GetInstance()->isGoal_ || CommonData::GetInstance()->flagState_ == FlagState::kCount) { // 早期リターン
 		isReticle_ = false;
+		return;
+	}
+
+	if (pose_->Update()) {
 		return;
 	}
 
@@ -236,6 +239,7 @@ void Player::DrawUI()
 		scoreUI_->Draw();
 	}
 
+	pose_->Draw();
 
 }
 

@@ -19,6 +19,7 @@
 #include "Wire.h"
 #include "GuideUI.h"
 #include "PlayerProduction.h"
+#include "Pose.h"
 
 
 namespace yunity {
@@ -102,6 +103,7 @@ public:
 
 	//bool GetActive() { return isActive_; }
 	bool GetSelect() { return isSelect_; }
+	bool GetIsPose() { return pose_->GetIsPose(); }
 	Vector3 GetSpawnPoint() { return spawnPoint_; }
 	Vector3 GetGoalPoint() { return goalPoint_; }
 	Vector3 GetDeathPosition() { return deathPosition_; }
@@ -199,6 +201,8 @@ private:
 	float toleranceLevel_;
 	// コインの加算値
 	int coinValue_;
+
+	std::unique_ptr<Pose> pose_;
 
 };
 

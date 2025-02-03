@@ -49,9 +49,7 @@ void yunity::DirectXCore::Initialize()
 		descriptorHeaps_[i] = std::make_unique<DescriptorHeap>();
 	}
 
-	descriptorHeaps_[static_cast<int>(HeapType::kRTV)]->Create(D3D12_DESCRIPTOR_HEAP_TYPE_RTV, 12, false);
-	descriptorHeaps_[static_cast<int>(HeapType::kSRV)]->Create(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, 256, true);
-	descriptorHeaps_[static_cast<int>(HeapType::kDSV)]->Create(D3D12_DESCRIPTOR_HEAP_TYPE_DSV, 3, false);
+	CreateDescriptorHeaps();
 
 	backBuffer_ = std::make_unique<BackBuffer>();
 	backBuffer_->Create(swapChain_->GetSwapChain());
@@ -159,6 +157,13 @@ void yunity::DirectXCore::PreDrawShadow()
 void yunity::DirectXCore::PostDrawShadow()
 {
 	commandList_->BarrierChange(shadowBuffer_->GetDepthStencil(), D3D12_RESOURCE_STATE_DEPTH_WRITE, D3D12_RESOURCE_STATE_GENERIC_READ);
+}
+
+void yunity::DirectXCore::CreateDescriptorHeaps()
+{
+	descriptorHeaps_[static_cast<int>(HeapType::kRTV)]->Create(D3D12_DESCRIPTOR_HEAP_TYPE_RTV, 12, false);
+	descriptorHeaps_[static_cast<int>(HeapType::kSRV)]->Create(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, 1024, true);
+	descriptorHeaps_[static_cast<int>(HeapType::kDSV)]->Create(D3D12_DESCRIPTOR_HEAP_TYPE_DSV, 3, false);
 }
 
 void yunity::DirectXCore::InitializeFixFPS()

@@ -79,6 +79,12 @@ namespace yunity {
 		void PostDrawShadow();
 
 		/// <summary>
+		/// 各ヒープ生成
+		/// </summary>
+		void CreateDescriptorHeaps();
+
+
+		/// <summary>
 		/// getter
 		/// </summary>
 		/// <param name="heapType"></param>
