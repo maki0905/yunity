@@ -113,6 +113,7 @@ bool Pose::Update()
 						player_->InitializeDeth();
 						player_->ChangeProductionState(std::make_unique<ResetProduction>());
 						isPose_ = false;
+						select_->SetPosition(continuation_->GetPosition());
 						return true;
 					}
 				}

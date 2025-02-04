@@ -111,7 +111,7 @@ void Wire::Update()
 	}
 	direction.Normalize();
 	// マスク生成
-	uint32_t rayMask = ~(kCollisionAttributePlayer | kCollisionAttributeCoin);
+	uint32_t rayMask = ~(kCollisionAttributePlayer | kCollisionAttributeCoin | kCollisionAttributeForceField);
 	isHit = RayCast(playerWorldTransform_->translation_, direction, &hit, lenght, world_,rayMask);
 
 	// ワイヤー
