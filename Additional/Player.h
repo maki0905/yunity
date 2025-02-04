@@ -95,6 +95,10 @@ public:
 	/// </summary>
 	void ApplyGlobalVariables();
 
+	/// <summary>
+	/// 演出変更
+	/// </summary>
+	/// <param name="newState"></param>
 	void ChangeProductionState(std::unique_ptr<PlayerProduction> newState);
 
 	/// <summary>
@@ -202,6 +206,7 @@ private:
 	// コインの加算値
 	int coinValue_;
 
+	// ポーズ機能
 	std::unique_ptr<Pose> pose_;
 
 };

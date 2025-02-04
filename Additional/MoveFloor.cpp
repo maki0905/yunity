@@ -14,6 +14,9 @@ void MoveFloor::Initialize()
 		amplitude_ *= -1.0f;
 	}
 	time_ = 0.0f;
+
+	// 衝突マスク設定
+	SetCollisionMask(kCollisionAttributePlayer);
 }
 
 void MoveFloor::Update()

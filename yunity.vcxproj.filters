@@ -312,7 +312,7 @@
     <ClCompile Include="Engine\Physics\Collision.cpp">
       <Filter>Physics\Collision</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Manager\CollisionManager.cpp">
+    <ClCompile Include="Engine\Physics\CollisionManager.cpp">
       <Filter>Physics\Collision</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Manager\CameraManager.cpp">
@@ -695,7 +695,7 @@
     <ClInclude Include="Engine\Physics\CollisionConfig.h">
       <Filter>Physics\Collision</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Manager\CollisionManager.h">
+    <ClInclude Include="Engine\Physics\CollisionManager.h">
       <Filter>Physics\Collision</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Physics\RayCast.h">

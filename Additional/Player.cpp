@@ -48,8 +48,10 @@ void Player::Initialize(yunity::Camera* camera, yunity::World* world)
 
 	isHit_ = false;
 
-	// 属性設定
+	// 衝突属性設定
 	SetCollisionAttribute(kCollisionAttributePlayer);
+	// 衝突マスク設定
+	SetCollisionMask(~kCollisionAttributePlayer);
 
 	isMoving_ = false;
 	isSelect_ = false;

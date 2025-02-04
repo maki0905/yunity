@@ -13,6 +13,9 @@ void CheckPoint::Initialize()
 	models_["ON"].reset(yunity::ModelManager::GetInstance()->CreateModel(obj, "CheckPoint"));
 	models_["ON"]->SetCamera(camera_);
 
+	// 衝突マスク設定
+	SetCollisionMask(kCollisionAttributePlayer);
+
 	isActive_ = false;
 }
 

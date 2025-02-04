@@ -169,8 +169,8 @@ namespace yunity {
 		RenderTexture(const RenderTexture&) = delete;
 		RenderTexture& operator=(const RenderTexture&) = delete;
 	private:
-		static RootSignature* rootSignature_;
-		static PipelineState* pipelineState_;
+		static std::unique_ptr<RootSignature> rootSignature_;
+		static std::unique_ptr<PipelineState> pipelineState_;
 
 	private:
 		const Vector4 kRenderTargetClearValue{ 1.0f, 0.0f, 0.0f, 1.0f };

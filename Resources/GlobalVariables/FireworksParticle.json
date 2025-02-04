@@ -10,13 +10,13 @@
             0.0
         ],
         "MinSpawnPosition": [
-            -10.0,
-            10.0,
+            -15.0,
+            25.0,
             0.0
         ],
         "MaxSpawnPosition": [
-            10.0,
             15.0,
+            35.0,
             0.0
         ],
         "MinVelocity": [

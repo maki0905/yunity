@@ -6,7 +6,7 @@ const uint32_t kCollisionAttributePlayer = 0b1;
 // 床
 const uint32_t kCollisionAttributeFloor = 0b1 << 1;
 // 動かせるもの
-const uint32_t kCollisionAttributeTrampoline = 0b1 << 2;
+const uint32_t kCollisionAttributeMove = 0b1 << 2;
 // ゴール
 const uint32_t kCollisionAttributeGoal = 0b1 << 3;
 // 動く床

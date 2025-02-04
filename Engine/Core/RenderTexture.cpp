@@ -12,12 +12,12 @@
 #include "CameraManager.h"
 #include "PostEffect.h"
 
-yunity::RootSignature* yunity::RenderTexture::rootSignature_ = nullptr;
-yunity::PipelineState* yunity::RenderTexture::pipelineState_ = nullptr;
+std::unique_ptr<yunity::RootSignature> yunity::RenderTexture::rootSignature_;
+std::unique_ptr<yunity::PipelineState> yunity::RenderTexture::pipelineState_;
 
 void yunity::RenderTexture::InitializeGraphicsPipeline()
 {
-	rootSignature_ = new RootSignature(Device::GetInstance()->GetDevice(), static_cast<int>(RootBindings::kCount), 1);
+	rootSignature_ =  std::make_unique<RootSignature>(Device::GetInstance()->GetDevice(), static_cast<int>(RootBindings::kCount), 1);
 
 	D3D12_STATIC_SAMPLER_DESC staticSamplers[2];
 	staticSamplers[0] = {};
@@ -52,7 +52,7 @@ void yunity::RenderTexture::InitializeGraphicsPipeline()
 
 	rootSignature_->Finalize(D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
 
-	pipelineState_ = new PipelineState(Device::GetInstance()->GetDevice(), rootSignature_);
+	pipelineState_ = std::make_unique<PipelineState>(Device::GetInstance()->GetDevice(), rootSignature_.get());
 
 	// InputLayout
 	D3D12_INPUT_LAYOUT_DESC inputLayoutDesc{};
@@ -120,7 +120,7 @@ void yunity::RenderTexture::Finalize()
 	postEffect_->Finalize();
 #endif // _DEBUG
 
-	if (rootSignature_) {
+	/*if (rootSignature_) {
 		delete rootSignature_;
 		rootSignature_ = nullptr;
 	}
@@ -128,7 +128,7 @@ void yunity::RenderTexture::Finalize()
 	if (pipelineState_) {
 		delete pipelineState_;
 		pipelineState_ = nullptr;
-	}
+	}*/
 }
 
 void yunity::RenderTexture::Create()

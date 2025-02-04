@@ -125,7 +125,7 @@ void Wire::Update()
 					apexWorldTransform_.translation_ = hit.point;
 					apexBody_->SetMatTranslation(hit.point);
 					// 動くオブジェクトの場合
-					if (hit.collider->GetCollisionAttribute() == kCollisionAttributeMoveFloor || hit.collider->GetCollisionAttribute() == kCollisionAttributeTrampoline || hit.collider->GetCollisionAttribute() == kCollisionAttributePillar) {
+					if (hit.collider->GetCollisionAttribute() == kCollisionAttributeMoveFloor || hit.collider->GetCollisionAttribute() == kCollisionAttributeMove|| hit.collider->GetCollisionAttribute() == kCollisionAttributePillar) {
 						fixedJoint_->CreateFixedJoint(hit.collider, apexBody_.get());
 						world_->AddJoint(fixedJoint_.get());
 					}

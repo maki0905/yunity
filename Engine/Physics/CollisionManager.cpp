@@ -28,7 +28,7 @@ void yunity::CollisionManager::CheckAllCollision() {
 
 void yunity::CollisionManager::CheckCollisionPair(Object3D* colliderA, Object3D* colliderB)
 {
-	if (colliderA->GetCollisionAttribute() == colliderB->GetCollisionAttribute()) {
+	if ((colliderA->GetCollisionAttribute() & colliderB->GetCollisionMask()) == 0 || (colliderB->GetCollisionAttribute() & colliderA->GetCollisionMask()) == 0) {
 		return;
 	}
 

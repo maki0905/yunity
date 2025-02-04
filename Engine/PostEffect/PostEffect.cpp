@@ -12,15 +12,15 @@
 #include "CameraManager.h"
 #include "ImGuiManager.h"
 
-yunity::RootSignature* yunity::PostEffect::rootSignature_[static_cast<uint32_t>(yunity::PostEffects::kCount)];
-yunity::PipelineState* yunity::PostEffect::pipelineState_[static_cast<uint32_t>(yunity::PostEffects::kCount)];
+std::array<std::unique_ptr<yunity::RootSignature>, static_cast<uint32_t>(yunity::PostEffects::kCount)> yunity::PostEffect::rootSignature_;
+std::array<std::unique_ptr<yunity::PipelineState>, static_cast<uint32_t>(yunity::PostEffects::kCount)> yunity::PostEffect::pipelineState_;
 
 void yunity::PostEffect::InitializeGraphicsPipeline()
 {
 
 	for (uint32_t index = 0; index < static_cast<uint32_t>(yunity::PostEffects::kCount); index++) {
 
-		rootSignature_[index] = new yunity::RootSignature(Device::GetInstance()->GetDevice(), static_cast<int>(RootBindings::kCount), 2);
+		rootSignature_[index] = std::make_unique<yunity::RootSignature>(Device::GetInstance()->GetDevice(), static_cast<int>(RootBindings::kCount), 2);
 
 		D3D12_STATIC_SAMPLER_DESC staticSamplers[2];
 		staticSamplers[0] = {};
@@ -56,7 +56,7 @@ void yunity::PostEffect::InitializeGraphicsPipeline()
 
 		rootSignature_[index]->Finalize(D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
 
-		pipelineState_[index] = new yunity::PipelineState(Device::GetInstance()->GetDevice(), rootSignature_[index]);
+		pipelineState_[index] = std::make_unique<yunity::PipelineState>(Device::GetInstance()->GetDevice(), rootSignature_[index].get());
 
 		// InputLayout
 		D3D12_INPUT_LAYOUT_DESC inputLayoutDesc{};
@@ -148,7 +148,7 @@ void yunity::PostEffect::Initalize()
 
 void yunity::PostEffect::Finalize()
 {
-	for (uint32_t index = 0; index <= static_cast<uint32_t>(yunity::PostEffects::kCount); index++) {
+	/*for (uint32_t index = 0; index <= static_cast<uint32_t>(yunity::PostEffects::kCount); index++) {
 		if (pipelineState_[index]) {
 			delete pipelineState_[index];
 			pipelineState_[index] = nullptr;
@@ -158,7 +158,7 @@ void yunity::PostEffect::Finalize()
 			rootSignature_[index] = nullptr;
 		}
 
-	}
+	}*/
 }
 
 void yunity::PostEffect::SetGraphicsRootSignature(uint32_t index)

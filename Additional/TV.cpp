@@ -22,6 +22,8 @@ void TV::Initialize()
 	yunity::GlobalVariables* globalVariables = yunity::GlobalVariables::GetInstance();
 	const char* groupName = "TV";
 	changeTime_ = globalVariables->GetFloatValue(groupName, "ChangeTime");
+
+	SetCollisionMask(kCollisionAttributePlayer);
 }
 
 void TV::Update()

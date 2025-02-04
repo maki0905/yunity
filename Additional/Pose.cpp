@@ -57,11 +57,11 @@ void Pose::Initialize(Player* player)
 	restart_ = std::make_unique<yunity::Sprite>();
 	restart_.reset(yunity::Sprite::Create(yunity::TextureManager::GetInstance()->Load("restart.png"), restartPosition, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.5f, 0.5f }));
 	restart_->SetSize(restartSize);
-	// セレクト
-	select_ = std::make_unique<yunity::Sprite>();
-	select_.reset(yunity::Sprite::Create(yunity::TextureManager::GetInstance()->Load("yellow1x1.png"), {0.0f, 0.0f}, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.5f, 0.5f }));
-	select_->SetSize(selectSize);
-	select_->SetPosition(continuation_->GetPosition());
+	// セレクター
+	selecter_ = std::make_unique<yunity::Sprite>();
+	selecter_.reset(yunity::Sprite::Create(yunity::TextureManager::GetInstance()->Load("yellow1x1.png"), {0.0f, 0.0f}, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.5f, 0.5f }));
+	selecter_->SetSize(selectSize);
+	selecter_->SetPosition(continuation_->GetPosition());
 
 	isPose_ = false;
 	time_ = 0.0f;
@@ -77,11 +77,21 @@ bool Pose::Update()
 		return false;
 	}
 
+	continuation_->SetColor({ 1.0f, 1.0f, 1.0f, 1.0f });
+	restart_->SetColor({ 1.0f, 1.0f, 1.0f, 1.0f });
+	title_->SetColor({ 1.0f, 1.0f, 1.0f, 1.0f });
+
+	if (time_ > 0.0f) {
+		time_ -= yunity::fixedTimeStep_;
+		time_ = std::clamp(time_, 0.0f, 1.0f);
+	}
+
+
 	if (yunity::Input::GetInstance()->IsControllerConnected()) {
 		if (yunity::Input::GetInstance()->GetJoystickState(0, pad_)) {
 			if (isPose_) {
 				float move = 0.0f;
-				if (time_ == 0.0f) {
+				if (time_ == 0.0f) { // 制限
 					move = (float)pad_.Gamepad.sThumbLY;
 					if (move != 0.0f) {
 						move = move / std::abs(move);
@@ -89,46 +99,59 @@ bool Pose::Update()
 					}
 				}
 
-				if (select_->GetPosition().y == continuation_->GetPosition().y) {
-					if (move > 0.0f) {
-						select_->SetPosition(title_->GetPosition());
+				if (selecter_->GetPosition().y == continuation_->GetPosition().y) { // つづきを選択中
+					if (move > 0.0f) { // 上へ移動
+						selecter_->SetPosition(title_->GetPosition());
 					}
-					else if (move < 0.0f) {
-						select_->SetPosition(restart_->GetPosition());
+					else if (move < 0.0f) { // 下へ移動
+						selecter_->SetPosition(restart_->GetPosition());
 					}
 
-					if ((pad_.Gamepad.wButtons & XINPUT_GAMEPAD_A) && !(prePad_.Gamepad.wButtons & XINPUT_GAMEPAD_A)) {
+					continuation_->SetColor({ 0.0f, 0.0f, 0.0f, 1.0f });
+
+					if ((pad_.Gamepad.wButtons & XINPUT_GAMEPAD_A) && !(prePad_.Gamepad.wButtons & XINPUT_GAMEPAD_A)) { // 決定
 						isPose_ = false;
+						time_ = 0.1f;
+						return true;
 					}
 				}
-				else if (select_->GetPosition().y == restart_->GetPosition().y) {
-					if (move > 0.0f) {
-						select_->SetPosition(continuation_->GetPosition());
+				else if (selecter_->GetPosition().y == restart_->GetPosition().y) { // リスタートを選択中
+					if (move > 0.0f) { // 上へ移動
+						selecter_->SetPosition(continuation_->GetPosition());
 					}
-					else if (move < 0.0f) {
-						select_->SetPosition(title_->GetPosition());
+					else if (move < 0.0f) { // 下へ移動
+						selecter_->SetPosition(title_->GetPosition());
 					}
 
-					if ((pad_.Gamepad.wButtons & XINPUT_GAMEPAD_A) && !(prePad_.Gamepad.wButtons & XINPUT_GAMEPAD_A)) {
+					restart_->SetColor({ 0.0f, 0.0f, 0.0f, 1.0f });
+
+					if ((pad_.Gamepad.wButtons & XINPUT_GAMEPAD_A) && !(prePad_.Gamepad.wButtons & XINPUT_GAMEPAD_A)) { // 決定
 						player_->InitializeDeth();
 						player_->ChangeProductionState(std::make_unique<ResetProduction>());
 						isPose_ = false;
-						select_->SetPosition(continuation_->GetPosition());
+						selecter_->SetPosition(continuation_->GetPosition());
 						return true;
 					}
 				}
-				else if (select_->GetPosition().y == title_->GetPosition().y) {
-					if (move > 0.0f) {
-						select_->SetPosition(restart_->GetPosition());
+				else if (selecter_->GetPosition().y == title_->GetPosition().y) { // タイトルを選択中
+					if (move > 0.0f) { // 上へ移動
+						selecter_->SetPosition(restart_->GetPosition());
 					}
-					else if (move < 0.0f) {
-						select_->SetPosition(continuation_->GetPosition());
+					else if (move < 0.0f) { // 下へ移動
+						selecter_->SetPosition(continuation_->GetPosition());
 					}
 
-					if ((pad_.Gamepad.wButtons & XINPUT_GAMEPAD_A) && !(prePad_.Gamepad.wButtons & XINPUT_GAMEPAD_A)) {
+					title_->SetColor({ 0.0f, 0.0f, 0.0f, 1.0f });
+
+					if ((pad_.Gamepad.wButtons & XINPUT_GAMEPAD_A) && !(prePad_.Gamepad.wButtons & XINPUT_GAMEPAD_A)) { // 決定
 						yunity::SceneManager::GetInstance()->ChangeScene("TITLE");
 						return true;
 					}
+				}
+			}
+			else {
+				if (time_ != 0.0f) {
+					return true;
 				}
 			}
 
@@ -140,26 +163,28 @@ bool Pose::Update()
 		}
 	}
 
-	if (time_ > 0.0f) {
-		time_ -= yunity::fixedTimeStep_;
-		time_ = std::clamp(time_, 0.0f, 1.0f);
-	}
-
-
 	return isPose_;
 }
 
 void Pose::Draw()
 {
+	// ポーズボタン
 	poseBotton_->Draw();
+	// ポーズフォント
 	pose_->Draw();
 
 	if (isPose_) {
+		// ポーズ背景
 		poseBack_->Draw();
+		// ポーズ画面
 		poseBase_->Draw();
-		select_->Draw();
+		// セレクター
+		selecter_->Draw();
+		// タイトルフォント
 		title_->Draw();
+		// つづきフォント
 		continuation_->Draw();
+		// リスタートフォント
 		restart_->Draw();
 	}
 

@@ -13,6 +13,9 @@ void RotationCube::Initialize()
 	}
 
 	SetShape(Shape::kOBB);
+
+	// 衝突マスク設定
+	SetCollisionMask((kCollisionAttributePlayer | kCollisionAttributeCoin));
 }
 
 void RotationCube::Update()

@@ -23,6 +23,9 @@ void SelectTV::Initialize()
 	const char* groupName = "SelectTV";
 	endCamerPos = globalVariables->GetVector3Value(groupName, "EndCamerPos");
 	fixedEndCameraPosZ = globalVariables->GetFloatValue(groupName, "FixedEndCameraPosZ");
+
+	// 衝突マスク設定
+	SetCollisionMask(kCollisionAttributePlayer);
 }
 
 void SelectTV::Update()

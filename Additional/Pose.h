@@ -36,8 +36,6 @@ private:
 	std::unique_ptr<yunity::Sprite> continuation_;
 	// リスタートフォント
 	std::unique_ptr<yunity::Sprite> restart_;
-	// セレクト
-	std::unique_ptr<yunity::Sprite> select_;
-	Vector2 selectPosition_;
-
+	// セレクター
+	std::unique_ptr<yunity::Sprite> selecter_;
 };

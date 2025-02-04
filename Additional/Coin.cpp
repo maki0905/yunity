@@ -6,6 +6,9 @@ void Coin::Initialize()
 	particle_ = std::make_unique<FloatingParticle>();
 	particle_->Initialize(camera_);
 	particle_->Spawn(worldTransform_.translation_);
+
+	// 衝突マスク設定
+	SetCollisionMask((kCollisionAttributePlayer | kCollisionAttributeFloor | kCollisionAttributeMove));
 }
 
 void Coin::Update()

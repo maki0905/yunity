@@ -166,8 +166,8 @@ namespace yunity {
 		/// <returns>サイズ</returns>
 		Microsoft::WRL::ComPtr<ID3D12Resource> CreateBufferResource(size_t sizeInBytes);
 	private:
-		static RootSignature* rootSignature_[static_cast<uint32_t>(PostEffects::kCount)];
-		static PipelineState* pipelineState_[static_cast<uint32_t>(PostEffects::kCount)];
+		static std::array<std::unique_ptr<RootSignature>, static_cast<uint32_t>(PostEffects::kCount)> rootSignature_;
+		static std::array<std::unique_ptr<PipelineState>, static_cast<uint32_t>(PostEffects::kCount)> pipelineState_;
 
 	private:
 		const Vector4 kRenderTargetClearValue{ 1.0f, 0.0f, 0.0f, 1.0f };

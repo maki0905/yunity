@@ -17,6 +17,9 @@ void ForceField::Initialize()
 	const char* groupName = "ForceField";
 	limitTime_ = globalVariables->GetFloatValue(groupName, "LimitTime");
 	force_ = globalVariables->GetFloatValue(groupName, "Force");
+
+	// 衝突マスク設定
+	SetCollisionMask((kCollisionAttributePlayer | kCollisionAttributeMove));
 }
 
 void ForceField::Update()
@@ -56,7 +59,7 @@ void ForceField::Draw()
 void ForceField::OnTriggerEvent()
 {
 	if (isWind_) {
-		if (GetHitBody()->GetCollisionAttribute() == kCollisionAttributeTrampoline) {
+		if (GetHitBody()->GetCollisionAttribute() == kCollisionAttributeMove) {
 			GetHitBody()->AddForce({ 0.0f, force_, 0.0f }, ForceMode::kImpulse);
 		}
 	}
