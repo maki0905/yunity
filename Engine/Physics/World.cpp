@@ -37,7 +37,14 @@ void yunity::World::Solve()
 
 	// 物理演算
 	for (auto& obj : objectList_) {
-		obj->Solve(time);
+		//obj->Solve(time);
+
+		for (int i = 0; i < 8; i++) {
+			obj->SolveVelocity(time / 8.0f);
+		}
+		for (int i = 0; i < 5; i++) {
+			obj->SolvePosition(time / 5.0f);
+		}
 	}
 
 	// 衝突判定

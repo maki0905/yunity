@@ -53,7 +53,7 @@ void TitleScene::Initialize()
 
 	objectManager_ = std::make_unique<ObjectManager>();
 	objectManager_->Initialize();
-	objectManager_->Load("title", camera_, world_.get());
+	objectManager_->Load(stageName_, camera_, world_.get());
 	objectManager_->CreatePlayer(camera_, world_.get());
 	objectManager_->SetDirectionalLight(l);
 	objectManager_->SetDirectionLight(directionLight_.get());

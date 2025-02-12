@@ -90,6 +90,8 @@ private:
 	float targetPoint_;
 	float playerMass_;
 
+	std::string stageName_ = "title";
+
 	std::unique_ptr<yunity::DirectionLight> directionLight_;
 };
 

@@ -35,10 +35,21 @@ namespace yunity {
 			Tag tag_ = Tag::kDefalt;
 		};
 
+		struct PlayerSpawnData {
+			Vector3 translation;
+			Vector3 rotation;
+		};
+
+		struct EnemySpawnData {
+			std::string fileName;
+			Vector3 translation;
+			Vector3 rotation;
+		};
+
 
 	public:
 		std::vector<ObjectData> objects;
-
-
+		std::vector<PlayerSpawnData> players;
+		std::vector<EnemySpawnData> enemies;
 	};
 }

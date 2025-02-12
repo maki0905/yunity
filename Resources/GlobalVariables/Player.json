@@ -40,7 +40,7 @@
         "LimitLerpTime": 0.5,
         "LimitSpeed": 20.0,
         "Mass": 2.0,
-        "Miu": 2.0,
+        "Miu": 1.0,
         "ResetTime": 2.0,
         "ReticlePositionX": 3.0,
         "ScoreEndPosition": [

@@ -276,87 +276,92 @@ void yunity::Body::CreateBody(World* world, WorldTransform* worldTransform, floa
 	worldTransform_ = worldTransform;
 }
 
-void yunity::Body::Solve(float time)
+void yunity::Body::SolveVelocity(float time)
 {
-	if (mass_ != 0.0f) {
-		// 空気抵抗airResistanceは、速度に比例して逆方向に発生する
-		Vector3 airResistance = Multiply(-drag_, velocity_);
-		// airResistanceAccelerationはairResitanceからの加速度
-		Vector3 airResistanceAcceleration = Multiply(1.0f / mass_, airResistance);
-
-		// 空間上の重力を取得
-		Vector3 gravity = world_->GetGravity();
-		if (gravityAcceleration_.Length() != 0.0f) {
-			gravity = gravityAcceleration_;
-		}
-
-		acceleration_ = Add(gravity, airResistanceAcceleration);
-
-		if (inertiaMoment_ != 0.0f) {
-			Vector3 airResistanceTorque = Multiply(-angularDrag_, angularVelocity_);
-
-			Vector3 airResistanceAngularAcceleration = Multiply(1.0f / inertiaMoment_, airResistanceTorque);
-
-			angularAcceleration_ = Add(angularAcceleration_, airResistanceAngularAcceleration);
-			if (std::fabsf(angularAcceleration_.x * time) > std::fabs(angularVelocity_.x)) {
-				angularAcceleration_.x = -angularVelocity_.x / time;
-			}
-			else if (std::fabsf(angularVelocity_.x) < 0.001f) {
-				angularAcceleration_.x = 0.0f;
-				angularVelocity_.x = 0.0f;
-			}
-			if (std::fabsf(angularAcceleration_.y * time) > std::fabs(angularVelocity_.y)) {
-				angularAcceleration_.y = -angularVelocity_.y / time;
-			}
-			else if (std::fabsf(angularVelocity_.y) < 0.001f) {
-				angularAcceleration_.y = 0.0f;
-				angularVelocity_.y = 0.0f;
-			}
-			if (std::fabsf(angularAcceleration_.z * time) > std::fabs(angularVelocity_.z)) {
-				angularAcceleration_.z = -angularVelocity_.z / time;
-			}
-			else if (std::fabsf(angularVelocity_.z) < 0.001f) {
-				angularAcceleration_.z = 0.0f;
-				angularVelocity_.z = 0.0f;
-			}
-
-			angularAcceleration_ = Add(angularAcceleration_, Multiply(1.0f / inertiaMoment_, torque_));
-			torque_ = { 0.0f, 0.0f, 0.0f };
-			angularVelocity_ = Add(angularVelocity_, Multiply(time, angularAcceleration_));
-			worldTransform_->rotation_ = Add(worldTransform_->rotation_, Multiply(time, angularVelocity_));
-		}
-
-		// 加速度計算
-		acceleration_ = Add(acceleration_, Multiply(1.0f / mass_, force_));
-
-		force_ = { 0.0f, 0.0f, 0.0f };
-
-
-		// 平行移動制限
-		if (fixedMove_[0]) { // x軸
-			acceleration_.x = 0.0f;
-		}
-		if (fixedMove_[1]) { // y軸
-			acceleration_.y = 0.0f;
-		}
-		if (fixedMove_[2]) { // z軸
-			acceleration_.z = 0.0f;
-		}
-
-		// 速度計算
-		velocity_ = Add(velocity_, Multiply(time, acceleration_));
-
-		// 位置計算
-		worldTransform_->translation_ = Add(worldTransform_->translation_, Multiply(time, velocity_));
-
-		magnitude_ = 0.0f;
+	if (mass_ == 0.0f) {
+		return;
 	}
+	// 空気抵抗airResistanceは、速度に比例して逆方向に発生する
+	Vector3 airResistance = Multiply(-drag_, velocity_);
+	// airResistanceAccelerationはairResitanceからの加速度
+	Vector3 airResistanceAcceleration = Multiply(1.0f / mass_, airResistance);
+
+	// 空間上の重力を取得
+	Vector3 gravity = world_->GetGravity();
+	if (gravityAcceleration_.Length() != 0.0f) {
+		gravity = gravityAcceleration_;
+	}
+
+	acceleration_ = Add(gravity, airResistanceAcceleration);
+
+	if (inertiaMoment_ != 0.0f) {
+		Vector3 airResistanceTorque = Multiply(-angularDrag_, angularVelocity_);
+
+		Vector3 airResistanceAngularAcceleration = Multiply(1.0f / inertiaMoment_, airResistanceTorque);
+
+		angularAcceleration_ = Add(angularAcceleration_, airResistanceAngularAcceleration);
+		if (std::fabsf(angularAcceleration_.x * time) > std::fabs(angularVelocity_.x)) {
+			angularAcceleration_.x = -angularVelocity_.x / time;
+		}
+		else if (std::fabsf(angularVelocity_.x) < 0.001f) {
+			angularAcceleration_.x = 0.0f;
+			angularVelocity_.x = 0.0f;
+		}
+		if (std::fabsf(angularAcceleration_.y * time) > std::fabs(angularVelocity_.y)) {
+			angularAcceleration_.y = -angularVelocity_.y / time;
+		}
+		else if (std::fabsf(angularVelocity_.y) < 0.001f) {
+			angularAcceleration_.y = 0.0f;
+			angularVelocity_.y = 0.0f;
+		}
+		if (std::fabsf(angularAcceleration_.z * time) > std::fabs(angularVelocity_.z)) {
+			angularAcceleration_.z = -angularVelocity_.z / time;
+		}
+		else if (std::fabsf(angularVelocity_.z) < 0.001f) {
+			angularAcceleration_.z = 0.0f;
+			angularVelocity_.z = 0.0f;
+		}
+
+		angularAcceleration_ = Add(angularAcceleration_, Multiply(1.0f / inertiaMoment_, torque_));
+		torque_ = { 0.0f, 0.0f, 0.0f };
+		angularVelocity_ = Add(angularVelocity_, Multiply(time, angularAcceleration_));
+		worldTransform_->rotation_ = Add(worldTransform_->rotation_, Multiply(time, angularVelocity_));
+	}
+
+	// 加速度計算
+	acceleration_ = Add(acceleration_, Multiply(1.0f / mass_, force_));
+
+	// 平行移動制限
+	if (fixedMove_[0]) { // x軸
+		acceleration_.x = 0.0f;
+	}
+	if (fixedMove_[1]) { // y軸
+		acceleration_.y = 0.0f;
+	}
+	if (fixedMove_[2]) { // z軸
+		acceleration_.z = 0.0f;
+	}
+
+	// 速度計算
+	velocity_ = Add(velocity_, Multiply(time, acceleration_));
+}
+
+void yunity::Body::SolvePosition(float time)
+{
+	if (mass_ == 0.0f) {
+		return;
+	}
+
+	// 位置計算
+	worldTransform_->translation_ = Add(worldTransform_->translation_, Multiply(time, velocity_));
 
 	worldTransform_->UpdateMatrix();
 }
 
 void yunity::Body::SolveConstraints()
 {
+	force_ = { 0.0f, 0.0f, 0.0f };
+
 	// 慣性テンソルの計算
 	Vector3 L = GetHitBoxSize();
 	inertiaTensor_.m[0][0] = (1.0f / 12.0f) * mass_ * (L.y * L.y + L.z * L.z);
@@ -408,6 +413,17 @@ void yunity::Body::SolveConstraints()
 		AddForce(frictionForce, ForceMode::kForce);
 	}
 	persistentManifold_.clear();
+
+	// 平行移動制限
+	if (fixedMove_[0]) { // x軸
+		pushback_.x = 0.0f;
+	}
+	if (fixedMove_[1]) { // y軸
+		pushback_.y = 0.0f;
+	}
+	if (fixedMove_[2]) { // z軸
+		pushback_.z = 0.0f;
+	}
 
 	worldTransform_->translation_ = Add(pushback_, worldTransform_->translation_);
 	worldTransform_->UpdateMatrix();
@@ -554,6 +570,7 @@ void yunity::Body::OnCollision(Body* body)
 
 		// 摩擦
 		float miu = 0.0f;
+		magnitude_ = 0.0f;
 		switch (frictionCombine_)
 		{
 		case Body::FrictionCombine::kNone:

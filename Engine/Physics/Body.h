@@ -64,10 +64,16 @@ namespace yunity {
 		void CreateBody(World* world, WorldTransform* worldTransform, float mass = 0.0f);
 
 		/// <summary>
-		/// 解決
+		/// 速度解決
 		/// </summary>
 		/// <param name="time"></param>
-		void Solve(float time);
+		void SolveVelocity(float time);
+
+		/// <summary>
+		/// 位置解決
+		/// </summary>
+		/// <param name="time"></param>
+		void SolvePosition(float time);
 
 		/// <summary>
 		/// 衝突解決

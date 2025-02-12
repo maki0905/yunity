@@ -217,7 +217,7 @@ void yunity::LevelEditor::LoadObjectRecursive(LevelData* levelData, nlohmann::js
 		}
 
 		// EMPTY
-		if (type.compare("EMPTY") == 0) {
+		else if (type.compare("EMPTY") == 0) {
 			// 要素追加
 			levelData->objects.emplace_back(LevelData::ObjectData{});
 			// 今追加した要素の参照を得る
@@ -308,6 +308,20 @@ void yunity::LevelEditor::LoadObjectRecursive(LevelData* levelData, nlohmann::js
 				objectData.tag_ = static_cast<Tag>(num);
 			}
 
+		}
+		else if (type.compare("PlayerSpawn") == 0) {
+			// 要素追加
+			levelData->players.emplace_back(LevelData::PlayerSpawnData{});
+			LevelData::PlayerSpawnData& playerSpawnData = levelData->players.back();
+			nlohmann::json& transform = object["transform"];
+			// 平行移動
+			playerSpawnData.translation.x = (float)transform["translation"][0];
+			playerSpawnData.translation.y = (float)transform["translation"][2];
+			playerSpawnData.translation.z = (float)transform["translation"][1];
+			// 回転角
+			playerSpawnData.rotation.x = -(float)transform["rotation"][0];
+			playerSpawnData.rotation.y = -(float)transform["rotation"][2];
+			playerSpawnData.rotation.z = -(float)transform["rotation"][1];
 		}
 
 		// 再帰

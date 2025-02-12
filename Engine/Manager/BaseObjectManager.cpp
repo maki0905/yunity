@@ -143,13 +143,6 @@ void yunity::BaseObjectManager::CreateBasicObject(const LevelData::ObjectData& o
 	else { // 基本オブジェクト
 		std::unique_ptr<Object3D> newObject = std::make_unique<Object3D>();
 		SetInitalizeData(objectData, newObject.get(), camera);
-		if (objectData.empth) {
-			newObject->Initialize(world, objectData.shape);
-		}
-		else {
-			newObject->Initialize(ModelManager::GetInstance()->CreateModel(obj, objectData.fileName), world, objectData.shape);
-		}
-		newObject->SetCamera(camera);
 		if (Length(objectData.size) > 0) {
 			world->Add(newObject.get());
 		}
