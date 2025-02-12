@@ -63,6 +63,8 @@ namespace yunity {
 		/// <param name="mass"></param>
 		void CreateBody(World* world, WorldTransform* worldTransform, float mass = 0.0f);
 
+		void Solve(float time);
+
 		/// <summary>
 		/// 速度解決
 		/// </summary>

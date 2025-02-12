@@ -276,6 +276,45 @@ void yunity::Body::CreateBody(World* world, WorldTransform* worldTransform, floa
 	worldTransform_ = worldTransform;
 }
 
+void yunity::Body::Solve(float time)
+{
+	if (mass_ == 0.0f) {
+		return;
+	}
+	// 位置計算
+	worldTransform_->translation_ = Add(worldTransform_->translation_, Add(Multiply(time, velocity_), Multiply(0.5f * time * time, acceleration_)));
+	worldTransform_->UpdateMatrix();
+
+	// 空気抵抗airResistanceは、速度に比例して逆方向に発生する
+	Vector3 airResistance = Multiply(-drag_, velocity_);
+	// airResistanceAccelerationはairResitanceからの加速度
+	Vector3 airResistanceAcceleration = Multiply(1.0f / mass_, airResistance);
+
+	// 空間上の重力を取得
+	Vector3 gravity = world_->GetGravity();
+	if (gravityAcceleration_.Length() != 0.0f) {
+		gravity = gravityAcceleration_;
+	}
+
+	Vector3 newAcceleration = Add(gravity, airResistanceAcceleration);
+	newAcceleration = Add(newAcceleration, Multiply(1.0f / mass_, force_));
+
+	// 平行移動制限
+	if (fixedMove_[0]) { // x軸
+		newAcceleration.x = 0.0f;
+	}
+	if (fixedMove_[1]) { // y軸
+		newAcceleration.y = 0.0f;
+	}
+	if (fixedMove_[2]) { // z軸
+		newAcceleration.z = 0.0f;
+	}
+
+	velocity_ = Add(velocity_, Multiply(0.5f * time, Add(newAcceleration, acceleration_)));
+
+	acceleration_ = newAcceleration;
+}
+
 void yunity::Body::SolveVelocity(float time)
 {
 	if (mass_ == 0.0f) {
