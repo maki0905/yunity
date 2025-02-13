@@ -65,7 +65,7 @@
             "body": {
                 "mass": 0.0,
                 "drag": 0.05,
-                "miu": 0.5,
+                "miu": 1.0,
                 "frictionCombine": 0,
                 "bounciness": 0.20000000298023224,
                 "bounceCombine": 0
@@ -78,7 +78,7 @@
                 "translation": [
                     -7.60634708404541,
                     0.0,
-                    7.101773738861084
+                    77.49676513671875
                 ],
                 "rotation": [
                     0.0,
@@ -88,7 +88,7 @@
                 "scaling": [
                     1.058955430984497,
                     7.0772929191589355,
-                    8.122432708740234
+                    75.30406951904297
                 ]
             },
             "collider": {
@@ -182,7 +182,7 @@
             "body": {
                 "mass": 0.0,
                 "drag": 0.05,
-                "miu": 0.5,
+                "miu": 1.0,
                 "frictionCombine": 0,
                 "bounciness": 0.20000000298023224,
                 "bounceCombine": 0
@@ -227,7 +227,7 @@
             "body": {
                 "mass": 0.0,
                 "drag": 0.05,
-                "miu": 0.5,
+                "miu": 1.0,
                 "frictionCombine": 0,
                 "bounciness": 0.20000000298023224,
                 "bounceCombine": 0
@@ -317,7 +317,7 @@
             "body": {
                 "mass": 0.0,
                 "drag": 0.05,
-                "miu": 0.5,
+                "miu": 1.0,
                 "frictionCombine": 0,
                 "bounciness": 0.20000000298023224,
                 "bounceCombine": 0
@@ -525,7 +525,7 @@
             "body": {
                 "mass": 0.0,
                 "drag": 0.05,
-                "miu": 0.5,
+                "miu": 1.0,
                 "frictionCombine": 0,
                 "bounciness": 0.20000000298023224,
                 "bounceCombine": 0
@@ -1020,7 +1020,7 @@
             "body": {
                 "mass": 0.0,
                 "drag": 0.05,
-                "miu": 0.5,
+                "miu": 1.0,
                 "frictionCombine": 0,
                 "bounciness": 0.20000000298023224,
                 "bounceCombine": 0
@@ -1425,7 +1425,7 @@
             "body": {
                 "mass": 0.0,
                 "drag": 0.05,
-                "miu": 0.5,
+                "miu": 1.0,
                 "frictionCombine": 0,
                 "bounciness": 0.20000000298023224,
                 "bounceCombine": 0
@@ -1470,7 +1470,7 @@
             "body": {
                 "mass": 0.0,
                 "drag": 0.05,
-                "miu": 0.5,
+                "miu": 1.0,
                 "frictionCombine": 0,
                 "bounciness": 0.20000000298023224,
                 "bounceCombine": 0
@@ -1711,7 +1711,7 @@
             "body": {
                 "mass": 0.0,
                 "drag": 0.05,
-                "miu": 0.5,
+                "miu": 1.0,
                 "frictionCombine": 0,
                 "bounciness": 0.20000000298023224,
                 "bounceCombine": 0
@@ -1756,7 +1756,7 @@
             "body": {
                 "mass": 0.0,
                 "drag": 0.05,
-                "miu": 0.5,
+                "miu": 1.0,
                 "frictionCombine": 0,
                 "bounciness": 0.20000000298023224,
                 "bounceCombine": 0
@@ -1801,7 +1801,7 @@
             "body": {
                 "mass": 0.0,
                 "drag": 0.05,
-                "miu": 0.5,
+                "miu": 1.0,
                 "frictionCombine": 0,
                 "bounciness": 0.20000000298023224,
                 "bounceCombine": 0
@@ -1846,7 +1846,7 @@
             "body": {
                 "mass": 0.0,
                 "drag": 0.05,
-                "miu": 0.5,
+                "miu": 1.0,
                 "frictionCombine": 0,
                 "bounciness": 0.20000000298023224,
                 "bounceCombine": 0
@@ -3451,7 +3451,7 @@
             "body": {
                 "mass": 0.0,
                 "drag": 0.05,
-                "miu": 0.5,
+                "miu": 1.0,
                 "frictionCombine": 0,
                 "bounciness": 0.20000000298023224,
                 "bounceCombine": 0
@@ -3499,7 +3499,7 @@
             "body": {
                 "mass": 0.0,
                 "drag": 0.05,
-                "miu": 0.5,
+                "miu": 1.0,
                 "frictionCombine": 0,
                 "bounciness": 0.20000000298023224,
                 "bounceCombine": 0
@@ -3547,7 +3547,7 @@
             "body": {
                 "mass": 0.0,
                 "drag": 0.05,
-                "miu": 0.5,
+                "miu": 1.0,
                 "frictionCombine": 0,
                 "bounciness": 0.20000000298023224,
                 "bounceCombine": 0
@@ -3592,7 +3592,7 @@
             "body": {
                 "mass": 0.0,
                 "drag": 0.05,
-                "miu": 0.5,
+                "miu": 1.0,
                 "frictionCombine": 0,
                 "bounciness": 0.20000000298023224,
                 "bounceCombine": 0
@@ -3994,7 +3994,7 @@
             "body": {
                 "mass": 0.0,
                 "drag": 0.05,
-                "miu": 0.5,
+                "miu": 1.0,
                 "frictionCombine": 0,
                 "bounciness": 0.20000000298023224,
                 "bounceCombine": 0
@@ -4039,7 +4039,7 @@
             "body": {
                 "mass": 0.0,
                 "drag": 0.05,
-                "miu": 0.5,
+                "miu": 1.0,
                 "frictionCombine": 0,
                 "bounciness": 0.20000000298023224,
                 "bounceCombine": 0
@@ -5274,7 +5274,7 @@
             "body": {
                 "mass": 0.0,
                 "drag": 0.05,
-                "miu": 0.5,
+                "miu": 1.0,
                 "frictionCombine": 0,
                 "bounciness": 0.20000000298023224,
                 "bounceCombine": 0
@@ -6535,7 +6535,7 @@
             "body": {
                 "mass": 0.0,
                 "drag": 0.05,
-                "miu": 0.5,
+                "miu": 1.0,
                 "frictionCombine": 0,
                 "bounciness": 0.20000000298023224,
                 "bounceCombine": 0
@@ -6580,7 +6580,7 @@
             "body": {
                 "mass": 0.0,
                 "drag": 0.05,
-                "miu": 0.5,
+                "miu": 1.0,
                 "frictionCombine": 0,
                 "bounciness": 0.20000000298023224,
                 "bounceCombine": 0
@@ -6625,7 +6625,7 @@
             "body": {
                 "mass": 0.0,
                 "drag": 0.05,
-                "miu": 0.5,
+                "miu": 1.0,
                 "frictionCombine": 0,
                 "bounciness": 0.20000000298023224,
                 "bounceCombine": 0
@@ -6670,7 +6670,7 @@
             "body": {
                 "mass": 0.0,
                 "drag": 0.05,
-                "miu": 0.5,
+                "miu": 1.0,
                 "frictionCombine": 0,
                 "bounciness": 0.20000000298023224,
                 "bounceCombine": 0
@@ -6715,7 +6715,7 @@
             "body": {
                 "mass": 0.0,
                 "drag": 0.05,
-                "miu": 0.5,
+                "miu": 1.0,
                 "frictionCombine": 0,
                 "bounciness": 0.20000000298023224,
                 "bounceCombine": 0
@@ -6760,7 +6760,7 @@
             "body": {
                 "mass": 0.0,
                 "drag": 0.05,
-                "miu": 0.5,
+                "miu": 1.0,
                 "frictionCombine": 0,
                 "bounciness": 0.20000000298023224,
                 "bounceCombine": 0
@@ -6805,7 +6805,7 @@
             "body": {
                 "mass": 0.0,
                 "drag": 0.05,
-                "miu": 0.5,
+                "miu": 1.0,
                 "frictionCombine": 0,
                 "bounciness": 0.20000000298023224,
                 "bounceCombine": 0
@@ -6850,7 +6850,7 @@
             "body": {
                 "mass": 0.0,
                 "drag": 0.05,
-                "miu": 0.5,
+                "miu": 1.0,
                 "frictionCombine": 0,
                 "bounciness": 0.20000000298023224,
                 "bounceCombine": 0
@@ -7056,6 +7056,42 @@
                 ]
             },
             "file_name": "GoalPost"
+        },
+        {
+            "type": "EMPTY",
+            "name": "エンプティ.003",
+            "transform": {
+                "translation": [
+                    925.7723388671875,
+                    0.0,
+                    8.928691864013672
+                ],
+                "rotation": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scaling": [
+                    33.24565887451172,
+                    7.0772929191589355,
+                    18.667165756225586
+                ]
+            },
+            "collider": {
+                "type": "BOX",
+                "center": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "size": [
+                    2.0,
+                    2.0,
+                    2.0
+                ],
+                "isTrigger": false,
+                "attribute": 7
+            }
         }
     ]
 }
