@@ -25,14 +25,14 @@ namespace yunity {
 		/// <param name="model">3Dモデル</param>
 		/// <param name="world">物理空間</param>
 		/// <param name="shape">形状</param>
-		void Initialize(Model* model, World* world, Collider::Shape shape);
+		void Initialize(Model* model, World* world, float mass, const ShapeType& shape);
 
 		/// <summary>
 		/// 初期化
 		/// </summary>
 		/// <param name="world">物理空間</param>
 		/// <param name="shape">形状</param>
-		void Initialize(World* world, Collider::Shape shape);
+		void Initialize(World* world, const ShapeType& shape);
 		//void Initialize(std::unique_ptr<Model> model, World* world, Collider::Shape shape);
 
 		/// <summary>
@@ -75,6 +75,7 @@ namespace yunity {
 		void SetHitBody(Body* body) { hitBody_ = body; }
 		void SetDirectionLight(DirectionLight* directionLight);
 		void SetTag(const Tag& tag) { tag_ = tag; }
+		void SetTexture(uint32_t texture) { texture_ = texture; }
 
 		/// <summary>
 		/// getter
@@ -94,9 +95,10 @@ namespace yunity {
 		Camera* camera_;
 	private:
 		bool isHit_;
-		uint32_t texture_;
+		uint32_t texture_ = 0;
 		std::string fileName_;
 		Object3D::Body* hitBody_;
 		Tag tag_ = Tag::kDefalt;
+
 	};
 }

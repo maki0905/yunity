@@ -10,25 +10,28 @@ yunity::Object3D::~Object3D()
 	models_.clear();
 }
 
-void yunity::Object3D::Initialize(Model* model, World* world, Collider::Shape shape)
+void yunity::Object3D::Initialize(Model* model, World* world, float mass, const ShapeType& shape)
 {
 	model_ = std::make_unique<Model>();
 	model_.reset(model);
 	worldTransform_.Initialize();
 	worldTransform_.UpdateMatrix();
-	CreateBody(world, &worldTransform_, GetMass());
+	CreateBody(world, &worldTransform_,mass);
 	CreateCollider(&worldTransform_, shape, CameraManager::GetInstance()->GetCamera());
+	if(mass != 0.0f){
+		SetInertiaTensor(GetCollisionShape()->CalculateLocalInertia(mass));
+	}
 	isHit_ = false;
-	texture_ = TextureManager::GetInstance()->Load("uvChecker.png");
 }
 
-void yunity::Object3D::Initialize(World* world, Collider::Shape shape)
+void yunity::Object3D::Initialize(World* world, const ShapeType& shape)
 {
 	camera_ = CameraManager::GetInstance()->GetCamera();
 	worldTransform_.Initialize();
 	worldTransform_.UpdateMatrix();
 	CreateBody(world, &worldTransform_, 0.0f);
 	CreateCollider(&worldTransform_, shape, camera_);
+
 }
 
 void yunity::Object3D::Update()
@@ -47,7 +50,12 @@ void yunity::Object3D::Update()
 void yunity::Object3D::Draw()
 {
 	if (model_) {
-		model_->Draw(worldTransform_/*,texture_*/);
+		if (texture_) {
+			model_->Draw(worldTransform_,texture_);
+		}
+		else {
+			model_->Draw(worldTransform_);
+		}
 	}
 #ifdef _DEBUG
 	Collider::HitBox(camera_);

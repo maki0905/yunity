@@ -76,3 +76,18 @@ void yunity::WorldTransform::TransferMatrix()
     constMap->matWorld = matWorld_;
     constMap->matWorldInverseTranspose = matWorldInverseTranspose_;
 }
+
+Matrix4x4 yunity::WorldTransform::GetRotateMatrix()
+{
+	Matrix4x4 resultMatrix = MakeIdentity4x4();
+    switch (rotateType_)
+    {
+    case RotationType::Euler:
+        resultMatrix = MakeRotateXYZMatrix(rotation_);
+        break;
+    case RotationType::Quaternion:
+        resultMatrix = MakeRotateMatrix(quaternion_);
+        break;
+    }
+    return resultMatrix;
+}

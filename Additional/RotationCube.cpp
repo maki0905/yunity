@@ -12,7 +12,7 @@ void RotationCube::Initialize()
 		torque_ *= -1.0f;
 	}
 
-	SetShape(Shape::kOBB);
+	SetShape(yunity::ShapeType::kBox);
 
 	// 衝突マスク設定
 	SetCollisionMask((kCollisionAttributePlayer | kCollisionAttributeCoin));

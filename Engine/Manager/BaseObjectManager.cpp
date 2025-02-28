@@ -68,7 +68,7 @@ void yunity::BaseObjectManager::SetInitalizeData(const LevelData::ObjectData& ob
 	InitializeCollider(objectData, newObject);
 	InitializePhysics(objectData, newObject);
 	if (objectData.fileName != "") {
-		newObject->Initialize(yunity::ModelManager::GetInstance()->CreateModel(obj, objectData.fileName), world_, objectData.shape);
+		newObject->Initialize(yunity::ModelManager::GetInstance()->CreateModel(obj, objectData.fileName), world_, objectData.mass, objectData.shape);
 	}
 	else {
 		newObject->Initialize(world_, objectData.shape);
@@ -79,7 +79,7 @@ void yunity::BaseObjectManager::SetInitalizeData(const LevelData::ObjectData& ob
 
 void yunity::BaseObjectManager::AddObject(std::unique_ptr<Object3D> newObject)
 {
-	world_->Add(newObject.get());
+	world_->AddObject(newObject.get());
 	objects_.emplace_back(std::move(newObject));
 }
 
@@ -99,7 +99,7 @@ std::vector<yunity::Object3D*> yunity::BaseObjectManager::GetObj(const Tag& tag)
 void yunity::BaseObjectManager::Clear()
 {
 	for (auto& obj : objects_) {
-		obj->GetWorld()->Take(obj.get());
+		obj->GetWorld()->TakeObject(obj.get());
 	}
 	objects_.clear();
 
@@ -144,7 +144,7 @@ void yunity::BaseObjectManager::CreateBasicObject(const LevelData::ObjectData& o
 		std::unique_ptr<Object3D> newObject = std::make_unique<Object3D>();
 		SetInitalizeData(objectData, newObject.get(), camera);
 		if (Length(objectData.size) > 0) {
-			world->Add(newObject.get());
+			world->AddObject(newObject.get());
 		}
 		objects_.emplace_back(std::move(newObject));
 	}

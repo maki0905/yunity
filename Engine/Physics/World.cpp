@@ -52,17 +52,83 @@ void yunity::World::Solve()
 	for (auto& collider : objectList_) {
 		collisionManager_->SetCollider(collider);
 	}
-	collisionManager_->CheckAllCollision();
+	collisionManager_->CheckAllCollision(this);
+
+	SolveConstraints();
 
 	// 衝突解決
-	for (auto& obj : objectList_) {
+	/*for (auto& obj : objectList_) {
 		obj->SolveConstraints();
-	}
-
-
+	}*/
 }
 
-void yunity::World::Take(Object3D* collider)
+void yunity::World::SolveConstraints()
+{
+
+	for (auto& info : PersistentManifolds_) {
+		float totalMass = info.colliderA->GetMass() + info.colliderB->GetMass();
+
+		if (totalMass == 0.0f) { // 質量が0の場合は処理しない
+			continue;
+		}
+
+		Vector3 angularVelocityA = { 0.0f, 0.0f, 0.0f };
+		Vector3 angularVelocityB = { 0.0f, 0.0f, 0.0f };
+
+		Vector3 inertiaTensorA = { 0.0f, 0.0f, 0.0f };
+		Vector3 inertiaTensorB = { 0.0f, 0.0f, 0.0f };
+
+		// 相対速度を求める
+		if (info.colliderA->GetMass() != 0.0f) { // 質量が0の場合は計算しない
+			angularVelocityA = Cross(info.colliderA->GetAngularVelocity(), info.localPointA);
+			inertiaTensorA = Cross(TransformVector3(Cross(info.localPointA, info.contactNormal), info.colliderA->GetInertiaTensor()), info.localPointA);
+		}
+		if (info.colliderB->GetMass() != 0.0f) { // 質量が0の場合は計算しない
+			angularVelocityB = Cross(info.colliderB->GetAngularVelocity(), info.localPointB);
+			inertiaTensorB = Cross(TransformVector3(Cross(info.localPointB, info.contactNormal), info.colliderB->GetInertiaTensor()), info.localPointB);
+		}
+		float angularEffect = Dot(Add(inertiaTensorA, inertiaTensorB), info.contactNormal);
+		Vector3 fullVelocityA = Add(info.colliderA->GetVelocity(), angularVelocityA);
+		Vector3 fullVelocityB = Add(info.colliderB->GetVelocity(), angularVelocityB);
+		Vector3 relativeVelocity = Subtract(fullVelocityA, fullVelocityB);
+		float velocityAlongNormal = Dot(relativeVelocity, info.contactNormal);
+
+		if (info.colliderA->GetMass() != 0.0f) {
+			// 位置補正
+			info.colliderA->PositionalCorrection(totalMass, -info.penetrationDepth, info.contactNormal);
+
+			float restitution = info.colliderA->GetRestitution(info.colliderB->GetBounciness());
+
+			float impulseMagnitude = (-(1.0f + restitution) * velocityAlongNormal / (totalMass + angularEffect));
+
+			Vector3 impulse = Multiply(impulseMagnitude, info.contactNormal);
+
+			// 反発力を適用
+			info.colliderA->AddForce(impulse, Body::ForceMode::kImpulse);
+			info.colliderA->AddTorque(Cross(info.localPointA, impulse), Body::ForceMode::kImpulse);
+		}
+		if (info.colliderB->GetMass() != 0.0f) {
+			// 位置補正
+			info.colliderB->PositionalCorrection(totalMass, info.penetrationDepth, info.contactNormal);
+
+			float restitution = std::min(info.colliderA->GetBounciness(), info.colliderB->GetBounciness());
+			restitution = info.colliderB->GetRestitution(info.colliderA->GetBounciness());
+
+			float impulseMagnitude = (-(1.0f + restitution) * velocityAlongNormal / (totalMass + angularEffect));
+
+			Vector3 impulse = Multiply(impulseMagnitude, info.contactNormal);
+
+			// 反発力を適用
+			info.colliderB->AddForce(Multiply(-1.0f, impulse), Body::ForceMode::kImpulse);
+			info.colliderB->AddTorque(Cross(info.localPointB, impulse), Body::ForceMode::kImpulse);
+		}
+		
+
+	}
+	PersistentManifolds_.clear();
+}
+
+void yunity::World::TakeObject(Object3D* collider)
 {
 	for (std::list<Object3D*>::iterator iterator = objectList_.begin(); iterator != objectList_.end();) {
 		if (*iterator == collider) {

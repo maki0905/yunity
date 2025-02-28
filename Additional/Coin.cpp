@@ -14,7 +14,7 @@ void Coin::Initialize()
 void Coin::Update()
 {
 	if (!isActive_) {
-		GetWorld()->Take(this);
+		GetWorld()->TakeObject(this);
 		particle_->SetTarget(player_->GetMatWorldTranslation());
 	}
 	if (particle_->GetIsActive()) {

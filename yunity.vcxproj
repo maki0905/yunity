@@ -128,6 +128,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Additional\WindParticle.cpp" />
     <ClCompile Include="Additional\Wire.cpp" />
     <ClCompile Include="Engine\3D\DirectionLight.cpp" />
+    <ClCompile Include="Engine\Math\Plane.cpp" />
+    <ClCompile Include="Engine\Math\Triangle.cpp" />
     <ClCompile Include="Engine\Particle\BaseParticle.cpp" />
     <ClCompile Include="Engine\Manager\CameraManager.cpp" />
     <ClCompile Include="Engine\Particle\FireworksParticle.cpp" />
@@ -149,6 +151,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Engine\Core\GraphicsPipelineManager.cpp" />
     <ClCompile Include="Engine\Base\EventTrigger.cpp" />
     <ClCompile Include="Engine\Physics\FixedJoint.cpp" />
+    <ClCompile Include="Engine\Physics\GJK.cpp" />
     <ClCompile Include="Engine\Physics\Joint.cpp" />
     <ClCompile Include="Engine\Physics\PulleyJoint.cpp" />
     <ClCompile Include="Engine\Physics\Shape.cpp" />
@@ -256,6 +259,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\Core\GraphicsPipelineManager.h" />
     <ClInclude Include="Engine\Base\EventTrigger.h" />
     <ClInclude Include="Engine\Physics\FixedJoint.h" />
+    <ClInclude Include="Engine\Physics\GJK.h" />
     <ClInclude Include="Engine\Physics\Joint.h" />
     <ClInclude Include="Engine\Physics\JointData.h" />
     <ClInclude Include="Engine\Physics\PulleyJoint.h" />

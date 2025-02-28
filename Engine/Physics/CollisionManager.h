@@ -6,6 +6,7 @@
 
 namespace yunity {
 	class Object3D;
+	class World;
 }
 
 namespace yunity {
@@ -17,7 +18,7 @@ namespace yunity {
 		/// <summary>
 		/// 衝突判定と応答
 		/// </summary>
-		void CheckAllCollision();
+		void CheckAllCollision(World* world);
 
 		/// <summary>
 		/// コライダーを取得
@@ -39,9 +40,6 @@ namespace yunity {
 		/// </summary>
 		/// <param name="colliderA">コライダーA</param>
 		/// <param name="colliderB">コライダーB</param>
-		void CheckCollisionPair(Object3D* colliderA, Object3D* colliderB);
-
-		Sphere sphere[2];
-
+		void CheckCollisionPair(Object3D* colliderA, Object3D* colliderB, World* world);
 	};
 }

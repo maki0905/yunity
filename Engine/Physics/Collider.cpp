@@ -3,27 +3,20 @@
 #include "ImGuiManager.h"
 #include <algorithm>
 
-void yunity::Collider::CreateCollider(WorldTransform* worldTransform, Shape shape, Camera* camera)
+void yunity::Collider::CreateCollider(WorldTransform* worldTransform, ShapeType shape, Camera* camera)
 {
 	shape_ = shape;
 	worldTransform_ = worldTransform;
 
-	switch (shape_)
+	switch (shape)
 	{
-	case Collider::kSphere:
+	case  ShapeType::kSphere:
 		HitBox_.reset(PrimitiveDrawer::Create(PrimitiveDrawer::Type::kSphere));
 		break;
-	case Collider::kPlane:
-		break;
-	case Collider::kAABB:
+	case ShapeType::kBox:
 		HitBox_.reset(PrimitiveDrawer::Create(PrimitiveDrawer::Type::kBox));
-		break;
-	case Collider::kCapsule:
-		break;
-	case Collider::kOBB:
-		HitBox_.reset(PrimitiveDrawer::Create(PrimitiveDrawer::Type::kBox));
-		break;
-	default:
+		std::unique_ptr<BoxShape> box = std::make_unique<BoxShape>(Vector3(1.0f, 1.0f, 1.0f));
+		collisionShape_ = std::move(box);
 		break;
 	}
 
@@ -31,27 +24,21 @@ void yunity::Collider::CreateCollider(WorldTransform* worldTransform, Shape shap
 	worldTransform_HitBox_.Initialize();
 }
 
-void yunity::Collider::CreateCollider(WorldTransform* worldTransform, Shape shape, Camera* camera, const Vector3& size)
+void yunity::Collider::CreateCollider(WorldTransform* worldTransform, ShapeType shape, Camera* camera, const Vector3& size)
 {
 	shape_ = shape;
 	worldTransform_ = worldTransform;
 	size_ = size;
 
-	switch (shape_)
+	switch (shape)
 	{
-	case Collider::kSphere:
+	case  ShapeType::kSphere:
 		HitBox_.reset(PrimitiveDrawer::Create(PrimitiveDrawer::Type::kSphere));
 		break;
-	case Collider::kPlane:
-		break;
-	case Collider::kAABB:
+	case ShapeType::kBox:
 		HitBox_.reset(PrimitiveDrawer::Create(PrimitiveDrawer::Type::kBox));
-		break;
-	case Collider::kCapsule:
-		break;
-	case Collider::kOBB:
-		break;
-	default:
+		std::unique_ptr<BoxShape> box = std::make_unique<BoxShape>(size_);
+		collisionShape_ = std::move(box);
 		break;
 	}
 
@@ -63,7 +50,7 @@ void yunity::Collider::CreateCollider(WorldTransform* worldTransform, Shape shap
 
 void yunity::Collider::HitBox()
 {
-	if (shape_ == kSphere) {
+	if (shape_ == ShapeType::kSphere) {
 		worldTransform_HitBox_.scale_ = Multiply(size_.x, worldTransform_->scale_);
 	}
 	else {
@@ -78,7 +65,7 @@ void yunity::Collider::HitBox()
 
 void yunity::Collider::HitBox(Camera* camera)
 {
-	if (shape_ == kSphere) {
+	if (shape_ == ShapeType::kSphere) {
 		worldTransform_HitBox_.scale_ = Multiply(size_.x, worldTransform_->scale_);
 	}
 	else {
@@ -97,6 +84,15 @@ Vector3 yunity::Collider::GetHitBoxSize()
 	Vector3 result = { 0.0f, 0.0f, 0.0f };
 	switch (shape_)
 	{
+	case  ShapeType::kSphere:
+		result = Multiply(size_, worldTransform_->scale_);
+		break;
+	case ShapeType::kBox:
+		result = Multiply(Multiply(0.5f, size_), worldTransform_->scale_);
+		break;
+	}
+	/*switch (shape_)
+	{
 	case Collider::kSphere:
 		result = Multiply(size_, worldTransform_->scale_);
 		break;
@@ -112,7 +108,7 @@ Vector3 yunity::Collider::GetHitBoxSize()
 		break;
 	default:
 		break;
-	}
+	}*/
 
 	return  result;
 }

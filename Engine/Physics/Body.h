@@ -143,6 +143,10 @@ namespace yunity {
 		/// <param name="body"></param>
 		void OnCollision(Body* body);
 
+		void AddPersistentManifold(const PersistentManifold& persistentManifold);
+
+		void PositionalCorrection(float totalMass, float penetrationDepth, const Vector3& contactNormal);
+
 		// 衝突時に呼ばれる固有の処理
 		/*virtual void OnCollisionEvent(Body* body = nullptr) = 0;
 		virtual void OnTriggerEvent(Body* body = nullptr) = 0;*/
@@ -168,8 +172,10 @@ namespace yunity {
 		bool GetIsTrigger() { return isTrigger_; }
 		float GetMiu() { return miu_; }
 		float GetBounciness() { return bounciness_; }
+		BounceCombine GetBounceCombine() { return bounceCombine_; }
+		float GetRestitution(float otherRestitution);
 		Vector3 GetNormalVector() { return normalVector_; }
-		Matrix3x3 GetInertiaTensor() { return inertiaTensor_; };
+		Matrix3x3 GetInertiaTensor();
 		std::array<bool, 3> GetFixedMove() { return fixedMove_; }
 		bool GetFixedMove(int axis) { return fixedMove_[axis]; }
 
@@ -192,6 +198,7 @@ namespace yunity {
 		void SetBounceCombine(BounceCombine bounceCombine) { bounceCombine_ = bounceCombine; }
 		void SetTranslation(Vector3 translation) { worldTransform_->translation_ = translation; }
 		void SetMatTranslation(Vector3 translation) { worldTransform_->matWorld_.m[3][0] = translation.x, worldTransform_->matWorld_.m[3][1] = translation.y, worldTransform_->matWorld_.m[3][2] = translation.z; }
+		void SetInertiaTensor(Matrix3x3 inertiaTensor) { inertiaTensor_ = inertiaTensor; }
 		void SetFixedMove(std::array<bool, 3> fixedMove) { fixedMove_ = fixedMove; }
 		void SetFixedMove(int axis, bool fixedMove) { fixedMove_[axis] = fixedMove; }
 

@@ -2,7 +2,14 @@
 #include <memory>
 
 #include "IScene.h"
-
+#include "CameraManager.h"
+#include "Sprite.h"
+#include "Model.h"
+#include "World.h"
+#include "Player.h"
+#include "Skydome.h"
+#include "ObjectManager.h"
+#include "DirectionLight.h"
 /*
 * @brief クリアシーンクラス
 */
@@ -33,9 +40,12 @@ public:
 	/// 前景描画
 	/// </summary>
 	void DrawFront() override;
-
-
-
 private:
+	yunity::Camera* camera_;
+	std::unique_ptr<yunity::Object3D> object_;
+	std::array<std::unique_ptr<yunity::Object3D>, 10> objects_;
+	// 物理空間
+	std::unique_ptr<yunity::World> world_;
+	bool onoff_;
 };
 

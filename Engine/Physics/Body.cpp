@@ -262,7 +262,7 @@ namespace {
 
 void yunity::Body::CreateBody(World* world, WorldTransform* worldTransform, float mass)
 {
-	mass_ = mass;
+	mass_ = mass;	
 	velocity_ = { 0.0f, 0.0f, 0.0f };
 	acceleration_ = { 0.0f, 0.0f, 0.0f };
 	force_ = { 0.0f, 0.0f, 0.0f };
@@ -318,6 +318,8 @@ void yunity::Body::Solve(float time)
 void yunity::Body::SolveVelocity(float time)
 {
 	if (mass_ == 0.0f) {
+		velocity_.SetZero();
+		angularVelocity_.SetZero();
 		return;
 	}
 	// 空気抵抗airResistanceは、速度に比例して逆方向に発生する
@@ -388,6 +390,7 @@ void yunity::Body::SolveVelocity(float time)
 void yunity::Body::SolvePosition(float time)
 {
 	if (mass_ == 0.0f) {
+		worldTransform_->UpdateMatrix();
 		return;
 	}
 
@@ -556,49 +559,52 @@ void yunity::Body::OnCollision(Body* body)
 
 		Vector3 pushback = { 0.0f, 0.0f, 0.0f };
 		Vector3 penetrationDepth = { 0.0f, 0.0f, 0.0f };
-		switch (GetShape())
-		{
-		case Collider::Shape::kSphere:
-			switch (body->GetShape())
-			{
-			case Collider::Shape::kSphere:
-				break;
-			case Collider::Shape::kAABB:
-				pushback = GetPushback(Sphere{ GetColliderCenter(), GetHitBoxSize().x * 2.0f }, CreateAABB(body->GetColliderCenter(), body->GetHitBoxSize()));
+		
+		
 
-				break;
-			}
-			break;
-		case Collider::Shape::kAABB:
-			switch (body->GetShape())
-			{
-			case Collider::Shape::kSphere:
-				pushback = GetPushback(CreateAABB(GetColliderCenter(), GetHitBoxSize()), Sphere{ body->GetColliderCenter(), body->GetHitBoxSize().x * 2.0f });
-				break;
-			case Collider::Shape::kAABB:
-				pushback = GetPushback(CreateAABB(GetColliderCenter(), GetHitBoxSize()), CreateAABB(body->GetColliderCenter(), body->GetHitBoxSize()));
-				penetrationDepth = CalculatePenetrationDepth(CreateAABB(GetColliderCenter(), GetHitBoxSize()), CreateAABB(body->GetColliderCenter(), body->GetHitBoxSize()));
-				break;
-			case Collider::Shape::kOBB:
-				pushback = GetPushback(CreateOBB(GetColliderCenter(), worldTransform_->rotation_, GetHitBoxSize()), CreateOBB(body->GetColliderCenter(), body->worldTransform_->rotation_, body->GetHitBoxSize()));
-				break;
-			}
+		//switch (GetShape())
+		//{
+		//case Collider::Shape::kSphere:
+		//	switch (body->GetShape())
+		//	{
+		//	case Collider::Shape::kSphere:
+		//		break;
+		//	case Collider::Shape::kAABB:
+		//		pushback = GetPushback(Sphere{ GetColliderCenter(), GetHitBoxSize().x * 2.0f }, CreateAABB(body->GetColliderCenter(), body->GetHitBoxSize()));
 
-			break;
-		case Collider::Shape::kOBB:
-			switch (body->GetShape())
-			{
-			case Collider::Shape::kSphere:
-				break;
-			case Collider::Shape::kAABB:
-				pushback = GetPushback(CreateOBB(GetColliderCenter(), worldTransform_->rotation_, GetHitBoxSize()), CreateOBB(body->GetColliderCenter(), body->worldTransform_->rotation_, body->GetHitBoxSize()));
-				break;
-			case Collider::Shape::kOBB:
-				pushback = GetPushback(CreateOBB(GetColliderCenter(), worldTransform_->rotation_, GetHitBoxSize()), CreateOBB(body->GetColliderCenter(), body->worldTransform_->rotation_, body->GetHitBoxSize()));
-				break;
-			}
-			break;
-		}
+		//		break;
+		//	}
+		//	break;
+		//case Collider::Shape::kAABB:
+		//	switch (body->GetShape())
+		//	{
+		//	case Collider::Shape::kSphere:
+		//		pushback = GetPushback(CreateAABB(GetColliderCenter(), GetHitBoxSize()), Sphere{ body->GetColliderCenter(), body->GetHitBoxSize().x * 2.0f });
+		//		break;
+		//	case Collider::Shape::kAABB:
+		//		pushback = GetPushback(CreateAABB(GetColliderCenter(), GetHitBoxSize()), CreateAABB(body->GetColliderCenter(), body->GetHitBoxSize()));
+		//		penetrationDepth = CalculatePenetrationDepth(CreateAABB(GetColliderCenter(), GetHitBoxSize()), CreateAABB(body->GetColliderCenter(), body->GetHitBoxSize()));
+		//		break;
+		//	case Collider::Shape::kOBB:
+		//		pushback = GetPushback(CreateOBB(GetColliderCenter(), worldTransform_->rotation_, GetHitBoxSize()), CreateOBB(body->GetColliderCenter(), body->worldTransform_->rotation_, body->GetHitBoxSize()));
+		//		break;
+		//	}
+
+		//	break;
+		//case Collider::Shape::kOBB:
+		//	switch (body->GetShape())
+		//	{
+		//	case Collider::Shape::kSphere:
+		//		break;
+		//	case Collider::Shape::kAABB:
+		//		pushback = GetPushback(CreateOBB(GetColliderCenter(), worldTransform_->rotation_, GetHitBoxSize()), CreateOBB(body->GetColliderCenter(), body->worldTransform_->rotation_, body->GetHitBoxSize()));
+		//		break;
+		//	case Collider::Shape::kOBB:
+		//		pushback = GetPushback(CreateOBB(GetColliderCenter(), worldTransform_->rotation_, GetHitBoxSize()), CreateOBB(body->GetColliderCenter(), body->worldTransform_->rotation_, body->GetHitBoxSize()));
+		//		break;
+		//	}
+		//	break;
+		//}
 
 		if (body->mass_ != 0.0f) { // 質量が0でない場合
 			pushback = Multiply(0.5f, pushback);
@@ -665,4 +671,41 @@ void yunity::Body::OnCollision(Body* body)
 	}
 }
 
+void yunity::Body::AddPersistentManifold(const PersistentManifold& persistentManifold)
+{
+	persistentManifold_.emplace_back(persistentManifold);
+}
 
+void yunity::Body::PositionalCorrection(float totalMass, float penetrationDepth, const Vector3& contactNormal)
+{
+	SetTranslation(Add(GetTranslation(), Multiply(penetrationDepth * (GetInverseMass() / totalMass), contactNormal)));
+	worldTransform_->UpdateMatrix();
+}
+
+float yunity::Body::GetRestitution(float otherRestitution)
+{
+	float result = 0.0f;
+	switch (bounceCombine_)
+	{
+	case Body::BounceCombine::kAverage: // 平均化
+		result = (bounciness_ + otherRestitution) / 2.0f;
+		break;
+	case Body::BounceCombine::kMinimum: // 小さい方
+		result = std::min(bounciness_, otherRestitution);
+		break;
+	case Body::BounceCombine::kMaximum: // 大きい方
+		result = max(bounciness_, otherRestitution);
+		break;
+	case Body::BounceCombine::kMultiply: // 乗算
+		result = bounciness_ * otherRestitution;
+		break;
+	}
+	return result;
+}
+
+Matrix3x3 yunity::Body::GetInertiaTensor()
+{
+	Matrix3x3 R = MakeRotateMatrix(worldTransform_->rotation_);
+	Matrix3x3 Rt = Transpose(R);
+	return Multiply(Multiply(R, inertiaTensor_), Rt);
+}

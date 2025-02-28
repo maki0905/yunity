@@ -22,6 +22,7 @@ namespace yunity {
 	/// ワールド変換データ
 	/// </summary>
 	struct WorldTransform {
+	public:
 		// 定数バッファ
 		Microsoft::WRL::ComPtr<ID3D12Resource> constBuff_;
 		// マッピング済みアドレス
@@ -68,6 +69,10 @@ namespace yunity {
 		/// </summary>
 		/// <returns>Vector3</returns>
 		Vector3 GetMatWorldTranslation() { return { matWorld_.m[3][0], matWorld_.m[3][1], matWorld_.m[3][2] }; }
+		/// <summary>
+		/// 回転行列取得
+		/// </summary>
+		Matrix4x4 GetRotateMatrix();
 	};
 
 

@@ -21,7 +21,7 @@ void Player::Initialize(yunity::Camera* camera, yunity::World* world)
 	SetHitBoxSize(hitBoxSize_);
 
 	// 基本データ初期化
-	Object3D::Initialize(world, yunity::Collider::Shape::kAABB);
+	Object3D::Initialize(world, yunity::ShapeType::kBox);
 	worldTransform_.rotateType_ = yunity::RotationType::Quaternion;
 	worldTransform_.translation_ = Add(worldTransform_.translation_, startPosition_);
 
@@ -44,7 +44,7 @@ void Player::Initialize(yunity::Camera* camera, yunity::World* world)
 	isCrouching_ = false;
 
 	// 物理空間に自分を追加
-	world->Add(this);
+	world->AddObject(this);
 
 	isHit_ = false;
 

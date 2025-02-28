@@ -8,7 +8,7 @@ void Cloth::Initialize(yunity::World* world)
 	for (uint32_t x = 0; x < 4; x++) {
 		for (uint32_t y = 0; y < 4; y++) {
 			points_[y + x * 4] = std::make_unique<yunity::Object3D>();
-			points_[y + x * 4]->Initialize(nullptr, world, yunity::Collider::Shape::kSphere);
+			points_[y + x * 4]->Initialize(nullptr, world, 0.0f, yunity::ShapeType::kSphere);
 			points_[y + x * 4]->SetHitBoxSize({ 1.0f, 1.0f, 1.0f });
 			points_[y + x * 4]->SetScale({ 0.1f, 0.1f, 0.1f });
 			points_[y + x * 4]->SetCamera(CameraManager::GetInstance()->GetCamera());
@@ -17,7 +17,7 @@ void Cloth::Initialize(yunity::World* world)
 			if (y < 3) {
 				points_[y + x * 4]->SetMass(1.0f);
 			}
-			world->Add(points_[y + x * 4].get());
+			world->AddObject(points_[y + x * 4].get());
 		}
 	}
 	for (uint32_t index = 0; index < 24; index++) {

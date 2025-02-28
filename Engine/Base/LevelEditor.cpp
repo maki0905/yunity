@@ -151,14 +151,14 @@ void yunity::LevelEditor::LoadObjectRecursive(LevelData* levelData, nlohmann::js
 				nlohmann::json& collider = object["collider"];
 				if (collider["type"] == "BOX") {
 					if (objectData.rotation.x == 0.0f && objectData.rotation.y == 0.0f && objectData.rotation.z == 0.0f) {
-						objectData.shape = Collider::Shape::kAABB;
+						objectData.shape = yunity::ShapeType::kBox;
 					}
 					else {
-						objectData.shape = Collider::Shape::kOBB;
+						objectData.shape = yunity::ShapeType::kBox;
 					}
 				}
 				else if (collider["type"] == "SPHERE") {
-					objectData.shape = Collider::Shape::kSphere;
+					objectData.shape = yunity::ShapeType::kSphere;
 				}
 
 				// サイズ
@@ -245,10 +245,10 @@ void yunity::LevelEditor::LoadObjectRecursive(LevelData* levelData, nlohmann::js
 				nlohmann::json& collider = object["collider"];
 				if (collider["type"] == "BOX") {
 					if (objectData.rotation.x == 0.0f && objectData.rotation.y == 0.0f && objectData.rotation.z == 0.0f) {
-						objectData.shape = Collider::Shape::kAABB;
+						objectData.shape = yunity::ShapeType::kBox;
 					}
 					else {
-						objectData.shape = Collider::Shape::kOBB;
+						objectData.shape = yunity::ShapeType::kBox;
 					}
 				}
 				else if (collider["type"] == "SPHERE") {

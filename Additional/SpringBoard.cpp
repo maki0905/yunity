@@ -15,10 +15,10 @@ void SpringBoard::Initialize()
 	elongationTime_ = globalVariables->GetFloatValue(groupName, "ElongationTime");
 
 	anchor_ = std::make_unique<yunity::Object3D>();
-	anchor_->Initialize(GetWorld(), Shape::kAABB);
+	anchor_->Initialize(GetWorld(), yunity::ShapeType::kBox);
 	anchor_->SetCollisionAttribute(kCollisionAttributeFloor);
 	anchor_->SetPosition(Add(worldTransform_.translation_, anchorPosition_));
-	GetWorld()->Add(anchor_.get());
+	GetWorld()->AddObject(anchor_.get());
 	SetSpringJoint();
 	fixedPosition_ = worldTransform_.translation_;
 

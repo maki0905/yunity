@@ -19,29 +19,31 @@ bool RayCast(const Vector3& origin, const Vector3& direction, RayCastHit* hitInf
 
 		switch (obj->GetShape())
 		{
-		case yunity::Collider::Shape::kSphere:
+		case yunity::ShapeType::kSphere:
 
 			break;
-		case yunity::Collider::Shape::kAABB:
-			AABB aabb;
-			aabb.min = Subtract(obj->GetTranslation(), obj->GetHitBoxSize());
-			aabb.max = Add(obj->GetTranslation(), obj->GetHitBoxSize());
-			if (IsCollision(ray, aabb)) {
-				hitInfo->collider = obj;
-				hitInfo->point = RayIntersection(ray, aabb);
-				return true;
-			}
-			break;
-		case yunity::Collider::Shape::kOBB:
-			OBB obb;
-			obb = CreateOBB(obj->GetMatWorldTranslation(), obj->GetWorldTransform()->rotation_, obj->GetHitBoxSize());
-			if (IsCollision(ray, obb)) {
-				hitInfo->collider = obj;
-				hitInfo->point = RayIntersection(ray, obb);
-				return true;
-			}
-			break;
+		case yunity::ShapeType::kBox:
 
+			if (obj->GetWorldTransform()->rotation_.Length() == 0.0f) {
+				AABB aabb;
+				aabb.min = Subtract(obj->GetTranslation(), obj->GetHitBoxSize());
+				aabb.max = Add(obj->GetTranslation(), obj->GetHitBoxSize());
+				if (IsCollision(ray, aabb)) {
+					hitInfo->collider = obj;
+					hitInfo->point = RayIntersection(ray, aabb);
+					return true;
+				}
+			}
+			else {
+				OBB obb;
+				obb = CreateOBB(obj->GetMatWorldTranslation(), obj->GetWorldTransform()->rotation_, obj->GetHitBoxSize());
+				if (IsCollision(ray, obb)) {
+					hitInfo->collider = obj;
+					hitInfo->point = RayIntersection(ray, obb);
+					return true;
+				}
+				break;
+			}
 		}
 		
 	}
@@ -61,10 +63,10 @@ bool RayCast(const Vector3& origin, const Vector3& direction, RayCastHit* hitInf
 
 		switch (obj->GetShape())
 		{
-		case yunity::Collider::Shape::kSphere:
+		case yunity::ShapeType::kSphere:
 
 			break;
-		case yunity::Collider::Shape::kAABB:
+		case yunity::ShapeType::kBox:
 			AABB aabb;
 			aabb.min = Subtract(obj->GetTranslation(), obj->GetHitBoxSize());
 			aabb.max = Add(obj->GetTranslation(), obj->GetHitBoxSize());
@@ -74,10 +76,6 @@ bool RayCast(const Vector3& origin, const Vector3& direction, RayCastHit* hitInf
 				return true;
 			}
 			break;
-		case yunity::Collider::Shape::kOBB:
-			
-			break;
-
 		}
 
 	}

@@ -5,8 +5,10 @@
 #include "CollisionConfig.h"
 #include "ImGuiManager.h"
 #include "Shape.h"
+#include "GJK.h"
+#include "World.h"
 
-void yunity::CollisionManager::CheckAllCollision() {
+void yunity::CollisionManager::CheckAllCollision(World* world) {
 
 	// リスト内のペアを総当たり
 	std::list<Object3D*>::iterator itrA = colliders_.begin();
@@ -21,18 +23,20 @@ void yunity::CollisionManager::CheckAllCollision() {
 			Object3D* colliderB = *itrB;
 
 			// ペアの当たり判定
-			CheckCollisionPair(colliderA, colliderB);
+			CheckCollisionPair(colliderA, colliderB, world);
 		}
 	}
 }
 
-void yunity::CollisionManager::CheckCollisionPair(Object3D* colliderA, Object3D* colliderB)
+void yunity::CollisionManager::CheckCollisionPair(Object3D* colliderA, Object3D* colliderB, World* world)
 {
 	if ((colliderA->GetCollisionAttribute() & colliderB->GetCollisionMask()) == 0 || (colliderB->GetCollisionAttribute() & colliderA->GetCollisionMask()) == 0) {
 		return;
 	}
 
-	switch (colliderA->GetShape())
+	GJKCalculation(colliderA, colliderB, world);
+
+	/*switch (colliderA->GetShape())
 	{
 	case Collider::Shape::kSphere:
 		switch (colliderB->GetShape())
@@ -164,7 +168,7 @@ void yunity::CollisionManager::CheckCollisionPair(Object3D* colliderA, Object3D*
 			break;
 		}
 		break;
-	}
+	}*/
 }
 
 

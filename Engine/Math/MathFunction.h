@@ -636,3 +636,5 @@ Matrix3x3 MakeRotateMatrix(const Vector3& rotation);
 /// /// <param name="matrix"></param>
 /// /// <returns></returns>
 Vector3 TransformVector3(const Vector3& vector, const Matrix3x3& matrix);
+
+void Barycentric(const Vector3& a, const Vector3& b, const Vector3& c, const Vector3& p, float& u, float& v, float& w);

@@ -21,6 +21,16 @@ namespace yunity{
 	*/
 	class World {
 	public:
+		struct PersistentManifold {
+			Object3D* colliderA;
+			Object3D* colliderB;
+			Vector3 localPointA;
+			Vector3 localPointB;
+			Vector3 contactNormal;
+			float penetrationDepth;
+		};
+
+	public:
 
 		/// <summary>
 		/// 初期化
@@ -33,17 +43,19 @@ namespace yunity{
 		/// </summary>
 		void Solve();
 
+		void SolveConstraints();
+
 		/// <summary>
 		/// オブジェクト追加
 		/// </summary>
 		/// <param name="collider"></param>
-		void Add(Object3D* collider) { objectList_.push_back(collider); };
+		void AddObject(Object3D* collider) { objectList_.push_back(collider); };
 
 		/// <summary>
 		/// オブジェクト削除
 		/// </summary>
 		/// <param name="collider"></param>
-		void Take(Object3D* collider);
+		void TakeObject(Object3D* collider);
 
 		/// <summary>
 		/// ジョイント追加
@@ -56,6 +68,10 @@ namespace yunity{
 		/// </summary>
 		/// <param name="joint"></param>
 		void TakeJoint(Joint* joint);
+
+		void AddPersistentManifold(const PersistentManifold& persistentManifold) {
+			PersistentManifolds_.push_back(persistentManifold);
+		}
 
 		/// <summary>
 		/// アロケータ取得
@@ -97,6 +113,7 @@ namespace yunity{
 		Vector3 gravity_;
 		// 固定時間フラグ
 		bool isFixedTime_;
+		std::vector<PersistentManifold> PersistentManifolds_;
 
 	};
 }

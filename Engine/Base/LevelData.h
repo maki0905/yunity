@@ -19,7 +19,7 @@ namespace yunity {
 			Vector3 rotation;
 			Vector3 translation;
 			std::string fileName;
-			Collider::Shape shape;
+			yunity::ShapeType shape;
 			Vector3 size;
 			Vector3 center;
 			bool isTrigger;

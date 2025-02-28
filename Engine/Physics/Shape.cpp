@@ -15,3 +15,7 @@ OBB CreateOBB(Vector3 translation, Vector3 rotation, Vector3 size)
 	// OBBを生成
 	return OBB(translation, { orientations[0], orientations[1], orientations[2] }, size);
 }
+
+yunity::CollisionShape::~CollisionShape()
+{
+}
