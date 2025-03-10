@@ -2,7 +2,7 @@
 
 void Coin::Initialize()
 {
-	model_->SetBlendModeType(yunity::kAdd);
+	model_->SetBlendModeType(yunity::kNormal);
 	particle_ = std::make_unique<FloatingParticle>();
 	particle_->Initialize(camera_);
 	particle_->Spawn(worldTransform_.translation_);
