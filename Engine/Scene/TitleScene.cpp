@@ -127,8 +127,7 @@ void TitleScene::Update()
 	directionLight_->Update();
 
 #ifdef _DEBUG
-
-
+	
 #endif
 
 }

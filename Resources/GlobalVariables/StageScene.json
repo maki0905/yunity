@@ -1,24 +1,13 @@
 {
     "StageScene": {
-        
-        "Gravity":[
-            0.0,
-            -30.0,
-            0.0
-        ],
-        "SkydomeScale":[
-            10.0,
-            10.0,
-            10.0
-        ],
-        "DirectionLightColor":[
+        "DirectionLightColor": [
             1.0,
             1.0,
             1.0,
             1.0
         ],
         "DirectionLightDirection": [
-            1.0,
+            -1.0,
             -1.0,
             0.0
         ],
@@ -27,6 +16,9 @@
             160.0,
             0.0
         ],
+        "DirectionLightFarClip": 600.0,
+        "DirectionLightIntensity": 1.0,
+        "DirectionLightNearClip": 1.0,
         "DirectionLightTargetPosition": [
             0.0,
             0.0,
@@ -37,10 +29,17 @@
             1.0,
             0.0
         ],
-        "DirectionLightIntensity": 1.0,
-        "DirectionLightViewWidth": 2324.0,
         "DirectionLightViewHight": 142.0,
-        "DirectionLightNearClip": 0.0,
-        "DirectionLightFarClip": 600.0
+        "DirectionLightViewWidth": 2324.0,
+        "Gravity": [
+            0.0,
+            -30.0,
+            0.0
+        ],
+        "SkydomeScale": [
+            10.0,
+            10.0,
+            10.0
+        ]
     }
 }

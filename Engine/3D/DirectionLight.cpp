@@ -4,14 +4,14 @@
 #include "CameraManager.h"
 #include "ImGuiManager.h"
 
-void yunity::DirectionLight::Initialize(const Vector3& eyePostion, const Vector3& targetPosition, const Vector3& upDirection, float viewWidth, float viewHight, float nearClip, float farClip)
+void yunity::DirectionLight::Initialize(const Vector3& eyePosition, const Vector3& targetPosition, const Vector3& upDirection, float viewWidth, float viewHight, float nearClip, float farClip)
 {
 	lightVPBuff_ = CreateBufferResource(sizeof(ConstBufferDataViewProjection));
 	lightVP_ = nullptr;
 	lightVPBuff_->Map(0, nullptr, (void**)&lightVP_);
-	lightVP_->view = MakeMatrixLookAt(eyePostion, targetPosition, upDirection);
+	lightVP_->view = MakeMatrixLookAt(eyePosition, targetPosition, upDirection);
 	lightVP_->projection = MakeOrthographicMatrix(viewWidth, viewHight, nearClip, farClip);
-	eyePostion_ = eyePostion;
+	eyePosition_ = eyePosition;
 	targetPosition_ = targetPosition;
 	upDirection_ = upDirection;
 	viewWidth_ = viewWidth;
@@ -22,10 +22,10 @@ void yunity::DirectionLight::Initialize(const Vector3& eyePostion, const Vector3
 	box_ = std::make_unique<PrimitiveDrawer>();
 	box_.reset(PrimitiveDrawer::Create(PrimitiveDrawer::Type::kBox));
 	box_->SetCamera(CameraManager::GetInstance()->GetCamera());
-	box_->SetColor({ 0.0f, 1.0f, 1.0f, 1.0f });
+	box_->SetColor({ 0.0f, 1.0f, 0.0f, 1.0f });
 
 	worldTransform_.Initialize();
-	worldTransform_.translation_ = eyePostion;
+	worldTransform_.translation_ = eyePosition;
 	worldTransform_.scale_ = { viewWidth, viewHight, farClip - nearClip };
 }
 
@@ -33,7 +33,7 @@ void yunity::DirectionLight::Update()
 {
 #ifdef _DEBUG
 	ImGui::Begin("DirectionLight");
-	ImGui::DragFloat3("eyePostion", &eyePostion_.x);
+	ImGui::DragFloat3("eyePostion", &eyePosition_.x);
 	ImGui::DragFloat3("targetPosition", &targetPosition_.x);
 	ImGui::DragFloat3("upDirection", &upDirection_.x);
 	ImGui::DragFloat("viewWidth", &viewWidth_);
@@ -52,7 +52,7 @@ void yunity::DirectionLight::Update()
 	corners[6] = {  1.0f, -1.0f,  1.0f};
 	corners[7] = { -1.0f, -1.0f,  1.0f};
 
-	Matrix4x4 vp = Multiply(MakeMatrixLookAt(eyePostion_, targetPosition_, upDirection_), MakeOrthographicMatrix(viewWidth_, viewHight_, nearClip_, farClip_));
+	Matrix4x4 vp = Multiply(MakeMatrixLookAt(eyePosition_, targetPosition_, upDirection_), MakeOrthographicMatrix(viewWidth_, viewHight_, nearClip_, farClip_));
 	vp = Inverse(vp);
 	std::array<Vector3, 8> worldConers;
 	for (int i = 0; i < 8; i++) {
@@ -71,9 +71,9 @@ void yunity::DirectionLight::Update()
 
 	upDirection_ = Normalize(upDirection_);
 
-	lightVP_->view = MakeMatrixLookAt(eyePostion_, targetPosition_, upDirection_);
+	lightVP_->view = MakeMatrixLookAt(eyePosition_, targetPosition_, upDirection_);
 	lightVP_->projection = MakeOrthographicMatrix(viewWidth_, viewHight_, nearClip_, farClip_);
-	worldTransform_.translation_ = eyePostion_;
+	worldTransform_.translation_ = eyePosition_;
 	worldTransform_.scale_ = { viewWidth_, viewHight_, farClip_ - nearClip_ };
 
 	worldTransform_.UpdateMatrix();

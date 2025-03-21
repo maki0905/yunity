@@ -93,6 +93,7 @@ void StageScene::Update()
 		camera_->Update();
 	}
 
+
 #endif
 
 
@@ -106,6 +107,7 @@ void StageScene::Draw3D()
 {
 	skydome_->Draw();
 	objectManager_->Draw();
+	directionLight_->Draw();
 }
 
 void StageScene::DrawFront()

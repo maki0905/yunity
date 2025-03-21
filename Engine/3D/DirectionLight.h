@@ -20,7 +20,7 @@ namespace yunity {
 		/// <summary>
 		/// 初期化
 		/// </summary>
-		void Initialize(const Vector3& eyePostion, const Vector3& targetPosition, const Vector3& upDirection, float viewWidth, float viewHight, float nearClip, float farClip);
+		void Initialize(const Vector3& eyePosition, const Vector3& targetPosition, const Vector3& upDirection, float viewWidth, float viewHight, float nearClip, float farClip);
 
 		/// <summary>
 		/// 更新
@@ -34,11 +34,11 @@ namespace yunity {
 
 		ID3D12Resource* GetLightBuff() const { return lightVPBuff_.Get(); }
 
-		void SetEyePosition(const Vector3& eyePosition) { eyePostion_ = eyePosition; }
+		void SetEyePosition(const Vector3& eyePosition) { eyePosition_ = eyePosition; }
 		void SetTargetPosition(const Vector3& targetPosition) { targetPosition_ = targetPosition; }
 		void SetUpDirection_(const Vector3& upDirection) { upDirection_ = upDirection; }
 		void SetViewWidth(float viewWidth) { viewWidth_ = viewWidth; }
-		void SetviewHight(float viewHight) { viewHight_ = viewHight; }
+		void SetViewHight(float viewHight) { viewHight_ = viewHight; }
 		void SetNearClip(float nearClip) { nearClip_ = nearClip; }
 		void SetFarClip(float farClip) { farClip_ = farClip; }
 
@@ -50,7 +50,7 @@ namespace yunity {
 		std::unique_ptr<PrimitiveDrawer> box_;
 		WorldTransform worldTransform_;
 
-		Vector3 eyePostion_;
+		Vector3 eyePosition_;
 		Vector3 targetPosition_;
 		Vector3 upDirection_;
 		float viewWidth_;
