@@ -68,7 +68,7 @@ void yunity::DirectXCore::Initialize()
 
 	// シャドウマップ用のバッファ
 	shadowBuffer_ = std::make_unique<DepthBuffer>();
-	shadowBuffer_->Initialize(DXGI_FORMAT_D32_FLOAT, D3D12_RESOURCE_STATE_GENERIC_READ);
+	shadowBuffer_->Initialize(DXGI_FORMAT_D32_FLOAT, D3D12_RESOURCE_STATE_GENERIC_READ, 2048, 2048);
 	D3D12_SHADER_RESOURCE_VIEW_DESC depthTextureSrvDesc{};
 	depthTextureSrvDesc.Format = DXGI_FORMAT_R32_FLOAT;
 	depthTextureSrvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
@@ -151,8 +151,8 @@ void yunity::DirectXCore::PreDrawShadow()
 	D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle =
 		D3D12_CPU_DESCRIPTOR_HANDLE(shadowBuffer_->GetCpuHandle());
 	commandList_->OMSetRenderTargets(0, nullptr, &dsvHandle);
-	commandList_->RSSetViewports(float(windowWidth_), float(windowHeight_));
-	commandList_->RSSetScissorRects(windowWidth_, windowHeight_);
+	commandList_->RSSetViewports(float(2048), float(2048));
+	commandList_->RSSetScissorRects(2048, 2048);
 }
 
 void yunity::DirectXCore::PostDrawShadow()
