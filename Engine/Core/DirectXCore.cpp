@@ -66,6 +66,7 @@ void yunity::DirectXCore::Initialize()
 
 	GraphicsPipelineManager::GetInstance()->Initialize();
 
+	// シャドウマップ用のバッファ
 	shadowBuffer_ = std::make_unique<DepthBuffer>();
 	shadowBuffer_->Initialize(DXGI_FORMAT_D32_FLOAT, D3D12_RESOURCE_STATE_GENERIC_READ);
 	D3D12_SHADER_RESOURCE_VIEW_DESC depthTextureSrvDesc{};

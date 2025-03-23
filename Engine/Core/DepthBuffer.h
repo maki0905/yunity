@@ -5,6 +5,7 @@
 
 #include "DescriptorHeap.h"
 #include "DescriptorHandle.h"
+#include "WindowsAPI.h"
 
 class DescriptorHeap;
 
@@ -26,7 +27,7 @@ namespace yunity {
 		/// <summary>
 		/// 初期化
 		/// </summary>
-		void Initialize(DXGI_FORMAT format, D3D12_RESOURCE_STATES state);
+		void Initialize(DXGI_FORMAT format, D3D12_RESOURCE_STATES state, int width = WindowsAPI::GetInstance()->kWindowWidth, int height = WindowsAPI::GetInstance()->kWindowHeight);
 
 		/// <summary>
 		/// デプスビュークリア
@@ -50,7 +51,7 @@ namespace yunity {
 		/// デプスステンシル生成
 		/// </summary>
 		/// <returns></returns>
-		Microsoft::WRL::ComPtr<ID3D12Resource> CreateDepthStencilTextureResource(DXGI_FORMAT format, D3D12_RESOURCE_STATES state);
+		Microsoft::WRL::ComPtr<ID3D12Resource> CreateDepthStencilTextureResource(DXGI_FORMAT format, D3D12_RESOURCE_STATES state, int width, int height);
 
 	private:
 

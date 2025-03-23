@@ -14,10 +14,10 @@ yunity::DepthBuffer::DepthBuffer()
 	commandList_ = DirectXCore::GetInstance()->GetCommandList();
 }
 
-void yunity::DepthBuffer::Initialize(DXGI_FORMAT format, D3D12_RESOURCE_STATES state)
+void yunity::DepthBuffer::Initialize(DXGI_FORMAT format, D3D12_RESOURCE_STATES state, int width, int height)
 {
 	// DepthStemcilTextureをウィンドウのサイズで作成
-	depthStencilResource_ = CreateDepthStencilTextureResource(format, state);
+	depthStencilResource_ = CreateDepthStencilTextureResource(format, state, width, height);
 
 	// 深度ビュー用デスクリプタヒープ作成。DSV用のヒープでディスクリプタの数は1。
 	dsvHeap_ = DirectXCore::GetInstance()->GetDescriptorHeap(DirectXCore::HeapType::kDSV);
@@ -32,8 +32,9 @@ void yunity::DepthBuffer::Initialize(DXGI_FORMAT format, D3D12_RESOURCE_STATES s
 	dsvDesc.Format = format; // Format。基本的にはResourceに合わせる
 	dsvDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D; // 2dTexture
 	// DSVHeapの先頭にDSVをつくる
-	Device::GetInstance()->GetDevice()->CreateDepthStencilView(depthStencilResource_.Get(), &dsvDesc,descriptorHandle.GetCPUHandle());
+	Device::GetInstance()->GetDevice()->CreateDepthStencilView(depthStencilResource_.Get(), &dsvDesc, descriptorHandle.GetCPUHandle());
 }
+
 
 void yunity::DepthBuffer::ClearDepthView()
 {
@@ -45,7 +46,7 @@ void yunity::DepthBuffer::ClearDepthView()
 }
 
 
-Microsoft::WRL::ComPtr<ID3D12Resource> yunity::DepthBuffer::CreateDepthStencilTextureResource(DXGI_FORMAT format, D3D12_RESOURCE_STATES state)
+Microsoft::WRL::ComPtr<ID3D12Resource> yunity::DepthBuffer::CreateDepthStencilTextureResource(DXGI_FORMAT format, D3D12_RESOURCE_STATES state, int width, int height)
 {
 	HRESULT hr = S_FALSE;
 	Microsoft::WRL::ComPtr<ID3D12Resource> result = nullptr;
@@ -55,8 +56,8 @@ Microsoft::WRL::ComPtr<ID3D12Resource> yunity::DepthBuffer::CreateDepthStencilTe
 	heapProps.Type = D3D12_HEAP_TYPE_DEFAULT; // VRAM上に作る
 
 	D3D12_RESOURCE_DESC depthResourceDesc{};
-	depthResourceDesc.Width = WindowsAPI::GetInstance()->kWindowWidth; // Textureの幅
-	depthResourceDesc.Height = WindowsAPI::GetInstance()->kWindowHeight; // Textureの高さ
+	depthResourceDesc.Width = width; // Textureの幅
+	depthResourceDesc.Height = height; // Textureの高さ
 	depthResourceDesc.MipLevels = 1; // mipmapの数
 	depthResourceDesc.DepthOrArraySize = 1; // 奥行き or 配列Textureの配列数
 	depthResourceDesc.Format = format; // DepthStencilとして利用可能なフォーマット
