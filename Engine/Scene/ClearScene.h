@@ -2,6 +2,9 @@
 #include <memory>
 
 #include "IScene.h"
+#include "Object3D.h"
+#include "World.h"
+#include "CameraManager.h"
 
 /*
 * @brief クリアシーンクラス
@@ -34,8 +37,18 @@ public:
 	/// </summary>
 	void DrawFront() override;
 
-
-
 private:
+	yunity::Camera* camera_;
+
+	// コントローラー
+	XINPUT_STATE pad_;
+	XINPUT_STATE prePad_;
+
+	// 物理空間
+	std::unique_ptr<yunity::World> world_;
+	Vector3 gravity_ = {0.0f, -9.8f, 0.0f};
+
+	std::unique_ptr<yunity::Object3D> floor_;
+
 };
 
