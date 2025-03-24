@@ -11,10 +11,8 @@
 #include "ObjectManager.h"
 #include "DirectionLight.h"
 #include "Object3D.h"
-/*
-* @brief クリアシーンクラス
-*/
-class ClearScene : public yunity::IScene
+
+class DemoScene : public yunity::IScene
 {
 	enum DemoNumber {
 		kDemo1,
@@ -27,6 +25,7 @@ class ClearScene : public yunity::IScene
 		kDemo8,
 		kDemo9,
 		kDemo10,
+		kMax
 	};
 
 public:
@@ -54,6 +53,19 @@ public:
 	/// 前景描画
 	/// </summary>
 	void DrawFront() override;
+
+private:
+	void Demo1Initialize();
+	void Demo2Initialize();
+	void Demo3Initialize();
+	void Demo4Initialize();
+	void Demo5Initialize();
+	void Demo1Update();
+	void Demo2Update();
+	void Demo3Update();
+	void Demo4Update();
+	void Demo5Update();
+
 private:
 	yunity::Camera* camera_;
 	std::unique_ptr<yunity::DebugCamera> debugCamera_;
@@ -64,7 +76,8 @@ private:
 
 	std::unique_ptr<yunity::Object3D> object_;
 	std::vector<std::unique_ptr<yunity::Object3D>> objects_;
-	std::vector<std::unique_ptr<yunity::SpringJoint>> joints_;
+	std::vector<std::unique_ptr<yunity::SpringJoint>> springJoints_;
+	std::vector<std::unique_ptr<yunity::PrimitiveDrawer>> lines_;
 	// 物理空間
 	std::unique_ptr<yunity::World> world_;
 

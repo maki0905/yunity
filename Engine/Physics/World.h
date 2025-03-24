@@ -81,6 +81,11 @@ namespace yunity{
 		/// <param name="isFixedTime"></param>
 		void SetFixedTime(bool isFixedTime) { isFixedTime_ = isFixedTime; }
 
+
+		void Clear() {
+			objectList_.clear();
+			jointList_.clear();
+		}
 	private:
 		// デルタタイム
 		float deltaTime_;

@@ -84,7 +84,8 @@ namespace yunity {
 		/// <param name="start"></param>
 		/// <param name="end"></param>
 		/// <param name="color"></param>
-		void Draw(const Vector3& start, const Vector3& end, const Vector4& color = { 1.0f, 1.0f, 1.0f, 1.0f });
+		void Draw(const Vector3& start, const Vector3& end, const Vector4& color = {1.0f, 1.0f, 1.0f, 1.0f});
+		void Draw(const Vector4& color = { 1.0f, 1.0f, 1.0f, 1.0f });
 
 		/// <summary>
 		/// カメラ設定
@@ -93,6 +94,8 @@ namespace yunity {
 		void SetCamera(Camera* camera) { camera_ = camera; }
 
 		void SetColor(const Vector4& color);
+
+		void SetLinePoints(WorldTransform* start, WorldTransform* end);
 
 	private:
 
@@ -147,6 +150,8 @@ namespace yunity {
 		uint32_t* indexData_;
 
 		Type type_;
+
+		std::array<WorldTransform*, 2> linePoints_;
 
 	};
 }

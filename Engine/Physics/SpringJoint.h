@@ -70,6 +70,13 @@ namespace yunity {
 		/// <param name="dampingCoefficient"></param>
 		/// <returns></returns>
 		Vector3 Spring(Body* bodyA, Body* bodyB, float naturalLength, float stiffness, float dampingCoefficient);
+
+		bool GetEnabledSpring(int index) { return springEnabled_[index]; }
+		Vector3 GetEquilibriumPoint() { return Vector3(equilibriumPoint_[0], equilibriumPoint_[1], equilibriumPoint_[2]); }
+		Vector3 GetStiffness() { return Vector3(stiffness_[0], stiffness_[1], stiffness_[2]); }
+		Vector3 GetDamping() { return Vector3(dampingCoefficient_[0], dampingCoefficient_[1], dampingCoefficient_[2]); }
+
+		
 	private:
 		bool springEnabled_[3];
 		float equilibriumPoint_[3];

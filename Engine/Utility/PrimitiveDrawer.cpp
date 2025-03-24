@@ -104,6 +104,30 @@ void yunity::PrimitiveDrawer::Draw(const Vector3& start, const Vector3& end, con
 	}
 }
 
+void yunity::PrimitiveDrawer::Draw(const Vector4& color)
+{
+	if (commandList_ != nullptr) {
+		//assert(commandList_);
+
+		GraphicsPipelineManager::GetInstance()->SetCommandList(commandList_, PipelineType::kLine, BlendModeType::kNone);
+		commandList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
+
+		for (int i = 0; i < 2; i++) {
+			Vector3 position = linePoints_[i]->GetMatWorldTranslation();
+			vertexData_[i].position = { position.x, position.y, position.z, 1.0f };
+			vertexData_[i].color = color;
+		}
+
+		// 頂点バッファの設定
+		commandList_->IASetVertexBuffers(0, 1, &vertexBufferView_);
+
+		// CBVをセット(ビュープロジェクション行列)
+		commandList_->SetGraphicsRootConstantBufferView(0, camera_->GetConstBuff()->GetGPUVirtualAddress());
+
+		commandList_->DrawInstanced(2, 1, 0, 0);
+	}
+}
+
 void yunity::PrimitiveDrawer::SetColor(const Vector4& color)
 {
 	for (auto& vertex : vertices_) {
@@ -111,6 +135,13 @@ void yunity::PrimitiveDrawer::SetColor(const Vector4& color)
 	}
 	std::memcpy(vertexData_, vertices_.data(), sizeof(VertexData) * vertices_.size());
 }
+
+void yunity::PrimitiveDrawer::SetLinePoints(WorldTransform* start, WorldTransform* end)
+{
+	linePoints_[0] = start;
+	linePoints_[1] = end;
+}
+
 
 void yunity::PrimitiveDrawer::CreateMesh()
 {

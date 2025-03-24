@@ -401,16 +401,25 @@ void yunity::Body::SolveConstraints()
 		AddForce(impulse, ForceMode::kImpulse);
 
 		// 摩擦
-		// 相対速度を計算
 		Vector3 tangentVelocity = Subtract(relativeVelocity, Multiply(velocityAlongNormal, c.contactNormal));
-		Vector3 frictionForce = Multiply(-magnitude_, tangentVelocity);
-		// 最大静止摩擦力を計算
-		float maxStaticFriction = magnitude_ * impulseMagnitude;
-		if (Length(frictionForce) > maxStaticFriction) { // 静止摩擦力を超えた場合
-			frictionForce = Normalize(frictionForce);
-			frictionForce = Multiply(maxStaticFriction, frictionForce);
+		float tangentSpeed = Length(tangentVelocity);
+
+		if (tangentSpeed > 0.0f) {
+			// 摩擦力を計算
+			Vector3 frictionForce = Multiply(-c.friction, tangentVelocity);
+
+			// 最大静止摩擦力を計算
+			float maxStaticFriction = c.friction * impulseMagnitude;
+
+			// 静止摩擦力を超えた場合、動摩擦を適用
+			if (Length(frictionForce) > maxStaticFriction) {
+				frictionForce = Normalize(frictionForce);
+				frictionForce = Multiply(maxStaticFriction, frictionForce);
+			}
+
+			// 摩擦力を適用
+			AddForce(frictionForce, ForceMode::kForce);
 		}
-		AddForce(frictionForce, ForceMode::kForce);
 	}
 	persistentManifold_.clear();
 

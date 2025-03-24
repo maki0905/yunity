@@ -5,6 +5,7 @@
 #include "SelectScene.h"
 #include "StageScene.h"
 #include "ClearScene.h"
+#include "DemoScene.h"
 #pragma endregion 
 
 std::unique_ptr<yunity::IScene> yunity::SceneFactory::CreateScene(const std::string& sceneName)
@@ -21,6 +22,9 @@ std::unique_ptr<yunity::IScene> yunity::SceneFactory::CreateScene(const std::str
     else if (sceneName == "CLEAR") {
         return std::make_unique<ClearScene>();
     }
+	else if (sceneName == "DEMO") {
+		return std::make_unique<DemoScene>();
+	}
 
     return nullptr;
 }

@@ -77,7 +77,7 @@ void yunity::BaseObjectManager::SetInitalizeData(const LevelData::ObjectData& ob
 	newObject->SetTag(objectData.tag_);
 }
 
-void yunity::BaseObjectManager::AddObject(std::unique_ptr<Object3D> newObject)
+void yunity::BaseObjectManager::AddObject(std::unique_ptr<yunity::Object3D> newObject)
 {
 	world_->Add(newObject.get());
 	objects_.emplace_back(std::move(newObject));

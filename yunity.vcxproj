@@ -152,6 +152,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Engine\Physics\Joint.cpp" />
     <ClCompile Include="Engine\Physics\PulleyJoint.cpp" />
     <ClCompile Include="Engine\Physics\Shape.cpp" />
+    <ClCompile Include="Engine\Scene\DemoScene.cpp" />
     <ClCompile Include="Engine\Scene\Tradition.cpp" />
     <ClCompile Include="Engine\Utility\Format.cpp" />
     <ClCompile Include="Engine\Base\LevelEditor.cpp" />
@@ -260,6 +261,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\Physics\JointData.h" />
     <ClInclude Include="Engine\Physics\PulleyJoint.h" />
     <ClInclude Include="Engine\Physics\Shape.h" />
+    <ClInclude Include="Engine\Scene\DemoScene.h" />
     <ClInclude Include="Engine\Scene\Tradition.h" />
     <ClInclude Include="Engine\Utility\EngineTimeStep.h" />
     <ClInclude Include="Engine\Utility\Format.h" />

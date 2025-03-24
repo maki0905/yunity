@@ -18,6 +18,16 @@ namespace yunity{
 		/// 解決
 		/// </summary>
 		virtual void Solve() = 0;
+
+        Body* GetBody(int index) {
+            if (index == 0) {
+                return bodyA_;
+            }
+            else {
+                return bodyB_;
+            }
+        };
+
 	protected:
 		Body* bodyA_;
 		Body* bodyB_;
