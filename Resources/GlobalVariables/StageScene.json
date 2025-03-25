@@ -12,25 +12,25 @@
             0.0
         ],
         "DirectionLightEyePosition": [
-            0.0,
-            160.0,
+            690.0,
+            650.0,
             0.0
         ],
-        "DirectionLightFarClip": 600.0,
+        "DirectionLightFarClip": 1032.0,
         "DirectionLightIntensity": 1.0,
         "DirectionLightNearClip": 1.0,
         "DirectionLightTargetPosition": [
+            -3.0,
             0.0,
-            0.0,
-            1.0
+            0.0
         ],
         "DirectionLightUpDirection": [
             0.0,
             1.0,
             0.0
         ],
-        "DirectionLightViewHight": 142.0,
-        "DirectionLightViewWidth": 2324.0,
+        "DirectionLightViewHight": 3000.0,
+        "DirectionLightViewWidth": 3000.0,
         "Gravity": [
             0.0,
             -30.0,
