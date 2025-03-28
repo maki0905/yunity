@@ -109,7 +109,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Additional\CheckPoint.cpp" />
-    <ClCompile Include="Additional\Cloth.cpp" />
     <ClCompile Include="Additional\Coin.cpp" />
     <ClCompile Include="Additional\FloatingParticle.cpp" />
     <ClCompile Include="Additional\ForceField.cpp" />
@@ -212,7 +211,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Additional\CheckPoint.h" />
-    <ClInclude Include="Additional\Cloth.h" />
     <ClInclude Include="Additional\Coin.h" />
     <ClInclude Include="Additional\FloatingParticle.h" />
     <ClInclude Include="Additional\ForceField.h" />
