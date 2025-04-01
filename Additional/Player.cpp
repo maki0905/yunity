@@ -31,7 +31,7 @@ void Player::Initialize(yunity::Camera* camera, yunity::World* world)
 	SetMiu(miu_);
 	SetBounceCombine(BounceCombine::kMaximum);
 	SetBounciness(0.0f);
-	SetFixedMove(2, true);
+	SetFixedMove(Body::CoordinateAxes::Z, true);
 	SetDrag(0.0f);
 
 	// モデル設定
@@ -106,8 +106,8 @@ void Player::Update()
 	scoreUI_->Update();
 
 	// ガイドのテクスチャを設定
-	guideUI_->SetTexrture(GuideUI::GuideType::ABotton, 0);
-	guideUI_->SetTexrture(GuideUI::GuideType::RBBotton, 0);
+	guideUI_->SetButtonState(GuideUI::GuideType::ABotton, GuideUI::ButtonState::Off);
+	guideUI_->SetButtonState(GuideUI::GuideType::RBBotton, GuideUI::ButtonState::Off);
 
 	// x軸方向の制限速度
 	if (std::abs(GetVelocity().x) > limitSpeed_) {
@@ -140,11 +140,11 @@ void Player::Update()
 			// 移動量
 			if (wire_->GetIsWire()/*isWire_*/) { // ワイヤー使用時
 				move = { (float)pad_.Gamepad.sThumbLX, (float)pad_.Gamepad.sThumbLY,0 };
-				guideUI_->SetTexrture(GuideUI::GuideType::Wire, 1);
+				guideUI_->SetButtonState(GuideUI::GuideType::Wire, GuideUI::ButtonState::On);
 			}
 			else {
 				move = { (float)pad_.Gamepad.sThumbLX, 0,0 };
-				guideUI_->SetTexrture(GuideUI::GuideType::Wire, 0);
+				guideUI_->SetButtonState(GuideUI::GuideType::Wire, GuideUI::ButtonState::Off);
 			}
 
 			if (Length(move) > threshold_) { // しきい値以上なら
@@ -167,10 +167,20 @@ void Player::Update()
 			if ((pad_.Gamepad.wButtons & XINPUT_GAMEPAD_A) && !(prePad_.Gamepad.wButtons & XINPUT_GAMEPAD_A) && !isSelect_) {
 				if (isHit_) {
 					//guideA_->SetTextureHandle(guideATexture_[1]);
-					guideUI_->SetTexrture(GuideUI::GuideType::ABotton, 1);
+					guideUI_->SetButtonState(GuideUI::GuideType::ABotton, GuideUI::ButtonState::On);
 					AddForce(jumpPower_, Body::ForceMode::kImpulse);
 					GetWorld()->TakeJoint(playerFixedJoint_.get());
 				}
+			}
+
+			if ((float)pad_.Gamepad.sThumbRX > 0.0f) {
+				guideUI_->SetStickState(GuideUI::RStickState::Right);
+			}
+			else if ((float)pad_.Gamepad.sThumbRX < 0.0f) {
+				guideUI_->SetStickState(GuideUI::RStickState::Left);
+			}
+			else {
+				guideUI_->SetStickState(GuideUI::RStickState::Neutral);
 			}
 		}
 	}

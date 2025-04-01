@@ -2,15 +2,23 @@
     "GuideUI": {
         "GuideAPosition": [
             96.0,
-            600.0
+            520.0
         ],
         "GuideASize": [
             96.0,
             96.0
         ],
-        "GuideJumpPosition": [
+        "GuideAimPosition": [
             200.0,
-            600.0
+            660.0
+        ],
+        "GuideAimSize": [
+            128.0,
+            64.0
+        ],
+        "GuideJumpPosition": [
+            210.0,
+            520.0
         ],
         "GuideJumpSize": [
             128.0,
@@ -18,15 +26,23 @@
         ],
         "GuideRBPosition": [
             96.0,
-            660.0
+            590.0
         ],
         "GuideRBSize": [
             96.0,
             96.0
         ],
-        "GuideWirePosition": [
-            200.0,
+        "GuideRStickPosition": [
+            96.0,
             660.0
+        ],
+        "GuideRStickSize": [
+            96.0,
+            96.0
+        ],
+        "GuideWirePosition": [
+            180.0,
+            600.0
         ],
         "GuideWireSize": [
             128.0,

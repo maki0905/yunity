@@ -36,6 +36,12 @@ namespace yunity {
 			kMultiply // 乗算
 		};
 
+		enum class CoordinateAxes {
+			X,
+			Y,
+			Z
+		};
+
 		// 衝突情報
 		struct PersistentManifold {
 			float massA;
@@ -193,7 +199,7 @@ namespace yunity {
 		void SetTranslation(Vector3 translation) { worldTransform_->translation_ = translation; }
 		void SetMatTranslation(Vector3 translation) { worldTransform_->matWorld_.m[3][0] = translation.x, worldTransform_->matWorld_.m[3][1] = translation.y, worldTransform_->matWorld_.m[3][2] = translation.z; }
 		void SetFixedMove(std::array<bool, 3> fixedMove) { fixedMove_ = fixedMove; }
-		void SetFixedMove(int axis, bool fixedMove) { fixedMove_[axis] = fixedMove; }
+		void SetFixedMove(CoordinateAxes axis, bool fixedMove) { fixedMove_[static_cast<int>(axis)] = fixedMove; }
 
 	private:
 

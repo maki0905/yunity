@@ -31,15 +31,15 @@ void Pose::Initialize(Player* player)
 
 	// ポーズボタン
 	poseBotton_ = std::make_unique<yunity::Sprite>();
-	poseBotton_.reset(yunity::Sprite::Create(yunity::TextureManager::GetInstance()->Load("poseBotton.png"), poseBottonPosition, { 1.0f, 1.0f, 1.0f, 1.0f }, {0.5f, 0.5f}));
+	poseBotton_.reset(yunity::Sprite::Create(yunity::TextureManager::GetInstance()->Load("poseBotton.png"), poseBottonPosition, { 1.0f, 1.0f, 1.0f, 1.0f }, yunity::Sprite::halfAnchorPoint_));
 	poseBotton_->SetSize(poseBottonSize);
 	// ポーズフォント
 	pose_ = std::make_unique<yunity::Sprite>();
-	pose_.reset(yunity::Sprite::Create(yunity::TextureManager::GetInstance()->Load("pose.png"), posePosition, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.5f, 0.5f }));
+	pose_.reset(yunity::Sprite::Create(yunity::TextureManager::GetInstance()->Load("pose.png"), posePosition, { 1.0f, 1.0f, 1.0f, 1.0f }, yunity::Sprite::halfAnchorPoint_));
 	pose_->SetSize(poseSize);
 	//ポーズ画面
 	poseBase_ = std::make_unique<yunity::Sprite>();
-	poseBase_.reset(yunity::Sprite::Create(yunity::TextureManager::GetInstance()->Load("poseBase.png"), poseBasePosition, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.5f, 0.5f }));
+	poseBase_.reset(yunity::Sprite::Create(yunity::TextureManager::GetInstance()->Load("poseBase.png"), poseBasePosition, { 1.0f, 1.0f, 1.0f, 1.0f }, yunity::Sprite::halfAnchorPoint_));
 	
 	// ポーズの背景
 	poseBack_ = std::make_unique<yunity::Sprite>();
@@ -47,19 +47,19 @@ void Pose::Initialize(Player* player)
 	poseBack_->SetSize({ yunity::WindowsAPI::kWindowWidth, yunity::WindowsAPI::kWindowHeight });
 	// タイトルフォント
 	title_ = std::make_unique<yunity::Sprite>();
-	title_.reset(yunity::Sprite::Create(yunity::TextureManager::GetInstance()->Load("title.png"), titlePosition, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.5f, 0.5f }));
+	title_.reset(yunity::Sprite::Create(yunity::TextureManager::GetInstance()->Load("title.png"), titlePosition, { 1.0f, 1.0f, 1.0f, 1.0f }, yunity::Sprite::halfAnchorPoint_));
 	title_->SetSize(titleSize);
 	// つづきフォント
 	continuation_ = std::make_unique<yunity::Sprite>();
-	continuation_.reset(yunity::Sprite::Create(yunity::TextureManager::GetInstance()->Load("continuation.png"), continuationPosition, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.5f, 0.5f }));
+	continuation_.reset(yunity::Sprite::Create(yunity::TextureManager::GetInstance()->Load("continuation.png"), continuationPosition, { 1.0f, 1.0f, 1.0f, 1.0f }, yunity::Sprite::halfAnchorPoint_));
 	continuation_->SetSize(continuationSize);
 	// リスタートフォント
 	restart_ = std::make_unique<yunity::Sprite>();
-	restart_.reset(yunity::Sprite::Create(yunity::TextureManager::GetInstance()->Load("restart.png"), restartPosition, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.5f, 0.5f }));
+	restart_.reset(yunity::Sprite::Create(yunity::TextureManager::GetInstance()->Load("restart.png"), restartPosition, { 1.0f, 1.0f, 1.0f, 1.0f }, yunity::Sprite::halfAnchorPoint_));
 	restart_->SetSize(restartSize);
 	// セレクター
 	selecter_ = std::make_unique<yunity::Sprite>();
-	selecter_.reset(yunity::Sprite::Create(yunity::TextureManager::GetInstance()->Load("yellow1x1.png"), {0.0f, 0.0f}, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.5f, 0.5f }));
+	selecter_.reset(yunity::Sprite::Create(yunity::TextureManager::GetInstance()->Load("yellow1x1.png"), {0.0f, 0.0f}, { 1.0f, 1.0f, 1.0f, 1.0f }, yunity::Sprite::halfAnchorPoint_));
 	selecter_->SetSize(selectSize);
 	selecter_->SetPosition(continuation_->GetPosition());
 

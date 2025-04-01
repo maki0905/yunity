@@ -26,13 +26,13 @@ void Score::Initialize()
 	// スコア背景
 	scoreBackground_ = std::make_unique<yunity::Sprite>();
 	scoreBackground_.reset(yunity::Sprite::Create(yunity::TextureManager::GetInstance()->Load("ScoreBack.png"), scorePosition_));
-	scoreBackground_->SetAnchorPoint({ 0.5f, 0.5f });
+	scoreBackground_->SetAnchorPoint(yunity::Sprite::halfAnchorPoint_);
 	scoreBackground_->SetSize(scoreBackSize_);
 
 	// ハイスコア
 	hiScore_ = std::make_unique<yunity::Sprite>();
 	hiScore_.reset(yunity::Sprite::Create(yunity::TextureManager::GetInstance()->Load("hiscore.png"), { 0.0f, 0.0f }));
-	hiScore_->SetAnchorPoint({ 0.5f, 0.5f });
+	hiScore_->SetAnchorPoint(yunity::Sprite::halfAnchorPoint_);
 	hiScore_->SetSize(minHiScoreSize_);
 	isHiScore_ = false;
 
@@ -40,7 +40,7 @@ void Score::Initialize()
 	for (int index = 0; index < maxDigit; index++) {
 		scoreNumber_[index] = std::make_unique<yunity::Sprite>();
 		scoreNumber_[index].reset(yunity::Sprite::Create(yunity::TextureManager::GetInstance()->Load("numberWhite.png"), scorePosition_));
-		scoreNumber_[index]->SetAnchorPoint({ 0.5f, 0.5f });
+		scoreNumber_[index]->SetAnchorPoint(yunity::Sprite::halfAnchorPoint_);
 		scoreNumber_[index]->SetSize(scoreNumberSize_);
 		scoreNumber_[index]->SetTextureRect(scoreNumberTexBase_, { scoreNumberTextureSize_, scoreNumberTextureSize_ });
 	}

@@ -40,9 +40,9 @@ void TitleScene::Initialize()
 	world_->Initialize(gravity_);
 
 	bottonSprite_ = std::make_unique<yunity::Sprite>();
-	bottonSprite_.reset(yunity::Sprite::Create(yunity::TextureManager::GetInstance()->Load("ABotton.dds"), spritePos_));
+	bottonSprite_.reset(yunity::Sprite::Create(yunity::TextureManager::GetInstance()->Load("AButton.dds"), spritePos_));
 	bottonPushSprite_ = std::make_unique<yunity::Sprite>();
-	bottonPushSprite_.reset(yunity::Sprite::Create(yunity::TextureManager::GetInstance()->Load("ABottonPush.png"), spritePos_));
+	bottonPushSprite_.reset(yunity::Sprite::Create(yunity::TextureManager::GetInstance()->Load("AButtonPush.png"), spritePos_));
 	time_ = 0;
 
 	yunity::Model::DirectionalLight l = { .color = directionLight.color, .direction = directionLight.direction, .intensity = directionLight.intensity };

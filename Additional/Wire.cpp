@@ -29,9 +29,9 @@ void Wire::Initialize(yunity::Camera* camera, yunity::World* world, yunity::Worl
 
 	// 2Dレティクル
 	reticle_ = std::make_unique<yunity::Sprite>();
-	reticle_.reset(yunity::Sprite::Create(yunity::TextureManager::GetInstance()->Load("offReticle.png"), { 0.0f, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.5f, 0.5f }));
+	reticle_.reset(yunity::Sprite::Create(yunity::TextureManager::GetInstance()->Load("offReticle.png"), { 0.0f, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }, yunity::Sprite::halfAnchorPoint_));
 	landingPoint_ = std::make_unique<yunity::Sprite>();
-	landingPoint_.reset(yunity::Sprite::Create(yunity::TextureManager::GetInstance()->Load("onReticle.png"), { 0.0f, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.5f, 0.5f }));
+	landingPoint_.reset(yunity::Sprite::Create(yunity::TextureManager::GetInstance()->Load("onReticle.png"), { 0.0f, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }, yunity::Sprite::halfAnchorPoint_));
 	reticleWorldTransform_.Initialize();
 	reticleWorldTransform_.parent_ = worldTransform;
 	landingPointWorldTrans_.Initialize();

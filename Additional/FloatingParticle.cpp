@@ -16,20 +16,14 @@ void FloatingParticle::Initialize(yunity::Camera* camera)
 	particles_.clear();
 	angle_ = 0.0f;
 	isLerp_ = false;
-	yunity::GlobalVariables* globalVariables = yunity::GlobalVariables::GetInstance();
-	const char* groupName = "FloatingParticle";
-	lifeTime_ = globalVariables->GetFloatValue(groupName, "LifeTime");
-	power_ = globalVariables->GetFloatValue(groupName, "Power");
-	speedDegree_ = globalVariables->GetFloatValue(groupName, "SpeedDegree");
-	minPosition_ = globalVariables->GetVector3Value(groupName, "MinPosition");
-	maxPosition_ = globalVariables->GetVector3Value(groupName, "MaxPosition");
+	ApplyGlobalVariables();
 }
 
 void FloatingParticle::Spawn(const Vector3& position)
 {
 	particles_.clear();
 	centerPosition_ = position;
-	for (uint32_t i = 0; i < 5; ++i) {
+	for (uint32_t i = 0; i < spawnCount_; ++i) {
 		Particle particle;
 		particle.transform.translate = position;
 		particle.transform.translate = Add(position, { rng.NextFloatRange(minPosition_.x, maxPosition_.x), rng.NextFloatRange(minPosition_.y, maxPosition_.y), rng.NextFloatRange(minPosition_.z, maxPosition_.z) });
@@ -48,7 +42,7 @@ void FloatingParticle::Update()
 	angle_ += speedDegree_ * DegToRad() * yunity::fixedTimeStep_;
 	for (auto& particle : particles_) {
 		if (Length(targetPosition_) > 0.0f) {
-			float t = 1.0f - std::powf(1.0f - particle.currentTime, 2);
+			float t = 1.0f - std::powf(1.0f - particle.currentTime, index_);
 			particle.transform.translate = Lerp(particle.transform.translate, targetPosition_, t);
 			particle.transform.translate = Add(particle.transform.translate, { 0.0f, particle.velocity.y * std::cosf(particle.currentTime * particle.velocity.y), 0.0f });
 			particle.particleForCPU.color.w = 1.0f - (particle.currentTime / particle.lifeTime);
@@ -71,6 +65,14 @@ void FloatingParticle::Update()
 	}
 
 #ifdef _DEBUG
+	ApplyGlobalVariables();
+#endif // _DEBUG
+
+
+}
+
+void FloatingParticle::ApplyGlobalVariables()
+{
 	yunity::GlobalVariables* globalVariables = yunity::GlobalVariables::GetInstance();
 	const char* groupName = "FloatingParticle";
 	lifeTime_ = globalVariables->GetFloatValue(groupName, "LifeTime");
@@ -78,7 +80,6 @@ void FloatingParticle::Update()
 	speedDegree_ = globalVariables->GetFloatValue(groupName, "SpeedDegree");
 	minPosition_ = globalVariables->GetVector3Value(groupName, "MinPosition");
 	maxPosition_ = globalVariables->GetVector3Value(groupName, "MaxPosition");
-#endif // _DEBUG
-
-
+	spawnCount_ = globalVariables->GetIntValue(groupName, "SpawnCount");
+	index_ = globalVariables->GetFloatValue(groupName, "Index");
 }

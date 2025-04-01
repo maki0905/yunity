@@ -14,6 +14,17 @@ public:
 		Wire
 	};
 
+	enum class ButtonState {
+		Off,
+		On
+	};
+
+	enum class RStickState {
+		Neutral,
+		Left,
+		Right
+	};
+
 public:
 	/// <summary>
 	/// 初期化
@@ -26,11 +37,17 @@ public:
 	void Draw();
 
 	/// <summary>
-	/// テクスチャハンドル
+	/// ボタンのテクスチャを設定
 	/// </summary>
 	/// <param name="type"></param>
 	/// <param name="num"></param>
-	void SetTexrture(GuideType type, int num);
+	void SetButtonState(GuideType type, ButtonState state);
+
+	/// <summary>
+	/// スティックのテクスチャを設定
+	/// </summary>
+	/// <param name="state"></param>
+	void SetStickState(RStickState state);
 
 	/// <summary>
 	/// 外部ファイルからデータ読み込み
@@ -49,6 +66,12 @@ private:
 	Vector2 guideRBPosition_;
 	Vector2 guideRBSize_;
 
+	// Rスティック
+	std::unique_ptr<yunity::Sprite> guideRStick_;
+	std::array<uint32_t, 3> guideRStickTexture_;
+	Vector2 guideRStickPosition_;
+	Vector2 guideRStickSize_;
+
 	// ジャンプ
 	std::unique_ptr<yunity::Sprite> guideJump_;
 	Vector2 guideJumpPosition_;
@@ -59,5 +82,10 @@ private:
 	std::array<uint32_t, 2> guideWireTexture_;
 	Vector2 guideWirePosition_;
 	Vector2 guideWireSize_;
+
+	// エイム
+	std::unique_ptr<yunity::Sprite> guideAim_;
+	Vector2 guideAimPosition_;
+	Vector2 guideAimSize_;
 
 };

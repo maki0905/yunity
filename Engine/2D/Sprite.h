@@ -164,6 +164,9 @@ namespace yunity {
 		/// </summary>
 		void Draw();
 
+	public:
+		static inline const Vector2 halfAnchorPoint_ = { 0.5f, 0.5f };
+
 	private:
 		// 頂点バッファ
 		Microsoft::WRL::ComPtr<ID3D12Resource> vertBuff_;
