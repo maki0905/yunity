@@ -6,7 +6,7 @@
 #include "SceneManager.h"
 #include "CommonData.h"
 #include "Sprite.h"
-#include "Tradition.h"
+#include "Tradition/Tradition.h"
 #include "EngineTimeStep.h"
 #include "RenderTexture.h"
 #include "WindowsAPI.h"

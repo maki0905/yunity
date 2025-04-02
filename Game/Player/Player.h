@@ -8,7 +8,7 @@
 #include "Model.h"
 #include "WorldTransform.h"
 #include "Object3D.h"
-#include "Score.h"
+#include "Score/Score.h"
 
 #include "SpringJoint.h"
 #include "FixedJoint.h"
@@ -16,10 +16,10 @@
 #include "SmokeParticle.h"
 #include "FireworksParticle.h"
 
-#include "Wire.h"
-#include "GuideUI.h"
+#include "Wire/Wire.h"
+#include "GuideUI/GuideUI.h"
 #include "PlayerProduction.h"
-#include "Pose.h"
+#include "Pose/Pose.h"
 
 
 namespace yunity {

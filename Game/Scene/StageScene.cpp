@@ -7,7 +7,7 @@
 #include "SceneManager.h"
 #include "ModelManager.h"
 #include "CommonData.h"
-#include "Tradition.h"
+#include "Tradition/Tradition.h"
 #include "RenderTexture.h"
 #include "GlobalVariables.h"
 

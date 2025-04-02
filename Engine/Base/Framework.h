@@ -24,7 +24,6 @@
 #include "ModelManager.h"
 #include "CSV.h"
 #include "SkyBox.h"
-#include "ObjectManager.h"
 
 namespace yunity {
 	/*

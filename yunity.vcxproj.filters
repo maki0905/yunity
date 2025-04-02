@@ -249,13 +249,13 @@
     <ClCompile Include="Engine\Scene\IScene.cpp">
       <Filter>Engine\Scene</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Scene\TitleScene.cpp">
+    <ClCompile Include="Game\Scene\TitleScene.cpp">
       <Filter>Engine\Scene</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Scene\StageScene.cpp">
+    <ClCompile Include="Game\Scene\StageScene.cpp">
       <Filter>Engine\Scene</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Scene\ClearScene.cpp">
+    <ClCompile Include="Game\Scene\ClearScene.cpp">
       <Filter>Engine\Scene</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Utility\Logger.cpp">
@@ -291,7 +291,7 @@
     <ClCompile Include="Engine\Manager\ParticleManager.cpp">
       <Filter>Engine\3D\Particle</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Particle\FireworksParticle.cpp">
+    <ClCompile Include="Game\Particle\FireworksParticle.cpp">
       <Filter>Engine\3D\Particle</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Particle\BaseParticle.cpp">
@@ -300,7 +300,7 @@
     <ClCompile Include="Engine\Utility\PrimitiveDrawer.cpp">
       <Filter>Engine\Utility\PrimitiveDrawer</Filter>
     </ClCompile>
-    <ClCompile Include="Additional\Player.cpp">
+    <ClCompile Include="Game\Player\Player.cpp">
       <Filter>Add</Filter>
     </ClCompile>
     <ClCompile Include="Engine\3D\Animation.cpp">
@@ -318,7 +318,7 @@
     <ClCompile Include="Engine\Manager\CameraManager.cpp">
       <Filter>Engine\3D\Camera</Filter>
     </ClCompile>
-    <ClCompile Include="Additional\Coin.cpp">
+    <ClCompile Include="Game\Coin\Coin.cpp">
       <Filter>Add</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Physics\Collider.cpp">
@@ -351,7 +351,7 @@
     <ClCompile Include="Engine\Manager\ModelManager.cpp">
       <Filter>Engine\3D\Model</Filter>
     </ClCompile>
-    <ClCompile Include="Additional\MoveFloor.cpp">
+    <ClCompile Include="Game\MoveFloor\MoveFloor.cpp">
       <Filter>Add</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Math\OBB.cpp">
@@ -363,10 +363,10 @@
     <ClCompile Include="Engine\Manager\BaseObjectManager.cpp">
       <Filter>Engine\base\Object</Filter>
     </ClCompile>
-    <ClCompile Include="Additional\TV.cpp">
+    <ClCompile Include="Game\TV\TV.cpp">
       <Filter>Add</Filter>
     </ClCompile>
-    <ClCompile Include="Additional\Score.cpp">
+    <ClCompile Include="Game\Score\Score.cpp">
       <Filter>Add</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Particle\ParticleEmitter.cpp">
@@ -411,7 +411,7 @@
     <ClCompile Include="Engine\Utility\Format.cpp">
       <Filter>Engine\Utility\Format</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Scene\Tradition.cpp">
+    <ClCompile Include="Game\Tradition\Tradition.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Physics\Joint.cpp">
@@ -423,55 +423,55 @@
     <ClCompile Include="Engine\Physics\Shape.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Additional\SpringBoard.cpp">
+    <ClCompile Include="Game\SpringBoard\SpringBoard.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Physics\FixedJoint.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Additional\ObjectManager.cpp">
+    <ClCompile Include="Game\ObjectManager\ObjectManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Additional\SmokeParticle.cpp">
+    <ClCompile Include="Game\Particle\SmokeParticle.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Additional\PointParticle.cpp">
+    <ClCompile Include="Game\Particle\PointParticle.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Additional\ForceField.cpp">
+    <ClCompile Include="Game\ForceField\ForceField.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Additional\WindParticle.cpp">
+    <ClCompile Include="Game\Particle\WindParticle.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Additional\RotationCube.cpp">
+    <ClCompile Include="Game\RotationCube\RotationCube.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Additional\FloatingParticle.cpp">
+    <ClCompile Include="Game\Particle\FloatingParticle.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Additional\Signboard.cpp">
+    <ClCompile Include="Game\Signboard\Signboard.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Additional\SelectTV.cpp">
+    <ClCompile Include="Game\SelectTV\SelectTV.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Additional\CheckPoint.cpp">
+    <ClCompile Include="Game\CheckPoint\CheckPoint.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Engine\3D\DirectionLight.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Additional\Wire.cpp">
+    <ClCompile Include="Game\Wire\Wire.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Additional\GuideUI.cpp">
+    <ClCompile Include="Game\GuideUI\GuideUI.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Additional\PlayerProduction.cpp">
+    <ClCompile Include="Game\Player\PlayerProduction.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Additional\Pose.cpp">
+    <ClCompile Include="Game\Pose\Pose.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -578,13 +578,13 @@
     <ClInclude Include="Engine\Scene\IScene.h">
       <Filter>Engine\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Scene\TitleScene.h">
+    <ClInclude Include="Game\Scene\TitleScene.h">
       <Filter>Engine\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Scene\StageScene.h">
+    <ClInclude Include="Game\Scene\StageScene.h">
       <Filter>Engine\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Scene\ClearScene.h">
+    <ClInclude Include="Game\Scene\ClearScene.h">
       <Filter>Engine\Scene</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Utility\Logger.h">
@@ -611,7 +611,7 @@
     <ClInclude Include="Engine\Audio\Audio.h">
       <Filter>Engine\Audio</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Particle\FireworksParticle.h">
+    <ClInclude Include="Game\Particle\FireworksParticle.h">
       <Filter>Engine\3D\Particle</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Particle\Particle.h">
@@ -632,13 +632,13 @@
     <ClInclude Include="Engine\Math\Transform.h">
       <Filter>Engine\math\ヘッダー</Filter>
     </ClInclude>
-    <ClInclude Include="Additional\Player.h">
+    <ClInclude Include="Game\Player\Player.h">
       <Filter>Add</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Particle\ParticleEmitter.h">
       <Filter>Engine\3D\Particle</Filter>
     </ClInclude>
-    <ClInclude Include="Additional\Coin.h">
+    <ClInclude Include="Game\Coin\Coin.h">
       <Filter>Add</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Scene\AbstractSceneFactory.h">
@@ -650,7 +650,7 @@
     <ClInclude Include="Engine\Utility\CSV.h">
       <Filter>Engine\Utility\CSV</Filter>
     </ClInclude>
-    <ClInclude Include="Additional\MoveFloor.h">
+    <ClInclude Include="Game\MoveFloor\MoveFloor.h">
       <Filter>Add</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Scene\SceneFactory.h">
@@ -659,13 +659,13 @@
     <ClInclude Include="Engine\Manager\SceneManager.h">
       <Filter>Engine\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="Additional\Score.h">
+    <ClInclude Include="Game\Score\Score.h">
       <Filter>Add</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Scene\SelectScene.h">
       <Filter>Engine\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="Additional\TV.h">
+    <ClInclude Include="Game\TV\TV.h">
       <Filter>Add</Filter>
     </ClInclude>
     <ClInclude Include="Engine\3D\Animation.h">
@@ -764,7 +764,7 @@
     <ClInclude Include="Engine\Utility\Format.h">
       <Filter>Engine\Utility\Format</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Scene\Tradition.h">
+    <ClInclude Include="Game\Tradition\Tradition.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Math\Matrix3x3.h">
@@ -779,10 +779,10 @@
     <ClInclude Include="Engine\Physics\Shape.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Base\Tag.h">
+    <ClInclude Include="Game\Tag.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Additional\SpringBoard.h">
+    <ClInclude Include="Game\SpringBoard\SpringBoard.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Physics\FixedJoint.h">
@@ -791,55 +791,55 @@
     <ClInclude Include="Engine\Core\ResourceLeakChecker.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Additional\ObjectManager.h">
+    <ClInclude Include="Game\ObjectManager\ObjectManager.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Additional\SmokeParticle.h">
+    <ClInclude Include="Game\Particle\SmokeParticle.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Additional\PointParticle.h">
+    <ClInclude Include="Game\Particle\PointParticle.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Utility\EngineTimeStep.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Additional\ForceField.h">
+    <ClInclude Include="Game\ForceField\ForceField.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Additional\WindParticle.h">
+    <ClInclude Include="Game\Particle\WindParticle.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Additional\RotationCube.h">
+    <ClInclude Include="Game\RotationCube\RotationCube.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Physics\JointData.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Additional\FloatingParticle.h">
+    <ClInclude Include="Game\Particle\FloatingParticle.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Additional\Signboard.h">
+    <ClInclude Include="Game\Signboard\Signboard.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Additional\SelectTV.h">
+    <ClInclude Include="Game\SelectTV\SelectTV.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Additional\CheckPoint.h">
+    <ClInclude Include="Game\CheckPoint\CheckPoint.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Engine\3D\DirectionLight.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Additional\Wire.h">
+    <ClInclude Include="Game\Wire\Wire.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Additional\GuideUI.h">
+    <ClInclude Include="Game\GuideUI\GuideUI.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Additional\PlayerProduction.h">
+    <ClInclude Include="Game\Player\PlayerProduction.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Additional\Pose.h">
+    <ClInclude Include="Game\Pose\Pose.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>

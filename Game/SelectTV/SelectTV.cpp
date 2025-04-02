@@ -1,6 +1,6 @@
 #include "SelectTV.h"
 
-#include "Tradition.h"
+#include "Tradition/Tradition.h"
 #include "EngineTimeStep.h"
 #include "MathFunction.h"
 #include "RenderTexture.h"

@@ -61,7 +61,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalIncludeDirectories>$(ProjectDir)Externals\assimp\include;$(ProjectDir)Engine;$(ProjectDir)Engine\2D;$(ProjectDir)Engine\3D;$(ProjectDir)Engine\Audio;$(ProjectDir)Engine\Base;$(ProjectDir)Engine\Core;$(ProjectDir)Engine\Input;$(ProjectDir)Engine\Math;$(ProjectDir)Engine\Scene;$(ProjectDir)Engine\Utility;$(ProjectDir)Engine\Physics;$(ProjectDir)Engine\base;$(ProjectDir)Externals;$(ProjectDir)Externals\imgui;$(ProjectDir)Externals\nlohmann;$(ProjectDir)Additional;$(ProjectDir)imgui;$(ProjectDir)Engine\Manager;$(ProjectDir)Engine\Particle;$(ProjectDir)Engine\PostEffect;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)Externals\assimp\include;$(ProjectDir)Engine;$(ProjectDir)Engine\2D;$(ProjectDir)Engine\3D;$(ProjectDir)Engine\Audio;$(ProjectDir)Engine\Base;$(ProjectDir)Engine\Core;$(ProjectDir)Engine\Input;$(ProjectDir)Engine\Math;$(ProjectDir)Engine\Scene;$(ProjectDir)Engine\Utility;$(ProjectDir)Engine\Physics;$(ProjectDir)Engine\base;$(ProjectDir)Externals;$(ProjectDir)Externals\imgui;$(ProjectDir)Externals\nlohmann;$(ProjectDir)Additional;$(ProjectDir)imgui;$(ProjectDir)Engine\Manager;$(ProjectDir)Engine\PostEffect;$(ProjectDir)Engine\Particle;$(ProjectDir)Game;$(ProjectDir)Game\Scene;$(ProjectDir)Game\Particle;$(ProjectDir)Game\Player;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <TreatWarningAsError>true</TreatWarningAsError>
@@ -108,28 +108,28 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Additional\CheckPoint.cpp" />
-    <ClCompile Include="Additional\Coin.cpp" />
-    <ClCompile Include="Additional\FloatingParticle.cpp" />
-    <ClCompile Include="Additional\ForceField.cpp" />
-    <ClCompile Include="Additional\GuideUI.cpp" />
-    <ClCompile Include="Additional\ObjectManager.cpp" />
-    <ClCompile Include="Additional\PlayerProduction.cpp" />
-    <ClCompile Include="Additional\PointParticle.cpp" />
-    <ClCompile Include="Additional\Pose.cpp" />
-    <ClCompile Include="Additional\RotationCube.cpp" />
-    <ClCompile Include="Additional\Score.cpp" />
-    <ClCompile Include="Additional\SelectTV.cpp" />
-    <ClCompile Include="Additional\Signboard.cpp" />
-    <ClCompile Include="Additional\SmokeParticle.cpp" />
-    <ClCompile Include="Additional\SpringBoard.cpp" />
-    <ClCompile Include="Additional\TV.cpp" />
-    <ClCompile Include="Additional\WindParticle.cpp" />
-    <ClCompile Include="Additional\Wire.cpp" />
+    <ClCompile Include="Game\CheckPoint\CheckPoint.cpp" />
+    <ClCompile Include="Game\Coin\Coin.cpp" />
+    <ClCompile Include="Game\Particle\FloatingParticle.cpp" />
+    <ClCompile Include="Game\ForceField\ForceField.cpp" />
+    <ClCompile Include="Game\GuideUI\GuideUI.cpp" />
+    <ClCompile Include="Game\ObjectManager\ObjectManager.cpp" />
+    <ClCompile Include="Game\Player\PlayerProduction.cpp" />
+    <ClCompile Include="Game\Particle\PointParticle.cpp" />
+    <ClCompile Include="Game\Pose\Pose.cpp" />
+    <ClCompile Include="Game\RotationCube\RotationCube.cpp" />
+    <ClCompile Include="Game\Score\Score.cpp" />
+    <ClCompile Include="Game\SelectTV\SelectTV.cpp" />
+    <ClCompile Include="Game\Signboard\Signboard.cpp" />
+    <ClCompile Include="Game\Particle\SmokeParticle.cpp" />
+    <ClCompile Include="Game\SpringBoard\SpringBoard.cpp" />
+    <ClCompile Include="Game\TV\TV.cpp" />
+    <ClCompile Include="Game\Particle\WindParticle.cpp" />
+    <ClCompile Include="Game\Wire\Wire.cpp" />
     <ClCompile Include="Engine\3D\DirectionLight.cpp" />
     <ClCompile Include="Engine\Particle\BaseParticle.cpp" />
     <ClCompile Include="Engine\Manager\CameraManager.cpp" />
-    <ClCompile Include="Engine\Particle\FireworksParticle.cpp" />
+    <ClCompile Include="Game\Particle\FireworksParticle.cpp" />
     <ClCompile Include="Engine\Manager\ModelManager.cpp" />
     <ClCompile Include="Engine\Particle\Particle.cpp" />
     <ClCompile Include="Engine\Particle\ParticleEmitter.cpp" />
@@ -151,7 +151,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Engine\Physics\Joint.cpp" />
     <ClCompile Include="Engine\Physics\PulleyJoint.cpp" />
     <ClCompile Include="Engine\Physics\Shape.cpp" />
-    <ClCompile Include="Engine\Scene\Tradition.cpp" />
+    <ClCompile Include="Game\Tradition\Tradition.cpp" />
     <ClCompile Include="Engine\Utility\Format.cpp" />
     <ClCompile Include="Engine\Base\LevelEditor.cpp" />
     <ClCompile Include="Engine\Math\OBB.cpp" />
@@ -163,7 +163,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Engine\Core\RenderTexture.cpp" />
     <ClCompile Include="Engine\PostEffect\PostEffect.cpp" />
     <ClCompile Include="Engine\Physics\RayCast.cpp" />
-    <ClCompile Include="Engine\Scene\ClearScene.cpp" />
+    <ClCompile Include="Game\Scene\ClearScene.cpp" />
     <ClCompile Include="Engine\Core\CommandList.cpp" />
     <ClCompile Include="Engine\Core\CommandQueue.cpp" />
     <ClCompile Include="Engine\3D\DebugCamera.cpp" />
@@ -194,47 +194,47 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Engine\Core\RootSignature.cpp" />
     <ClCompile Include="Engine\Core\ShaderCompiler.cpp" />
     <ClCompile Include="Engine\2D\Sprite.cpp" />
-    <ClCompile Include="Engine\Scene\StageScene.cpp" />
+    <ClCompile Include="Game\Scene\StageScene.cpp" />
     <ClCompile Include="Engine\Utility\StringUtility.cpp" />
     <ClCompile Include="Engine\Core\SwapChain.cpp" />
     <ClCompile Include="Engine\3D\Model.cpp" />
     <ClCompile Include="Engine\2D\TextureManager.cpp" />
-    <ClCompile Include="Engine\Scene\TitleScene.cpp" />
+    <ClCompile Include="Game\Scene\TitleScene.cpp" />
     <ClCompile Include="Engine\3D\Camera.cpp" />
     <ClCompile Include="Engine\Core\WindowsAPI.cpp" />
     <ClCompile Include="Engine\3D\WorldTransform.cpp" />
     <ClCompile Include="Engine\Utility\PrimitiveDrawer.cpp" />
     <ClCompile Include="Engine\Base\Skydome.cpp" />
-    <ClCompile Include="Additional\Player.cpp" />
+    <ClCompile Include="Game\Player\Player.cpp" />
     <ClCompile Include="Engine\Particle\ParticleDrawer.cpp" />
-    <ClCompile Include="Additional\MoveFloor.cpp" />
+    <ClCompile Include="Game\MoveFloor\MoveFloor.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Additional\CheckPoint.h" />
-    <ClInclude Include="Additional\Coin.h" />
-    <ClInclude Include="Additional\FloatingParticle.h" />
-    <ClInclude Include="Additional\ForceField.h" />
-    <ClInclude Include="Additional\GuideUI.h" />
-    <ClInclude Include="Additional\ObjectManager.h" />
-    <ClInclude Include="Additional\PlayerProduction.h" />
-    <ClInclude Include="Additional\PointParticle.h" />
-    <ClInclude Include="Additional\Pose.h" />
-    <ClInclude Include="Additional\RotationCube.h" />
-    <ClInclude Include="Additional\Score.h" />
-    <ClInclude Include="Additional\SelectTV.h" />
-    <ClInclude Include="Additional\Signboard.h" />
-    <ClInclude Include="Additional\SmokeParticle.h" />
-    <ClInclude Include="Additional\SpringBoard.h" />
-    <ClInclude Include="Additional\TV.h" />
-    <ClInclude Include="Additional\WindParticle.h" />
-    <ClInclude Include="Additional\Wire.h" />
+    <ClInclude Include="Game\CheckPoint\CheckPoint.h" />
+    <ClInclude Include="Game\Coin\Coin.h" />
+    <ClInclude Include="Game\Particle\FloatingParticle.h" />
+    <ClInclude Include="Game\ForceField\ForceField.h" />
+    <ClInclude Include="Game\GuideUI\GuideUI.h" />
+    <ClInclude Include="Game\ObjectManager\ObjectManager.h" />
+    <ClInclude Include="Game\Player\PlayerProduction.h" />
+    <ClInclude Include="Game\Particle\PointParticle.h" />
+    <ClInclude Include="Game\Pose\Pose.h" />
+    <ClInclude Include="Game\RotationCube\RotationCube.h" />
+    <ClInclude Include="Game\Score\Score.h" />
+    <ClInclude Include="Game\SelectTV\SelectTV.h" />
+    <ClInclude Include="Game\Signboard\Signboard.h" />
+    <ClInclude Include="Game\Particle\SmokeParticle.h" />
+    <ClInclude Include="Game\SpringBoard\SpringBoard.h" />
+    <ClInclude Include="Game\TV\TV.h" />
+    <ClInclude Include="Game\Particle\WindParticle.h" />
+    <ClInclude Include="Game\Wire\Wire.h" />
     <ClInclude Include="Engine\3D\DirectionLight.h" />
-    <ClInclude Include="Engine\Base\Tag.h" />
+    <ClInclude Include="Game\Tag.h" />
     <ClInclude Include="Engine\Core\ResourceLeakChecker.h" />
     <ClInclude Include="Engine\Math\Matrix3x3.h" />
     <ClInclude Include="Engine\Particle\BaseParticle.h" />
     <ClInclude Include="Engine\Manager\CameraManager.h" />
-    <ClInclude Include="Engine\Particle\FireworksParticle.h" />
+    <ClInclude Include="Game\Particle\FireworksParticle.h" />
     <ClInclude Include="Engine\Manager\ModelManager.h" />
     <ClInclude Include="Engine\Particle\Particle.h" />
     <ClInclude Include="Engine\Particle\ParticleEmitter.h" />
@@ -258,7 +258,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\Physics\JointData.h" />
     <ClInclude Include="Engine\Physics\PulleyJoint.h" />
     <ClInclude Include="Engine\Physics\Shape.h" />
-    <ClInclude Include="Engine\Scene\Tradition.h" />
+    <ClInclude Include="Game\Tradition\Tradition.h" />
     <ClInclude Include="Engine\Utility\EngineTimeStep.h" />
     <ClInclude Include="Engine\Utility\Format.h" />
     <ClInclude Include="Engine\3D\Keyframe.h" />
@@ -277,7 +277,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\Core\RenderTexture.h" />
     <ClInclude Include="Engine\PostEffect\PostEffect.h" />
     <ClInclude Include="Engine\Scene\AbstractSceneFactory.h" />
-    <ClInclude Include="Engine\Scene\ClearScene.h" />
+    <ClInclude Include="Game\Scene\ClearScene.h" />
     <ClInclude Include="Engine\Core\CommandList.h" />
     <ClInclude Include="Engine\Core\CommandQueue.h" />
     <ClInclude Include="Engine\3D\DebugCamera.h" />
@@ -312,20 +312,20 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\Core\RootParameter.h" />
     <ClInclude Include="Engine\Core\RootSignature.h" />
     <ClInclude Include="Engine\Utility\PrimitiveDrawer.h" />
-    <ClInclude Include="Additional\Player.h" />
+    <ClInclude Include="Game\Player\Player.h" />
     <ClInclude Include="Engine\Particle\ParticleDrawer.h" />
     <ClInclude Include="Engine\Math\Random.h" />
-    <ClInclude Include="Additional\MoveFloor.h" />
+    <ClInclude Include="Game\MoveFloor\MoveFloor.h" />
     <ClInclude Include="SafeDelete.h" />
     <ClInclude Include="Engine\Core\ShaderCompiler.h" />
     <ClInclude Include="Engine\Math\Sphere.h" />
     <ClInclude Include="Engine\2D\Sprite.h" />
-    <ClInclude Include="Engine\Scene\StageScene.h" />
+    <ClInclude Include="Game\Scene\StageScene.h" />
     <ClInclude Include="Engine\Utility\StringUtility.h" />
     <ClInclude Include="Engine\Core\SwapChain.h" />
     <ClInclude Include="Engine\3D\Model.h" />
     <ClInclude Include="Engine\2D\TextureManager.h" />
-    <ClInclude Include="Engine\Scene\TitleScene.h" />
+    <ClInclude Include="Game\Scene\TitleScene.h" />
     <ClInclude Include="Engine\Math\Triangle.h" />
     <ClInclude Include="Engine\Math\Vecter2.h" />
     <ClInclude Include="Engine\Math\Vector3.h" />

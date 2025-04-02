@@ -2,7 +2,7 @@
 
 #include "GlobalVariables.h"
 #include "CommonData.h"
-#include "Tradition.h"
+#include "Tradition/Tradition.h"
 #include "Player.h"
 #include "EngineTimeStep.h"
 #include "RenderTexture.h"

@@ -9,7 +9,7 @@
 #include "World.h"
 #include "Player.h"
 #include "Skydome.h"
-#include "ObjectManager.h"
+#include "ObjectManager/ObjectManager.h"
 #include "DirectionLight.h"
 
 /*
