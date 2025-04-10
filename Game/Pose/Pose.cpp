@@ -5,11 +5,12 @@
 #include "WindowsAPI.h"
 #include "EngineTimeStep.h"
 #include "SceneManager.h"
-#include "Player.h"
+#include "Player/Player.h"
 #include "CommonData.h"
 
 void Pose::Initialize(Player* player)
 {
+    
 	yunity::GlobalVariables* globalVariables = yunity::GlobalVariables::GetInstance();
 	const char* groupName = "Pose";
 

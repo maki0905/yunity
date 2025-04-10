@@ -1,6 +1,6 @@
 #pragma once
 #include "Object3D.h"
-#include "WindParticle.h"
+#include "Particle/WindParticle.h"
 /*
 * @brief 回転オブジェクトクラス
 */

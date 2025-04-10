@@ -9,11 +9,11 @@
 #include "Model.h"
 #include "World.h"
 #include "SkyBox.h"
-#include "Player.h"
+#include "Player/Player.h"
 #include "ObjectManager/ObjectManager.h"
 #include "Skydome.h"
 #include "SpringBoard/SpringBoard.h"
-#include "FireworksParticle.h"
+#include "Particle/FireworksParticle.h"
 #include "Random.h"
 #include "DirectionLight.h"
 

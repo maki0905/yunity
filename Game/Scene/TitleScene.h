@@ -7,7 +7,7 @@
 #include "Sprite.h"
 #include "Model.h"
 #include "World.h"
-#include "Player.h"
+#include "Player/Player.h"
 #include "Skydome.h"
 #include "ObjectManager/ObjectManager.h"
 #include "DirectionLight.h"

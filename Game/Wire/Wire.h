@@ -10,7 +10,7 @@
 #include "Body.h"
 #include "SpringJoint.h"
 #include "FixedJoint.h"
-#include "PointParticle.h"
+#include "Particle/PointParticle.h"
 
 class Player;
 

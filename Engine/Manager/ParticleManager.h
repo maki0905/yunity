@@ -8,7 +8,7 @@
 #include "ParticleDrawer.h"
 #include "ParticleEmitter.h"
 
-#include "FireworksParticle.h"
+#include "Particle/FireworksParticle.h"
 
 class ParticleManager
 {

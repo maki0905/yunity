@@ -13,8 +13,8 @@
 #include "SpringJoint.h"
 #include "FixedJoint.h"
 
-#include "SmokeParticle.h"
-#include "FireworksParticle.h"
+#include "Particle/SmokeParticle.h"
+#include "Particle/FireworksParticle.h"
 
 #include "Wire/Wire.h"
 #include "GuideUI/GuideUI.h"

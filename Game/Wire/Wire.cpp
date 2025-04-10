@@ -1,7 +1,7 @@
 #include "Wire.h"
 
 #include "ModelManager.h"
-#include "Player.h"
+#include "Player/Player.h"
 #include "WindowsAPI.h"
 #include "RayCast.h"
 #include "CommonData.h"
