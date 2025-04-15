@@ -403,10 +403,13 @@ void yunity::Body::SolveConstraints()
 		// 摩擦
 		// 相対速度を計算
 		Vector3 tangentVelocity = Subtract(relativeVelocity, Multiply(velocityAlongNormal, c.contactNormal));
+		if (std::abs(Dot(c.contactNormal, world_->GetGravity())) < 0.01f) {
+			continue;
+		}
 		Vector3 frictionForce = Multiply(-magnitude_, tangentVelocity);
-		// 最大静止摩擦力を計算
+		// 摩擦力を計算
 		float maxStaticFriction = magnitude_ * impulseMagnitude;
-		if (Length(frictionForce) > maxStaticFriction) { // 静止摩擦力を超えた場合
+		if (Length(frictionForce) > maxStaticFriction) { 
 			frictionForce = Normalize(frictionForce);
 			frictionForce = Multiply(maxStaticFriction, frictionForce);
 		}

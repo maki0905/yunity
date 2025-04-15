@@ -57,6 +57,7 @@ void SelectTV::Update()
 						moveCameraTimer_ = 0.0f;
 						Tradition::GetInstance()->Initialize();
 						Tradition::GetInstance()->Start();
+						player_->SetVelocity({ 0.0f, player_->GetVelocity().y, 0.0f });
 						float lenght = Length(Subtract(Vector3(player_->GetMatWorldTranslation().x, 0.0f, 0.0f), Vector3(tvWorldTransform_.GetMatWorldTranslation().x, 0.0f, 0.0f)));
 						if (lenght == 0.0f) {
 							camera_->SetTarget(nullptr);

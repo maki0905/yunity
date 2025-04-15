@@ -28,7 +28,7 @@ void Player::Initialize(yunity::Camera* camera, yunity::World* world)
 	// 物理パラメータ設定
 	SetMass(mass_);
 	SetFirictionCombine(FrictionCombine::kAverage);
-	SetMiu(miu_);
+	SetMiu(minMiu_);
 	SetBounceCombine(BounceCombine::kMaximum);
 	SetBounciness(0.0f);
 	SetFixedMove(Body::CoordinateAxes::Z, true);
@@ -133,9 +133,11 @@ void Player::Update()
 			bool isMoving = false;
 			// 速さ
 			float speed = fixedSpeed_;
-			if (!isHit_ && /*!isWire_*/ !wire_->GetIsWire()) { // 空中時の速さ
+			if (!isHit_ && !wire_->GetIsWire()) { // 空中時の速さ
 				speed = floatSpeed_;
 			}
+
+			SetMiu(minMiu_);
 
 			// 移動量
 			if (wire_->GetIsWire()/*isWire_*/) { // ワイヤー使用時
@@ -162,6 +164,9 @@ void Player::Update()
 				move = Multiply(speed, move);
 
 				AddForce(move, Body::ForceMode::kImpulse);
+			}
+			else {
+				SetMiu(maxMiu_);
 			}
 
 			if ((pad_.Gamepad.wButtons & XINPUT_GAMEPAD_A) && !(prePad_.Gamepad.wButtons & XINPUT_GAMEPAD_A) && !isSelect_) {
@@ -395,7 +400,8 @@ void Player::ApplyGlobalVariables()
 
 	threshold_ = globalVariables->GetFloatValue(groupName, "Threshold");
 	mass_ = globalVariables->GetFloatValue(groupName, "Mass");
-	miu_ = globalVariables->GetFloatValue(groupName, "Miu");
+	minMiu_ = globalVariables->GetFloatValue(groupName, "MinMiu");
+	maxMiu_ = globalVariables->GetFloatValue(groupName, "MaxMiu");
 	limitLerpTime_ = globalVariables->GetFloatValue(groupName, "LimitLerpTime");
 	limitDisplayeTime_ = globalVariables->GetFloatValue(groupName, "LimitDisplayeTime");
 	scoreStartPosition_ = globalVariables->GetVector2Value(groupName, "ScoreStartPosition");

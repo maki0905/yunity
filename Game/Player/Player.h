@@ -147,7 +147,8 @@ private:
 
 	// プレイヤーの物理パラメータ
 	float mass_;
-	float miu_;
+	float minMiu_;
+	float maxMiu_;
 
 	// ワイヤー
 	std::unique_ptr<Wire> wire_;

@@ -24,7 +24,7 @@
         "DieUpTime": 4.0,
         "Drag": 0.0,
         "FixedSpeed": 2.0,
-        "FloatSpeed": 0.10000000149011612,
+        "FloatSpeed": 1.0,
         "GoalTime": 0.5,
         "HitBoxSize": [
             2.0,
@@ -40,7 +40,8 @@
         "LimitLerpTime": 0.5,
         "LimitSpeed": 20.0,
         "Mass": 2.0,
-        "Miu": 1.0,
+        "MinMiu": 0.0,
+        "MaxMiu" : 2.0,
         "ResetTime": 2.0,
         "ReticlePositionX": 3.0,
         "ScoreEndPosition": [
