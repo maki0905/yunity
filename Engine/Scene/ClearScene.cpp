@@ -5,6 +5,7 @@
 #include "LevelEditor.h"
 #include "CameraManager.h"
 #include "TextureManager.h"
+#include "ImGuiManager.h"
 
 void ClearScene::Initialize()
 {
