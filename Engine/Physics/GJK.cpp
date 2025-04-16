@@ -53,35 +53,73 @@ void yunity::GJKCalculation(Object3D* colliderA, Object3D* colliderB, World* wor
 
 void yunity::UpdateSimplex3(Point& a, Point& b, Point& c, Point& d, int& simp_dim, Vector3& search_dir)
 {
-	// 三角形の法線ベクトルを計算
-    Vector3 n = Cross(Subtract(b.point, a.point), Subtract(c.point, a.point));
-    // 原点への方向ベクトル
-    Vector3 AO = Multiply(-1.0f, a.point);
 
-    simp_dim = 2;
-    if (Dot(Cross(n, Subtract(c.point, a.point)), AO) > 0.0f) { // AB辺が最も近い
-		c = a; // 新しいSimplex
-		search_dir = Cross(Cross(Subtract(b.point, a.point), AO), Subtract(b.point, a.point)); // 新しい探索方向を設定
-        return;
-    }
-    if (Dot(Cross(n, Subtract(c.point, a.point)), AO) > 0.0f) { // AC辺が最も近い
-		b = a; // 新しいSimplex
-		search_dir = Cross(Cross(Subtract(c.point, a.point), AO), Subtract(c.point, a.point)); // 新しい探索方向を設定
-        return;
-    }
+	Vector3 AB = Subtract(b.point, a.point);
+	Vector3 AC = Subtract(c.point, a.point);
+	Vector3 AO = Multiply(-1.0f, a.point);
+	Vector3 n = Cross(AB, AC); // 法線（右手系）
 
-    simp_dim = 3;
-	if (Dot(n, AO) > 0.0f) { // 三角形ABC内に原点がある場合
-        d = c;
-        c = b;
-        b = a;
-        search_dir = n; // 法線方向に探索
-        return;
-    }
-    d = b; 
-    b = a;
-    search_dir = Multiply(-1.0f, n);
-    return;
+	// AB 辺の外側にあるか
+	if (Dot(Cross(n, AC), AO) > 0.0f) {
+		// AC 辺の外
+		b = a;
+		search_dir = Cross(Cross(AC, AO), AC).normalize();
+		simp_dim = 2;
+		return;
+	}
+
+	// AC 辺の外側にあるか
+	if (Dot(Cross(AB, n), AO) > 0.0f) {
+		// AB 辺の外
+		c = a;
+		search_dir = Cross(Cross(AB, AO), AB).normalize();
+		simp_dim = 2;
+		return;
+	}
+
+	// 原点が三角形の内側にある（平面内）
+	simp_dim = 3;
+	if (Dot(n, AO) > 0.0f) {
+		d = c;
+		c = b;
+		b = a;
+		search_dir = n;
+	}
+	else {
+		d = b;
+		b = a;
+		search_dir = Multiply(-1.0f, n);
+	}
+
+	//// 三角形の法線ベクトルを計算
+ //   Vector3 n = Cross(Subtract(b.point, a.point), Subtract(c.point, a.point));
+ //   // 原点への方向ベクトル
+ //   Vector3 AO = Multiply(-1.0f, a.point);
+
+ //   simp_dim = 2;
+ //   if (Dot(Cross(n, Subtract(b.point, a.point)), AO) > 0.0f) { // AB辺が最も近い
+	//	c = a; // 新しいSimplex
+	//	search_dir = Cross(Cross(Subtract(b.point, a.point), AO), Subtract(b.point, a.point)); // 新しい探索方向を設定
+ //       return;
+ //   }
+ //   if (Dot(Cross(n, Subtract(c.point, a.point)), AO) > 0.0f) { // AC辺が最も近い
+	//	b = a; // 新しいSimplex
+	//	search_dir = Cross(Cross(Subtract(c.point, a.point), AO), Subtract(c.point, a.point)); // 新しい探索方向を設定
+ //       return;
+ //   }
+
+ //   simp_dim = 3;
+	//if (Dot(n, AO) > 0.0f) { // 三角形ABC内に原点がある場合
+ //       d = c;
+ //       c = b;
+ //       b = a;
+ //       search_dir = n; // 法線方向に探索
+ //       return;
+ //   }
+ //   d = b; 
+ //   b = a;
+ //   search_dir = Multiply(-1.0f, n);
+ //   return;
 }
 
 bool yunity::UpdateSimplex4(Point& a, Point& b, Point& c, Point& d, int& simp_dim, Vector3& search_dir)
