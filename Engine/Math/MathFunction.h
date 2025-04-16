@@ -213,6 +213,14 @@ Vector3 GetZAxis(const Matrix4x4& m);
 /// <returns></returns>
 Vector3 ConvertToRadians(const Vector3& v);
 
+/// <summary>
+/// 
+/// </summary>
+/// <param name="v"></param>
+/// <param name="s"></param>
+/// <returns></returns>
+Vector3 Divide(const Vector3& v, float s);
+
 
 
 /// <summary>

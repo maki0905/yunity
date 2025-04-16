@@ -17,4 +17,5 @@ namespace yunity{
 	bool UpdateSimplex4(Point& a, Point& b, Point& c, Point& d, int& simp_dim, Vector3& search_dir);
 	void EPA(Point& a, Point& b, Point& c, Point& d, Object3D* colliderA, Object3D* colliderB, World* world);
 	void CalculateSearchPoint(Point& point, Vector3& search_dir, Object3D* colliderA, Object3D* colldierB);
+	bool PointsEqual(const Vector3& a, const Vector3& b, float epsilon = 1e-6f);
 }

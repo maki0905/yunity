@@ -188,6 +188,14 @@ Vector3 ConvertToRadians(const Vector3& v)
 	return result;
 }
 
+Vector3 Divide(const Vector3& v, float s)
+{
+	if (s == 0.0f) {
+		return Vector3(0.0f, 0.0f, 0.0f);
+	}
+	return Vector3(v.x / s, v.y / s, v.z / s);
+}
+
 Matrix4x4 Add(const Matrix4x4& m1, const Matrix4x4& m2) {
 	Matrix4x4 result;
 
