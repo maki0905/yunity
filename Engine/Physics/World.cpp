@@ -93,35 +93,65 @@ void yunity::World::SolveConstraints()
 		Vector3 relativeVelocity = Subtract(fullVelocityA, fullVelocityB);
 		float velocityAlongNormal = Dot(relativeVelocity, info.contactNormal);
 
-		if (info.colliderA->GetMass() != 0.0f) {
+
+		///　途中
+		float restitutionA = info.colliderA->GetRestitution(info.colliderB->GetBounciness());
+		float restitutionB = info.colliderB->GetRestitution(info.colliderA->GetBounciness());
+		float restitution = 0.5f * (restitutionA + restitutionB);
+
+		float impulseMag = -(1.0f + restitution) * velocityAlongNormal / (totalMass + angularEffect);
+		Vector3 impulse = Multiply(impulseMag, info.contactNormal);
+
+		if (info.colliderA->GetMass() > 0.0f) {
 			// 位置補正
 			info.colliderA->PositionalCorrection(totalMass, -info.penetrationDepth, info.contactNormal);
-
-			float restitution = info.colliderA->GetRestitution(info.colliderB->GetBounciness());
-
-			float impulseMagnitude = (-(1.0f + restitution) * velocityAlongNormal / (totalMass + angularEffect));
-
-			Vector3 impulse = Multiply(impulseMagnitude, info.contactNormal);
-
 			// 反発力を適用
 			info.colliderA->AddForce(impulse, Body::ForceMode::kImpulse);
 			info.colliderA->AddTorque(Cross(info.localPointA, impulse), Body::ForceMode::kImpulse);
 		}
-		if (info.colliderB->GetMass() != 0.0f) {
+
+		if (info.colliderB->GetMass() > 0.0f) {
 			// 位置補正
-			info.colliderB->PositionalCorrection(totalMass, info.penetrationDepth, info.contactNormal);
-
-			float restitution = std::min(info.colliderA->GetBounciness(), info.colliderB->GetBounciness());
-			restitution = info.colliderB->GetRestitution(info.colliderA->GetBounciness());
-
-			float impulseMagnitude = (-(1.0f + restitution) * velocityAlongNormal / (totalMass + angularEffect));
-
-			Vector3 impulse = Multiply(impulseMagnitude, info.contactNormal);
-
+			info.colliderB->PositionalCorrection(totalMass, -info.penetrationDepth, info.contactNormal);
 			// 反発力を適用
 			info.colliderB->AddForce(Multiply(-1.0f, impulse), Body::ForceMode::kImpulse);
-			info.colliderB->AddTorque(Cross(info.localPointB, impulse), Body::ForceMode::kImpulse);
+			info.colliderB->AddTorque(Cross(info.localPointB, Multiply(-1.0f, impulse)), Body::ForceMode::kImpulse);
 		}
+		///
+
+		//if (info.colliderA->GetMass() != 0.0f || info.colliderB->GetMass() != 0.0f) {
+		//	//float restitution = std::min(info.colliderA->GetRestitution(), info.colliderB->GetRestitution())
+		//}
+
+		//if (info.colliderA->GetMass() != 0.0f) {
+		//	// 位置補正
+		//	info.colliderA->PositionalCorrection(totalMass, -info.penetrationDepth, info.contactNormal);
+
+		//	float restitution = info.colliderA->GetRestitution(info.colliderB->GetBounciness());
+
+		//	float impulseMagnitude = (-(1.0f + restitution) * velocityAlongNormal / (totalMass + angularEffect));
+
+		//	Vector3 impulse = Multiply(impulseMagnitude, info.contactNormal);
+
+		//	// 反発力を適用
+		//	info.colliderA->AddForce(impulse, Body::ForceMode::kImpulse);
+		//	info.colliderA->AddTorque(Cross(info.localPointA, impulse), Body::ForceMode::kImpulse);
+		//}
+		//if (info.colliderB->GetMass() != 0.0f) {
+		//	// 位置補正
+		//	info.colliderB->PositionalCorrection(totalMass, info.penetrationDepth, info.contactNormal);
+
+		//	
+		//	float restitution = info.colliderB->GetRestitution(info.colliderA->GetBounciness());
+
+		//	float impulseMagnitude = (-(1.0f + restitution) * velocityAlongNormal / (totalMass + angularEffect));
+
+		//	Vector3 impulse = Multiply(impulseMagnitude, info.contactNormal);
+
+		//	// 反発力を適用
+		//	info.colliderB->AddForce(Multiply(-1.0f, impulse), Body::ForceMode::kImpulse);
+		//	info.colliderB->AddTorque(Cross(info.localPointB, impulse), Body::ForceMode::kImpulse);
+		//}
 		
 
 	}
