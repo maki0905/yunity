@@ -43,6 +43,11 @@ public:
 	void Reset();
 
 	/// <summary>
+	/// 
+	/// </summary>
+	void VertexGeneration();
+
+	/// <summary>
 	/// 外部データ読み込み
 	/// </summary>
 	void ApplyGlobalVariables();

@@ -161,22 +161,7 @@ void Wire::Update()
 
 	// ワイヤーの紅白描画用の頂点生成
 	if (isWire_) {
-		lineVertexs_.clear();
-		float currentLength = 0.0f;
-		direction = Subtract(apexBody_->GetMatWorldTranslation(), playerWorldTransform_->translation_);
-		lenght = Length(direction);
-		direction.Normalize();
-
-		while (currentLength < lenght) {
-			Vector3 startPosition = Add(playerWorldTransform_->translation_, Multiply(currentLength, direction));
-			lineVertexs_.push_back(startPosition);
-
-			float nextLength = std::min(currentLength + segmentLength_, lenght);
-			Vector3 endPosition = Add(playerWorldTransform_->translation_, Multiply(nextLength, direction));
-			lineVertexs_.push_back(endPosition);
-
-			currentLength = nextLength;
-		}
+		VertexGeneration();
 	}
 
 	if (Length(reticleWorldTransform_.translation_) > limitLength_) { // レティクルの距離が制限以上の場合
@@ -228,6 +213,26 @@ void Wire::Reset()
 	springJoint_->EnableSpring(1, false);
 	fixedJoint_->Clear();
 	isWire_ = false;
+}
+
+void Wire::VertexGeneration()
+{
+	lineVertexs_.clear();
+	float currentLength = 0.0f;
+	Vector3 direction = Subtract(apexBody_->GetMatWorldTranslation(), playerWorldTransform_->translation_);
+	float lenght = Length(direction);
+	direction.Normalize();
+
+	while (currentLength < lenght) {
+		Vector3 startPosition = Add(playerWorldTransform_->translation_, Multiply(currentLength, direction));
+		lineVertexs_.push_back(startPosition);
+
+		float nextLength = std::min(currentLength + segmentLength_, lenght);
+		Vector3 endPosition = Add(playerWorldTransform_->translation_, Multiply(nextLength, direction));
+		lineVertexs_.push_back(endPosition);
+
+		currentLength = nextLength;
+	}
 }
 
 void Wire::ApplyGlobalVariables()
