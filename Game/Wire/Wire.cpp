@@ -3,7 +3,6 @@
 #include "ModelManager.h"
 #include "Player/Player.h"
 #include "WindowsAPI.h"
-#include "RayCast.h"
 #include "CommonData.h"
 #include "GlobalVariables.h"
 
@@ -43,6 +42,8 @@ void Wire::Initialize(yunity::Camera* camera, yunity::World* world, yunity::Worl
 	apexWorldTransform_.Initialize();
 	apexBody_ = std::make_unique<yunity::Body>();
 	apexBody_->CreateBody(world, &apexWorldTransform_);
+
+	progressTime_ = 0.0f;
 
 	// ワイヤーの線
 	for (int i = 0; i < maxLines_; i++) {
@@ -84,11 +85,6 @@ void Wire::Update()
 	// 前回のジョイスティック状態
 	prePad_ = pad_;
 
-	if (isWire_) { // ワイヤー時の設置レティクルの位置を設定
-		Vector3 landingPoint = MapWorldToScreen(apexWorldTransform_.GetMatWorldTranslation(), camera_->GetViewMatrix(), camera_->GetProjectionMatrix(), yunity::WindowsAPI::kWindowWidth, yunity::WindowsAPI::kWindowHeight);
-		landingPoint_->SetPosition({ landingPoint.x, landingPoint.y });
-	}
-
 	// レティクルの移動量を初期化
 	Vector3 reticleMove = { 0.0f, 0.0f, 0.0f };
 	if (yunity::Input::GetInstance()->IsControllerConnected()) {
@@ -120,17 +116,8 @@ void Wire::Update()
 			if (!isWire_) { // ワイヤーを発射
 				if (isHit && hit.collider->GetCollisionAttribute() != kCollisionAttributeCoin) {
 					isWire_ = true;
-					springJoint_->EnableSpring(0, true);
-					springJoint_->EnableSpring(1, true);
-					apexWorldTransform_.translation_ = hit.point;
-					apexBody_->SetMatTranslation(hit.point);
-					// 動くオブジェクトの場合
-					if (hit.collider->GetCollisionAttribute() == kCollisionAttributeMoveFloor || hit.collider->GetCollisionAttribute() == kCollisionAttributeMove|| hit.collider->GetCollisionAttribute() == kCollisionAttributePillar) {
-						fixedJoint_->CreateFixedJoint(hit.collider, apexBody_.get());
-						world_->AddJoint(fixedJoint_.get());
-					}
-					// パーティクル生成
-					pointParticle_->Spawn(hit.point);
+					hitInfo_ = hit;
+					progressTime_ = 0.0f;
 				}
 			}
 			else { // ワイヤーを解除
@@ -159,9 +146,42 @@ void Wire::Update()
 		}
 	}
 
-	// ワイヤーの紅白描画用の頂点生成
 	if (isWire_) {
+		Vector3 landingPoint;
+		if (progressTime_ < 1.0f) {
+			progressTime_ += 0.1f;
+			apexWorldTransform_.translation_ = Lerp(playerWorldTransform_->translation_, hitInfo_.point, progressTime_);
+
+			// ワイヤー時の設置レティクルの位置を設定
+			landingPoint = MapWorldToScreen(hitInfo_.point, camera_->GetViewMatrix(), camera_->GetProjectionMatrix(), yunity::WindowsAPI::kWindowWidth, yunity::WindowsAPI::kWindowHeight);
+
+			if (progressTime_ >= 1.0f) {
+				springJoint_->EnableSpring(0, true);
+				springJoint_->EnableSpring(1, true);
+				apexBody_->SetMatTranslation(hitInfo_.point);
+				// 動くオブジェクトの場合
+				if (hitInfo_.collider->GetCollisionAttribute() == kCollisionAttributeMoveFloor || hitInfo_.collider->GetCollisionAttribute() == kCollisionAttributeMove || hitInfo_.collider->GetCollisionAttribute() == kCollisionAttributePillar) {
+					fixedJoint_->CreateFixedJoint(hitInfo_.collider, apexBody_.get());
+					world_->AddJoint(fixedJoint_.get());
+				}
+				// パーティクル生成
+				pointParticle_->Spawn(hitInfo_.point);
+			}
+		}
+		else {
+			// ワイヤー時の設置レティクルの位置を設定
+			landingPoint = MapWorldToScreen(apexWorldTransform_.GetMatWorldTranslation(), camera_->GetViewMatrix(), camera_->GetProjectionMatrix(), yunity::WindowsAPI::kWindowWidth, yunity::WindowsAPI::kWindowHeight);
+			
+		}
+
+		// ワイヤーの紅白描画用の頂点生成
 		VertexGeneration();
+
+		// ワイヤー時の設置レティクルの位置を設定
+		landingPoint_->SetPosition({ landingPoint.x, landingPoint.y });
+	}
+	else {
+		apexWorldTransform_.translation_ = playerWorldTransform_->translation_;
 	}
 
 	if (Length(reticleWorldTransform_.translation_) > limitLength_) { // レティクルの距離が制限以上の場合

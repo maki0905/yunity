@@ -11,6 +11,7 @@
 #include "SpringJoint.h"
 #include "FixedJoint.h"
 #include "Particle/PointParticle.h"
+#include "RayCast.h"
 
 class Player;
 
@@ -93,6 +94,8 @@ private:
 
 	// ワイヤーの先端のボディ
 	std::unique_ptr<yunity::Body> apexBody_;
+	float progressTime_;
+	RayCastHit hitInfo_;
 
 	// スプリングジョイント
 	std::unique_ptr<yunity::SpringJoint> springJoint_;
