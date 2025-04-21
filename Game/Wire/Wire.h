@@ -16,6 +16,13 @@
 class Player;
 
 class Wire {
+	struct WireData{
+		Vector3 startPos;
+		Vector3 endPos;
+		bool isHit;
+		
+	};
+
 public:
 	/// <summary>
 	/// 初期化
@@ -96,6 +103,7 @@ private:
 	std::unique_ptr<yunity::Body> apexBody_;
 	float progressTime_;
 	RayCastHit hitInfo_;
+	WireData wireData_;
 
 	// スプリングジョイント
 	std::unique_ptr<yunity::SpringJoint> springJoint_;

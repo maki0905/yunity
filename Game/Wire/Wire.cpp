@@ -118,6 +118,16 @@ void Wire::Update()
 					isWire_ = true;
 					hitInfo_ = hit;
 					progressTime_ = 0.0f;
+					wireData_.startPos = playerWorldTransform_->translation_;
+					wireData_.endPos = hit.point;
+					wireData_.isHit = true;
+				}
+				else {
+					isWire_ = true;
+					progressTime_ = 0.0f;
+					wireData_.startPos = playerWorldTransform_->translation_;
+					wireData_.endPos = reticleWorldTransform_.GetMatWorldTranslation();
+					wireData_.isHit = false;
 				}
 			}
 			else { // ワイヤーを解除
@@ -150,22 +160,27 @@ void Wire::Update()
 		Vector3 landingPoint;
 		if (progressTime_ < 1.0f) {
 			progressTime_ += 0.1f;
-			apexWorldTransform_.translation_ = Lerp(playerWorldTransform_->translation_, hitInfo_.point, progressTime_);
+			apexWorldTransform_.translation_ = Lerp(wireData_.startPos, wireData_.endPos, progressTime_);
 
 			// ワイヤー時の設置レティクルの位置を設定
-			landingPoint = MapWorldToScreen(hitInfo_.point, camera_->GetViewMatrix(), camera_->GetProjectionMatrix(), yunity::WindowsAPI::kWindowWidth, yunity::WindowsAPI::kWindowHeight);
+			landingPoint = MapWorldToScreen(wireData_.endPos, camera_->GetViewMatrix(), camera_->GetProjectionMatrix(), yunity::WindowsAPI::kWindowWidth, yunity::WindowsAPI::kWindowHeight);
 
 			if (progressTime_ >= 1.0f) {
-				springJoint_->EnableSpring(0, true);
-				springJoint_->EnableSpring(1, true);
-				apexBody_->SetMatTranslation(hitInfo_.point);
-				// 動くオブジェクトの場合
-				if (hitInfo_.collider->GetCollisionAttribute() == kCollisionAttributeMoveFloor || hitInfo_.collider->GetCollisionAttribute() == kCollisionAttributeMove || hitInfo_.collider->GetCollisionAttribute() == kCollisionAttributePillar) {
-					fixedJoint_->CreateFixedJoint(hitInfo_.collider, apexBody_.get());
-					world_->AddJoint(fixedJoint_.get());
+				if (wireData_.isHit) {
+					springJoint_->EnableSpring(0, true);
+					springJoint_->EnableSpring(1, true);
+					apexBody_->SetMatTranslation(hitInfo_.point);
+					// 動くオブジェクトの場合
+					if (hitInfo_.collider->GetCollisionAttribute() == kCollisionAttributeMoveFloor || hitInfo_.collider->GetCollisionAttribute() == kCollisionAttributeMove || hitInfo_.collider->GetCollisionAttribute() == kCollisionAttributePillar) {
+						fixedJoint_->CreateFixedJoint(hitInfo_.collider, apexBody_.get());
+						world_->AddJoint(fixedJoint_.get());
+					}
+					// パーティクル生成
+					pointParticle_->Spawn(hitInfo_.point);
 				}
-				// パーティクル生成
-				pointParticle_->Spawn(hitInfo_.point);
+				else {
+					isWire_ = false;
+				}
 			}
 		}
 		else {
