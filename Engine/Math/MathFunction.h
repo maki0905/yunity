@@ -638,6 +638,11 @@ Matrix3x3 Transpose(const Matrix3x3& m);
 Matrix3x3 MakeRotateMatrix(const Vector3& rotation);
 
 /// <summary>
+/// Matrix4x4からMatrix3x3に変換
+/// </summary>
+Matrix3x3 ExtractRotation3x3(const Matrix4x4& m);
+
+/// <summary>
 /// ベクトル変換
 /// </summary>
 /// /// <param name="vector"></param>

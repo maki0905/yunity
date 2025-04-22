@@ -525,7 +525,12 @@ void yunity::Body::AddTorque(const Vector3& torque, ForceMode mode)
 		torque_ = Add(torque_, torque);
 	}
 	else {
-		Vector3 angularImpulse = TransformVector3(torque, Inverse(inertiaTensor_));
+		/*Vector3 angularImpulse = TransformVector3(torque, Inverse(inertiaTensor_));
+		angularVelocity_ = Add(angularVelocity_, angularImpulse);*/
+		Matrix3x3 invInertiaWorld = Multiply(rotation_, Inverse(inertiaTensor_)); // rotation_はワールド空間への変換
+		invInertiaWorld = Multiply(invInertiaWorld, Transpose(rotation_));
+
+		Vector3 angularImpulse = TransformVector3(torque, invInertiaWorld);
 		angularVelocity_ = Add(angularVelocity_, angularImpulse);
 	}
 }

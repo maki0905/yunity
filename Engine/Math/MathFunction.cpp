@@ -1104,6 +1104,17 @@ Matrix3x3 MakeRotateMatrix(const Vector3& rotation)
 	return result;
 }
 
+Matrix3x3 ExtractRotation3x3(const Matrix4x4& m)
+{
+	Matrix3x3 result;
+	for (int y = 0; y < 3; ++y) {
+		for (int x = 0; x < 3; ++x) {
+			result.m[y][x] = m.m[y][x];
+		}
+	}
+	return result;
+}
+
 Vector3 TransformVector3(const Vector3& vector, const Matrix3x3& matrix)
 {
 	Vector3 result;
