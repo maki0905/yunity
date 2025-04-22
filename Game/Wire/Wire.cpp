@@ -82,6 +82,10 @@ void Wire::Initialize(yunity::Camera* camera, yunity::World* world, yunity::Worl
 void Wire::Update()
 {
 
+	if (CommonData::GetInstance()->scene_ != Scene::kStage) {
+		return;
+	}
+
 	// 前回のジョイスティック状態
 	prePad_ = pad_;
 
@@ -91,8 +95,13 @@ void Wire::Update()
 		if (yunity::Input::GetInstance()->GetJoystickState(0, pad_)) {
 			// レティクルの動き
 			reticleMove = { (float)pad_.Gamepad.sThumbRX, (float)pad_.Gamepad.sThumbRY, 0.0f };
-			reticleMove = Multiply(reticleSpeed_, reticleMove.Normalize());
-			reticleWorldTransform_.translation_ = Add(reticleWorldTransform_.translation_, reticleMove);
+			if (Length(reticleMove) > 0.0f) {
+				reticleMove = Multiply(reticleSpeed_, reticleMove.Normalize());
+				reticleWorldTransform_.translation_ = Add(reticleWorldTransform_.translation_, reticleMove);
+			}
+			else {
+				reticleWorldTransform_.translation_ = {0.0f, 0.0f, 0.0f};
+			}
 		
 		}
 	}
@@ -111,34 +120,32 @@ void Wire::Update()
 	isHit = RayCast(playerWorldTransform_->translation_, direction, &hit, lenght, world_,rayMask);
 
 	// ワイヤー
-	if (CommonData::GetInstance()->scene_ == Scene::kStage) {
-		if ((pad_.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) && !(prePad_.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER)) {
-			if (!isWire_) { // ワイヤーを発射
-				if (isHit && hit.collider->GetCollisionAttribute() != kCollisionAttributeCoin) {
-					isWire_ = true;
-					hitInfo_ = hit;
-					progressTime_ = 0.0f;
-					wireData_.startPos = playerWorldTransform_->translation_;
-					wireData_.endPos = hit.point;
-					wireData_.isHit = true;
-				}
-				else {
-					isWire_ = true;
-					progressTime_ = 0.0f;
-					wireData_.startPos = playerWorldTransform_->translation_;
-					wireData_.endPos = reticleWorldTransform_.GetMatWorldTranslation();
-					wireData_.isHit = false;
-				}
+	if ((pad_.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) && !(prePad_.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER)) {
+		if (!isWire_) { // ワイヤーを発射
+			if (isHit && hit.collider->GetCollisionAttribute() != kCollisionAttributeCoin) {
+				isWire_ = true;
+				hitInfo_ = hit;
+				progressTime_ = 0.0f;
+				wireData_.startPos = playerWorldTransform_->translation_;
+				wireData_.endPos = hit.point;
+				wireData_.isHit = true;
 			}
-			else { // ワイヤーを解除
-				isWire_ = false;
-				springJoint_->EnableSpring(0, false);
-				springJoint_->EnableSpring(1, false);
-				fixedJoint_->Clear();
-				world_->TakeJoint(fixedJoint_.get());
-				if (apexWorldTransform_.parent_) {
-					apexWorldTransform_.parent_ = nullptr;
-				}
+			else {
+				isWire_ = true;
+				progressTime_ = 0.0f;
+				wireData_.startPos = playerWorldTransform_->translation_;
+				wireData_.endPos = reticleWorldTransform_.GetMatWorldTranslation();
+				wireData_.isHit = false;
+			}
+		}
+		else { // ワイヤーを解除
+			isWire_ = false;
+			springJoint_->EnableSpring(0, false);
+			springJoint_->EnableSpring(1, false);
+			fixedJoint_->Clear();
+			world_->TakeJoint(fixedJoint_.get());
+			if (apexWorldTransform_.parent_) {
+				apexWorldTransform_.parent_ = nullptr;
 			}
 		}
 	}
