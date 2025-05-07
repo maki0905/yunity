@@ -819,6 +819,15 @@ Vector3 ClosestPoint(const Vector3& p1, const Vector3& p2, const Vector3& q1, co
 	return result;
 }
 
+Vector3 TransformPoint(const Vector3& point, const Matrix4x4& m)
+{
+	return {
+		point.x * m.m[0][0] + point.y * m.m[1][0] + point.z * m.m[2][0] + m.m[3][0],
+		point.x * m.m[0][1] + point.y * m.m[1][1] + point.z * m.m[2][1] + m.m[3][1],
+		point.x * m.m[0][2] + point.y * m.m[1][2] + point.z * m.m[2][2] + m.m[3][2]
+	};
+}
+
 float ConvertToRadians(float degree)
 {
 	float result = degree * float(M_PI) / 180.0f;

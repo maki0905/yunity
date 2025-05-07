@@ -145,11 +145,38 @@ namespace yunity {
 
 		void AddPersistentManifold(const PersistentManifold& persistentManifold);
 
-		void PositionalCorrection(float totalMass, float penetrationDepth, const Vector3& contactNormal);
+		void PositionalCorrection(float correctionRatio, float penetrationDepth, const Vector3& contactNormal);
 
 		// 衝突時に呼ばれる固有の処理
 		/*virtual void OnCollisionEvent(Body* body = nullptr) = 0;
 		virtual void OnTriggerEvent(Body* body = nullptr) = 0;*/
+
+		/// 衝突形状のサイズ変更
+
+		/// <summary>
+		/// Boxのサイズ変更
+		/// </summary>
+		/// <param name="size"></param>
+		void SetBoxSize(const Vector3& size) {
+			if (GetCollisionShape()->GetShapeType() == ShapeType::kBox) {
+				static_cast<BoxShape*>(GetCollisionShape())->SetHalfExtents(size);
+				inertiaTensor_ = GetCollisionShape()->CalculateLocalInertia(mass_);
+			}
+
+		}
+
+		/// <summary>
+		/// Sphereのサイズ変更
+		/// </summary>
+		/// <param name="r"></param>
+		void SetSphereRadius(float r) {
+			if (GetCollisionShape()->GetShapeType() == ShapeType::kSphere) {
+				static_cast<SphereShape*>(GetCollisionShape())->SetRadius(r);
+				inertiaTensor_ = GetCollisionShape()->CalculateLocalInertia(mass_);
+			}
+		}
+
+		///
 
 		/// <summary>
 		/// getter

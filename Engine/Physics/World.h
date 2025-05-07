@@ -70,7 +70,7 @@ namespace yunity{
 		void TakeJoint(Joint* joint);
 
 		void AddPersistentManifold(const PersistentManifold& persistentManifold) {
-			PersistentManifolds_.push_back(persistentManifold);
+			persistentManifolds_.push_back(persistentManifold);
 		}
 
 		/// <summary>
@@ -113,7 +113,7 @@ namespace yunity{
 		Vector3 gravity_;
 		// 固定時間フラグ
 		bool isFixedTime_;
-		std::vector<PersistentManifold> PersistentManifolds_;
+		std::vector<PersistentManifold> persistentManifolds_;
 
 	};
 }

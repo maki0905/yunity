@@ -38,7 +38,7 @@ namespace yunity{
 		virtual void GetAABB(const WorldTransform& worldTransform, Vector3& aabbMin, Vector3& aabbMax) const = 0;
 		//virtual void GetBoundingSphere(const Vector3& cneter, const Vector3& radius) const = 0;
 		virtual Matrix3x3 CalculateLocalInertia(float mass) const = 0;
-		virtual Vector3 Support(const Vector3& direction, WorldTransform& worldTransform) = 0;
+		virtual Vector3 Support(const Vector3& direction, WorldTransform& worldTransform) const = 0;
 		ShapeType GetShapeType() const { return shapeType_; }
 
 	protected:
@@ -59,6 +59,10 @@ namespace yunity{
 			aabbMax = Add(worldTransform.translation_, halfExtents_);
 		}
 
+		void SetHalfExtents(const Vector3& halfExtents) {
+			halfExtents_ = halfExtents;
+		}
+
 		// 慣性テンソルを計算
 		Matrix3x3 CalculateLocalInertia(float mass) const override {
 			Matrix3x3 result = MakeIdentity3x3();
@@ -75,7 +79,7 @@ namespace yunity{
 		}
 
 		// サポートベクトルを計算
-		Vector3 Support(const Vector3& direction, WorldTransform& worldTransform) {
+		Vector3 Support(const Vector3& direction, WorldTransform& worldTransform) const override {
 			// 方向ベクトルをローカル座標系に変換
 			Vector3 localDirection = TransformNormal(direction, Inverse(worldTransform.GetRotateMatrix()));
 
@@ -107,6 +111,10 @@ namespace yunity{
 		void GetAABB(const WorldTransform& worldTransform, Vector3& aabbMin, Vector3& aabbMax) const override {
 			aabbMin = Subtract(worldTransform.translation_, Vector3(radius_, radius_, radius_));
 			aabbMax = Add(worldTransform.translation_, Vector3(radius_, radius_, radius_));
+		}
+
+		void SetRadius(float radius) {
+			radius_ = radius;
 		}
 
 		// 慣性テンソルを計算

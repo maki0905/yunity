@@ -477,6 +477,8 @@ Vector3 Project(const Vector3& v1, const Vector3& v2);
 /// <returns></returns>
 Vector3 ClosestPoint(const Vector3& p1, const Vector3& p2, const Vector3& q1, const Vector3& q2);
 
+Vector3 TransformPoint(const Vector3& point, const Matrix4x4& m);
+
 /// <summary>
 /// 
 /// </summary>

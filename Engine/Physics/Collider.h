@@ -93,11 +93,6 @@ namespace yunity {
 		uint32_t CollisionMask_ = 0xffffffff;
 
 		// HitBox
-		/*std::unique_ptr<Sphere> sphere_;
-		std::unique_ptr<Plane> plane_;
-		std::unique_ptr<AABB> aabb_;
-		std::unique_ptr<Capsule> capsule_;
-		std::unique_ptr<OBB> obb_;*/
 		std::unique_ptr<CollisionShape> collisionShape_;
 
 		RotationType rotationType_;

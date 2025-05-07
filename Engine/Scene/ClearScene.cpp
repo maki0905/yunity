@@ -17,6 +17,9 @@ void ClearScene::Initialize()
 	object_ = std::make_unique<yunity::Object3D>();
 	object_->Initialize(yunity::ModelManager::GetInstance()->CreateModel(obj, "Cube"), world_.get(), 0.0f, yunity::ShapeType::kBox);
 	object_->SetCamera(camera_);
+	object_->SetScale({ 10.0f, 1.0f, 10.0f });
+	object_->SetBoxSize({ 10.0f, 1.0f, 10.0f });
+
 	world_->AddObject(object_.get());
 
 	for(int i = 0; i < 1; i++){
@@ -52,7 +55,7 @@ void ClearScene::Update()
 	}
 
 	if (ImGui::Button("SetMass_1.0")) {
-		objects_[0]->SetMass(1.0f);
+		objects_[0]->SetMass(10.0f);
 		objects_[0]->SetInertiaMoment(1.0f);
 	}
 
@@ -76,6 +79,7 @@ void ClearScene::DrawBack()
 void ClearScene::Draw3D()
 {
 	object_->Draw();
+	object_->HitBox();
 	for (int i = 0; i < 1; i++) {
 		objects_[i]->Draw();
 		objects_[i]->HitBox();

@@ -65,12 +65,14 @@ void yunity::World::Solve()
 void yunity::World::SolveConstraints()
 {
 
-	for (auto& info : PersistentManifolds_) {
-		float totalMass = info.colliderA->GetMass() + info.colliderB->GetMass();
+	for (auto& info : persistentManifolds_) {
+		float massA = info.colliderA->GetMass();
+		float massB = info.colliderB->GetMass();
 
-		if (totalMass == 0.0f) { // 質量が0の場合は処理しない
-			continue;
-		}
+		float invMassA = (massA > 0.0f) ? 1.0f / massA : 0.0f;
+		float invMassB = (massB > 0.0f) ? 1.0f / massB : 0.0f;
+
+		if (invMassA + invMassB == 0.0f) continue; // 両方質量ゼロ（静的）ならスキップ
 
 		Vector3 angularVelocityA = { 0.0f, 0.0f, 0.0f };
 		Vector3 angularVelocityB = { 0.0f, 0.0f, 0.0f };
@@ -88,36 +90,85 @@ void yunity::World::SolveConstraints()
 			inertiaTensorB = Cross(TransformVector3(Cross(info.localPointB, info.contactNormal), info.colliderB->GetInertiaTensor()), info.localPointB);
 		}
 		float angularEffect = Dot(Add(inertiaTensorA, inertiaTensorB), info.contactNormal);
+
 		Vector3 fullVelocityA = Add(info.colliderA->GetVelocity(), angularVelocityA);
 		Vector3 fullVelocityB = Add(info.colliderB->GetVelocity(), angularVelocityB);
 		Vector3 relativeVelocity = Subtract(fullVelocityA, fullVelocityB);
 		float velocityAlongNormal = Dot(relativeVelocity, info.contactNormal);
 
-
-		///　途中
+		// restitution の混合計算
 		float restitutionA = info.colliderA->GetRestitution(info.colliderB->GetBounciness());
 		float restitutionB = info.colliderB->GetRestitution(info.colliderA->GetBounciness());
 		float restitution = 0.5f * (restitutionA + restitutionB);
 
-		float impulseMag = -(1.0f + restitution) * velocityAlongNormal / (totalMass + angularEffect);
+		// インパルス大きさを逆質量で計算
+		float impulseMag = -(1.0f + restitution) * velocityAlongNormal / (invMassA + invMassB + angularEffect);
 		Vector3 impulse = Multiply(impulseMag, info.contactNormal);
 
-		if (info.colliderA->GetMass() > 0.0f) {
-			// 位置補正
-			info.colliderA->PositionalCorrection(totalMass, -info.penetrationDepth, info.contactNormal);
-			// 反発力を適用
+		// インパルスと位置補正の適用
+		if (massA > 0.0f) {
+			info.colliderA->PositionalCorrection(invMassA / (invMassA + invMassB), -info.penetrationDepth, info.contactNormal);
 			info.colliderA->AddForce(impulse, Body::ForceMode::kImpulse);
 			info.colliderA->AddTorque(Cross(info.localPointA, impulse), Body::ForceMode::kImpulse);
 		}
-
-		if (info.colliderB->GetMass() > 0.0f) {
-			// 位置補正
-			info.colliderB->PositionalCorrection(totalMass, -info.penetrationDepth, info.contactNormal);
-			// 反発力を適用
+		if (massB > 0.0f) {
+			info.colliderB->PositionalCorrection(invMassB / (invMassA + invMassB), info.penetrationDepth, info.contactNormal);
 			info.colliderB->AddForce(Multiply(-1.0f, impulse), Body::ForceMode::kImpulse);
 			info.colliderB->AddTorque(Cross(info.localPointB, Multiply(-1.0f, impulse)), Body::ForceMode::kImpulse);
 		}
-		///
+
+		//float totalMass = info.colliderA->GetMass() + info.colliderB->GetMass();
+
+		//if (totalMass == 0.0f) { // 質量が0の場合は処理しない
+		//	continue;
+		//}
+
+		//Vector3 angularVelocityA = { 0.0f, 0.0f, 0.0f };
+		//Vector3 angularVelocityB = { 0.0f, 0.0f, 0.0f };
+
+		//Vector3 inertiaTensorA = { 0.0f, 0.0f, 0.0f };
+		//Vector3 inertiaTensorB = { 0.0f, 0.0f, 0.0f };
+
+		//// 相対速度を求める
+		//if (info.colliderA->GetMass() != 0.0f) { // 質量が0の場合は計算しない
+		//	angularVelocityA = Cross(info.colliderA->GetAngularVelocity(), info.localPointA);
+		//	inertiaTensorA = Cross(TransformVector3(Cross(info.localPointA, info.contactNormal), info.colliderA->GetInertiaTensor()), info.localPointA);
+		//}
+		//if (info.colliderB->GetMass() != 0.0f) { // 質量が0の場合は計算しない
+		//	angularVelocityB = Cross(info.colliderB->GetAngularVelocity(), info.localPointB);
+		//	inertiaTensorB = Cross(TransformVector3(Cross(info.localPointB, info.contactNormal), info.colliderB->GetInertiaTensor()), info.localPointB);
+		//}
+		//float angularEffect = Dot(Add(inertiaTensorA, inertiaTensorB), info.contactNormal);
+		//Vector3 fullVelocityA = Add(info.colliderA->GetVelocity(), angularVelocityA);
+		//Vector3 fullVelocityB = Add(info.colliderB->GetVelocity(), angularVelocityB);
+		//Vector3 relativeVelocity = Subtract(fullVelocityA, fullVelocityB);
+		//float velocityAlongNormal = Dot(relativeVelocity, info.contactNormal);
+
+
+		/////　途中
+		//float restitutionA = info.colliderA->GetRestitution(info.colliderB->GetBounciness());
+		//float restitutionB = info.colliderB->GetRestitution(info.colliderA->GetBounciness());
+		//float restitution = 0.5f * (restitutionA + restitutionB);
+
+		//float impulseMag = -(1.0f + restitution) * velocityAlongNormal / (totalMass + angularEffect);
+		//Vector3 impulse = Multiply(impulseMag, info.contactNormal);
+
+		//if (info.colliderA->GetMass() > 0.0f) {
+		//	// 位置補正
+		//	info.colliderA->PositionalCorrection(totalMass, -info.penetrationDepth, info.contactNormal);
+		//	// 反発力を適用
+		//	info.colliderA->AddForce(impulse, Body::ForceMode::kImpulse);
+		//	info.colliderA->AddTorque(Cross(info.localPointA, impulse), Body::ForceMode::kImpulse);
+		//}
+
+		//if (info.colliderB->GetMass() > 0.0f) {
+		//	// 位置補正
+		//	info.colliderB->PositionalCorrection(totalMass, info.penetrationDepth, info.contactNormal);
+		//	// 反発力を適用
+		//	info.colliderB->AddForce(Multiply(-1.0f, impulse), Body::ForceMode::kImpulse);
+		//	info.colliderB->AddTorque(Cross(info.localPointB, Multiply(-1.0f, impulse)), Body::ForceMode::kImpulse);
+		//}
+		
 
 		//if (info.colliderA->GetMass() != 0.0f || info.colliderB->GetMass() != 0.0f) {
 		//	//float restitution = std::min(info.colliderA->GetRestitution(), info.colliderB->GetRestitution())
@@ -155,7 +206,7 @@ void yunity::World::SolveConstraints()
 		
 
 	}
-	PersistentManifolds_.clear();
+	persistentManifolds_.clear();
 }
 
 void yunity::World::TakeObject(Object3D* collider)

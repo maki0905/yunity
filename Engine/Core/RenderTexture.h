@@ -173,7 +173,7 @@ namespace yunity {
 		static std::unique_ptr<PipelineState> pipelineState_;
 
 	private:
-		const Vector4 kRenderTargetClearValue{ 1.0f, 0.0f, 0.0f, 1.0f };
+		const Vector4 kRenderTargetClearValue{ 0.0f, 1.0f, 0.5f, 1.0f };
 		Microsoft::WRL::ComPtr<ID3D12Resource> renderTextureResource_;
 		Microsoft::WRL::ComPtr<ID3D12Resource> depthStencilResource_;
 		Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> commandList_;

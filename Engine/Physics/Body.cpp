@@ -366,7 +366,23 @@ void yunity::Body::SolveVelocity(float time)
 		angularAcceleration_ = Add(angularAcceleration_, Multiply(1.0f / inertiaMoment_, torque_));
 		torque_ = { 0.0f, 0.0f, 0.0f };
 		angularVelocity_ = Add(angularVelocity_, Multiply(time, angularAcceleration_));
-		worldTransform_->rotation_ = Add(worldTransform_->rotation_, Multiply(time, angularVelocity_));
+		if (worldTransform_->rotateType_ == RotationType::Quaternion) { // クォータニオンの回転
+			float angle = angularVelocity_.Length();
+			if (angle < 0.0001f) return;
+
+			Vector3 axis = angularVelocity_.Normalize();
+			float halfAngle = angle * 0.5f * time;
+			Quaternion deltaRot = Quaternion(
+				axis.x * sin(halfAngle),
+				axis.y * sin(halfAngle),
+				axis.z * sin(halfAngle),
+				cos(halfAngle)
+			);
+			worldTransform_->quaternion_ = Normalize(Multiply(deltaRot, worldTransform_->quaternion_));
+		}
+		else {// オイラー角の回転
+			worldTransform_->rotation_ = Add(worldTransform_->rotation_, Multiply(time, angularVelocity_));
+		}
 	}
 
 	// 加速度計算
@@ -527,9 +543,15 @@ void yunity::Body::AddTorque(const Vector3& torque, ForceMode mode)
 	else {
 		/*Vector3 angularImpulse = TransformVector3(torque, Inverse(inertiaTensor_));
 		angularVelocity_ = Add(angularVelocity_, angularImpulse);*/
-		Matrix3x3 invInertiaWorld = Multiply(rotation_, Inverse(inertiaTensor_)); // rotation_はワールド空間への変換
-		invInertiaWorld = Multiply(invInertiaWorld, Transpose(rotation_));
 
+
+		// ワールド回転行列の取り出し（3x3）
+		Matrix3x3 R = ExtractRotation3x3(GetWorldTransform()->GetRotateMatrix());
+
+		// ワールド空間逆慣性テンソルの構築
+		Matrix3x3 invInertiaWorld = Multiply(Multiply(R, Inverse(inertiaTensor_)), Transpose(R));
+
+		// トルクを角速度へ変換（Impulse対応）
 		Vector3 angularImpulse = TransformVector3(torque, invInertiaWorld);
 		angularVelocity_ = Add(angularVelocity_, angularImpulse);
 	}
@@ -681,9 +703,13 @@ void yunity::Body::AddPersistentManifold(const PersistentManifold& persistentMan
 	persistentManifold_.emplace_back(persistentManifold);
 }
 
-void yunity::Body::PositionalCorrection(float totalMass, float penetrationDepth, const Vector3& contactNormal)
+void yunity::Body::PositionalCorrection(float correctionRatio, float penetrationDepth, const Vector3& contactNormal)
 {
-	SetTranslation(Add(GetTranslation(), Multiply(penetrationDepth * (GetInverseMass() / totalMass), contactNormal)));
+	// 補正量 = めり込みの深さ × 補正割合 × 法線方向
+	Vector3 positionalCorrection = Multiply(penetrationDepth * correctionRatio, contactNormal);
+
+	// 位置に補正を加える
+	worldTransform_->translation_ = Add(worldTransform_->translation_, positionalCorrection);
 	worldTransform_->UpdateMatrix();
 }
 
