@@ -10,6 +10,7 @@
 #include "Skydome.h"
 #include "ObjectManager.h"
 #include "DirectionLight.h"
+
 /*
 * @brief クリアシーンクラス
 */

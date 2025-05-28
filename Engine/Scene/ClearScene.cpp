@@ -19,6 +19,7 @@ void ClearScene::Initialize()
 	object_->SetCamera(camera_);
 	object_->SetScale({ 10.0f, 1.0f, 10.0f });
 	object_->SetBoxSize({ 10.0f, 1.0f, 10.0f });
+	object_->GetWorldTransform()->UpdateMatrix();
 
 	world_->AddObject(object_.get());
 
@@ -28,12 +29,13 @@ void ClearScene::Initialize()
 		object->SetCamera(camera_);
 		object->SetMass(0.0f);
 		object->SetDrag(0.005f);
-		object->SetAngularDrag(0.005f);
-		object->SetInertiaMoment(0.0f);
+		object->SetAngularDrag(20.0f);
+		object->SetInertiaMoment(1.0f);
 		object->SetPosition({ 0.0f, 5.0f, 0.0f });
 		object->SetTexture(yunity::TextureManager::GetInstance()->Load("uvChecker.png"));
 		object->SetBounciness(1.0f);
 		object->SetBounceCombine(yunity::Body::BounceCombine::kMaximum);
+		object->GetWorldTransform()->UpdateMatrix();
 		objects_[i] = std::move(object);
 
 		world_->AddObject(objects_[i].get());
@@ -55,7 +57,7 @@ void ClearScene::Update()
 	}
 
 	if (ImGui::Button("SetMass_1.0")) {
-		objects_[0]->SetMass(10.0f);
+		objects_[0]->SetMass(1.0f);
 		objects_[0]->SetInertiaMoment(1.0f);
 	}
 
@@ -64,9 +66,41 @@ void ClearScene::Update()
 		objects_[0]->SetInertiaMoment(0.0f);
 	}
 
+	if (ImGui::Button("Reset")) {
+		objects_[0]->SetPosition(Vector3(0.0f, 5.0f, 0.0f));
+		objects_[0]->SetRotation(Vector3(0.0f, 0.0f, 0.0f));
+		objects_[0]->SetMass(0.0f);
+		objects_[0]->SetVelocity(Vector3(0.0f, 0.0f, 0.0f));
+		objects_[0]->SetAngularVelocity(Vector3(0.0f, 0.0f, 0.0f));
+		objects_[0]->GetWorldTransform()->UpdateMatrix();
+	}
+
+	float mass = objects_[0]->GetMass();
+	ImGui::DragFloat("Mass", &mass);
+	objects_[0]->SetMass(mass);
+
 	Vector3 position = objects_[0]->GetMatWorldTranslation();
 	ImGui::DragFloat3("position", &position.x);
 	objects_[0]->SetPosition(position);
+
+	Vector3 rotation = objects_[0]->GetWorldTransform()->rotation_;
+	ImGui::DragFloat3("rotation", &rotation.x);
+	objects_[0]->SetRotation(rotation);
+
+
+	float angularDrag = objects_[0]->GetAngularDrag();
+	ImGui::DragFloat("AngularDrag", &angularDrag);
+	objects_[0]->SetAngularDrag(angularDrag);
+
+	ImGui::End();
+
+	
+	ImGui::Begin("Parameter");
+	Vector3 velocity = objects_[0]->GetVelocity();
+	ImGui::DragFloat3("Velocity", &velocity.x);
+
+	Vector3 angularVelocity = objects_[0]->GetAngularVelocity();
+	ImGui::DragFloat3("AngularVelocity", &angularVelocity.x);
 
 	ImGui::End();
 	

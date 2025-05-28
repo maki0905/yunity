@@ -81,6 +81,7 @@ namespace yunity {
 		/// getter
 		/// </summary>
 
+
 		Vector3 GetTranslation() { return worldTransform_.translation_; }
 		Model* GetModel();
 		Model* GetModel(const std::string& modelName) { return models_[modelName].get(); }
