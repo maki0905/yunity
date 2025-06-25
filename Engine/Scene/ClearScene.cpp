@@ -30,10 +30,9 @@ void ClearScene::Initialize()
 		object->SetMass(0.0f);
 		object->SetDrag(0.005f);
 		object->SetAngularDrag(20.0f);
-		object->SetInertiaMoment(1.0f);
 		object->SetPosition({ 0.0f, 5.0f, 0.0f });
 		object->SetTexture(yunity::TextureManager::GetInstance()->Load("uvChecker.png"));
-		object->SetBounciness(1.0f);
+		object->SetBounciness(0.5f);
 		object->SetBounceCombine(yunity::Body::BounceCombine::kMaximum);
 		object->GetWorldTransform()->UpdateMatrix();
 		objects_[i] = std::move(object);
@@ -47,14 +46,11 @@ void ClearScene::Initialize()
 
 void ClearScene::Update()
 {
-	if (onoff_) {
-		world_->Solve();
-	}
-
 	ImGui::Begin("ClearScene");
 	if (ImGui::Button("onoff")) {
 		onoff_ ^= true;
 	}
+	ImGui::Checkbox("FrameMode", &frameMode_);
 
 	if (ImGui::Button("SetMass_1.0")) {
 		objects_[0]->SetMass(1.0f);
@@ -84,13 +80,17 @@ void ClearScene::Update()
 	objects_[0]->SetPosition(position);
 
 	Vector3 rotation = objects_[0]->GetWorldTransform()->rotation_;
-	ImGui::DragFloat3("rotation", &rotation.x);
+	ImGui::DragFloat3("rotation", &rotation.x, 0.01f);
 	objects_[0]->SetRotation(rotation);
 
 
 	float angularDrag = objects_[0]->GetAngularDrag();
 	ImGui::DragFloat("AngularDrag", &angularDrag);
 	objects_[0]->SetAngularDrag(angularDrag);
+
+	float bounciness = objects_[0]->GetBounciness();
+	ImGui::DragFloat("Bounciness", &bounciness, 0.1f);
+	objects_[0]->SetBounciness(bounciness);
 
 	ImGui::End();
 
@@ -103,6 +103,16 @@ void ClearScene::Update()
 	ImGui::DragFloat3("AngularVelocity", &angularVelocity.x);
 
 	ImGui::End();
+
+	if (frameMode_) {
+		if (!yunity::Input::GetInstance()->TriggerKey(DIK_P)) {
+			return;
+		}
+	}
+
+	if (onoff_) {
+		world_->Solve();
+	}
 	
 }
 

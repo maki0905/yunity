@@ -147,6 +147,8 @@ namespace yunity {
 
 		void PositionalCorrection(float correctionRatio, float penetrationDepth, const Vector3& contactNormal);
 
+		Matrix3x3 GetInverseInertiaTensorWorld() const;
+
 		// 衝突時に呼ばれる固有の処理
 		/*virtual void OnCollisionEvent(Body* body = nullptr) = 0;
 		virtual void OnTriggerEvent(Body* body = nullptr) = 0;*/
@@ -211,7 +213,7 @@ namespace yunity {
 		/// </summary>
 		/// <param name="mass"></param>
 
-		void SetMass(float mass) { mass_ = mass; }
+		void SetMass(float mass) { mass_ = mass; inertiaTensor_ = GetCollisionShape()->CalculateLocalInertia(mass_); }
 		void SetInertiaMoment(float inertiaMoment) { inertiaMoment_ = inertiaMoment; }
 		void SetDrag(float drag) { drag_ = drag; }
 		void SetAngularDrag(float angularDrag) { angularDrag_ = angularDrag; }
@@ -225,7 +227,7 @@ namespace yunity {
 		void SetBounceCombine(BounceCombine bounceCombine) { bounceCombine_ = bounceCombine; }
 		void SetTranslation(Vector3 translation) { worldTransform_->translation_ = translation; }
 		void SetMatTranslation(Vector3 translation) { worldTransform_->matWorld_.m[3][0] = translation.x, worldTransform_->matWorld_.m[3][1] = translation.y, worldTransform_->matWorld_.m[3][2] = translation.z; }
-		void SetInertiaTensor(Matrix3x3 inertiaTensor) { inertiaTensor_ = inertiaTensor; }
+		void SetInertiaTensor(Matrix3x3 inertiaTensor) { inertiaTensor_ = inertiaTensor; invInertiaTensor_ = Inverse(inertiaTensor_); }
 		void SetFixedMove(std::array<bool, 3> fixedMove) { fixedMove_ = fixedMove; }
 		void SetFixedMove(int axis, bool fixedMove) { fixedMove_[axis] = fixedMove; }
 
@@ -249,6 +251,8 @@ namespace yunity {
 		float inertiaMoment_;
 		// 慣性テンソル
 		Matrix3x3 inertiaTensor_;
+		// 逆慣性テンソル
+		Matrix3x3 invInertiaTensor_;
 		// 空気抵抗
 		float drag_ = 0.0005f;
 		float angularDrag_ = 0.005f;

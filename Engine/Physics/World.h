@@ -21,6 +21,13 @@ namespace yunity{
 	*/
 	class World {
 	public:
+		struct ContactPoint {
+			Vector3 localPointA;
+			Vector3 localPointB;
+			Vector3 contactNormal;
+			float penetrationDepth;
+		};
+
 		struct PersistentManifold {
 			Object3D* colliderA;
 			Object3D* colliderB;

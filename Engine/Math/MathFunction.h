@@ -604,6 +604,8 @@ Quaternion Slerp(const Quaternion& q0, const Quaternion& q1, float t);
 /// <returns></returns>
 float Dot(const Quaternion& q1, const Quaternion& q2);
 
+Matrix3x3 MakeZero3x3();
+
 /// <summary>
 /// 単位行列
 /// </summary>

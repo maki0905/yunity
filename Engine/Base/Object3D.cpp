@@ -18,9 +18,8 @@ void yunity::Object3D::Initialize(Model* model, World* world, float mass, const 
 	worldTransform_.UpdateMatrix();
 	CreateBody(world, &worldTransform_,mass);
 	CreateCollider(&worldTransform_, shape, CameraManager::GetInstance()->GetCamera());
-	if(mass != 0.0f){
-		SetInertiaTensor(GetCollisionShape()->CalculateLocalInertia(mass));
-	}
+	SetInertiaTensor(GetCollisionShape()->CalculateLocalInertia(mass));
+	
 	isHit_ = false;
 }
 

@@ -1029,6 +1029,17 @@ float Dot(const Quaternion& q1, const Quaternion& q2)
 	return result;
 }
 
+Matrix3x3 MakeZero3x3()
+{
+	Matrix3x3 result;
+	for (int i = 0; i < 3; i++) {
+		for (int j = 0; j < 3; j++) {
+			result.m[i][j] = 0;
+		}
+	}
+	return result;
+}
+
 Matrix3x3 MakeIdentity3x3()
 {
 	Matrix3x3 result;

@@ -10,6 +10,7 @@
 #include "Skydome.h"
 #include "ObjectManager.h"
 #include "DirectionLight.h"
+#include "Input.h"
 
 /*
 * @brief クリアシーンクラス
@@ -48,5 +49,6 @@ private:
 	// 物理空間
 	std::unique_ptr<yunity::World> world_;
 	bool onoff_;
+	bool frameMode_ = false;
 };
 

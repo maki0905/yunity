@@ -58,7 +58,7 @@ namespace {
 		Vector3 normal = delta.Normalize();
 		return Multiply(penetrationDepth, normal);
 	}
-	
+
 	float GetProjectionRadius(const OBB& obb, const Vector3& axis) {
 		float result;
 		result =
@@ -262,7 +262,7 @@ namespace {
 
 void yunity::Body::CreateBody(World* world, WorldTransform* worldTransform, float mass)
 {
-	mass_ = mass;	
+	mass_ = mass;
 	velocity_ = { 0.0f, 0.0f, 0.0f };
 	acceleration_ = { 0.0f, 0.0f, 0.0f };
 	force_ = { 0.0f, 0.0f, 0.0f };
@@ -335,55 +335,47 @@ void yunity::Body::SolveVelocity(float time)
 
 	acceleration_ = Add(gravity, airResistanceAcceleration);
 
-	if (inertiaMoment_ != 0.0f) {
-		Vector3 airResistanceTorque = Multiply(-angularDrag_, angularVelocity_);
+	// 空気抵抗トルク(角速度に比例)
+	Vector3 airResistanceTorque = Multiply(-angularDrag_, angularVelocity_);
 
-		Vector3 airResistanceAngularAcceleration = Multiply(1.0f / inertiaMoment_, airResistanceTorque);
+	// ローカル -> ワールドの逆慣性テンソル
+	Matrix3x3 R = ExtractRotation3x3(worldTransform_->GetRotateMatrix());
+	Matrix3x3 invInertiaWorld = Multiply(Multiply(R, invInertiaTensor_), Transpose(R));
 
-		angularAcceleration_ = Add(angularAcceleration_, airResistanceAngularAcceleration);
-		if (std::fabsf(angularAcceleration_.x * time) > std::fabs(angularVelocity_.x)) {
-			angularAcceleration_.x = -angularVelocity_.x / time;
-		}
-		else if (std::fabsf(angularVelocity_.x) < 0.001f) {
-			angularAcceleration_.x = 0.0f;
-			angularVelocity_.x = 0.0f;
-		}
-		if (std::fabsf(angularAcceleration_.y * time) > std::fabs(angularVelocity_.y)) {
-			angularAcceleration_.y = -angularVelocity_.y / time;
-		}
-		else if (std::fabsf(angularVelocity_.y) < 0.001f) {
-			angularAcceleration_.y = 0.0f;
-			angularVelocity_.y = 0.0f;
-		}
-		if (std::fabsf(angularAcceleration_.z * time) > std::fabs(angularVelocity_.z)) {
-			angularAcceleration_.z = -angularVelocity_.z / time;
-		}
-		else if (std::fabsf(angularVelocity_.z) < 0.001f) {
-			angularAcceleration_.z = 0.0f;
-			angularVelocity_.z = 0.0f;
-		}
+	// 合計トルク
+	Vector3 netTorque = Add(airResistanceTorque, torque_);
 
-		angularAcceleration_ = Add(angularAcceleration_, Multiply(1.0f / inertiaMoment_, torque_));
-		torque_ = { 0.0f, 0.0f, 0.0f };
-		angularVelocity_ = Add(angularVelocity_, Multiply(time, angularAcceleration_));
-		if (worldTransform_->rotateType_ == RotationType::Quaternion) { // クォータニオンの回転
-			float angle = angularVelocity_.Length();
-			if (angle < 0.0001f) return;
+	// 角加速度
+	Vector3 angularAcceleration = TransformVector3(netTorque, invInertiaWorld);
 
-			Vector3 axis = angularVelocity_.Normalize();
-			float halfAngle = angle * 0.5f * time;
-			Quaternion deltaRot = Quaternion(
-				axis.x * sin(halfAngle),
-				axis.y * sin(halfAngle),
-				axis.z * sin(halfAngle),
-				cos(halfAngle)
-			);
-			worldTransform_->quaternion_ = Normalize(Multiply(deltaRot, worldTransform_->quaternion_));
-		}
-		else {// オイラー角の回転
-			worldTransform_->rotation_ = Add(worldTransform_->rotation_, Multiply(time, angularVelocity_));
-		}
+	// 角速度更新
+	angularVelocity_ = Add(angularVelocity_, Multiply(time, angularAcceleration_));
+
+	// 角速度が小さい場合はゼロにする
+	if (angularVelocity_.Length() < 1e-6f) {
+		angularVelocity_.SetZero();
 	}
+
+	// 姿勢更新
+	if (worldTransform_->rotateType_ == RotationType::Quaternion) { // クォータニオンの回転
+		float angle = angularVelocity_.Length();
+		if (angle < 0.0001f) return;
+
+		Vector3 axis = angularVelocity_.Normalize();
+		float halfAngle = angle * 0.5f * time;
+		Quaternion deltaRot = Quaternion(
+			axis.x * sin(halfAngle),
+			axis.y * sin(halfAngle),
+			axis.z * sin(halfAngle),
+			cos(halfAngle)
+		);
+		worldTransform_->quaternion_ = Normalize(Multiply(deltaRot, worldTransform_->quaternion_));
+	}
+	else {// オイラー角の回転
+		worldTransform_->rotation_ = Add(worldTransform_->rotation_, Multiply(time, angularVelocity_));
+	}
+	// トルク初期化
+	torque_ = { 0.0f, 0.0f, 0.0f };
 
 	// 加速度計算
 	acceleration_ = Add(acceleration_, Multiply(1.0f / mass_, force_));
@@ -549,7 +541,7 @@ void yunity::Body::AddTorque(const Vector3& torque, ForceMode mode)
 		Matrix3x3 R = ExtractRotation3x3(GetWorldTransform()->GetRotateMatrix());
 
 		// ワールド空間逆慣性テンソルの構築
-		Matrix3x3 invInertiaWorld = Multiply(Multiply(R, Inverse(inertiaTensor_)), Transpose(R));
+		Matrix3x3 invInertiaWorld = Multiply(Multiply(R, invInertiaTensor_), Transpose(R));
 
 		// トルクを角速度へ変換（Impulse対応）
 		Vector3 angularImpulse = TransformVector3(torque, invInertiaWorld);
@@ -586,8 +578,8 @@ void yunity::Body::OnCollision(Body* body)
 
 		Vector3 pushback = { 0.0f, 0.0f, 0.0f };
 		Vector3 penetrationDepth = { 0.0f, 0.0f, 0.0f };
-		
-		
+
+
 
 		//switch (GetShape())
 		//{
@@ -711,6 +703,22 @@ void yunity::Body::PositionalCorrection(float correctionRatio, float penetration
 	// 位置に補正を加える
 	worldTransform_->translation_ = Add(worldTransform_->translation_, positionalCorrection);
 	worldTransform_->UpdateMatrix();
+}
+
+Matrix3x3 yunity::Body::GetInverseInertiaTensorWorld() const
+{
+	// 静的オブジェクト（質量0）はトルクを受け付けない → ゼロ行列を返す
+	if (mass_ == 0.0f) {
+		return MakeZero3x3();
+	}
+
+	// ワールド回転行列の取得
+	Matrix3x3 R = ExtractRotation3x3(worldTransform_->GetRotateMatrix());
+
+	// invInertiaTensor_ はローカル空間の逆慣性テンソル
+	Matrix3x3 invInertiaWorld = Multiply(Multiply(R, invInertiaTensor_), Transpose(R));
+
+	return invInertiaWorld;
 }
 
 float yunity::Body::GetRestitution(float otherRestitution)
