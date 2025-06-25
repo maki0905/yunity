@@ -28,6 +28,12 @@ namespace yunity{
 			float penetrationDepth;
 		};
 
+		/*struct PersistentManifold {
+			Object3D* colliderA;
+			Object3D* colliderB;
+			std::vector<ContactPoint> contacts;
+		};*/
+
 		struct PersistentManifold {
 			Object3D* colliderA;
 			Object3D* colliderB;
@@ -76,9 +82,7 @@ namespace yunity{
 		/// <param name="joint"></param>
 		void TakeJoint(Joint* joint);
 
-		void AddPersistentManifold(const PersistentManifold& persistentManifold) {
-			persistentManifolds_.push_back(persistentManifold);
-		}
+		void AddPersistentManifold(const PersistentManifold& newPersistentManifold);
 
 		/// <summary>
 		/// アロケータ取得

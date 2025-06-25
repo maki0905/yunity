@@ -205,72 +205,71 @@ void yunity::EPA(Point& a, Point& b, Point& c, Point& d, Object3D* colliderA, Ob
 			// ローカル座標へ変換
 			Matrix4x4 invMatA = Inverse(colliderA->GetWorldTransform()->matWorld_);
 			Matrix4x4 invMatB = Inverse(colliderB->GetWorldTransform()->matWorld_);
-			Vector3 localA = TransformPoint(contactPoint, invMatA);
-			Vector3 localB = TransformPoint(contactPoint, invMatB);
 
 			// マニフォールド登録
 			yunity::World::PersistentManifold persistentManifold;
 			persistentManifold.colliderA = colliderA;
 			persistentManifold.colliderB = colliderB;
-			persistentManifold.localPointA = localA;
-			persistentManifold.localPointB = localB;
-			persistentManifold.contactNormal = normal; // ワールド空間での法線
+			persistentManifold.localPointA = TransformPoint(contactPoint, invMatA);
+			persistentManifold.localPointB = TransformNormal(contactPoint, invMatB);
+			persistentManifold.contactNormal = normal;
 			persistentManifold.penetrationDepth = penetration;
 			world->AddPersistentManifold(persistentManifold);
 			return;
 		}
 
-		//if (Dot(p.point, searchDistance) - minDistance < 0.00001f) { // 収束判定
-		//	// 投影点を求める
-		//	Plane closestPlane = PlaneFromTri(faces[closestFace][0].point, faces[closestFace][1].point, faces[closestFace][2].point);
-		//	Vector3 projectionPoint = ProjectPointOntoPlane(closestPlane, Vector3(0, 0, 0));
+		//if (Dot(p.point, searchDistance) - minDistance < 0.00001f) {
+		//	yunity::World::PersistentManifold manifold;
+		//	manifold.colliderA = colliderA;
+		//	manifold.colliderB = colliderB;
 
-		//	// バリツェントリック座標を求める
-		//	float u, v, w;
-		//	Barycentric(faces[closestFace][0].point, faces[closestFace][1].point, faces[closestFace][2].point,
-		//		projectionPoint, u, v, w);
+		//	const float threshold = 0.001f;
 
+		//	for (int i = 0; i < numFaces; ++i) {
+		//		if (Dot(faces[i][3].point, faces[i][0].point) < 0) {
+		//			faces[i][3].point = Multiply(-1.0f, faces[i][3].point); // 法線の向きを反転
+		//		}
 
-		//	// ワールド座標の衝突点を求める（supportA/B はワールド座標）
-		//	Vector3 worldPointA = Add(Add(Multiply(u, faces[closestFace][0].supportA), Multiply(v, faces[closestFace][1].supportA)), Multiply(w, faces[closestFace][2].supportA));
-		//	Vector3 worldPointB = Add(Add(Multiply(u, faces[closestFace][0].supportB), Multiply(v, faces[closestFace][1].supportB)), Multiply(w, faces[closestFace][2].supportB));
+		//		float dist = Dot(faces[i][0].point, faces[i][3].point);
+		//		if (fabsf(dist - minDistance) < threshold) {
+		//			// バリツェントリック座標
+		//			Plane plane = PlaneFromTri(faces[i][0].point, faces[i][1].point, faces[i][2].point);
+		//			Vector3 projection = ProjectPointOntoPlane(plane, Vector3(0, 0, 0));
 
-		//	//// 衝突法線と深度（ワールド空間）
-		//	//Vector3 normal = Subtract(worldPointA, worldPointB);
-		//	//float penetration = normal.Length();
-		//	//if (penetration < 1e-6f) return; // ほぼゼロなら無視
-		//	//normal = Divide(normal, penetration); // 正規化
-		//	//penetration = std::clamp(penetration, 0.0f, 0.05f); // 過剰な深さを抑制
+		//			float u, v, w;
+		//			Barycentric(faces[i][0].point, faces[i][1].point, faces[i][2].point,
+		//				projection, u, v, w);
 
-		//	//// 衝突点（ワールド空間）
-		//	//Vector3 contactPoint = Multiply(0.5f, Add(worldPointA, worldPointB));
+		//			Vector3 worldPointA = Add(Add(Multiply(u, faces[i][0].supportA),
+		//				Multiply(v, faces[i][1].supportA)),
+		//				Multiply(w, faces[i][2].supportA));
+		//			Vector3 worldPointB = Add(Add(Multiply(u, faces[i][0].supportB),
+		//				Multiply(v, faces[i][1].supportB)),
+		//				Multiply(w, faces[i][2].supportB));
 
-		//	//// ローカル座標へ変換
-		//	//Matrix4x4 invMatA = Inverse(colliderA->GetWorldTransform()->matWorld_);
-		//	//Matrix4x4 invMatB = Inverse(colliderB->GetWorldTransform()->matWorld_);
+		//			Vector3 normal = Subtract(worldPointA, worldPointB);
+		//			float penetration = normal.Length();
+		//			if (penetration < 1e-6f) continue;
+		//			normal = Divide(normal, penetration);
 
-		//	//Vector3 localA = TransformPoint(contactPoint, invMatA);
-		//	//Vector3 localB = TransformPoint(contactPoint, invMatB);
+		//			Vector3 contactPoint = Multiply(0.5f, Add(worldPointA, worldPointB));
 
-		//	// 衝突点を求める
-		//	Vector3 localA = Add(Add(Multiply(u, faces[closestFace][0].supportA), Multiply(v, faces[closestFace][1].supportA)), Multiply(w, faces[closestFace][2].supportA));
-		//	Vector3 localB = Add(Add(Multiply(u, faces[closestFace][0].supportB), Multiply(v, faces[closestFace][1].supportB)), Multiply(w, faces[closestFace][2].supportB));
-		//	float penetration = Subtract(localA, localB).Length();
-		//	Vector3 normal = Subtract(localA, localB).Normalize();
+		//			Matrix4x4 invMatA = Inverse(colliderA->GetWorldTransform()->matWorld_);
+		//			Matrix4x4 invMatB = Inverse(colliderB->GetWorldTransform()->matWorld_);
 
-		//	localA = Subtract(localA, colliderA->GetTranslation());
-		//	localB = Subtract(localB, colliderB->GetTranslation());
+		//			yunity::World::ContactPoint cp;
+		//			cp.localPointA = TransformPoint(contactPoint, invMatA);
+		//			cp.localPointB = TransformPoint(contactPoint, invMatB);
+		//			cp.contactNormal = normal;
+		//			cp.penetrationDepth = penetration;
 
-		//	// 衝突データを格納
-		//	//collisionInfo.AddContactPoint(localA, localB, normal, penetration);
-		//	yunity::World::PersistentManifold persistentManifold;
-		//	persistentManifold.colliderA = colliderA;
-		//	persistentManifold.colliderB = colliderB;
-		//	persistentManifold.localPointA = localA;
-		//	persistentManifold.localPointB = localB;
-		//	persistentManifold.contactNormal = normal;
-		//	persistentManifold.penetrationDepth = penetration;
-		//	world->AddPersistentManifold(persistentManifold);
+		//			manifold.contacts.push_back(cp);
+		//		}
+		//	}
+
+		//	if (!manifold.contacts.empty()) {
+		//		world->AddPersistentManifold(manifold);
+		//	}
 		//	return;
 		//}
 
@@ -319,7 +318,9 @@ void yunity::EPA(Point& a, Point& b, Point& c, Point& d, Object3D* colliderA, Ob
 			faces[numFaces][0] = loose_edges[i][0];
 			faces[numFaces][1] = loose_edges[i][1];
 			faces[numFaces][2] = p;
-			faces[numFaces][3].point = Cross(Subtract(loose_edges[i][0].point, loose_edges[i][1].point), Subtract(loose_edges[i][0].point, p.point)).Normalize();
+			Vector3 normal = Cross(Subtract(loose_edges[i][0].point, loose_edges[i][1].point), Subtract(loose_edges[i][0].point, p.point)).Normalize();
+			if (normal.LengthSquared() < 1e-6f) continue;
+			faces[numFaces][3].point = normal.Normalize();
 
 			
 			Vector3 center = Divide(Add(Add(faces[numFaces][0].point, faces[numFaces][1].point), p.point), 3.0f);
@@ -342,12 +343,17 @@ void yunity::CalculateSearchPoint(Point& point, Vector3& search_dir, Object3D* c
 	point.point = Subtract(point.supportB, point.supportA);
 }
 
+//bool yunity::PointsEqual(const Vector3& a, const Vector3& b, float epsilon)
+//{
+//	return 
+//		(
+//		fabs(a.x - b.x) < epsilon &&
+//		fabs(a.y - b.y) < epsilon &&
+//		fabs(a.z - b.z) < epsilon
+//		);
+//}
+
 bool yunity::PointsEqual(const Vector3& a, const Vector3& b, float epsilon)
 {
-	return 
-		(
-		fabs(a.x - b.x) < epsilon &&
-		fabs(a.y - b.y) < epsilon &&
-		fabs(a.z - b.z) < epsilon
-		);
+	return Subtract(a, b).LengthSquared() < (epsilon * epsilon);
 }
