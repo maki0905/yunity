@@ -533,10 +533,6 @@ void yunity::Body::AddTorque(const Vector3& torque, ForceMode mode)
 		torque_ = Add(torque_, torque);
 	}
 	else {
-		/*Vector3 angularImpulse = TransformVector3(torque, Inverse(inertiaTensor_));
-		angularVelocity_ = Add(angularVelocity_, angularImpulse);*/
-
-
 		// ワールド回転行列の取り出し（3x3）
 		Matrix3x3 R = ExtractRotation3x3(GetWorldTransform()->GetRotateMatrix());
 

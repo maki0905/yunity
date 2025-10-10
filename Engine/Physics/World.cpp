@@ -85,8 +85,11 @@ void yunity::World::SolveConstraints()
 		Matrix3x3 invInertiaA = info.colliderA->GetInverseInertiaTensorWorld();
 		Matrix3x3 invInertiaB = info.colliderB->GetInverseInertiaTensorWorld();
 
-		Vector3 rA = info.localPointA;
-		Vector3 rB = info.localPointB;
+		Vector3 worldPointA = TransformVector3(info.localPointA, info.colliderA->GetWorldTransform()->GetRotateMatrix());
+		Vector3 worldPointB = TransformVector3(info.localPointB, info.colliderB->GetWorldTransform()->GetRotateMatrix());
+
+		Vector3 rA = Subtract(worldPointA, info.colliderA->GetTranslation());
+		Vector3 rB = Subtract(worldPointB, info.colliderB->GetTranslation());
 
 		Vector3 rnA = Cross(rA, info.contactNormal);
 		Vector3 rnB = Cross(rB, info.contactNormal);
@@ -99,8 +102,8 @@ void yunity::World::SolveConstraints()
 
 		float angularEffect = angularEffectA + angularEffectB;
 
-		angularVelocityA = Cross(info.colliderA->GetAngularVelocity(), info.localPointA);
-		angularVelocityB = Cross(info.colliderB->GetAngularVelocity(), info.localPointB);
+		angularVelocityA = Cross(info.colliderA->GetAngularVelocity(), worldPointA);
+		angularVelocityB = Cross(info.colliderB->GetAngularVelocity(), worldPointB);
 
 		Vector3 fullVelocityA = Add(info.colliderA->GetVelocity(), angularVelocityA);
 		Vector3 fullVelocityB = Add(info.colliderB->GetVelocity(), angularVelocityB);

@@ -211,7 +211,7 @@ void yunity::EPA(Point& a, Point& b, Point& c, Point& d, Object3D* colliderA, Ob
 			persistentManifold.colliderA = colliderA;
 			persistentManifold.colliderB = colliderB;
 			persistentManifold.localPointA = TransformPoint(contactPoint, invMatA);
-			persistentManifold.localPointB = TransformNormal(contactPoint, invMatB);
+			persistentManifold.localPointB = TransformPoint(contactPoint, invMatB);
 			persistentManifold.contactNormal = normal;
 			persistentManifold.penetrationDepth = penetration;
 			world->AddPersistentManifold(persistentManifold);
