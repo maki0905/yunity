@@ -6,10 +6,14 @@
 #include "CameraManager.h"
 #include "TextureManager.h"
 #include "ImGuiManager.h"
+#include "RenderTexture.h"
 
 void ClearScene::Initialize()
 {
 	camera_ = CameraManager::GetInstance()->GetCamera();
+
+	/*yunity::RenderTexture::GetInstance()->SelectPostEffect(yunity::PostEffects::kRadialBlur, true);
+	yunity::RenderTexture::GetInstance()->SelectPostEffect(yunity::PostEffects::kOutline, true);*/
 
 	world_ = std::make_unique<yunity::World>();
 	world_->Initialize({0.0f, -9.0f, 0.0f});

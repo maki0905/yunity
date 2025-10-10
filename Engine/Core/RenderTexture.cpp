@@ -192,6 +192,9 @@ void yunity::RenderTexture::Copy()
 			finIndex = index;
 		}
 	}
+	ID3D12DescriptorHeap* ppHeaps[] = { DirectXCore::GetInstance()->GetDescriptorHeap(DirectXCore::HeapType::kSRV)->GetHeapPointer() };
+	commandList_->SetDescriptorHeaps(_countof(ppHeaps), ppHeaps);
+
 	commandList_->SetGraphicsRootSignature(rootSignature_->GetSignature());
 	commandList_->SetPipelineState(pipelineState_->GetPipelineStateObject());
 	commandList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
